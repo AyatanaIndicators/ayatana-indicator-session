@@ -1,0 +1,5 @@
+compile
+m4
+po
+src/libmessaging.la
+src/libmessaging_la-indicator-messages.lo

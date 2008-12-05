@@ -3,3 +3,14 @@ m4
 po
 src/libmessaging.la
 src/libmessaging_la-indicator-messages.lo
+config.guess.cdbs-orig
+config.sub.cdbs-orig
+debian/compat
+debian/files
+debian/indicator-messages
+debian/indicator-messages.debhelper.log
+debian/indicator-messages.postinst.debhelper
+debian/indicator-messages.postrm.debhelper
+debian/indicator-messages.substvars
+debian/stamp-autotools-files
+debian/stamp-makefile-build

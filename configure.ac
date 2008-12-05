@@ -1,10 +1,10 @@
 
-AC_INIT(src/indicator-messages.c)
+AC_INIT(src/indicator-fusa.c)
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-messaging, 0.1)
+AM_INIT_AUTOMAKE(indicator-fusa, 0.1)
 
 AM_MAINTAINER_MODE
 
@@ -43,7 +43,7 @@ src/Makefile
 
 AC_MSG_NOTICE([
 
-Messaging Indicator Configuration:
+FUSA Indicator Configuration:
 
 	Prefix:        $prefix
 ])

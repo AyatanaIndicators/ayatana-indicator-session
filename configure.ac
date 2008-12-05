@@ -1,5 +1,5 @@
 
-AC_INIT(src/applet-main.c)
+AC_INIT(src/indicator-messages.c)
 
 AC_PREREQ(2.53)
 
@@ -8,7 +8,6 @@ AM_INIT_AUTOMAKE(indicator-messaging, 0.1)
 
 AM_MAINTAINER_MODE
 
-IT_PROG_INTLTOOL([0.35.0])
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_C_O
@@ -29,19 +28,6 @@ PKG_CHECK_MODULES(APPLET, gtk+-2.0 >= $GTK_REQUIRED_VERSION)
 AC_SUBST(APPLET_CFLAGS)
 AC_SUBST(APPLET_LIBS)
 
-AC_PATH_PROG(GCONFTOOL, gconftool-2)
-AM_GCONF_SOURCE_2
-
-###########################
-# Internationalization
-###########################
-
-GETTEXT_PACKAGE=indicator-messaging
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Name of the default gettext domain])
-
-AM_GLIB_GNU_GETTEXT
-
 ###########################
 # Files
 ###########################
@@ -49,7 +35,6 @@ AM_GLIB_GNU_GETTEXT
 AC_OUTPUT([
 Makefile
 src/Makefile
-po/Makefile.in
 ])
 
 ###########################

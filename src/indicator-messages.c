@@ -1,6 +1,5 @@
 
 #include <gtk/gtk.h>
-#include "indicator-messages.h"
 
 GtkWidget *
 get_menu_item (void)

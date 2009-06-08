@@ -1,26 +1,50 @@
 
 #include <gtk/gtk.h>
+#include <libdbusmenu-gtk/menu.h>
 
-GtkWidget *
-get_menu_item (void)
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
+
+#include <libindicator/indicator.h>
+INDICATOR_SET_VERSION
+INDICATOR_SET_NAME("users-status-shutdown")
+
+#include "dbus-shared-names.h"
+
+GtkLabel *
+get_label (void)
 {
-	GtkWidget * mainmenu = gtk_menu_item_new();
-
-	GtkWidget * hbox = gtk_hbox_new(FALSE, 3);
-
-	GtkWidget * label = gtk_label_new("Ted Gould");
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 3);
-	gtk_widget_show(label);
-
-	GtkWidget * icon = gtk_image_new_from_icon_name("gnome-logout",
-	                                                GTK_ICON_SIZE_MENU);
-	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
-	gtk_widget_show(icon);
-
-	gtk_container_add(GTK_CONTAINER(mainmenu), hbox);
-	gtk_widget_show(hbox);
-
-	gtk_widget_show(mainmenu);
-	return mainmenu;
+	GtkLabel * returnval = gtk_label_new("Ted Gould");
+	return returnval;
 }
+
+GtkImage *
+get_icon (void)
+{
+	return NULL;
+}
+
+GtkMenu *
+get_menu (void)
+{
+	guint returnval = 0;
+	GError * error = NULL;
+
+	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	DBusGProxy * proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+
+	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_FUSA_DBUS_NAME, 0, &returnval, &error)) {
+		g_error("Unable to send message to DBus to start service: %s", error != NULL ? error->message : "(NULL error)" );
+		g_error_free(error);
+		return NULL;
+	}
+
+	if (returnval != DBUS_START_REPLY_SUCCESS && returnval != DBUS_START_REPLY_ALREADY_RUNNING) {
+		g_error("Return value isn't indicative of success: %d", returnval);
+		return NULL;
+	}
+
+	return GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_FUSA_DBUS_NAME, INDICATOR_FUSA_DBUS_OBJECT));
+}
+
 

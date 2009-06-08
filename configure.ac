@@ -32,6 +32,13 @@ AC_SUBST(APPLET_CFLAGS)
 AC_SUBST(APPLET_LIBS)
 
 ###########################
+# Indicator Info
+###########################
+
+INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator`
+AC_SUBST(INDICATORDIR)
+
+###########################
 # Files
 ###########################
 

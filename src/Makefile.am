@@ -1,5 +1,5 @@
 
-fusalibdir = $(libdir)/indicators/1
+fusalibdir = $(INDICATORDIR)
 fusalib_LTLIBRARIES = libfusa.la
 libfusa_la_SOURCES = indicator-fusa.c
 libfusa_la_CFLAGS = $(APPLET_CFLAGS)

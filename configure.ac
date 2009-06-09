@@ -46,9 +46,6 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 data/Makefile
-data/indicator-status.service
-data/indicator-users.service
-data/indicator-session.service
 ])
 
 ###########################

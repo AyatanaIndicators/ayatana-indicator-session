@@ -17,3 +17,6 @@ debian/stamp-makefile-build
 libstatus-users-session.la
 libstatus_users_session_la-indicator-fusa.lo
 libstatus_users_session_la-indicator-sus.lo
+indicator-session-service
+indicator-status-service
+indicator-users-service

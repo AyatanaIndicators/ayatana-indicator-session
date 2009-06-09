@@ -1,10 +1,10 @@
 
-AC_INIT(src/indicator-fusa.c)
+AC_INIT(src/indicator-sus.c)
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-fusa, 0.1dev)
+AM_INIT_AUTOMAKE(indicator-sus, 0.1dev)
 
 AM_MAINTAINER_MODE
 
@@ -45,6 +45,10 @@ AC_SUBST(INDICATORDIR)
 AC_OUTPUT([
 Makefile
 src/Makefile
+data/Makefile
+data/indicator-status.service
+data/indicator-users.service
+data/indicator-session.service
 ])
 
 ###########################
@@ -53,7 +57,7 @@ src/Makefile
 
 AC_MSG_NOTICE([
 
-FUSA Indicator Configuration:
+SUS Indicator Configuration:
 
 	Prefix:        $prefix
 ])

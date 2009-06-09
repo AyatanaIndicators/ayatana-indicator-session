@@ -20,3 +20,6 @@ libstatus_users_session_la-indicator-sus.lo
 indicator-session-service
 indicator-status-service
 indicator-users-service
+indicator-session.service
+indicator-status.service
+indicator-users.service

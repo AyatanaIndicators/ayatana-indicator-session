@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PKG_NAME="indicator-fusa"
+PKG_NAME="indicator-sus"
 
 which gnome-autogen.sh || {
 	echo "You need gnome-common from GNOME SVN"

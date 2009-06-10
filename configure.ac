@@ -49,10 +49,21 @@ AC_SUBST(SESSIONERVICE_CFLAGS)
 AC_SUBST(SESSIONERVICE_LIBS)
 
 ###########################
+# Check to see if we're local
+###########################
+
+with_localinstall="no"
+AC_ARG_ENABLE(localinstall, AS_HELP_STRING([--enable-localinstall], [install all of the files localy instead of system directories (for distcheck)]), with_localinstall=$enableval, with_localinstall=no)
+
+###########################
 # Indicator Info
 ###########################
 
-INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator`
+if test "x$with_localinstall" = "xyes"; then
+	INDICATORDIR="${libdir}/indicators/2/"
+else
+	INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator`
+fi
 AC_SUBST(INDICATORDIR)
 
 ###########################

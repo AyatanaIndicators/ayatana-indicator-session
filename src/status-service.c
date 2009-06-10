@@ -38,6 +38,27 @@ static const gchar * status_icons[STATUS_SERVICE_STATUS_LAST] = {
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
+gboolean
+build_menu (gpointer data)
+{
+	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(data);
+	g_return_val_if_fail(root != NULL, FALSE);
+
+	StatusServiceStatus i;
+	for (i = STATUS_SERVICE_STATUS_ONLINE; i < STATUS_SERVICE_STATUS_LAST; i++) {
+		DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
+
+		dbusmenu_menuitem_property_set(mi, "label", _(status_strings[i]));
+		dbusmenu_menuitem_property_set(mi, "icon", status_icons[i]);
+
+		dbusmenu_menuitem_child_append(root, mi);
+
+		g_debug("Built %s", status_strings[i]);
+	}
+
+	return FALSE;
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -61,6 +82,8 @@ main (int argc, char ** argv)
     root_menuitem = dbusmenu_menuitem_new();
     DbusmenuServer * server = dbusmenu_server_new(INDICATOR_STATUS_DBUS_OBJECT);
     dbusmenu_server_set_root(server, root_menuitem);
+
+	g_idle_add(build_menu, root_menuitem);
 
     mainloop = g_main_loop_new(NULL, FALSE);
     g_main_loop_run(mainloop);

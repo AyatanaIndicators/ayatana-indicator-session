@@ -38,7 +38,14 @@ static const gchar * status_icons[STATUS_SERVICE_STATUS_LAST] = {
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
-gboolean
+static void
+menu_click (DbusmenuMenuitem * mi, gpointer data)
+{
+	StatusServiceStatus stat = (StatusServiceStatus)GPOINTER_TO_INT(data);
+
+}
+
+static gboolean
 build_menu (gpointer data)
 {
 	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(data);
@@ -50,6 +57,7 @@ build_menu (gpointer data)
 
 		dbusmenu_menuitem_property_set(mi, "label", _(status_strings[i]));
 		dbusmenu_menuitem_property_set(mi, "icon", status_icons[i]);
+		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, 0, GINT_TO_POINTER(i));
 
 		dbusmenu_menuitem_child_append(root, mi);
 

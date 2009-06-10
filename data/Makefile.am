@@ -10,3 +10,4 @@ $(dbus_services_DATA): $(service_in_files) Makefile
 
 EXTRA_DIST = $(service_in_files)
 
+CLEANFILES = $(dbus_services_DATA)

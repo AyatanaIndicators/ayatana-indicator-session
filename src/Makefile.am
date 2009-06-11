@@ -7,7 +7,7 @@ libstatus_users_session_la_SOURCES = indicator-sus.c dbus-shared-names.h
 libstatus_users_session_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
 libstatus_users_session_la_LIBADD = $(APPLET_LIBS)
 
-indicator_status_service_SOURCES = status-service.c
+indicator_status_service_SOURCES = status-service.c status-provider.h status-provider.c
 indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS)
 indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
 

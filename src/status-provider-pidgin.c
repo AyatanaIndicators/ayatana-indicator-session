@@ -65,6 +65,12 @@ status_provider_pidgin_finalize (GObject *object)
 	return;
 }
 
+StatusProvider *
+status_provider_pidgin_new (void)
+{
+	return STATUS_PROVIDER(g_object_new(STATUS_PROVIDER_PIDGIN_TYPE, NULL));
+}
+
 static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {

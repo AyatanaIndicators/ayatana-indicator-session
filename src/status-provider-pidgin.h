@@ -27,6 +27,7 @@ struct _StatusProviderPidgin {
 };
 
 GType status_provider_pidgin_get_type (void);
+StatusProvider * status_provider_pidgin_new (void);
 
 G_END_DECLS
 

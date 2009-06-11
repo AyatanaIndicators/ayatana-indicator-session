@@ -10,6 +10,15 @@
 #include "dbus-shared-names.h"
 
 #include "status-provider.h"
+#include "status-provider-pidgin.h"
+
+typedef StatusProvider * (*newfunc) (void);
+#define STATUS_PROVIDER_CNT   1
+newfunc status_provider_newfuncs[STATUS_PROVIDER_CNT] = {
+	status_provider_pidgin_new
+};
+
+StatusProvider * status_providers[STATUS_PROVIDER_CNT] = { 0 };
 
 static const gchar * status_strings [STATUS_PROVIDER_STATUS_LAST] = {
   /* STATUS_PROVIDER_STATUS_ONLINE,    */ N_("Available"),

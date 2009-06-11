@@ -14,11 +14,10 @@
 
 typedef StatusProvider * (*newfunc) (void);
 #define STATUS_PROVIDER_CNT   1
-newfunc status_provider_newfuncs[STATUS_PROVIDER_CNT] = {
+static newfunc status_provider_newfuncs[STATUS_PROVIDER_CNT] = {
 	status_provider_pidgin_new
 };
-
-StatusProvider * status_providers[STATUS_PROVIDER_CNT] = { 0 };
+static StatusProvider * status_providers[STATUS_PROVIDER_CNT] = { 0 };
 
 static const gchar * status_strings [STATUS_PROVIDER_STATUS_LAST] = {
   /* STATUS_PROVIDER_STATUS_ONLINE,    */ N_("Available"),
@@ -41,10 +40,26 @@ static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
 static void
-menu_click (DbusmenuMenuitem * mi, gpointer data)
+status_menu_click (DbusmenuMenuitem * mi, gpointer data)
 {
 	StatusProviderStatus status = (StatusProviderStatus)GPOINTER_TO_INT(data);
+	int i;
+	for (i = 0; i < STATUS_PROVIDER_CNT; i++) {
+		status_provider_set_status(status_providers[i], status);
+	}
 
+	return;
+}
+
+static gboolean
+build_providers (gpointer data)
+{
+	int i;
+	for (i = 0; i < STATUS_PROVIDER_CNT; i++) {
+		status_providers[i] = status_provider_newfuncs[i]();
+	}
+
+	return FALSE;
 }
 
 static gboolean
@@ -59,7 +74,7 @@ build_menu (gpointer data)
 
 		dbusmenu_menuitem_property_set(mi, "label", _(status_strings[i]));
 		dbusmenu_menuitem_property_set(mi, "icon", status_icons[i]);
-		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, 0, GINT_TO_POINTER(i));
+		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(status_menu_click), GINT_TO_POINTER(i));
 
 		dbusmenu_menuitem_child_append(root, mi);
 
@@ -88,6 +103,8 @@ main (int argc, char ** argv)
         g_error("Unable to get name");
         return 1;
     }   
+
+	g_idle_add(build_providers, NULL);
 
     root_menuitem = dbusmenu_menuitem_new();
     DbusmenuServer * server = dbusmenu_server_new(INDICATOR_STATUS_DBUS_OBJECT);

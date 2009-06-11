@@ -9,32 +9,22 @@
 
 #include "dbus-shared-names.h"
 
-typedef enum
-{
-  STATUS_SERVICE_STATUS_ONLINE,
-  STATUS_SERVICE_STATUS_AWAY,
-  STATUS_SERVICE_STATUS_DND,
-  STATUS_SERVICE_STATUS_INVISIBLE,
-  STATUS_SERVICE_STATUS_OFFLINE,
-  /* Leave as last */
-  STATUS_SERVICE_STATUS_LAST
-}
-StatusServiceStatus;
+#include "status-provider.h"
 
-static const gchar * status_strings [STATUS_SERVICE_STATUS_LAST] = {
-  /* STATUS_SERVICE_STATUS_ONLINE,    */ N_("Available"),
-  /* STATUS_SERVICE_STATUS_AWAY,      */ N_("Away"),
-  /* STATUS_SERVICE_STATUS_DND        */ N_("Busy"),
-  /* STATUS_SERVICE_STATUS_INVISIBLE  */ N_("Invisible"),
-  /* STATUS_SERVICE_STATUS_OFFLINE,   */ N_("Offline")
+static const gchar * status_strings [STATUS_PROVIDER_STATUS_LAST] = {
+  /* STATUS_PROVIDER_STATUS_ONLINE,    */ N_("Available"),
+  /* STATUS_PROVIDER_STATUS_AWAY,      */ N_("Away"),
+  /* STATUS_PROVIDER_STATUS_DND        */ N_("Busy"),
+  /* STATUS_PROVIDER_STATUS_INVISIBLE  */ N_("Invisible"),
+  /* STATUS_PROVIDER_STATUS_OFFLINE,   */ N_("Offline")
 };
 
-static const gchar * status_icons[STATUS_SERVICE_STATUS_LAST] = {
-  /* STATUS_SERVICE_STATUS_ONLINE, */     "user-online",
-  /* STATUS_SERVICE_STATUS_AWAY, */       "user-away",
-  /* STATUS_SERVICE_STATUS_DND, */        "user-busy",
-  /* STATUS_SERVICE_STATUS_INVISIBLE, */  "user-invisible",
-  /* STATUS_SERVICE_STATUS_OFFLINE */     "user-offline"
+static const gchar * status_icons[STATUS_PROVIDER_STATUS_LAST] = {
+  /* STATUS_PROVIDER_STATUS_ONLINE, */     "user-online",
+  /* STATUS_PROVIDER_STATUS_AWAY, */       "user-away",
+  /* STATUS_PROVIDER_STATUS_DND, */        "user-busy",
+  /* STATUS_PROVIDER_STATUS_INVISIBLE, */  "user-invisible",
+  /* STATUS_PROVIDER_STATUS_OFFLINE */     "user-offline"
 };
 
 
@@ -44,7 +34,7 @@ static GMainLoop * mainloop = NULL;
 static void
 menu_click (DbusmenuMenuitem * mi, gpointer data)
 {
-	StatusServiceStatus stat = (StatusServiceStatus)GPOINTER_TO_INT(data);
+	StatusProviderStatus status = (StatusProviderStatus)GPOINTER_TO_INT(data);
 
 }
 
@@ -54,8 +44,8 @@ build_menu (gpointer data)
 	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(data);
 	g_return_val_if_fail(root != NULL, FALSE);
 
-	StatusServiceStatus i;
-	for (i = STATUS_SERVICE_STATUS_ONLINE; i < STATUS_SERVICE_STATUS_LAST; i++) {
+	StatusProviderStatus i;
+	for (i = STATUS_PROVIDER_STATUS_ONLINE; i < STATUS_PROVIDER_STATUS_LAST; i++) {
 		DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
 
 		dbusmenu_menuitem_property_set(mi, "label", _(status_strings[i]));

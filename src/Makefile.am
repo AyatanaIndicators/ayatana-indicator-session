@@ -7,13 +7,30 @@ libstatus_users_session_la_SOURCES = indicator-sus.c dbus-shared-names.h
 libstatus_users_session_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
 libstatus_users_session_la_LIBADD = $(APPLET_LIBS)
 
-indicator_status_service_SOURCES = status-service.c \
-									status-provider.h \
-									status-provider.c \
-									status-provider-pidgin.h \
-									status-provider-pidgin.c
+indicator_status_service_SOURCES = \
+	status-service.c \
+	status-service-client.h \
+	status-service-server.h \
+	status-provider.h \
+	status-provider.c \
+	status-provider-pidgin.h \
+	status-provider-pidgin.c
 indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS)
 indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
+
+status-service-client.h: status-service.xml
+	dbus-binding-tool \
+		--prefix=_status_service_client \
+		--mode=glib-client \
+		--output=status-service-client.h \
+		$(srcdir)/status-service.xml
+
+status-service-server.h: status-service.xml
+	dbus-binding-tool \
+		--prefix=_status_service_server \
+		--mode=glib-server \
+		--output=status-service-server.h \
+		$(srcdir)/status-service.xml
 
 indicator_users_service_SOURCES = users-service.c
 indicator_users_service_CFLAGS = $(USERSSERVICE_CFLAGS)
@@ -23,3 +40,9 @@ indicator_session_service_SOURCES = session-service.c
 indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS)
 indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS)
 
+BUILT_SOURCES = \
+	status-service-client.h \
+	status-service-server.h
+
+EXTRA_DIST = \
+	status-service.xml

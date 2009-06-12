@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node name="/">
+	<interface name="com.ubuntu.indicator.status">
+
+<!-- Properties -->
+		<property name="user" type="s" access="read" />
+		<property name="status" type="u" access="read" />
+
+<!-- Methods -->
+		<method name="Watch">
+			<annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
+		</method>
+
+<!-- Signals -->
+		<signal name="UserChanged">
+			<arg type="s" name="name" direction="out" />
+		</signal>
+		<signal name="StatusChanged">
+			<arg type="u" name="status" direction="out" />
+		</signal>
+
+	</interface>
+</node>

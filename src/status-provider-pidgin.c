@@ -105,12 +105,22 @@ status_provider_pidgin_finalize (GObject *object)
 	return;
 }
 
+/**
+	status_provider_pidgin_new:
+
+	Creates a new #StatusProviderPidgin object.  No parameters or anything
+	like that.  Just a convience function.
+
+	Return value: A new instance of #StatusProviderPidgin
+*/
 StatusProvider *
 status_provider_pidgin_new (void)
 {
 	return STATUS_PROVIDER(g_object_new(STATUS_PROVIDER_PIDGIN_TYPE, NULL));
 }
 
+/* Takes the status provided generically for Status providers
+   and turns it into a Pidgin status and sends it to Pidgin. */
 static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {
@@ -121,6 +131,8 @@ set_status (StatusProvider * sp, StatusProviderStatus status)
 	return;
 }
 
+/* Takes the cached Pidgin status and makes it into the generic
+   Status provider status */
 static StatusProviderStatus
 get_status (StatusProvider * sp)
 {

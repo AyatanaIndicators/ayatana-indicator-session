@@ -5,8 +5,11 @@
 #include "status-provider.h"
 #include "status-provider-pidgin.h"
 
+#include <dbus/dbus-glib.h>
+
 typedef struct _StatusProviderPidginPrivate StatusProviderPidginPrivate;
 struct _StatusProviderPidginPrivate {
+	DBusGProxy * proxy;
 };
 
 #define STATUS_PROVIDER_PIDGIN_GET_PRIVATE(o) \
@@ -45,6 +48,9 @@ status_provider_pidgin_class_init (StatusProviderPidginClass *klass)
 static void
 status_provider_pidgin_init (StatusProviderPidgin *self)
 {
+	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(self);
+
+	priv->proxy = NULL;
 
 	return;
 }

@@ -20,6 +20,8 @@ libstatus_users_session_la_LIBADD = $(APPLET_LIBS)
 
 indicator_status_service_SOURCES = \
 	status-service.c \
+	status-service-dbus.h \
+	status-service-dbus.c \
 	status-service-server.h \
 	status-provider.h \
 	status-provider.c \

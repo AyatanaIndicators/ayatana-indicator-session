@@ -9,6 +9,8 @@
 
 #include "dbus-shared-names.h"
 
+#include "status-service-dbus.h"
+
 #include "status-provider.h"
 #include "status-provider-pidgin.h"
 

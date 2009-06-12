@@ -7,9 +7,42 @@
 
 #include <dbus/dbus-glib.h>
 
+typedef enum {
+	PG_STATUS_UNKNOWN,
+	PG_STATUS_OFFLINE,
+	PG_STATUS_AVAILABLE,
+	PG_STATUS_UNAVAILABLE,
+	PG_STATUS_INVISIBLE,
+	PG_STATUS_AWAY,
+	PG_STATUS_EXTENDEND_AWAY,
+	PG_STATUS_MOBILE,
+	PG_STATUS_TUNE
+} pg_status_t;
+
+static const StatusProviderStatus pg_to_sp_map[] = {
+	/* PG_STATUS_UNKNOWN,        */   STATUS_PROVIDER_STATUS_OFFLINE,
+	/* PG_STATUS_OFFLINE,        */   STATUS_PROVIDER_STATUS_OFFLINE,
+	/* PG_STATUS_AVAILABLE,      */   STATUS_PROVIDER_STATUS_ONLINE,
+	/* PG_STATUS_UNAVAILABLE,    */   STATUS_PROVIDER_STATUS_DND,
+	/* PG_STATUS_INVISIBLE,      */   STATUS_PROVIDER_STATUS_INVISIBLE,
+	/* PG_STATUS_AWAY,           */   STATUS_PROVIDER_STATUS_AWAY,
+	/* PG_STATUS_EXTENDEND_AWAY, */   STATUS_PROVIDER_STATUS_AWAY,
+	/* PG_STATUS_MOBILE,         */   STATUS_PROVIDER_STATUS_OFFLINE,
+	/* PG_STATUS_TUNE            */   STATUS_PROVIDER_STATUS_OFFLINE
+};
+
+static const pg_status_t sp_to_pg_map[STATUS_PROVIDER_STATUS_LAST] = {
+	/* STATUS_PROVIDER_STATUS_ONLINE,  */  PG_STATUS_AVAILABLE,
+	/* STATUS_PROVIDER_STATUS_AWAY,    */  PG_STATUS_AWAY,
+	/* STATUS_PROVIDER_STATUS_DND      */  PG_STATUS_UNAVAILABLE,
+	/* STATUS_PROVIDER_STATUS_INVISIBLE*/  PG_STATUS_INVISIBLE,
+	/* STATUS_PROVIDER_STATUS_OFFLINE  */  PG_STATUS_OFFLINE
+};
+
 typedef struct _StatusProviderPidginPrivate StatusProviderPidginPrivate;
 struct _StatusProviderPidginPrivate {
 	DBusGProxy * proxy;
+	pg_status_t  pg_status;
 };
 
 #define STATUS_PROVIDER_PIDGIN_GET_PRIVATE(o) \
@@ -51,6 +84,7 @@ status_provider_pidgin_init (StatusProviderPidgin *self)
 	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(self);
 
 	priv->proxy = NULL;
+	priv->pg_status = PG_STATUS_OFFLINE;
 
 	return;
 }
@@ -80,13 +114,17 @@ status_provider_pidgin_new (void)
 static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {
-
+	g_return_if_fail(IS_STATUS_PROVIDER_PIDGIN(sp));
+	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(sp);
+	pg_status_t pg_status = sp_to_pg_map[status];
+	priv->pg_status = pg_status;
 	return;
 }
 
 static StatusProviderStatus
 get_status (StatusProvider * sp)
 {
-
-	return STATUS_PROVIDER_STATUS_OFFLINE;
+	g_return_val_if_fail(IS_STATUS_PROVIDER_PIDGIN(sp), STATUS_PROVIDER_STATUS_OFFLINE);
+	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(sp);
+	return pg_to_sp_map[priv->pg_status];
 }

@@ -2,21 +2,23 @@
 <node name="/">
 	<interface name="com.ubuntu.indicator.status">
 
-<!-- Properties -->
-		<property name="user" type="s" access="read" />
-		<property name="status" type="u" access="read" />
-
 <!-- Methods -->
 		<method name="Watch">
 			<annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
+		</method>
+		<method name="StatusIcons">
+			<arg type="a(s)" name="icons" direction="out" />
+		</method>
+		<method name="PrettyUserName">
+			<arg type="s" name="name" direction="out" />
 		</method>
 
 <!-- Signals -->
 		<signal name="UserChanged">
 			<arg type="s" name="name" direction="out" />
 		</signal>
-		<signal name="StatusChanged">
-			<arg type="u" name="status" direction="out" />
+		<signal name="StatusIconsChanged">
+			<arg type="a(s)" name="icons" direction="out" />
 		</signal>
 
 	</interface>

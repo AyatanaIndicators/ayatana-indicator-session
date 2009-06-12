@@ -34,14 +34,14 @@ struct _StatusProvider {
 
 typedef struct _StatusProviderClass StatusProviderClass;
 struct _StatusProviderClass {
+	GObjectClass parent_class;
+
 	/* Signals */
 	void (*status_changed) (StatusProviderStatus newstatus);
 
 	/* Virtual Functions */
 	void  (*set_status) (StatusProvider * sp, StatusProviderStatus newstatus);
 	StatusProviderStatus (*get_status) (StatusProvider * sp);
-
-	GObjectClass parent_class;
 };
 
 GType status_provider_get_type (void);

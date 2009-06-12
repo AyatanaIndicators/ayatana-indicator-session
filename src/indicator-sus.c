@@ -10,6 +10,7 @@ INDICATOR_SET_VERSION
 INDICATOR_SET_NAME("users-status-session")
 
 #include "dbus-shared-names.h"
+#include "status-service-client.h"
 
 static GtkMenu * status_menu = NULL;
 static GtkMenu * users_menu = NULL;

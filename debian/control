@@ -1,4 +1,4 @@
-Source: indicator-fusa
+Source: indicator-sus
 Section: gnome
 Priority: optional
 Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
@@ -14,7 +14,7 @@ Build-Depends: debhelper (>= 5.0),
                intltool
 Standards-Version: 3.8.0
 
-Package: indicator-fusa
+Package: indicator-sus
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet
 Description: Applet for the GNOME panel providing various indicators for

@@ -1,12 +1,13 @@
-indicator-fusa (0.1~ppa2~indicator1) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa2~indicator1) UNRELEASED; urgency=low
 
   * Upstream from the indicator branch.
   * debian/control: Adding build depends on libindicator-dev,
     libdbusmenu-glib-dev and libdbusmenu-gtk-dev
+  * Changing package name to indicator-sus
 
  -- Ted Gould <ted@ubuntu.com>  Mon, 15 Jun 2009 16:19:59 -0500
 
-indicator-fusa (0.1~ppa1) intrepid; urgency=low
+indicator-sus (0.1~ppa1) intrepid; urgency=low
 
   * Initial release
 

@@ -1,10 +1,10 @@
 
-AC_INIT(src/indicator-fusa.c)
+AC_INIT(src/indicator-sus.c)
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-fusa, 0.1)
+AM_INIT_AUTOMAKE(indicator-sus, 0.1dev)
 
 AM_MAINTAINER_MODE
 
@@ -22,11 +22,60 @@ AC_CONFIG_MACRO_DIR([m4])
 ###########################
 
 GTK_REQUIRED_VERSION=2.12
-PANEL_REQUIRED_VERSION=2.0.0
+INDICATOR_REQUIRED_VERSION=0.2.0
+DBUSMENUGTK_REQUIRED_VERSION=0.0.0
 
-PKG_CHECK_MODULES(APPLET, gtk+-2.0 >= $GTK_REQUIRED_VERSION)
+PKG_CHECK_MODULES(APPLET, gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                          indicator >= $INDICATOR_REQUIRED_VERSION
+						  dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION)
 AC_SUBST(APPLET_CFLAGS)
 AC_SUBST(APPLET_LIBS)
+
+DBUSMENUGLIB_REQUIRED_VERSION=0.0.0
+
+PKG_CHECK_MODULES(STATUSSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION)
+
+AC_SUBST(STATUSERVICE_CFLAGS)
+AC_SUBST(STATUSERVICE_LIBS)
+
+PKG_CHECK_MODULES(USERSSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION)
+
+AC_SUBST(USERSERVICE_CFLAGS)
+AC_SUBST(USERSERVICE_LIBS)
+
+PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION)
+
+AC_SUBST(SESSIONERVICE_CFLAGS)
+AC_SUBST(SESSIONERVICE_LIBS)
+
+###########################
+# Check to see if we're local
+###########################
+
+with_localinstall="no"
+AC_ARG_ENABLE(localinstall, AS_HELP_STRING([--enable-localinstall], [install all of the files localy instead of system directories (for distcheck)]), with_localinstall=$enableval, with_localinstall=no)
+
+###########################
+# Indicator Info
+###########################
+
+if test "x$with_localinstall" = "xyes"; then
+	INDICATORDIR="${libdir}/indicators/2/"
+else
+	INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator`
+fi
+AC_SUBST(INDICATORDIR)
+
+###########################
+# DBus Service Info
+###########################
+
+if test "x$with_localinstall" = "xyes"; then
+	DBUSSERVICEDIR="${datadir}/dbus-1/services/"
+else
+	DBUSSERVICEDIR=`$PKG_CONFIG --variable=session_bus_services_dir dbus-1`
+fi
+AC_SUBST(DBUSSERVICEDIR)
 
 ###########################
 # Files
@@ -35,6 +84,7 @@ AC_SUBST(APPLET_LIBS)
 AC_OUTPUT([
 Makefile
 src/Makefile
+data/Makefile
 ])
 
 ###########################
@@ -43,7 +93,7 @@ src/Makefile
 
 AC_MSG_NOTICE([
 
-FUSA Indicator Configuration:
+SUS Indicator Configuration:
 
 	Prefix:        $prefix
 ])

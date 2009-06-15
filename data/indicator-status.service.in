@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.ubuntu.indicator.status
+Exec=@libexecdir@/indicator-status-service

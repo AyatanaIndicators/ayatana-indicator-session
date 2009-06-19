@@ -17,6 +17,10 @@ static GtkMenu * users_menu = NULL;
 static GtkMenu * session_menu = NULL;
 static GtkMenu * main_menu = NULL;
 
+static GtkWidget * status_separator = NULL;
+static GtkWidget * users_separator = NULL;
+#define SEPARATOR_SHOWN(sep) (sep != NULL && GTK_WIDGET_VISIBLE(sep))
+
 static DBusGConnection * connection = NULL;
 static DBusGProxy * proxy = NULL;
 
@@ -57,6 +61,9 @@ build_status_menu (gpointer userdata)
 
 	status_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT));
 
+	status_separator = gtk_separator_menu_item_new();
+	gtk_widget_hide(status_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
+
 	return FALSE;
 }
 
@@ -83,6 +90,9 @@ build_users_menu (gpointer userdata)
 	}
 
 	users_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_USERS_DBUS_NAME, INDICATOR_USERS_DBUS_OBJECT));
+
+	users_separator = gtk_separator_menu_item_new();
+	gtk_widget_hide(users_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
 
 	return FALSE;
 }

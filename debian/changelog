@@ -1,3 +1,9 @@
+indicator-sus (0.1~ppa2~indicator4) UNRELEASED; urgency=low
+
+  * Code to start merging in menus.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 19 Jun 2009 13:43:36 -0500
+
 indicator-sus (0.1~ppa2~indicator3) jaunty; urgency=low
 
   * Updating from branch, lazy loading the services.

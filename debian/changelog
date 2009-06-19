@@ -1,8 +1,8 @@
-indicator-sus (0.1~ppa2~indicator5) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa2~indicator5) jaunty; urgency=low
 
   * Changing the signal names.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 19 Jun 2009 14:42:41 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 19 Jun 2009 14:43:01 -0500
 
 indicator-sus (0.1~ppa2~indicator4) jaunty; urgency=low
 

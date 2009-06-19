@@ -40,8 +40,13 @@ get_icon (void)
 static void
 menu_add (GtkContainer * source, GtkWidget * addee, GtkMenu * addto, guint positionoffset)
 {
+	GList * location = g_list_find(GTK_MENU_SHELL(source)->children, addee);
+	guint position = g_list_position(GTK_MENU_SHELL(source)->children, location);
 
+	position += positionoffset;
 
+	gtk_menu_insert(addto, addee, position);
+	return;
 }
 
 static void

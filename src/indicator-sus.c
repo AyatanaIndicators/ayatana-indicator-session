@@ -17,6 +17,9 @@ static GtkMenu * users_menu = NULL;
 static GtkMenu * session_menu = NULL;
 static GtkMenu * main_menu = NULL;
 
+static DBusGConnection * connection = NULL;
+static DBusGProxy * proxy = NULL;
+
 GtkLabel *
 get_label (void)
 {
@@ -30,53 +33,96 @@ get_icon (void)
 	return NULL;
 }
 
-GtkMenu *
-get_menu (void)
+static gboolean
+build_status_menu (gpointer userdata)
 {
 	guint returnval = 0;
 	GError * error = NULL;
 
-	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	DBusGProxy * proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+	if (proxy == NULL) {
+		/* If we don't have DBus, let's stay in the idle loop */
+		return TRUE;
+	}
 
 	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_STATUS_DBUS_NAME, 0, &returnval, &error)) {
 		g_error("Unable to send message to DBus to start service: %s", error != NULL ? error->message : "(NULL error)" );
 		g_error_free(error);
-		return NULL;
+		return FALSE;
 	}
 
 	if (returnval != DBUS_START_REPLY_SUCCESS && returnval != DBUS_START_REPLY_ALREADY_RUNNING) {
 		g_error("Return value isn't indicative of success: %d", returnval);
-		return NULL;
+		return FALSE;
 	}
 
 	status_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT));
 
+	return FALSE;
+}
+
+static gboolean
+build_users_menu (gpointer userdata)
+{
+	guint returnval = 0;
+	GError * error = NULL;
+
+	if (proxy == NULL) {
+		/* If we don't have DBus, let's stay in the idle loop */
+		return TRUE;
+	}
+
 	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_USERS_DBUS_NAME, 0, &returnval, &error)) {
 		g_error("Unable to send message to DBus to start service: %s", error != NULL ? error->message : "(NULL error)" );
 		g_error_free(error);
-		return NULL;
+		return FALSE;
 	}
 
 	if (returnval != DBUS_START_REPLY_SUCCESS && returnval != DBUS_START_REPLY_ALREADY_RUNNING) {
 		g_error("Return value isn't indicative of success: %d", returnval);
-		return NULL;
+		return FALSE;
 	}
 
 	users_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_USERS_DBUS_NAME, INDICATOR_USERS_DBUS_OBJECT));
 
+	return FALSE;
+}
+
+static gboolean
+build_session_menu (gpointer userdata)
+{
+	guint returnval = 0;
+	GError * error = NULL;
+
+	if (proxy == NULL) {
+		/* If we don't have DBus, let's stay in the idle loop */
+		return TRUE;
+	}
+
 	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_SESSION_DBUS_NAME, 0, &returnval, &error)) {
 		g_error("Unable to send message to DBus to start service: %s", error != NULL ? error->message : "(NULL error)" );
 		g_error_free(error);
-		return NULL;
+		return FALSE;
 	}
 
 	if (returnval != DBUS_START_REPLY_SUCCESS && returnval != DBUS_START_REPLY_ALREADY_RUNNING) {
 		g_error("Return value isn't indicative of success: %d", returnval);
-		return NULL;
+		return FALSE;
 	}
 
 	session_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT));
+
+	return FALSE;
+}
+
+GtkMenu *
+get_menu (void)
+{
+	connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+
+	g_idle_add(build_status_menu, NULL);
+	g_idle_add(build_users_menu, NULL);
+	g_idle_add(build_session_menu, NULL);
 
 	main_menu = GTK_MENU(gtk_menu_new());
 

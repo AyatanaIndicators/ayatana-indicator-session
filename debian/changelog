@@ -1,3 +1,9 @@
+indicator-sus (0.1~ppa2~indicator3) UNRELEASED; urgency=low
+
+  * Updating from branch, lazy loading the services.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 19 Jun 2009 07:25:25 -0500
+
 indicator-sus (0.1~ppa2~indicator2) jaunty; urgency=low
 
   * Updating the build to make proper service files

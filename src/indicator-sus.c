@@ -109,7 +109,7 @@ build_status_menu (gpointer userdata)
 	}
 
 	status_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT));
-	g_signal_connect(G_OBJECT(status_menu), "added", G_CALLBACK(status_menu_add), main_menu);
+	g_signal_connect(G_OBJECT(status_menu), "add", G_CALLBACK(status_menu_add), main_menu);
 
 	status_separator = gtk_separator_menu_item_new();
 	gtk_widget_hide(status_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
@@ -140,7 +140,7 @@ build_users_menu (gpointer userdata)
 	}
 
 	users_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_USERS_DBUS_NAME, INDICATOR_USERS_DBUS_OBJECT));
-	g_signal_connect(G_OBJECT(users_menu), "added", G_CALLBACK(users_menu_add), main_menu);
+	g_signal_connect(G_OBJECT(users_menu), "add", G_CALLBACK(users_menu_add), main_menu);
 
 	users_separator = gtk_separator_menu_item_new();
 	gtk_widget_hide(users_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
@@ -171,7 +171,7 @@ build_session_menu (gpointer userdata)
 	}
 
 	session_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT));
-	g_signal_connect(G_OBJECT(session_menu), "added", G_CALLBACK(session_menu_add), main_menu);
+	g_signal_connect(G_OBJECT(session_menu), "add", G_CALLBACK(session_menu_add), main_menu);
 
 	return FALSE;
 }

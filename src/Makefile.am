@@ -13,6 +13,7 @@ libstatus_users_session_la_SOURCES = \
 	status-service-client.h
 libstatus_users_session_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
 libstatus_users_session_la_LIBADD = $(APPLET_LIBS)
+libstatus_users_session_la_LDFLAGS = -module -avoid-version
 
 ################
 # Status Stuff

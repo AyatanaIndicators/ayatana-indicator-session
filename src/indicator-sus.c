@@ -20,6 +20,7 @@ static GtkMenu * main_menu = NULL;
 static GtkWidget * status_separator = NULL;
 static GtkWidget * users_separator = NULL;
 #define SEPARATOR_SHOWN(sep) (sep != NULL && GTK_WIDGET_VISIBLE(sep))
+static GtkWidget * loading_item = NULL;
 
 static DBusGConnection * connection = NULL;
 static DBusGProxy * proxy = NULL;
@@ -44,8 +45,13 @@ menu_add (GtkContainer * source, GtkWidget * addee, GtkMenu * addto, guint posit
 	guint position = g_list_position(GTK_MENU_SHELL(source)->children, location);
 
 	position += positionoffset;
+	g_debug("Adding a widget: %d", position);
 
 	gtk_menu_insert(addto, addee, position);
+	gtk_widget_show(addee);
+
+	gtk_widget_hide(loading_item);
+
 	return;
 }
 
@@ -81,7 +87,6 @@ session_menu_add (GtkContainer * container, GtkWidget * widget, gpointer userdat
 	}
 
 	menu_add(container, widget, GTK_MENU(userdata), position);
-	gtk_widget_show(status_separator);
 	return;
 }
 
@@ -109,9 +114,10 @@ build_status_menu (gpointer userdata)
 	}
 
 	status_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT));
-	g_signal_connect(G_OBJECT(status_menu), "add", G_CALLBACK(status_menu_add), main_menu);
+	g_signal_connect(G_OBJECT(status_menu), DBUSMENU_GTKMENU_SIGNAL_ADD, G_CALLBACK(status_menu_add), main_menu);
 
 	status_separator = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), status_separator);
 	gtk_widget_hide(status_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
 
 	return FALSE;
@@ -140,9 +146,10 @@ build_users_menu (gpointer userdata)
 	}
 
 	users_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_USERS_DBUS_NAME, INDICATOR_USERS_DBUS_OBJECT));
-	g_signal_connect(G_OBJECT(users_menu), "add", G_CALLBACK(users_menu_add), main_menu);
+	g_signal_connect(G_OBJECT(users_menu), DBUSMENU_GTKMENU_SIGNAL_ADD, G_CALLBACK(users_menu_add), main_menu);
 
 	users_separator = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), users_separator);
 	gtk_widget_hide(users_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
 
 	return FALSE;
@@ -171,7 +178,7 @@ build_session_menu (gpointer userdata)
 	}
 
 	session_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT));
-	g_signal_connect(G_OBJECT(session_menu), "add", G_CALLBACK(session_menu_add), main_menu);
+	g_signal_connect(G_OBJECT(session_menu), DBUSMENU_GTKMENU_SIGNAL_ADD, G_CALLBACK(session_menu_add), main_menu);
 
 	return FALSE;
 }
@@ -187,6 +194,8 @@ get_menu (void)
 	g_idle_add(build_session_menu, NULL);
 
 	main_menu = GTK_MENU(gtk_menu_new());
+	loading_item = gtk_menu_item_new_with_label("Loading...");
+	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), loading_item);
 
 	return main_menu;
 }

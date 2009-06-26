@@ -1,6 +1,6 @@
 
 #include <gtk/gtk.h>
-#include <libdbusmenu-gtk/menu.h>
+#include <libdbusmenu-gtk/client.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -12,9 +12,10 @@ INDICATOR_SET_NAME("users-status-session")
 #include "dbus-shared-names.h"
 #include "status-service-client.h"
 
-static GtkMenu * status_menu = NULL;
-static GtkMenu * users_menu = NULL;
-static GtkMenu * session_menu = NULL;
+static DbusmenuGtkClient * status_client = NULL;
+static DbusmenuGtkClient * users_client = NULL;
+static DbusmenuGtkClient * session_client = NULL;
+
 static GtkMenu * main_menu = NULL;
 
 static GtkWidget * status_separator = NULL;
@@ -113,8 +114,8 @@ build_status_menu (gpointer userdata)
 		return FALSE;
 	}
 
-	status_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT));
-	g_signal_connect(G_OBJECT(status_menu), DBUSMENU_GTKMENU_SIGNAL_ADD, G_CALLBACK(status_menu_add), main_menu);
+	status_client = dbusmenu_gtkclient_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT);
+	g_signal_connect(G_OBJECT(status_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(status_menu_add), main_menu);
 
 	status_separator = gtk_separator_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), status_separator);
@@ -145,8 +146,8 @@ build_users_menu (gpointer userdata)
 		return FALSE;
 	}
 
-	users_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_USERS_DBUS_NAME, INDICATOR_USERS_DBUS_OBJECT));
-	g_signal_connect(G_OBJECT(users_menu), DBUSMENU_GTKMENU_SIGNAL_ADD, G_CALLBACK(users_menu_add), main_menu);
+	users_client = dbusmenu_gtkclient_new(INDICATOR_USERS_DBUS_NAME, INDICATOR_USERS_DBUS_OBJECT);
+	g_signal_connect(G_OBJECT(users_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(users_menu_add), main_menu);
 
 	users_separator = gtk_separator_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), users_separator);
@@ -177,8 +178,8 @@ build_session_menu (gpointer userdata)
 		return FALSE;
 	}
 
-	session_menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT));
-	g_signal_connect(G_OBJECT(session_menu), DBUSMENU_GTKMENU_SIGNAL_ADD, G_CALLBACK(session_menu_add), main_menu);
+	session_client = dbusmenu_gtkclient_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
+	g_signal_connect(G_OBJECT(session_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(session_menu_add), main_menu);
 
 	return FALSE;
 }

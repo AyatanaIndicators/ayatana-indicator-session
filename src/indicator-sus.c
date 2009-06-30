@@ -26,6 +26,18 @@ static GtkWidget * loading_item = NULL;
 static DBusGConnection * connection = NULL;
 static DBusGProxy * proxy = NULL;
 
+typedef enum {
+	STATUS_SECTION,
+	USERS_SECTION,
+	SESSION_SECTION,
+	END_OF_SECTIONS
+} section_t;
+
+static void child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, gpointer section);
+static guint status_menu_pos_offset (void);
+static guint users_menu_pos_offset (void);
+static guint session_menu_pos_offset (void);
+
 GtkLabel *
 get_label (void)
 {
@@ -41,30 +53,34 @@ get_icon (void)
 }
 
 static void
-child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, guint (*posfunc) (void))
+child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, gpointer section)
 {
-	position += posfunc();
-
 	DbusmenuGtkClient * client = NULL;
 	gchar * errorstr = NULL;
-	switch (posfunc) {
-		case status_menu_pos_offset:
+	guint (*posfunc) (void) = NULL;
+
+	switch (GPOINTER_TO_UINT(section)) {
+		case STATUS_SECTION:
 			client = status_client;
 			errorstr = "Status";
+			posfunc = status_menu_pos_offset;
 			break;
-		case users_menu_pos_offset:
+		case USERS_SECTION:
 			client = users_client;
 			errorstr = "Users";
+			posfunc = users_menu_pos_offset;
 			break;
-		case session_menu_pos_offset:
+		case SESSION_SECTION:
 			client = session_client;
 			errorstr = "Session";
+			posfunc = session_menu_pos_offset;
 			break;
 		default:
 			g_warning("Child Added called with an unknown position function!");
 			return;
 	}
 
+	position += posfunc();
 	GtkMenuItem * widget = dbusmenu_gtkclient_menuitem_get(client, child);
 
 	if (widget == NULL) {
@@ -120,15 +136,15 @@ status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot,
 		return;
 	}
 
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           status_menu_pos_offset);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           GUINT_TO_POINTER(STATUS_SECTION));
 	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(status_menu_added),     NULL);
 	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(status_menu_removed),   NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           status_menu_pos_offset);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           GUINT_TO_POINTER(STATUS_SECTION));
 
 	GList * child = NULL;
 	guint count = 0;
 	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child), count++) {
-		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, status_menu_pos_offset);
+		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, GUINT_TO_POINTER(STATUS_SECTION));
 	}
 
 	if (count > 0) {
@@ -209,15 +225,15 @@ users_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, 
 		return;
 	}
 
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           users_menu_pos_offset);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           GUINT_TO_POINTER(USERS_SECTION));
 	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(users_menu_added),      NULL);
 	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(users_menu_removed),    NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           users_menu_pos_offset);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           GUINT_TO_POINTER(USERS_SECTION));
 
 	GList * child = NULL;
 	guint count = 0;
 	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child), count++) {
-		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, users_menu_pos_offset);
+		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, GUINT_TO_POINTER(USERS_SECTION));
 	}
 
 	if (count > 0) {
@@ -291,14 +307,14 @@ session_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot
 		return;
 	}
 
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           session_menu_pos_offset);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           GUINT_TO_POINTER(SESSION_SECTION));
 	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(session_menu_removed),  NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           session_menu_pos_offset);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           GUINT_TO_POINTER(SESSION_SECTION));
 
 	GList * child = NULL;
 	guint count = 0;
 	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child), count++) {
-		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, session_menu_pos_offset);
+		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, GUINT_TO_POINTER(SESSION_SECTION));
 	}
 
 	return;

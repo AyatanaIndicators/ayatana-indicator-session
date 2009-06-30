@@ -158,6 +158,7 @@ status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot,
 static gboolean
 build_status_menu (gpointer userdata)
 {
+	g_debug("Building Status Menu");
 	guint returnval = 0;
 	GError * error = NULL;
 
@@ -247,6 +248,7 @@ users_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, 
 static gboolean
 build_users_menu (gpointer userdata)
 {
+	g_debug("Building Users Menu");
 	guint returnval = 0;
 	GError * error = NULL;
 
@@ -324,6 +326,7 @@ session_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot
 static gboolean
 build_session_menu (gpointer userdata)
 {
+	g_debug("Building Session Menu");
 	guint returnval = 0;
 	GError * error = NULL;
 
@@ -356,6 +359,9 @@ get_menu (void)
 {
 	connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+	if (proxy == NULL) {
+		g_warning("Unable to get proxy for DBus itself.  Seriously.");
+	}
 
 	g_idle_add(build_status_menu, NULL);
 	g_idle_add(build_users_menu, NULL);

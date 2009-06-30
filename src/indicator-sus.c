@@ -81,6 +81,7 @@ child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position
 	}
 
 	position += posfunc();
+	g_debug("SUS: Adding child: %d", position);
 	GtkMenuItem * widget = dbusmenu_gtkclient_menuitem_get(client, child);
 
 	if (widget == NULL) {
@@ -363,6 +364,7 @@ get_menu (void)
 	main_menu = GTK_MENU(gtk_menu_new());
 	loading_item = gtk_menu_item_new_with_label("Loading...");
 	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), loading_item);
+	gtk_widget_show(GTK_WIDGET(loading_item));
 
 	return main_menu;
 }

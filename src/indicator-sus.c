@@ -30,6 +30,7 @@ GtkLabel *
 get_label (void)
 {
 	GtkLabel * returnval = GTK_LABEL(gtk_label_new("Ted Gould"));
+	gtk_widget_show(GTK_WIDGET(returnval));
 	return returnval;
 }
 
@@ -40,27 +41,43 @@ get_icon (void)
 }
 
 static void
-menu_add (GtkContainer * source, GtkWidget * addee, GtkMenu * addto, guint positionoffset)
+child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, guint (*posfunc) (void))
 {
-	GList * location = g_list_find(GTK_MENU_SHELL(source)->children, addee);
-	guint position = g_list_position(GTK_MENU_SHELL(source)->children, location);
+	position += posfunc();
 
-	position += positionoffset;
-	g_debug("Adding a widget: %d", position);
+	DbusmenuGtkClient * client = NULL;
+	gchar * errorstr = NULL;
+	switch (posfunc) {
+		case status_menu_pos_offset:
+			client = status_client;
+			errorstr = "Status";
+			break;
+		case users_menu_pos_offset:
+			client = users_client;
+			errorstr = "Users";
+			break;
+		case session_menu_pos_offset:
+			client = session_client;
+			errorstr = "Session";
+			break;
+		default:
+			g_warning("Child Added called with an unknown position function!");
+			return;
+	}
 
-	gtk_menu_insert(addto, addee, position);
-	gtk_widget_show(addee);
+	GtkMenuItem * widget = dbusmenu_gtkclient_menuitem_get(client, child);
+
+	if (widget == NULL) {
+		g_warning("Had a menu item added to the %s menu, but yet it didn't have a GtkWidget with it.  Can't add that to a menu now can we?  You need to figure this @#$# out!", errorstr);
+		return;
+	}
+
+	gtk_menu_insert(main_menu, GTK_WIDGET(widget), position);
+	gtk_widget_show(GTK_WIDGET(widget));
 
 	gtk_widget_hide(loading_item);
 
 	return;
-}
-
-static void
-child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, guint (*posfunc) (void))
-{
-	menu_add(NULL, NULL, NULL, 0);
-
 }
 
 static void

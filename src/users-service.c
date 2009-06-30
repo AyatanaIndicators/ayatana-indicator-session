@@ -10,6 +10,19 @@
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
+gchar * dummies[] = {
+	"Bob", "Jim", "Alvin", "Mary", NULL
+};
+
+void dummy_users (void) {
+	int count;
+	for (count = 0; dummies[count] != NULL; count++) {
+		DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set(mi, "label", dummies[count]);
+		dbusmenu_menuitem_child_append(root_menuitem, mi);
+	}
+}
+
 int
 main (int argc, char ** argv)
 {

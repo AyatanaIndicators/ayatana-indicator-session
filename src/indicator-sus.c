@@ -78,20 +78,6 @@ users_menu_add (GtkContainer * container, GtkWidget * widget, gpointer userdata)
 	return;
 }
 
-static void
-session_menu_add (GtkContainer * container, GtkWidget * widget, gpointer userdata)
-{
-	guint position = 0;
-	if (SEPARATOR_SHOWN(users_separator)) {
-		GList * location = g_list_find(GTK_MENU_SHELL(main_menu)->children, users_separator);
-		position = g_list_position(GTK_MENU_SHELL(main_menu)->children, location) + 1;
-	}
-
-	menu_add(container, widget, GTK_MENU(userdata), position);
-	return;
-}
-
-
 static gboolean
 build_status_menu (gpointer userdata)
 {
@@ -156,6 +142,62 @@ build_users_menu (gpointer userdata)
 	return FALSE;
 }
 
+static void
+child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, guint (*posfunc) (void))
+{
+
+
+}
+
+static void
+child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, guint oldpos, guint (*posfunc) (void))
+{
+
+
+}
+
+/* Session Menu Stuff */
+
+static guint
+session_menu_pos_offset (void)
+{
+	guint position = 0;
+	if (SEPARATOR_SHOWN(users_separator)) {
+		GList * location = g_list_find(GTK_MENU_SHELL(main_menu)->children, users_separator);
+		position = g_list_position(GTK_MENU_SHELL(main_menu)->children, location) + 1;
+	}
+
+	return position;
+}
+
+static void
+session_menu_removed (DbusmenuMenuitem * root, DbusmenuMenuitem * child, gpointer user_data)
+{
+	return;
+}
+
+static void
+session_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, GtkMenu * main)
+{
+	if (newroot == NULL) {
+		/* We're assuming this'll crash the least so it doesn't
+		   hide a separator.  May be a bad choice. */
+		return;
+	}
+
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           session_menu_pos_offset);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(session_menu_removed),  NULL);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           session_menu_pos_offset);
+
+	GList * child = NULL;
+	guint count = 0;
+	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child), count++) {
+		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, session_menu_pos_offset);
+	}
+
+	return;
+}
+
 static gboolean
 build_session_menu (gpointer userdata)
 {
@@ -179,10 +221,12 @@ build_session_menu (gpointer userdata)
 	}
 
 	session_client = dbusmenu_gtkclient_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
-	g_signal_connect(G_OBJECT(session_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(session_menu_add), main_menu);
+	g_signal_connect(G_OBJECT(session_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(session_menu_root_changed), main_menu);
 
 	return FALSE;
 }
+
+/* Base menu stuff */
 
 GtkMenu *
 get_menu (void)

@@ -59,7 +59,7 @@ menu_add (GtkContainer * source, GtkWidget * addee, GtkMenu * addto, guint posit
 static void
 child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, guint (*posfunc) (void))
 {
-
+	menu_add(NULL, NULL, NULL, 0);
 
 }
 
@@ -72,11 +72,52 @@ child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, 
 
 
 /* Status Menu */
-static void
-status_menu_add (GtkContainer * container, GtkWidget * widget, gpointer userdata)
+static guint
+status_menu_pos_offset (void)
 {
-	menu_add(container, widget, GTK_MENU(userdata), 0);
-	gtk_widget_show(status_separator);
+	return 0;
+}
+
+static void
+status_menu_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, gpointer user_data)
+{
+	gtk_widget_show(GTK_WIDGET(status_separator));
+	return;
+}
+
+static void
+status_menu_removed (DbusmenuMenuitem * root, DbusmenuMenuitem * child, gpointer user_data)
+{
+	if (g_list_length(dbusmenu_menuitem_get_children(root)) == 0) {
+		gtk_widget_hide(GTK_WIDGET(status_separator));
+	}
+
+	return;
+}
+
+static void
+status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, GtkMenu * main)
+{
+	if (newroot == NULL) {
+		gtk_widget_hide(GTK_WIDGET(status_separator));
+		return;
+	}
+
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           status_menu_pos_offset);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(status_menu_added),     NULL);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(status_menu_removed),   NULL);
+	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           status_menu_pos_offset);
+
+	GList * child = NULL;
+	guint count = 0;
+	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child), count++) {
+		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, status_menu_pos_offset);
+	}
+
+	if (count > 0) {
+		gtk_widget_show(GTK_WIDGET(status_separator));
+	}
+
 	return;
 }
 
@@ -103,7 +144,7 @@ build_status_menu (gpointer userdata)
 	}
 
 	status_client = dbusmenu_gtkclient_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT);
-	g_signal_connect(G_OBJECT(status_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(status_menu_add), main_menu);
+	g_signal_connect(G_OBJECT(status_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(status_menu_root_changed), main_menu);
 
 	status_separator = gtk_separator_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), status_separator);

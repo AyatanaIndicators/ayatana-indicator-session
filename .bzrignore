@@ -23,3 +23,5 @@ indicator-users-service
 indicator-session.service
 indicator-status.service
 indicator-users.service
+status-service-client.h
+status-service-server.h

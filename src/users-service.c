@@ -10,6 +10,24 @@
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
+gchar * dummies[] = {
+	"Bob", "Jim", "Alvin", "Mary", NULL
+};
+
+static void
+dummy_users (DbusmenuMenuitem * root) {
+	int count;
+	for (count = 0; dummies[count] != NULL; count++) {
+		DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
+		g_debug("Creating item: %d %s", dbusmenu_menuitem_get_id(mi), dummies[count]);
+		g_debug("\tRoot ID: %d", dbusmenu_menuitem_get_id(root));
+		dbusmenu_menuitem_property_set(mi, "label", dummies[count]);
+		dbusmenu_menuitem_child_add_position(root, mi, count);
+	}
+
+	return;
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -31,6 +49,10 @@ main (int argc, char ** argv)
     }   
 
     root_menuitem = dbusmenu_menuitem_new();
+	g_debug("Root ID: %d", dbusmenu_menuitem_get_id(root_menuitem));
+
+	dummy_users(root_menuitem);
+
     DbusmenuServer * server = dbusmenu_server_new(INDICATOR_USERS_DBUS_OBJECT);
     dbusmenu_server_set_root(server, root_menuitem);
 

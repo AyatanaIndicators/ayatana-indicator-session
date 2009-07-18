@@ -1,8 +1,8 @@
-indicator-sus (0.1~ppa2~indicator8) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa2~indicator8) karmic; urgency=low
 
   * Going Karmic
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 17 Jul 2009 21:58:00 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 17 Jul 2009 21:58:24 -0500
 
 indicator-sus (0.1~ppa2~indicator7) jaunty; urgency=low
 

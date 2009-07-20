@@ -9,13 +9,33 @@
 
 #include "dbus-shared-names.h"
 
+#define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
+
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
+
+static gboolean
+check_guest_session (void)
+{
+	if (geteuid() < 500) {
+		/* System users shouldn't have guest account shown.  Mosly
+		   this would be the case of the guest user itself. */
+		return FALSE;
+	}
+	if (!g_file_test(GUEST_SESSION_LAUNCHER, G_FILE_TEST_IS_EXECUTABLE)) {
+		/* It doesn't appear that the Guest session stuff is
+		   installed.  So let's not use it then! */
+		return FALSE;
+	}
+
+	return TRUE;
+}
 
 static void
 activate_guest_session (DbusmenuMenuitem * mi, gpointer user_data)
 {
-
+	gchar *argv[] = {GUEST_SESSION_LAUNCHER, NULL };
+	g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 static void
@@ -28,10 +48,12 @@ static void
 create_items (DbusmenuMenuitem * root) {
 	DbusmenuMenuitem * mi = NULL;
 
-	mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(mi, "label", _("Guest Session"));
-	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_guest_session), NULL);
+	if (check_guest_session()) {
+		mi = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set(mi, "label", _("Guest Session"));
+		dbusmenu_menuitem_child_append(root, mi);
+		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_guest_session), NULL);
+	}
 
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("New Session..."));

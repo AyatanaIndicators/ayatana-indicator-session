@@ -1,3 +1,10 @@
+indicator-sus (0.1~ppa2~indicator9) UNRELEASED; urgency=low
+
+  * Updating the users daemon to have usable generic functions
+    but no dummy users.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 20 Jul 2009 15:19:37 -0500
+
 indicator-sus (0.1~ppa2~indicator8) karmic; urgency=low
 
   * Going Karmic

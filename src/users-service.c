@@ -11,6 +11,10 @@
 
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
 
+static DBusGConnection * session_bus = NULL;
+static DBusGConnection * system_bus = NULL;
+static DBusGProxy * bus_proxy = NULL;
+static DBusGProxy * gdm_proxy = NULL;
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
@@ -34,14 +38,50 @@ check_guest_session (void)
 static void
 activate_guest_session (DbusmenuMenuitem * mi, gpointer user_data)
 {
-	gchar *argv[] = {GUEST_SESSION_LAUNCHER, NULL };
-	g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL);
+	GError * error = NULL;
+	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER, &error)) {
+		g_warning("Unable to start guest session: %s", error->message);
+		g_error_free(error);
+	}
+
+	return;
+}
+
+static gboolean
+check_new_session (void)
+{
+	if (system_bus == NULL) {
+		system_bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
+	}
+
+	if (system_bus == NULL) {
+		return FALSE;
+	}
+
+	if (gdm_proxy == NULL) {
+		gdm_proxy = dbus_g_proxy_new_for_name(system_bus,
+		                                      "org.gnome.DisplayManager",
+		                                      "/org/gnome/DisplayManager/LocalDisplayFactory",
+		                                      "org.gnome.DisplayManager.LocalDisplayFactory");
+	}
+
+	if (gdm_proxy == NULL) {
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static void
 activate_new_session (DbusmenuMenuitem * mi, gpointer user_data)
 {
+	GError * error = NULL;
+	if (!g_spawn_command_line_async("gdmflexiserver -s", &error)) {
+		g_warning("Unable to start guest session: %s", error->message);
+		g_error_free(error);
+	}
 
+	return;
 }
 
 static void
@@ -55,10 +95,12 @@ create_items (DbusmenuMenuitem * root) {
 		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_guest_session), NULL);
 	}
 
-	mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(mi, "label", _("New Session..."));
-	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_new_session), NULL);
+	if (check_new_session()) {
+		mi = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set(mi, "label", _("New Session..."));
+		dbusmenu_menuitem_child_append(root, mi);
+		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_new_session), NULL);
+	}
 
 	return;
 }
@@ -68,8 +110,8 @@ main (int argc, char ** argv)
 {
     g_type_init();
 
-    DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-    DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+    session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+    bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
     GError * error = NULL;
     guint nameret = 0;
 

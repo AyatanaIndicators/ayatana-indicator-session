@@ -1,4 +1,6 @@
 
+#include <glib/gi18n.h>
+
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 
@@ -10,20 +12,31 @@
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
-gchar * dummies[] = {
-	"Bob", "Jim", "Alvin", "Mary", NULL
-};
+static void
+activate_guest_session (DbusmenuMenuitem * mi, gpointer user_data)
+{
+
+}
 
 static void
-dummy_users (DbusmenuMenuitem * root) {
-	int count;
-	for (count = 0; dummies[count] != NULL; count++) {
-		DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
-		g_debug("Creating item: %d %s", dbusmenu_menuitem_get_id(mi), dummies[count]);
-		g_debug("\tRoot ID: %d", dbusmenu_menuitem_get_id(root));
-		dbusmenu_menuitem_property_set(mi, "label", dummies[count]);
-		dbusmenu_menuitem_child_add_position(root, mi, count);
-	}
+activate_new_session (DbusmenuMenuitem * mi, gpointer user_data)
+{
+
+}
+
+static void
+create_items (DbusmenuMenuitem * root) {
+	DbusmenuMenuitem * mi = NULL;
+
+	mi = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(mi, "label", _("Guest Session"));
+	dbusmenu_menuitem_child_append(root, mi);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_guest_session), NULL);
+
+	mi = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(mi, "label", _("New Session..."));
+	dbusmenu_menuitem_child_append(root, mi);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_new_session), NULL);
 
 	return;
 }
@@ -51,7 +64,7 @@ main (int argc, char ** argv)
     root_menuitem = dbusmenu_menuitem_new();
 	g_debug("Root ID: %d", dbusmenu_menuitem_get_id(root_menuitem));
 
-	dummy_users(root_menuitem);
+	create_items(root_menuitem);
 
     DbusmenuServer * server = dbusmenu_server_new(INDICATOR_USERS_DBUS_OBJECT);
     dbusmenu_server_set_root(server, root_menuitem);

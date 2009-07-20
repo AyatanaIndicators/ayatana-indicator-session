@@ -76,7 +76,7 @@ static void
 activate_new_session (DbusmenuMenuitem * mi, gpointer user_data)
 {
 	GError * error = NULL;
-	if (!g_spawn_command_line_async("gdmflexiserver -s", &error)) {
+	if (!g_spawn_command_line_async("gdmflexiserver --startnew", &error)) {
 		g_warning("Unable to start guest session: %s", error->message);
 		g_error_free(error);
 	}

@@ -26,10 +26,8 @@
 #include <glib/gi18n.h>
 #include <X11/XKBlib.h>
 
-#include "../config.h"
-
 #include "logout-dialog.h"
-#include "applet.h"
+#include "ck-pk-helper.h"
 
 enum {
 	PROP_ZERO,

@@ -25,3 +25,6 @@ indicator-status.service
 indicator-users.service
 status-service-client.h
 status-service-server.h
+gtk-logout-helper
+.deps
+.libs

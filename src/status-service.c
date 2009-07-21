@@ -42,6 +42,13 @@ static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
 static void
+lock_screen (DbusmenuMenuitem * mi, gpointer data)
+{
+	g_debug("Lock Screen");
+	return;
+}
+
+static void
 status_menu_click (DbusmenuMenuitem * mi, gpointer data)
 {
 	StatusProviderStatus status = (StatusProviderStatus)GPOINTER_TO_INT(data);
@@ -82,6 +89,11 @@ build_menu (gpointer data)
 
 		g_debug("Built %s", status_strings[i]);
 	}
+
+	DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(mi, "label", _("Lock Screen"));
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), GINT_TO_POINTER(i));
+	dbusmenu_menuitem_child_append(root, mi);
 
 	return FALSE;
 }

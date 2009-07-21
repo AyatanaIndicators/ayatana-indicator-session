@@ -84,6 +84,7 @@ AC_SUBST(DBUSSERVICEDIR)
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/gtk-dialog/Makefile
 data/Makefile
 ])
 

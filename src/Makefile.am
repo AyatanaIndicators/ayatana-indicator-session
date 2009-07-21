@@ -1,3 +1,4 @@
+SUBDIRS = gtk-dialog
 
 libexec_PROGRAMS = indicator-status-service indicator-users-service indicator-session-service
 

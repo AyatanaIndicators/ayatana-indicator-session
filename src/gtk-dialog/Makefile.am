@@ -6,3 +6,6 @@ gtk_logout_helper_SOURCES = \
 	logout-dialog.c \
 	logout-dialog.h
 
+gtk_logout_helper_CFLAGS = $(GTKLOGOUTHELPER_CFLAGS) -Wall -Werror
+gtk_logout_helper_LDADD =  $(GTKLOGOUTHELPER_LIBS)
+

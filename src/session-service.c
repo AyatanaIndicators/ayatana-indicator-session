@@ -15,7 +15,7 @@ static GMainLoop * mainloop = NULL;
 static void
 show_dialog (DbusmenuMenuitem * mi, gchar * type)
 {
-	gchar * helper = g_build_path(LIBEXECDIR, "gtk-logout-helper", NULL);
+	gchar * helper = g_build_filename(LIBEXECDIR, "gtk-logout-helper", NULL);
 	gchar * dialog_line = g_strdup_printf("%s --%s", helper, type);
 	g_free(helper);
 

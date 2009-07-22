@@ -13,37 +13,10 @@ static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
 static void
-log_out (DbusmenuMenuitem * mi, gpointer userdata)
+show_dialog (DbusmenuMenuitem * mi, gchar * type)
 {
-	g_debug("Log Out");
-	return;
-}
+	g_debug("Showing dialog '%s'", type);
 
-static void
-suspend (DbusmenuMenuitem * mi, gpointer userdata)
-{
-	g_debug("Suspend");
-	return;
-}
-
-static void
-hibernate (DbusmenuMenuitem * mi, gpointer userdata)
-{
-	g_debug("Hibernate");
-	return;
-}
-
-static void
-restart (DbusmenuMenuitem * mi, gpointer userdata)
-{
-	g_debug("Restart");
-	return;
-}
-
-static void
-shutdown (DbusmenuMenuitem * mi, gpointer userdata)
-{
-	g_debug("Shutdown");
 	return;
 }
 
@@ -54,27 +27,27 @@ create_items (DbusmenuMenuitem * root) {
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("Log Out"));
 	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(log_out), NULL);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
 
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("Suspend"));
 	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(suspend), NULL);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "suspend");
 
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("Hibernate"));
 	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(hibernate), NULL);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "hibernate");
 
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("Restart"));
 	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(restart), NULL);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "restart");
 
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("Shutdown"));
 	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(shutdown), NULL);
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "shutdown");
 
 	return;
 }

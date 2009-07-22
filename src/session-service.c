@@ -15,7 +15,19 @@ static GMainLoop * mainloop = NULL;
 static void
 show_dialog (DbusmenuMenuitem * mi, gchar * type)
 {
-	g_debug("Showing dialog '%s'", type);
+	gchar * helper = g_build_path(LIBEXECDIR, "gtk-logout-helper", NULL);
+	gchar * dialog_line = g_strdup_printf("%s --%s", helper, type);
+	g_free(helper);
+
+	g_debug("Showing dialog '%s'", dialog_line);
+
+	GError * error = NULL;
+	if (!g_spawn_command_line_async(dialog_line, &error)) {
+		g_warning("Unable to show dialog: %s", error->message);
+		g_error_free(error);
+	}
+
+	g_free(dialog_line);
 
 	return;
 }

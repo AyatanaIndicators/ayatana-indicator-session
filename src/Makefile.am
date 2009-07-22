@@ -59,7 +59,7 @@ indicator_users_service_LDADD = $(USERSSERVICE_LIBS)
 #################
 
 indicator_session_service_SOURCES = session-service.c
-indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS)
+indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\"
 indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS)
 
 ###############

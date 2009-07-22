@@ -35,3 +35,6 @@ debian/indicator-sus.debhelper.log
 debian/indicator-sus.postinst.debhelper
 debian/indicator-sus.postrm.debhelper
 debian/indicator-sus.substvars
+gtk-logout-helper
+.deps
+.libs

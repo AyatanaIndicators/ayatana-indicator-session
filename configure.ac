@@ -48,6 +48,12 @@ PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSIO
 AC_SUBST(SESSIONERVICE_CFLAGS)
 AC_SUBST(SESSIONERVICE_LIBS)
 
+PKG_CHECK_MODULES(GTKLOGOUTHELPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                   polkit-gnome)
+
+AC_SUBST(GTKLOGOUTHELPER_CFLAGS)
+AC_SUBST(GTKLOGOUTHELPER_LIBS)
+
 ###########################
 # Check to see if we're local
 ###########################
@@ -84,6 +90,7 @@ AC_SUBST(DBUSSERVICEDIR)
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/gtk-dialog/Makefile
 data/Makefile
 ])
 

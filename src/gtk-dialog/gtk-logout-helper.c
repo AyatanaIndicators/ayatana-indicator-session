@@ -2,6 +2,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include "logout-dialog.h"
+#include "ck-pk-helper.h"
 
 static LogoutDialogAction type = LOGOUT_DIALOG_LOGOUT;
 
@@ -51,8 +52,24 @@ main (int argc, char * argv[])
 		return 1;
 	}
 
-	GtkWidget * dialog = logout_dialog_new(type);
-	gtk_dialog_run(GTK_DIALOG(dialog));
+	GtkWidget * dialog = NULL;
+	if (!pk_require_auth(type)) {	
+		dialog = logout_dialog_new(type);
+	}
+
+	if (dialog != NULL) {
+		GtkResponseType response = gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_hide(dialog);
+
+		if (response == GTK_RESPONSE_HELP) {
+			type = LOGOUT_DIALOG_RESTART;
+			response = GTK_RESPONSE_OK;
+		}
+
+		if (response != GTK_RESPONSE_OK) {
+			return 0;
+		}
+	}
 
 	return 0;
 }

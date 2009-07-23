@@ -6,16 +6,30 @@
 static LogoutDialogAction type = LOGOUT_DIALOG_LOGOUT;
 
 static gboolean
-option_cb (const gchar * arg, const gchar * value, gpointer data, GError * error)
+option_logout (const gchar * arg, const gchar * value, gpointer data, GError * error)
 {
-	type = GPOINTER_TO_INT(data);
+	type = LOGOUT_DIALOG_LOGOUT;
+	return TRUE;
+}
+
+static gboolean
+option_shutdown (const gchar * arg, const gchar * value, gpointer data, GError * error)
+{
+	type = LOGOUT_DIALOG_SHUTDOWN;
+	return TRUE;
+}
+
+static gboolean
+option_restart (const gchar * arg, const gchar * value, gpointer data, GError * error)
+{
+	type = LOGOUT_DIALOG_RESTART;
 	return TRUE;
 }
 
 static GOptionEntry options[] = {
-	{"logout",     'l',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_cb, "Log out of the current session",     GINT_TO_POINTER(LOGOUT_DIALOG_LOGOUT)},
-	{"shutdown",   's',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_cb, "Shutdown the entire system",         GINT_TO_POINTER(LOGOUT_DIALOG_RESTART)},
-	{"restart",    'r',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_cb, "Restart the system",                 GINT_TO_POINTER(LOGOUT_DIALOG_SHUTDOWN)},
+	{"logout",     'l',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_logout,   "Log out of the current session",   NULL},
+	{"shutdown",   's',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_shutdown, "Shutdown the entire system",       NULL},
+	{"restart",    'r',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_restart,  "Restart the system",               NULL},
 
 	{NULL}
 };
@@ -37,7 +51,7 @@ main (int argc, char * argv[])
 		return 1;
 	}
 
-	GtkWidget * dialog = logout_dialog_new(LOGOUT_DIALOG_LOGOUT);
+	GtkWidget * dialog = logout_dialog_new(type);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 
 	return 0;

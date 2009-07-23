@@ -1,8 +1,65 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <dbus/dbus-glib.h>
 #include "logout-dialog.h"
 #include "ck-pk-helper.h"
+
+static void
+session_action (LogoutDialogAction action)
+{
+	DBusGConnection * sbus;
+	DBusGProxy * sm_proxy;
+	GError * error = NULL;
+	gboolean res = FALSE;
+	
+	sbus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL); 
+	if (sbus == NULL) {
+		g_warning("Unable to get DBus session bus.");
+		return;
+	}
+	sm_proxy = dbus_g_proxy_new_for_name_owner (sbus,
+                                            	"org.gnome.SessionManager",
+                                            	"/org/gnome/SessionManager",
+                                            	"org.gnome.SessionManager",
+                                           	 	&error);
+	if (sm_proxy == NULL) {
+		g_warning("Unable to get DBus proxy to SessionManager interface: %s", error->message);
+		g_error_free(error);
+		return;
+	}		
+	
+	g_clear_error (&error);
+	
+	if (action == LOGOUT_DIALOG_LOGOUT) {
+		res = dbus_g_proxy_call_with_timeout (sm_proxy, "Logout", INT_MAX, &error, 
+											  G_TYPE_UINT, 1, G_TYPE_INVALID, G_TYPE_INVALID);
+	} else if (action == LOGOUT_DIALOG_SHUTDOWN) {
+		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestShutdown", INT_MAX, &error, 
+											  G_TYPE_INVALID, G_TYPE_INVALID);
+	} else if (action == LOGOUT_DIALOG_RESTART) {
+		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestReboot", INT_MAX, &error, 
+											  G_TYPE_INVALID, G_TYPE_INVALID);
+	} else {
+		g_warning ("Unknown session action");
+	}
+	
+	if (!res) {
+		if (error != NULL) {
+			g_warning ("SessionManager action failed: %s", error->message);
+		} else {
+			g_warning ("SessionManager action failed: unknown error");
+		}
+	}
+	
+	g_object_unref(sm_proxy);
+	
+	if (error != NULL) {
+		g_error_free(error);
+	}
+	
+	return;
+}	
 
 static LogoutDialogAction type = LOGOUT_DIALOG_LOGOUT;
 
@@ -70,6 +127,8 @@ main (int argc, char * argv[])
 			return 0;
 		}
 	}
+
+	session_action(type);
 
 	return 0;
 }

@@ -12,6 +12,10 @@
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
+/* This is the function to show a dialog on actions that
+   can destroy data.  Currently it just calls the GTK version
+   but it seems that in the future it should figure out
+   what's going on and something better. */
 static void
 show_dialog (DbusmenuMenuitem * mi, gchar * type)
 {
@@ -32,6 +36,8 @@ show_dialog (DbusmenuMenuitem * mi, gchar * type)
 	return;
 }
 
+/* This function creates all of the menuitems that the service
+   provides in the UI.  It also connects them to the callbacks. */
 static void
 create_items (DbusmenuMenuitem * root) {
 	DbusmenuMenuitem * mi = NULL;
@@ -64,6 +70,8 @@ create_items (DbusmenuMenuitem * root) {
 	return;
 }
 
+/* Main, is well, main.  It brings everything up and throws
+   us into the mainloop of no return. */
 int
 main (int argc, char ** argv)
 {

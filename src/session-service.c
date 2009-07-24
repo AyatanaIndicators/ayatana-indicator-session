@@ -97,36 +97,33 @@ dpk_changed_cb (DBusGProxy * proxy, gpointer user_data)
 	/* Start Async call to see if we can hibernate */
 	if (suspend_call == NULL) {
 		suspend_call = dbus_g_proxy_begin_call(dkp_prop_proxy,
-		"Get",
-		suspend_prop_cb,
-		NULL,
-		NULL,
-		G_TYPE_STRING,
-		DKP_INTERFACE,
-		G_TYPE_STRING,
-		"can-suspend",
-		G_TYPE_INVALID,
-		G_TYPE_VALUE,
-		G_TYPE_INVALID);
-
+		                                       "Get",
+		                                       suspend_prop_cb,
+		                                       NULL,
+		                                       NULL,
+		                                       G_TYPE_STRING,
+		                                       DKP_INTERFACE,
+		                                       G_TYPE_STRING,
+		                                       "can-suspend",
+		                                       G_TYPE_INVALID,
+		                                       G_TYPE_VALUE,
+		                                       G_TYPE_INVALID);
 	}
 
 	/* Start Async call to see if we can suspend */
 	if (hibernate_call == NULL) {
 		hibernate_call = dbus_g_proxy_begin_call(dkp_prop_proxy,
-		"Get",
-		hibernate_prop_cb,
-		NULL,
-		NULL,
-		G_TYPE_STRING,
-		DKP_INTERFACE,
-		G_TYPE_STRING,
-		"can-hibernate",
-		G_TYPE_INVALID,
-		G_TYPE_VALUE,
-		G_TYPE_INVALID);
-
-
+		                                         "Get",
+		                                         hibernate_prop_cb,
+		                                         NULL,
+		                                         NULL,
+		                                         G_TYPE_STRING,
+		                                         DKP_INTERFACE,
+		                                         G_TYPE_STRING,
+		                                         "can-hibernate",
+		                                         G_TYPE_INVALID,
+		                                         G_TYPE_VALUE,
+		                                         G_TYPE_INVALID);
 	}
 
 	return;

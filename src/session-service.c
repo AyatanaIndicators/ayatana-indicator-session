@@ -18,7 +18,8 @@ static GMainLoop * mainloop = NULL;
 static DBusGProxy * dkp_main_proxy = NULL;
 static DBusGProxy * dkp_prop_proxy = NULL;
 
-/* Hibernate the machine */
+/* Let's put this machine to sleep, with some info on how
+   it should sleep.  */
 static void
 sleep (DbusmenuMenuitem * mi, gpointer userdata)
 {

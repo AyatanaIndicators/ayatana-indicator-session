@@ -11,6 +11,7 @@ Build-Depends: debhelper (>= 5.0),
                libindicator-dev,
                libdbusmenu-glib-dev,
                libdbusmenu-gtk-dev,
+               libpolkit-gnome-dev,
                intltool
 Standards-Version: 3.8.0
 

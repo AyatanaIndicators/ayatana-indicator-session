@@ -1,3 +1,9 @@
+indicator-sus (0.1~ppa2~indicator9ubuntu5) UNRELEASED; urgency=low
+
+  * debian/control: Adding a dep on polkit-gnome-dev
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 23 Jul 2009 21:42:53 -0500
+
 indicator-sus (0.1~ppa2~indicator9ubuntu4) karmic; urgency=low
 
   * Basically getting this session stuff working.  Well, all

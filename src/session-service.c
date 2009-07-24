@@ -18,6 +18,24 @@ static GMainLoop * mainloop = NULL;
 static DBusGProxy * dkp_main_proxy = NULL;
 static DBusGProxy * dkp_prop_proxy = NULL;
 
+/* Hibernate the machine */
+static void
+sleep (DbusmenuMenuitem * mi, gpointer userdata)
+{
+	gchar * type = (gchar *)userdata;
+
+	if (dkp_main_proxy == NULL) {
+		g_warning("Can not %s as no DeviceKit Power Proxy", type);
+	}
+
+	dbus_g_proxy_call_no_reply(dkp_main_proxy,
+	                           type,
+	                           G_TYPE_INVALID,
+	                           G_TYPE_INVALID);
+
+	return;
+}
+
 /* This function goes through and sets up what we need for
    DKp checking.  We're even setting up the calls for the props
    we need */
@@ -83,12 +101,12 @@ create_items (DbusmenuMenuitem * root) {
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("Suspend"));
 	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "suspend");
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Suspend");
 
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("Hibernate"));
 	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "hibernate");
+	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Hibernate");
 
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("Restart"));

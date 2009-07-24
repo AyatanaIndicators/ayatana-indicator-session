@@ -18,6 +18,9 @@ static GMainLoop * mainloop = NULL;
 static DBusGProxy * dkp_main_proxy = NULL;
 static DBusGProxy * dkp_prop_proxy = NULL;
 
+static DBusGProxyCall * suspend_call = NULL;
+static DBusGProxyCall * hibernate_call = NULL;
+
 /* Let's put this machine to sleep, with some info on how
    it should sleep.  */
 static void
@@ -33,6 +36,63 @@ sleep (DbusmenuMenuitem * mi, gpointer userdata)
 	                           type,
 	                           G_TYPE_INVALID,
 	                           G_TYPE_INVALID);
+
+	return;
+}
+
+static void
+suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
+{
+	suspend_call = NULL;
+
+}
+
+static void
+hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
+{
+	hibernate_call = NULL;
+
+}
+
+/* A signal that we need to recheck to ensure we can still
+   hibernate and/or suspend */
+static void
+dpk_changed_cb (DBusGProxy * proxy, gpointer user_data)
+{
+	/* Start Async call to see if we can hibernate */
+	if (suspend_call == NULL) {
+		suspend_call = dbus_g_proxy_begin_call(dkp_prop_proxy,
+		"Get",
+		suspend_prop_cb,
+		NULL,
+		NULL,
+		G_TYPE_STRING,
+		DKP_INTERFACE,
+		G_TYPE_STRING,
+		"can-suspend",
+		G_TYPE_INVALID,
+		G_TYPE_BOOLEAN,
+		G_TYPE_INVALID);
+
+	}
+
+	/* Start Async call to see if we can suspend */
+	if (hibernate_call == NULL) {
+		hibernate_call = dbus_g_proxy_begin_call(dkp_prop_proxy,
+		"Get",
+		hibernate_prop_cb,
+		NULL,
+		NULL,
+		G_TYPE_STRING,
+		DKP_INTERFACE,
+		G_TYPE_STRING,
+		"can-hibernate",
+		G_TYPE_INVALID,
+		G_TYPE_BOOLEAN,
+		G_TYPE_INVALID);
+
+
+	}
 
 	return;
 }
@@ -62,10 +122,18 @@ setup_dkp (void) {
 	g_return_if_fail(dkp_prop_proxy != NULL);
 
 	/* Connect to changed signal */
+	dbus_g_proxy_add_signal(dkp_main_proxy,
+	                        "Changed",
+	                        G_TYPE_INVALID);
 
-	/* Start Async call to see if we can hibernate */
+	dbus_g_proxy_connect_signal(dkp_main_proxy,
+	                            "Changed",
+	                            G_CALLBACK(dpk_changed_cb),
+	                            NULL,
+	                            NULL);
 
-	/* Start Async call to see if we can suspend */
+	/* Force an original "changed" event */
+	dpk_changed_cb(dkp_main_proxy, NULL);
 
 	return;
 }

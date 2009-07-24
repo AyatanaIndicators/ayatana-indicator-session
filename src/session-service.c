@@ -45,6 +45,18 @@ suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
 	suspend_call = NULL;
 
+	GValue candoit = {0};
+	GError * error = NULL;
+	dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &candoit, G_TYPE_INVALID);
+	if (error != NULL) {
+		g_warning("Unable to check suspend: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+	g_debug("Got Suspend: %s", g_value_get_boolean(&candoit) ? "true" : "false");
+
+
+	return;
 }
 
 static void
@@ -52,6 +64,18 @@ hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
 	hibernate_call = NULL;
 
+	GValue candoit = {0};
+	GError * error = NULL;
+	dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &candoit, G_TYPE_INVALID);
+	if (error != NULL) {
+		g_warning("Unable to check hibernate: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+	g_debug("Got Hibernate: %s", g_value_get_boolean(&candoit) ? "true" : "false");
+
+
+	return;
 }
 
 /* A signal that we need to recheck to ensure we can still
@@ -71,7 +95,7 @@ dpk_changed_cb (DBusGProxy * proxy, gpointer user_data)
 		G_TYPE_STRING,
 		"can-suspend",
 		G_TYPE_INVALID,
-		G_TYPE_BOOLEAN,
+		G_TYPE_VALUE,
 		G_TYPE_INVALID);
 
 	}
@@ -88,7 +112,7 @@ dpk_changed_cb (DBusGProxy * proxy, gpointer user_data)
 		G_TYPE_STRING,
 		"can-hibernate",
 		G_TYPE_INVALID,
-		G_TYPE_BOOLEAN,
+		G_TYPE_VALUE,
 		G_TYPE_INVALID);
 
 

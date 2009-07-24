@@ -52,6 +52,7 @@ static void
 status_menu_click (DbusmenuMenuitem * mi, gpointer data)
 {
 	StatusProviderStatus status = (StatusProviderStatus)GPOINTER_TO_INT(data);
+	g_debug("Setting status: %d", status);
 	int i;
 	for (i = 0; i < STATUS_PROVIDER_CNT; i++) {
 		status_provider_set_status(status_providers[i], status);

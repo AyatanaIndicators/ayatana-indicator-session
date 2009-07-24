@@ -61,6 +61,12 @@ setup_dkp (void) {
 	}
 	g_return_if_fail(dkp_prop_proxy != NULL);
 
+	/* Connect to changed signal */
+
+	/* Start Async call to see if we can hibernate */
+
+	/* Start Async call to see if we can suspend */
+
 	return;
 }
 

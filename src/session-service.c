@@ -9,6 +9,10 @@
 
 #include "dbus-shared-names.h"
 
+#define DKP_ADDRESS    "org.freedesktop.DeviceKit.Power"
+#define DKP_OBJECT     "/org/freedesktop/DeviceKit/Power"
+#define DKP_INTERFACE  "org.freedesktop.DeviceKit.Power"
+
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 

@@ -17,6 +17,6 @@ Standards-Version: 3.8.0
 
 Package: indicator-sus
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet
+Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet, devicekit-power
 Description: Applet for the GNOME panel providing various indicators for
  display to users.

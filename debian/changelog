@@ -1,9 +1,10 @@
-indicator-sus (0.1~ppa2~indicator9ubuntu6) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa2~indicator9ubuntu7) UNRELEASED; urgency=low
 
   * Adding in devkit power support for suspend/hibernate
   * Changing namespace from com.ubuntu to org.ayatana
+  * debian/control: Add binary dep on DeviceKit Power
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 24 Jul 2009 16:46:10 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 24 Jul 2009 16:50:27 -0500
 
 indicator-sus (0.1~ppa2~indicator9ubuntu5) karmic; urgency=low
 

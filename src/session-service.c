@@ -15,6 +15,35 @@
 
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
+static DBusGProxy * dkp_main_proxy = NULL;
+static DBusGProxy * dkp_prop_proxy = NULL;
+
+/* This function goes through and sets up what we need for
+   DKp checking.  We're even setting up the calls for the props
+   we need */
+static void
+setup_dkp (void) {
+	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
+	g_return_if_fail(bus != NULL);
+
+	if (dkp_main_proxy == NULL) {
+		dkp_main_proxy = dbus_g_proxy_new_for_name(bus,
+		                                           DKP_ADDRESS,
+		                                           DKP_OBJECT,
+		                                           DKP_INTERFACE);
+	}
+	g_return_if_fail(dkp_main_proxy != NULL);
+
+	if (dkp_prop_proxy == NULL) {
+		dkp_prop_proxy = dbus_g_proxy_new_for_name(bus,
+		                                           DKP_ADDRESS,
+		                                           DKP_OBJECT,
+		                                           DBUS_INTERFACE_PROPERTIES);
+	}
+	g_return_if_fail(dkp_prop_proxy != NULL);
+
+	return;
+}
 
 /* This is the function to show a dialog on actions that
    can destroy data.  Currently it just calls the GTK version
@@ -100,6 +129,7 @@ main (int argc, char ** argv)
 	g_debug("Root ID: %d", dbusmenu_menuitem_get_id(root_menuitem));
 
 	create_items(root_menuitem);
+	setup_dkp();
 
     DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
     dbusmenu_server_set_root(server, root_menuitem);

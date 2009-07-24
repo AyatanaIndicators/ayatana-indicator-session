@@ -21,6 +21,9 @@ static DBusGProxy * dkp_prop_proxy = NULL;
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
 
+static DbusmenuMenuitem * hibernate_mi = NULL;
+static DbusmenuMenuitem * suspend_mi = NULL;
+
 /* Let's put this machine to sleep, with some info on how
    it should sleep.  */
 static void
@@ -40,6 +43,7 @@ sleep (DbusmenuMenuitem * mi, gpointer userdata)
 	return;
 }
 
+/* A response to getting the suspend property */
 static void
 suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
@@ -55,10 +59,14 @@ suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	}
 	g_debug("Got Suspend: %s", g_value_get_boolean(&candoit) ? "true" : "false");
 
+	if (suspend_mi != NULL) {
+		dbusmenu_menuitem_property_set(suspend_mi, "visible", g_value_get_boolean(&candoit) ? "true" : "false");
+	}
 
 	return;
 }
 
+/* Response to getting the hibernate property */
 static void
 hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
@@ -74,6 +82,9 @@ hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	}
 	g_debug("Got Hibernate: %s", g_value_get_boolean(&candoit) ? "true" : "false");
 
+	if (suspend_mi != NULL) {
+		dbusmenu_menuitem_property_set(hibernate_mi, "visible", g_value_get_boolean(&candoit) ? "true" : "false");
+	}
 
 	return;
 }
@@ -197,15 +208,17 @@ create_items (DbusmenuMenuitem * root) {
 	dbusmenu_menuitem_child_append(root, mi);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
 
-	mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(mi, "label", _("Suspend"));
-	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Suspend");
+	suspend_mi = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(suspend_mi, "visible", "false");
+	dbusmenu_menuitem_property_set(suspend_mi, "label", _("Suspend"));
+	dbusmenu_menuitem_child_append(root, suspend_mi);
+	g_signal_connect(G_OBJECT(suspend_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Suspend");
 
-	mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(mi, "label", _("Hibernate"));
-	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Hibernate");
+	hibernate_mi = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(hibernate_mi, "visible", "false");
+	dbusmenu_menuitem_property_set(hibernate_mi, "label", _("Hibernate"));
+	dbusmenu_menuitem_child_append(root, hibernate_mi);
+	g_signal_connect(G_OBJECT(hibernate_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Hibernate");
 
 	mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(mi, "label", _("Restart"));

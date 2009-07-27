@@ -41,10 +41,30 @@ static const gchar * status_icons[STATUS_PROVIDER_STATUS_LAST] = {
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 
+/* A fun little function to actually lock the screen.  If,
+   that's what you want, let's do it! */
 static void
 lock_screen (DbusmenuMenuitem * mi, gpointer data)
 {
 	g_debug("Lock Screen");
+
+	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	g_return_if_fail(session_bus != NULL);
+
+	DBusGProxy * proxy = dbus_g_proxy_new_for_name_owner(session_bus,
+	                                                     "org.gnome.ScreenSaver",
+	                                                     "/",
+	                                                     "org.gnome.ScreenSaver",
+	                                                     NULL);
+	g_return_if_fail(proxy != NULL);
+
+	dbus_g_proxy_call_no_reply(proxy,
+	                           "Lock",
+	                           G_TYPE_INVALID,
+	                           G_TYPE_INVALID);
+
+	g_object_unref(proxy);
+
 	return;
 }
 

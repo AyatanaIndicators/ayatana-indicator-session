@@ -59,7 +59,8 @@ status_provider_set_status (StatusProvider * sp, StatusProviderStatus status)
 {
 	g_return_if_fail(IS_STATUS_PROVIDER(sp));
 
-	StatusProviderClass * class = STATUS_PROVIDER_CLASS(sp);
+	StatusProviderClass * class = STATUS_PROVIDER_GET_CLASS(sp);
+	g_return_if_fail(class != NULL);
 	g_return_if_fail(class->set_status != NULL);
 
 	return class->set_status(sp, status);
@@ -70,7 +71,7 @@ status_provider_get_status (StatusProvider * sp)
 {
 	g_return_val_if_fail(IS_STATUS_PROVIDER(sp), STATUS_PROVIDER_STATUS_OFFLINE);
 
-	StatusProviderClass * class = STATUS_PROVIDER_CLASS(sp);
+	StatusProviderClass * class = STATUS_PROVIDER_GET_CLASS(sp);
 	g_return_val_if_fail(class->get_status != NULL, STATUS_PROVIDER_STATUS_OFFLINE);
 
 	return class->get_status(sp);

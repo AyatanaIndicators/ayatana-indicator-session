@@ -1,3 +1,10 @@
+indicator-sus (0.1~ppa2~indicator9ubuntu9) UNRELEASED; urgency=low
+
+  * Lock screen works
+  * Pidgin proxy gets setup and doesn't crash
+
+ -- Ted Gould <ted@ubuntu.com>  Sun, 26 Jul 2009 23:45:15 -0500
+
 indicator-sus (0.1~ppa2~indicator9ubuntu8) karmic; urgency=low
 
   * Ah, forgot the service files.

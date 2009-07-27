@@ -124,6 +124,7 @@ status_provider_pidgin_new (void)
 static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {
+	g_debug("\tSetting Pidgin Status: %d", status);
 	g_return_if_fail(IS_STATUS_PROVIDER_PIDGIN(sp));
 	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(sp);
 	pg_status_t pg_status = sp_to_pg_map[status];

@@ -1,4 +1,10 @@
-indicator-fusa (0.1~ppa1) intrepid; urgency=low
+indicator-sus (0.1~ppa3) UNRELEASED; urgency=low
+
+  * Fleshing out significantly.  Inital rerelease.
+
+ -- Ted Gould <ted@ubuntu.com>  Sun, 26 Jul 2009 23:48:52 -0500
+
+indicator-sus (0.1~ppa1) intrepid; urgency=low
 
   * Initial release
 

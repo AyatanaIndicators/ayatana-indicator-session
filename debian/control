@@ -1,4 +1,4 @@
-Source: indicator-fusa
+Source: indicator-sus
 Section: gnome
 Priority: optional
 Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
@@ -8,11 +8,15 @@ Build-Depends: debhelper (>= 5.0),
                libdbus-glib-1-dev,
                gnome-doc-utils,
                scrollkeeper,
+               libindicator-dev,
+               libdbusmenu-glib-dev,
+               libdbusmenu-gtk-dev,
+               libpolkit-gnome-dev,
                intltool
 Standards-Version: 3.8.0
 
-Package: indicator-fusa
+Package: indicator-sus
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet
+Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet, devicekit-power
 Description: Applet for the GNOME panel providing various indicators for
  display to users.

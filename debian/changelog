@@ -1,8 +1,8 @@
-indicator-sus (0.1~ppa3) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa3) karmic; urgency=low
 
   * Fleshing out significantly.  Inital rerelease.
 
- -- Ted Gould <ted@ubuntu.com>  Sun, 26 Jul 2009 23:48:52 -0500
+ -- Ted Gould <ted@ubuntu.com>  Sun, 26 Jul 2009 23:50:47 -0500
 
 indicator-sus (0.1~ppa1) intrepid; urgency=low
 

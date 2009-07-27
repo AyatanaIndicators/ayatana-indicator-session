@@ -86,6 +86,21 @@ status_provider_pidgin_init (StatusProviderPidgin *self)
 	priv->proxy = NULL;
 	priv->pg_status = PG_STATUS_OFFLINE;
 
+	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	g_return_if_fail(bus != NULL); /* Can't do anymore DBus stuff without this,
+	                                  all non-DBus stuff should be done */
+
+	GError * error = NULL;
+	priv->proxy = dbus_g_proxy_new_for_name_owner (bus,
+	                                               "im.pidgin.purple.PurpleService",
+	                                               "/im/pidgin/purple/PurpleObject",
+	                                               "im.pidgin.purple.PurpleInterface",
+	                                               &error);
+	if (error != NULL) {
+		g_debug("Unable to get Pidgin proxy: %s", error->message);
+		g_error_free(error);
+	}
+
 	return;
 }
 

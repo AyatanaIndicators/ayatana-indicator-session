@@ -18,6 +18,11 @@ typedef struct _StatusServiceDbusClass StatusServiceDbusClass;
 
 struct _StatusServiceDbusClass {
 	GObjectClass parent_class;
+
+	/* Signals */
+	gboolean (*user_changed) (StatusServiceDbus * self, gchar ** name, gpointer user_data);
+	gboolean (*status_icons_changed) (StatusServiceDbus * self, GArray ** icons, gpointer user_data);
+
 };
 
 struct _StatusServiceDbus {

@@ -42,6 +42,7 @@ static DbusmenuMenuitem * root_menuitem = NULL;
 static DbusmenuMenuitem * status_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 static gchar * whoami = "ted";
+static StatusServiceDbus * dbus_interface = NULL;
 
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */
@@ -157,6 +158,8 @@ main (int argc, char ** argv)
     dbusmenu_server_set_root(server, root_menuitem);
 
 	g_idle_add(build_menu, root_menuitem);
+
+	dbus_interface = g_object_new(STATUS_SERVICE_DBUS_TYPE, NULL);
 
     mainloop = g_main_loop_new(NULL, FALSE);
     g_main_loop_run(mainloop);

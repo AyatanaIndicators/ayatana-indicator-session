@@ -82,7 +82,7 @@ status_service_dbus_init (StatusServiceDbus *self)
 
 	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	dbus_g_connection_register_g_object(connection,
-										INDICATOR_STATUS_DBUS_OBJECT,
+										INDICATOR_STATUS_SERVICE_DBUS_OBJECT,
 										G_OBJECT(self));
 
 	return;

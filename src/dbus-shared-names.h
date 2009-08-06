@@ -4,6 +4,7 @@
 
 #define INDICATOR_STATUS_DBUS_NAME  "org.ayatana.indicator.status"
 #define INDICATOR_STATUS_DBUS_OBJECT "/org/ayatana/indicator/status"
+#define INDICATOR_STATUS_SERVICE_DBUS_OBJECT "/org/ayatana/indicator/status-service"
 
 #define INDICATOR_USERS_DBUS_NAME  "org.ayatana.indicator.users"
 #define INDICATOR_USERS_DBUS_OBJECT "/org/ayatana/indicator/users"

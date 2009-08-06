@@ -41,6 +41,7 @@ static const gchar * status_icons[STATUS_PROVIDER_STATUS_LAST] = {
 static DbusmenuMenuitem * root_menuitem = NULL;
 static DbusmenuMenuitem * status_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
+static gchar * whoami = "ted";
 
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */
@@ -98,6 +99,11 @@ build_menu (gpointer data)
 {
 	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(data);
 	g_return_val_if_fail(root != NULL, FALSE);
+
+	DbusmenuMenuitem * useritem = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(useritem, "label", whoami);
+	dbusmenu_menuitem_property_set(useritem, "sensitive", "false");
+	dbusmenu_menuitem_child_append(root, useritem);
 
 	status_menuitem = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(status_menuitem, "label", "Status");

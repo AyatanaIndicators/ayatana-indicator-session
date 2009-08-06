@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <node name="/">
-	<interface name="com.ubuntu.indicator.status">
+	<interface name="org.ayatana.indicator.status">
 
 <!-- Methods -->
 		<method name="Watch">

@@ -11,9 +11,9 @@ static void status_service_dbus_class_init (StatusServiceDbusClass *klass);
 static void status_service_dbus_init       (StatusServiceDbus *self);
 static void status_service_dbus_dispose    (GObject *object);
 static void status_service_dbus_finalize   (GObject *object);
-static void _status_service_server_watch   (void);
-static void _status_service_server_status_icons   (void);
-static void _status_service_server_pretty_user_name   (void);
+static gboolean _status_service_server_watch (StatusServiceDbus * service, GError ** error);
+static gboolean _status_service_server_status_icons (StatusServiceDbus * service, GArray * array, GError ** error);
+static gboolean _status_service_server_pretty_user_name (StatusServiceDbus * service, gchar ** username, GError ** error);
 
 #include "status-service-server.h"
 
@@ -104,23 +104,23 @@ status_service_dbus_finalize (GObject *object)
 	return;
 }
 
-static void
-_status_service_server_watch (void)
+static gboolean
+_status_service_server_watch (StatusServiceDbus * service, GError ** error)
 {
 
-	return;
+	return TRUE;
 }
 
-static void
-_status_service_server_status_icons (void)
+static gboolean
+_status_service_server_status_icons (StatusServiceDbus * service, GArray * array, GError ** error)
 {
 
-	return;
+	return TRUE;
 }
 
-static void
-_status_service_server_pretty_user_name (void)
+static gboolean
+_status_service_server_pretty_user_name (StatusServiceDbus * service, gchar ** username, GError ** error)
 {
 
-	return;
+	return TRUE;
 }

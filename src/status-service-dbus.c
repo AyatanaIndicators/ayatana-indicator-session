@@ -98,7 +98,7 @@ status_service_dbus_init (StatusServiceDbus *self)
 										G_OBJECT(self));
 
 	StatusServiceDbusPrivate * priv = STATUS_SERVICE_DBUS_GET_PRIVATE(self);
-	priv->name = NULL;
+	priv->name = "test";
 
 	return;
 }
@@ -136,6 +136,17 @@ _status_service_server_status_icons (StatusServiceDbus * service, GArray * array
 static gboolean
 _status_service_server_pretty_user_name (StatusServiceDbus * service, gchar ** username, GError ** error)
 {
+	if (!IS_STATUS_SERVICE_DBUS(service)) {
+		g_warning("NO BAD EVIL!");
+		return FALSE;
+	}
+
+	StatusServiceDbusPrivate * priv = STATUS_SERVICE_DBUS_GET_PRIVATE(service);
+	if (priv->name == NULL) {
+		*username = g_strdup("");
+	} else {
+		*username = g_strdup(priv->name);
+	}
 
 	return TRUE;
 }

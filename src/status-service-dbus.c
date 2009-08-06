@@ -2,6 +2,9 @@
 #include "config.h"
 #endif
 
+#include <dbus/dbus-glib.h>
+
+#include "dbus-shared-names.h"
 #include "status-service-dbus.h"
 
 static void status_service_dbus_class_init (StatusServiceDbusClass *klass);
@@ -23,6 +26,8 @@ status_service_dbus_class_init (StatusServiceDbusClass *klass)
 
 	object_class->dispose = status_service_dbus_dispose;
 	object_class->finalize = status_service_dbus_finalize;
+
+	dbus_g_object_type_install_info(STATUS_SERVICE_DBUS_TYPE, &dbus_glib__status_service_server_object_info);
 	
 	return;
 }
@@ -30,6 +35,11 @@ status_service_dbus_class_init (StatusServiceDbusClass *klass)
 static void
 status_service_dbus_init (StatusServiceDbus *self)
 {
+
+	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	dbus_g_connection_register_g_object(connection,
+										INDICATOR_STATUS_DBUS_OBJECT,
+										G_OBJECT(self));
 
 	return;
 }

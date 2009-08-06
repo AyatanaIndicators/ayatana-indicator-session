@@ -17,6 +17,16 @@ static gboolean _status_service_server_pretty_user_name (StatusServiceDbus * ser
 
 #include "status-service-server.h"
 
+/* Private */
+typedef struct _StatusServiceDbusPrivate StatusServiceDbusPrivate;
+struct _StatusServiceDbusPrivate
+{
+	gchar * name;
+};
+
+#define STATUS_SERVICE_DBUS_GET_PRIVATE(o) \
+    (G_TYPE_INSTANCE_GET_PRIVATE ((o), STATUS_SERVICE_DBUS_TYPE, StatusServiceDbusPrivate))
+
 /* Signals */
 enum {
 	USER_CHANGED,
@@ -33,6 +43,8 @@ static void
 status_service_dbus_class_init (StatusServiceDbusClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+	g_type_class_add_private (object_class, sizeof(StatusServiceDbusPrivate));
 
 	object_class->dispose = status_service_dbus_dispose;
 	object_class->finalize = status_service_dbus_finalize;
@@ -84,6 +96,9 @@ status_service_dbus_init (StatusServiceDbus *self)
 	dbus_g_connection_register_g_object(connection,
 										INDICATOR_STATUS_SERVICE_DBUS_OBJECT,
 										G_OBJECT(self));
+
+	StatusServiceDbusPrivate * priv = STATUS_SERVICE_DBUS_GET_PRIVATE(self);
+	priv->name = NULL;
 
 	return;
 }

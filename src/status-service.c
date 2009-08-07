@@ -1,4 +1,7 @@
 
+#include <sys/types.h>
+#include <pwd.h>
+
 #include <glib/gi18n.h>
 
 #include <dbus/dbus-glib.h>
@@ -41,7 +44,6 @@ static const gchar * status_icons[STATUS_PROVIDER_STATUS_LAST] = {
 static DbusmenuMenuitem * root_menuitem = NULL;
 static DbusmenuMenuitem * status_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
-static gchar * whoami = "ted";
 static StatusServiceDbus * dbus_interface = NULL;
 
 /* A fun little function to actually lock the screen.  If,
@@ -95,16 +97,39 @@ build_providers (gpointer data)
 	return FALSE;
 }
 
+static void
+build_user_item (DbusmenuMenuitem * root)
+{
+	struct passwd * pwd = NULL;
+
+	pwd = getpwuid(getuid());
+
+	if (pwd != NULL && pwd->pw_gecos != NULL) {
+		gchar * name = g_strdup(pwd->pw_gecos);
+		gchar * walker = name;
+		while (*walker != '\0' && *walker != ',') { walker++; }
+		*walker = '\0';
+
+		DbusmenuMenuitem * useritem = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set(useritem, "label", name);
+		dbusmenu_menuitem_property_set(useritem, "sensitive", "false");
+		dbusmenu_menuitem_child_append(root, useritem);
+
+		g_free(name);
+	} else {
+		g_debug("PWD: %s", (pwd == NULL ? "(pwd null)" : (pwd->pw_gecos == NULL ? "(gecos null)" : pwd->pw_gecos)));
+	}
+
+	return;
+}
+
 static gboolean
 build_menu (gpointer data)
 {
 	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(data);
 	g_return_val_if_fail(root != NULL, FALSE);
 
-	DbusmenuMenuitem * useritem = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(useritem, "label", whoami);
-	dbusmenu_menuitem_property_set(useritem, "sensitive", "false");
-	dbusmenu_menuitem_child_append(root, useritem);
+	build_user_item(root);
 
 	status_menuitem = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(status_menuitem, "label", "Status");

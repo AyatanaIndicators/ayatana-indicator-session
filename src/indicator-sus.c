@@ -49,7 +49,8 @@ get_label (void)
 GtkImage *
 get_icon (void)
 {
-	return NULL;
+	GtkImage * image = GTK_IMAGE(gtk_image_new_from_icon_name("user-offline", GTK_ICON_SIZE_MENU));
+	return image;
 }
 
 static void

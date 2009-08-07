@@ -1,3 +1,10 @@
+indicator-sus (0.1~ppa6) UNRELEASED; urgency=low
+
+  * debian/control: Conflicting with gdm < 2.27.4-0ubuntu9 or
+    lower to stop people from having problems with the PPA.
+
+ -- Ted Gould <ted@ubuntu.com>  Sat, 08 Aug 2009 00:18:06 +0100
+
 indicator-sus (0.1~ppa5) karmic; urgency=low
 
   * Legal headers on the source files.

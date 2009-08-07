@@ -1,3 +1,9 @@
+indicator-sus (0.1~ppa4~statusshuffle1) UNRELEASED; urgency=low
+
+  * Merging in status shuffle branch to package it.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 07 Aug 2009 21:05:28 +0100
+
 indicator-sus (0.1~ppa3) karmic; urgency=low
 
   * Fleshing out significantly.  Inital rerelease.

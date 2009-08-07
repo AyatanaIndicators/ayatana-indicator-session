@@ -39,7 +39,10 @@ static const gchar * status_icons[STATUS_PROVIDER_STATUS_LAST] = {
 
 
 static DbusmenuMenuitem * root_menuitem = NULL;
+static DbusmenuMenuitem * status_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
+static gchar * whoami = "ted";
+static StatusServiceDbus * dbus_interface = NULL;
 
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */
@@ -98,6 +101,15 @@ build_menu (gpointer data)
 	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(data);
 	g_return_val_if_fail(root != NULL, FALSE);
 
+	DbusmenuMenuitem * useritem = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(useritem, "label", whoami);
+	dbusmenu_menuitem_property_set(useritem, "sensitive", "false");
+	dbusmenu_menuitem_child_append(root, useritem);
+
+	status_menuitem = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(status_menuitem, "label", "Status");
+	dbusmenu_menuitem_child_append(root, status_menuitem);
+
 	StatusProviderStatus i;
 	for (i = STATUS_PROVIDER_STATUS_ONLINE; i < STATUS_PROVIDER_STATUS_LAST; i++) {
 		DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
@@ -106,7 +118,7 @@ build_menu (gpointer data)
 		dbusmenu_menuitem_property_set(mi, "icon", status_icons[i]);
 		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(status_menu_click), GINT_TO_POINTER(i));
 
-		dbusmenu_menuitem_child_append(root, mi);
+		dbusmenu_menuitem_child_append(status_menuitem, mi);
 
 		g_debug("Built %s", status_strings[i]);
 	}
@@ -146,6 +158,8 @@ main (int argc, char ** argv)
     dbusmenu_server_set_root(server, root_menuitem);
 
 	g_idle_add(build_menu, root_menuitem);
+
+	dbus_interface = g_object_new(STATUS_SERVICE_DBUS_TYPE, NULL);
 
     mainloop = g_main_loop_new(NULL, FALSE);
     g_main_loop_run(mainloop);

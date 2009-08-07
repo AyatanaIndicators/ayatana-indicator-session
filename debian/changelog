@@ -1,8 +1,8 @@
-indicator-sus (0.1~ppa4~statusshuffle2) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa4~statusshuffle2) karmic; urgency=low
 
   * Better usage of the names.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 07 Aug 2009 21:42:19 +0100
+ -- Ted Gould <ted@ubuntu.com>  Fri, 07 Aug 2009 21:42:38 +0100
 
 indicator-sus (0.1~ppa4~statusshuffle1) karmic; urgency=low
 

@@ -1,3 +1,4 @@
+SUBDIRS = icons
 
 dbus_servicesdir = $(DBUSSERVICEDIR)
 service_in_files =  indicator-status.service.in \

@@ -25,6 +25,7 @@ static GtkWidget * loading_item = NULL;
 
 static DBusGConnection * connection = NULL;
 static DBusGProxy * proxy = NULL;
+static DBusGProxy * status_proxy = NULL;
 
 typedef enum {
 	STATUS_SECTION,
@@ -41,7 +42,7 @@ static guint session_menu_pos_offset (void);
 GtkLabel *
 get_label (void)
 {
-	GtkLabel * returnval = GTK_LABEL(gtk_label_new("Ted Gould"));
+	GtkLabel * returnval = GTK_LABEL(gtk_label_new(g_get_user_name()));
 	gtk_widget_show(GTK_WIDGET(returnval));
 	return returnval;
 }

@@ -1,8 +1,8 @@
-indicator-sus (0.1~ppa4) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa4) karmic; urgency=low
 
   * Merging in status shuffle branch.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 07 Aug 2009 21:55:08 +0100
+ -- Ted Gould <ted@ubuntu.com>  Fri, 07 Aug 2009 21:55:52 +0100
 
 indicator-sus (0.1~ppa3) karmic; urgency=low
 

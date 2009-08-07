@@ -1,3 +1,9 @@
+indicator-sus (0.1~ppa5) UNRELEASED; urgency=low
+
+  * Legal headers on the source files.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 07 Aug 2009 23:57:00 +0100
+
 indicator-sus (0.1~ppa4) karmic; urgency=low
 
   * Merging in status shuffle branch.

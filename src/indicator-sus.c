@@ -25,7 +25,6 @@ static GtkWidget * loading_item = NULL;
 
 static DBusGConnection * connection = NULL;
 static DBusGProxy * proxy = NULL;
-static DBusGProxy * status_proxy = NULL;
 
 typedef enum {
 	STATUS_SECTION,

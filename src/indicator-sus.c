@@ -72,6 +72,7 @@ GtkImage *
 get_icon (void)
 {
 	GtkImage * image = GTK_IMAGE(gtk_image_new_from_icon_name("user-offline", GTK_ICON_SIZE_MENU));
+	gtk_widget_show(GTK_WIDGET(image));
 	return image;
 }
 

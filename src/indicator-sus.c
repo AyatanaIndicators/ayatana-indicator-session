@@ -39,6 +39,7 @@ static DbusmenuGtkClient * users_client = NULL;
 static DbusmenuGtkClient * session_client = NULL;
 
 static GtkMenu * main_menu = NULL;
+static GtkImage * status_image = NULL;
 
 static GtkWidget * status_separator = NULL;
 static GtkWidget * users_separator = NULL;
@@ -72,9 +73,9 @@ get_label (void)
 GtkImage *
 get_icon (void)
 {
-	GtkImage * image = GTK_IMAGE(gtk_image_new_from_icon_name("user-offline", GTK_ICON_SIZE_MENU));
-	gtk_widget_show(GTK_WIDGET(image));
-	return image;
+	status_image = GTK_IMAGE(gtk_image_new_from_icon_name("user-offline", GTK_ICON_SIZE_MENU));
+	gtk_widget_show(GTK_WIDGET(status_image));
+	return status_image;
 }
 
 static void
@@ -190,6 +191,11 @@ status_icon_changed (void)
 void
 status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userdata)
 {
+	g_return_if_fail(status_image != NULL);
+	g_return_if_fail(icons != NULL);
+	g_return_if_fail(icons[0] == '\0');
+
+	gtk_image_set_from_icon_name(status_image, icons, GTK_ICON_SIZE_MENU);
 
 	return;
 }

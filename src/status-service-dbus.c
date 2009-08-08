@@ -102,8 +102,8 @@ status_service_dbus_class_init (StatusServiceDbusClass *klass)
 	                                             G_SIGNAL_RUN_LAST,
 	                                             G_STRUCT_OFFSET(StatusServiceDbusClass, status_icons_changed),
 	                                             NULL, NULL,
-	                                             g_cclosure_marshal_VOID__POINTER,
-	                                             G_TYPE_NONE, 1, G_TYPE_POINTER);
+	                                             g_cclosure_marshal_VOID__STRING,
+	                                             G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	dbus_g_object_type_install_info(STATUS_SERVICE_DBUS_TYPE, &dbus_glib__status_service_server_object_info);
 	
@@ -171,4 +171,11 @@ _status_service_server_pretty_user_name (StatusServiceDbus * service, gchar ** u
 	}
 
 	return TRUE;
+}
+
+void
+status_service_dbus_set_status (StatusServiceDbus * self, const gchar * icon)
+{
+	g_signal_emit(G_OBJECT(self), signals[STATUS_ICONS_CHANGED], 0, icon, TRUE);
+	return;
 }

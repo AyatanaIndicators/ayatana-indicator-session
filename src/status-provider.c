@@ -43,7 +43,7 @@ G_DEFINE_TYPE (StatusProvider, status_provider, G_TYPE_OBJECT);
 static void
 status_provider_class_init (StatusProviderClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	// GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	klass->status_changed = NULL;
 

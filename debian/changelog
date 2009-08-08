@@ -1,3 +1,10 @@
+indicator-sus (0.1~ppa7~status1) UNRELEASED; urgency=low
+
+  * Lots of updates from a branch to make things on the status
+    front all happy happy joy joy.
+
+ -- Ted Gould <ted@ubuntu.com>  Sat, 08 Aug 2009 09:14:41 -0600
+
 indicator-sus (0.1~ppa6) karmic; urgency=low
 
   * debian/control: Conflicting with gdm < 2.27.4-0ubuntu9 or

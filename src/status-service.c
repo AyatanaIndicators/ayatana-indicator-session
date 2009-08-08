@@ -23,6 +23,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <sys/types.h>
 #include <pwd.h>
+#include <unistd.h>
 
 #include <glib/gi18n.h>
 
@@ -67,6 +68,30 @@ static DbusmenuMenuitem * root_menuitem = NULL;
 static DbusmenuMenuitem * status_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 static StatusServiceDbus * dbus_interface = NULL;
+static StatusProviderStatus global_status = STATUS_PROVIDER_STATUS_OFFLINE;
+
+static void
+status_update (void) {
+	StatusProviderStatus oldglobal = global_status;
+	global_status = STATUS_PROVIDER_STATUS_ONLINE;
+
+	int i;
+	for (i = 0; i < STATUS_PROVIDER_CNT; i++) {
+		StatusProviderStatus localstatus = status_provider_get_status(status_providers[i]);
+		if (localstatus > global_status) {
+			global_status = localstatus;
+		}
+	}
+
+	if (global_status != oldglobal) {
+		g_debug("Global status changed to: %s", _(status_strings[global_status]));
+
+		dbusmenu_menuitem_property_set(status_menuitem, "label", _(status_strings[global_status]));
+		status_service_dbus_set_status(dbus_interface, status_icons[global_status]);
+	}
+
+	return;
+}
 
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */
@@ -114,7 +139,13 @@ build_providers (gpointer data)
 	int i;
 	for (i = 0; i < STATUS_PROVIDER_CNT; i++) {
 		status_providers[i] = status_provider_newfuncs[i]();
+
+		if (status_providers[i] != NULL) {
+			g_signal_connect(G_OBJECT(status_providers[i]), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED, G_CALLBACK(status_update), NULL);
+		}
 	}
+
+	status_update();
 
 	return FALSE;
 }
@@ -154,7 +185,7 @@ build_menu (gpointer data)
 	build_user_item(root);
 
 	status_menuitem = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(status_menuitem, "label", "Status");
+	dbusmenu_menuitem_property_set(status_menuitem, "label", _(status_strings[global_status]));
 	dbusmenu_menuitem_child_append(root, status_menuitem);
 
 	StatusProviderStatus i;

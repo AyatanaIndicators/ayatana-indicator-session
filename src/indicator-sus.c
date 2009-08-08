@@ -47,6 +47,7 @@ static GtkWidget * loading_item = NULL;
 
 static DBusGConnection * connection = NULL;
 static DBusGProxy * proxy = NULL;
+static DBusGProxy * status_proxy = NULL;
 
 typedef enum {
 	STATUS_SECTION,
@@ -180,6 +181,29 @@ status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot,
 }
 
 static gboolean
+connect_to_status (gpointer userdata)
+{
+	if (status_proxy == NULL) {
+		GError * error = NULL;
+
+		DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+
+		status_proxy = dbus_g_proxy_new_for_name_owner(sbus,
+		                                               INDICATOR_STATUS_DBUS_NAME,
+		                                               INDICATOR_STATUS_DBUS_OBJECT,
+		                                               INDICATOR_STATUS_SERVICE_DBUS_INTERFACE,
+		                                               &error);
+
+		if (error != NULL) {
+			g_warning("Unable to get status proxy: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean
 build_status_menu (gpointer userdata)
 {
 	g_debug("Building Status Menu");
@@ -208,6 +232,8 @@ build_status_menu (gpointer userdata)
 	status_separator = gtk_separator_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), status_separator);
 	gtk_widget_hide(status_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
+
+	g_idle_add(connect_to_status, NULL);
 
 	return FALSE;
 }

@@ -1,3 +1,9 @@
+indicator-sus (0.1~ppa7~status3) UNRELEASED; urgency=low
+
+  * Setting the icon from the status service.
+
+ -- Ted Gould <ted@ubuntu.com>  Sat, 08 Aug 2009 13:33:55 -0600
+
 indicator-sus (0.1~ppa7~status2) karmic; urgency=low
 
   * Moving the icons to a better, warmer, place.

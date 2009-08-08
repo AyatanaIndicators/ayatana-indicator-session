@@ -39,6 +39,7 @@ static DbusmenuGtkClient * users_client = NULL;
 static DbusmenuGtkClient * session_client = NULL;
 
 static GtkMenu * main_menu = NULL;
+static GtkImage * status_image = NULL;
 
 static GtkWidget * status_separator = NULL;
 static GtkWidget * users_separator = NULL;
@@ -47,6 +48,7 @@ static GtkWidget * loading_item = NULL;
 
 static DBusGConnection * connection = NULL;
 static DBusGProxy * proxy = NULL;
+static DBusGProxy * status_proxy = NULL;
 
 typedef enum {
 	STATUS_SECTION,
@@ -71,9 +73,9 @@ get_label (void)
 GtkImage *
 get_icon (void)
 {
-	GtkImage * image = GTK_IMAGE(gtk_image_new_from_icon_name("user-offline", GTK_ICON_SIZE_MENU));
-	gtk_widget_show(GTK_WIDGET(image));
-	return image;
+	status_image = GTK_IMAGE(gtk_image_new_from_icon_name("user-offline", GTK_ICON_SIZE_MENU));
+	gtk_widget_show(GTK_WIDGET(status_image));
+	return status_image;
 }
 
 static void
@@ -179,6 +181,54 @@ status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot,
 	return;
 }
 
+void
+status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userdata)
+{
+	g_return_if_fail(status_image != NULL);
+	g_return_if_fail(icons != NULL);
+	g_return_if_fail(icons[0] == '\0');
+
+	gtk_image_set_from_icon_name(status_image, icons, GTK_ICON_SIZE_MENU);
+
+	return;
+}
+
+void
+status_icon_changed (DBusGProxy * proxy, gchar * icon, gpointer userdata)
+{
+	return status_icon_cb(proxy, icon, NULL, NULL);
+}
+
+
+static gboolean
+connect_to_status (gpointer userdata)
+{
+	if (status_proxy == NULL) {
+		GError * error = NULL;
+
+		DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+
+		status_proxy = dbus_g_proxy_new_for_name_owner(sbus,
+		                                               INDICATOR_STATUS_DBUS_NAME,
+		                                               INDICATOR_STATUS_DBUS_OBJECT,
+		                                               INDICATOR_STATUS_SERVICE_DBUS_INTERFACE,
+		                                               &error);
+
+		if (error != NULL) {
+			g_warning("Unable to get status proxy: %s", error->message);
+			g_error_free(error);
+			return FALSE;
+		}
+
+		dbus_g_proxy_add_signal(status_proxy, "IconsChanged", G_TYPE_STRING, G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(status_proxy, "IconsChanged", G_CALLBACK(status_icon_changed), NULL, NULL);
+	}
+
+	org_ayatana_indicator_status_status_icons_async(status_proxy, status_icon_cb, NULL);
+
+	return FALSE;
+}
+
 static gboolean
 build_status_menu (gpointer userdata)
 {
@@ -208,6 +258,8 @@ build_status_menu (gpointer userdata)
 	status_separator = gtk_separator_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), status_separator);
 	gtk_widget_hide(status_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
+
+	g_idle_add(connect_to_status, NULL);
 
 	return FALSE;
 }

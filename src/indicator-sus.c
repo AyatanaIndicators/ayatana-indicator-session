@@ -224,7 +224,7 @@ connect_to_status (gpointer userdata)
 		dbus_g_proxy_connect_signal(status_proxy, "IconsChanged", G_CALLBACK(status_icon_changed), NULL, NULL);
 	}
 
-	org_ayatana_indicator_status_status_icons_async(status_proxy, status_icon_cb, NULL);
+	org_ayatana_indicator_status_server_status_icons_async(status_proxy, status_icon_cb, NULL);
 
 	return FALSE;
 }

@@ -138,7 +138,13 @@ build_providers (gpointer data)
 	int i;
 	for (i = 0; i < STATUS_PROVIDER_CNT; i++) {
 		status_providers[i] = status_provider_newfuncs[i]();
+
+		if (status_providers[i] != NULL) {
+			g_signal_connect(G_OBJECT(status_providers[i]), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED, G_CALLBACK(status_update), NULL);
+		}
 	}
+
+	status_update();
 
 	return FALSE;
 }

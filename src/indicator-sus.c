@@ -182,13 +182,6 @@ status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot,
 }
 
 void
-status_icon_changed (void)
-{
-
-
-}
-
-void
 status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userdata)
 {
 	g_return_if_fail(status_image != NULL);
@@ -199,6 +192,13 @@ status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userda
 
 	return;
 }
+
+void
+status_icon_changed (DBusGProxy * proxy, gchar * icon, gpointer userdata)
+{
+	return status_icon_cb(proxy, icon, NULL, NULL);
+}
+
 
 static gboolean
 connect_to_status (gpointer userdata)

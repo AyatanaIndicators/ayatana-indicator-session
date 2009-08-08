@@ -180,6 +180,20 @@ status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot,
 	return;
 }
 
+void
+status_icon_changed (void)
+{
+
+
+}
+
+void
+status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userdata)
+{
+
+	return;
+}
+
 static gboolean
 connect_to_status (gpointer userdata)
 {
@@ -197,8 +211,14 @@ connect_to_status (gpointer userdata)
 		if (error != NULL) {
 			g_warning("Unable to get status proxy: %s", error->message);
 			g_error_free(error);
+			return FALSE;
 		}
+
+		dbus_g_proxy_add_signal(status_proxy, "IconsChanged", G_TYPE_STRING, G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(status_proxy, "IconsChanged", G_CALLBACK(status_icon_changed), NULL, NULL);
 	}
+
+	org_ayatana_indicator_status_status_icons_async(status_proxy, status_icon_cb, NULL);
 
 	return FALSE;
 }

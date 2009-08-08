@@ -1,9 +1,9 @@
-indicator-sus (0.1~ppa7~status4) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa7~status4) karmic; urgency=low
 
   * Clean up build a little bit
   * Change internal DBus names
 
- -- Ted Gould <ted@ubuntu.com>  Sat, 08 Aug 2009 14:37:20 -0600
+ -- Ted Gould <ted@ubuntu.com>  Sat, 08 Aug 2009 14:37:47 -0600
 
 indicator-sus (0.1~ppa7~status3) karmic; urgency=low
 

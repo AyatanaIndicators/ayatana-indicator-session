@@ -172,3 +172,10 @@ _status_service_server_pretty_user_name (StatusServiceDbus * service, gchar ** u
 
 	return TRUE;
 }
+
+void
+status_service_dbus_set_status (StatusServiceDbus * self, const gchar * icon)
+{
+	g_signal_emit(G_OBJECT(self), signals[STATUS_ICONS_CHANGED], 0, icon, TRUE);
+	return;
+}

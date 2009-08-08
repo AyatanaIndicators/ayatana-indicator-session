@@ -7,7 +7,7 @@
 			<annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
 		</method>
 		<method name="StatusIcons">
-			<arg type="a(s)" name="icons" direction="out" />
+			<arg type="s" name="icons" direction="out" />
 		</method>
 		<method name="PrettyUserName">
 			<arg type="s" name="name" direction="out" />
@@ -18,7 +18,7 @@
 			<arg type="s" name="name" direction="out" />
 		</signal>
 		<signal name="StatusIconsChanged">
-			<arg type="a(s)" name="icons" direction="out" />
+			<arg type="s" name="icons" direction="out" />
 		</signal>
 
 	</interface>

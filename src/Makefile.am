@@ -32,14 +32,14 @@ indicator_status_service_SOURCES = \
 indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS) -Wall -Werror
 indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
 
-status-service-client.h: status-service.xml
+status-service-client.h: $(srcdir)/status-service.xml
 	dbus-binding-tool \
 		--prefix=_status_service_client \
 		--mode=glib-client \
 		--output=status-service-client.h \
 		$(srcdir)/status-service.xml
 
-status-service-server.h: status-service.xml
+status-service-server.h: $(srcdir)/status-service.xml
 	dbus-binding-tool \
 		--prefix=_status_service_server \
 		--mode=glib-server \
@@ -72,3 +72,6 @@ BUILT_SOURCES = \
 
 EXTRA_DIST = \
 	status-service.xml
+
+CLEANFILES = \
+	$(BUILT_SOURCES)

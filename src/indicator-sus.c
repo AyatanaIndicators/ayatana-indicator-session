@@ -210,7 +210,7 @@ connect_to_status (gpointer userdata)
 
 		status_proxy = dbus_g_proxy_new_for_name_owner(sbus,
 		                                               INDICATOR_STATUS_DBUS_NAME,
-		                                               INDICATOR_STATUS_DBUS_OBJECT,
+		                                               INDICATOR_STATUS_SERVICE_DBUS_OBJECT,
 		                                               INDICATOR_STATUS_SERVICE_DBUS_INTERFACE,
 		                                               &error);
 

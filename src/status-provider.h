@@ -47,7 +47,8 @@ typedef enum
 }
 StatusProviderStatus;
 
-#define STATUS_PROVIDER_SIGNAL_STATUS_CHANGED  "status-changed"
+#define STATUS_PROVIDER_SIGNAL_STATUS_CHANGED     "status-changed"
+#define STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID  (g_signal_lookup(STATUS_PROVIDER_SIGNAL_STATUS_CHANGED, STATUS_PROVIDER_TYPE))
 
 typedef struct _StatusProvider      StatusProvider;
 struct _StatusProvider {

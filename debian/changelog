@@ -1,3 +1,9 @@
+indicator-sus (0.1~ppa7~status2) UNRELEASED; urgency=low
+
+  * Moving the icons to a better, warmer, place.
+
+ -- Ted Gould <ted@ubuntu.com>  Sat, 08 Aug 2009 09:44:39 -0600
+
 indicator-sus (0.1~ppa7~status1) karmic; urgency=low
 
   * Lots of updates from a branch to make things on the status

@@ -67,6 +67,27 @@ static DbusmenuMenuitem * root_menuitem = NULL;
 static DbusmenuMenuitem * status_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 static StatusServiceDbus * dbus_interface = NULL;
+static StatusProviderStatus global_status = STATUS_PROVIDER_STATUS_OFFLINE;
+
+static void
+status_update (void) {
+	StatusProviderStatus oldglobal = global_status;
+	global_status = STATUS_PROVIDER_STATUS_ONLINE;
+
+	int i;
+	for (i = 0; i < STATUS_PROVIDER_CNT; i++) {
+		StatusProviderStatus localstatus = status_provider_get_status(status_providers[i]);
+		if (localstatus > global_status) {
+			global_status = localstatus;
+		}
+	}
+
+	if (global_status != oldglobal) {
+		g_debug("Global status changed to: %s", _(status_strings[global_status]));
+	}
+
+	return;
+}
 
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */

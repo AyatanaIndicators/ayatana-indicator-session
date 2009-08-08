@@ -29,7 +29,7 @@ indicator_status_service_SOURCES = \
 	status-provider.c \
 	status-provider-pidgin.h \
 	status-provider-pidgin.c
-indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS)
+indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS) -Wall -Werror
 indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
 
 status-service-client.h: status-service.xml
@@ -51,7 +51,7 @@ status-service-server.h: status-service.xml
 ###############
 
 indicator_users_service_SOURCES = users-service.c
-indicator_users_service_CFLAGS = $(USERSSERVICE_CFLAGS)
+indicator_users_service_CFLAGS = $(USERSSERVICE_CFLAGS) -Wall -Werror
 indicator_users_service_LDADD = $(USERSSERVICE_LIBS)
 
 #################
@@ -59,7 +59,7 @@ indicator_users_service_LDADD = $(USERSSERVICE_LIBS)
 #################
 
 indicator_session_service_SOURCES = session-service.c
-indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\"
+indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror
 indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS)
 
 ###############

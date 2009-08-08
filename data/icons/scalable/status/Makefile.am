@@ -1,5 +1,5 @@
 
-iconsdir = $(pkgdatadir)/icons/hicolor/scalable/status
+iconsdir = $(INDICATORICONSDIR)/hicolor/scalable/status
 
 icons_DATA =  \
 	user-online.svg			\

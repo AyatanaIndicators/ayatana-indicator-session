@@ -1,5 +1,5 @@
 
-iconsdir = $(pkgdatadir)/icons/hicolor/24x24/status
+iconsdir = $(INDICATORICONSDIR)/hicolor/24x24/status
 
 icons_DATA =  \
 	user-online.png			\

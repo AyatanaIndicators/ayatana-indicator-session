@@ -129,6 +129,12 @@ status_provider_pidgin_init (StatusProviderPidgin *self)
 static void
 status_provider_pidgin_dispose (GObject *object)
 {
+	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(self);
+
+	if (priv->proxy != NULL) {
+		g_object_unref(priv->proxy);
+		priv->proxy = NULL;
+	}
 
 	G_OBJECT_CLASS (status_provider_pidgin_parent_class)->dispose (object);
 	return;
@@ -166,6 +172,7 @@ set_status (StatusProvider * sp, StatusProviderStatus status)
 	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(sp);
 	pg_status_t pg_status = sp_to_pg_map[status];
 	priv->pg_status = pg_status;
+	g_signal_emit(G_OBJECT(sp), signals[STATUS_CHANGED], 0, pg_to_sp_map[priv->pg_status], TRUE);
 	return;
 }
 

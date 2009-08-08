@@ -1,8 +1,8 @@
-indicator-sus (0.1~ppa7~status2) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa7~status2) karmic; urgency=low
 
   * Moving the icons to a better, warmer, place.
 
- -- Ted Gould <ted@ubuntu.com>  Sat, 08 Aug 2009 09:44:39 -0600
+ -- Ted Gould <ted@ubuntu.com>  Sat, 08 Aug 2009 09:47:00 -0600
 
 indicator-sus (0.1~ppa7~status1) karmic; urgency=low
 

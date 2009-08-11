@@ -15,7 +15,8 @@ Build-Depends: debhelper (>= 5.0),
                intltool
 Standards-Version: 3.8.2
 Homepage: https://launchpad.net/indicator-applet
-Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-core-dev/indicator-applet/sus-ubuntu
+Vcs-Bzr: lp:~ubuntu-core-dev/indicator-applet/sus-ubuntu
+Vcs-Bzr-Browser: http://bazaar.launchpad.net/~ubuntu-core-dev/indicator-applet/sus-ubuntu
 
 Package: indicator-sus
 Architecture: any

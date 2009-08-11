@@ -4,7 +4,7 @@ AC_INIT(src/indicator-sus.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-sus, 0.1dev)
+AM_INIT_AUTOMAKE(indicator-sus, 0.1)
 
 AM_MAINTAINER_MODE
 

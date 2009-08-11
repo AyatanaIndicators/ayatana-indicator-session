@@ -13,7 +13,7 @@ Build-Depends: debhelper (>= 5.0),
                libdbusmenu-gtk-dev,
                libpolkit-gnome-dev,
                intltool
-Standards-Version: 3.8.0
+Standards-Version: 3.8.2
 
 Package: indicator-sus
 Architecture: any

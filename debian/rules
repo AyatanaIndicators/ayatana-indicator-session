@@ -6,6 +6,8 @@ include /usr/share/cdbs/1/class/gnome.mk
 DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
+DEB_DH_MAKESHLIBS_ARGS = -Xusr/lib/indicators
+
 binary-install/indicator-sus::
 	# remove .a/.la clutter
 	rm -f debian/$(cdbs_curpkg)/usr/lib/indicators/*/*.a

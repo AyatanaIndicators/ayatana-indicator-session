@@ -7,6 +7,7 @@ indicator-sus (0.1-0ubuntu1) karmic; urgency=low
     - Set Homepage and Vcs-Bzr
   * Added debian/watch 
   * Changed conflicts for gdm to <= 2.27.4-0ubuntu9
+  * Depend on indicator-applet >= 0.2
 
  -- Ken VanDine <ken.vandine@canonical.com>  Tue, 11 Aug 2009 09:53:56 -0400
 

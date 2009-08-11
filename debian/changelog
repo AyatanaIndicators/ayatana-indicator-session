@@ -5,8 +5,9 @@ indicator-sus (0.1-0ubuntu1) karmic; urgency=low
   * Corrected the FSF address
   * debian/control
     - Set Homepage and Vcs-Bzr
+  * Added debian/watch 
 
- -- Ken VanDine <ken.vandine@canonical.com>  Tue, 11 Aug 2009 09:46:04 -0400
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 11 Aug 2009 09:53:56 -0400
 
 indicator-sus (0.1~ppa6) karmic; urgency=low
 

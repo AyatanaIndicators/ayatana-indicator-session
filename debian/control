@@ -20,6 +20,6 @@ Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-core-dev/indicator-sus/ubuntu
 Package: indicator-sus
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet, devicekit-power
-Conflicts: gdm (< 2.27.4-0ubuntu9)
+Conflicts: gdm (<= 2.27.4-0ubuntu9)
 Description: Applet for the GNOME panel providing various indicators for
  display to users.

@@ -1,8 +1,8 @@
-indicator-sus (0.1~ppa7~status5) UNRELEASED; urgency=low
+indicator-sus (0.1~ppa7~status5) karmic; urgency=low
 
   * Trying to do some more icon fixes.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 12 Aug 2009 21:48:21 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 12 Aug 2009 21:48:43 -0600
 
 indicator-sus (0.1~ppa7~status4) karmic; urgency=low
 

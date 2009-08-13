@@ -1,3 +1,23 @@
+indicator-sus (0.1-0ubuntu2) UNRELEASED; urgency=low
+
+  * Fixed Vcs-Bzr location, part of the  indicator-applet project
+  * specify Vcs-Bzr-Browser
+
+ -- Alexander Sack <asac@ubuntu.com>  Tue, 11 Aug 2009 17:26:15 +0200
+
+indicator-sus (0.1-0ubuntu1) karmic; urgency=low
+
+  * Include icons in the tarball
+  * Added license files
+  * Corrected the FSF address
+  * debian/control
+    - Set Homepage and Vcs-Bzr
+  * Added debian/watch 
+  * Changed conflicts for gdm to <= 2.27.4-0ubuntu9
+  * Depend on indicator-applet >= 0.2
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 11 Aug 2009 09:53:56 -0400
+
 indicator-sus (0.1~ppa6) karmic; urgency=low
 
   * debian/control: Conflicting with gdm < 2.27.4-0ubuntu9 or

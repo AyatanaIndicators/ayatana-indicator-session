@@ -1,3 +1,9 @@
+indicator-sus (0.1~ppa7~status7) karmic; urgency=low
+
+  * Logic fix
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 12 Aug 2009 22:24:13 -0600
+
 indicator-sus (0.1~ppa7~status6) karmic; urgency=low
 
   * Fixing signal name and cleaning debug messages.

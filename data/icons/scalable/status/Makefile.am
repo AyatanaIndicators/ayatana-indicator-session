@@ -8,3 +8,4 @@ icons_DATA =  \
 	user-busy.svg			\
 	user-invisible.svg
 
+EXTRA_DIST = $(icons_DATA)

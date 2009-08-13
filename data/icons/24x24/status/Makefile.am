@@ -8,3 +8,4 @@ icons_DATA =  \
 	user-busy.png			\
 	user-invisible.png
 
+EXTRA_DIST = $(icons_DATA)

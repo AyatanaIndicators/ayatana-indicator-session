@@ -73,7 +73,7 @@ get_label (void)
 GtkImage *
 get_icon (void)
 {
-	g_debug("Changing status icon: %s", "user-offline");
+	g_debug("Changing status icon: '%s'", "user-offline");
 	status_image = GTK_IMAGE(gtk_image_new_from_icon_name("user-offline", GTK_ICON_SIZE_MENU));
 	gtk_widget_show(GTK_WIDGET(status_image));
 	return status_image;
@@ -189,7 +189,7 @@ status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userda
 	g_return_if_fail(icons != NULL);
 	g_return_if_fail(icons[0] == '\0');
 
-	g_debug("Changing status icon: %s", icons);
+	g_debug("Changing status icon: '%s'", icons);
 	gtk_image_set_from_icon_name(status_image, icons, GTK_ICON_SIZE_MENU);
 
 	return;
@@ -222,8 +222,8 @@ connect_to_status (gpointer userdata)
 			return FALSE;
 		}
 
-		dbus_g_proxy_add_signal(status_proxy, "IconsChanged", G_TYPE_STRING, G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal(status_proxy, "IconsChanged", G_CALLBACK(status_icon_changed), NULL, NULL);
+		dbus_g_proxy_add_signal(status_proxy, "StatusIconsChanged", G_TYPE_STRING, G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(status_proxy, "StatusIconsChanged", G_CALLBACK(status_icon_changed), NULL, NULL);
 	}
 
 	org_ayatana_indicator_status_service_status_icons_async(status_proxy, status_icon_cb, NULL);

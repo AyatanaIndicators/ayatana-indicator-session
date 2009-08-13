@@ -1,3 +1,9 @@
+indicator-sus (0.1~ppa7~status6) UNRELEASED; urgency=low
+
+  * Fixing signal name and cleaning debug messages.
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 12 Aug 2009 22:02:53 -0600
+
 indicator-sus (0.1~ppa7~status5) karmic; urgency=low
 
   * Trying to do some more icon fixes.

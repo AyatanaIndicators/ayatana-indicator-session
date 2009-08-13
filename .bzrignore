@@ -25,6 +25,16 @@ indicator-status.service
 indicator-users.service
 status-service-client.h
 status-service-server.h
+debian/indicator-fusa
+debian/indicator-fusa.debhelper.log
+debian/indicator-fusa.postinst.debhelper
+debian/indicator-fusa.postrm.debhelper
+debian/indicator-fusa.substvars
+debian/indicator-sus
+debian/indicator-sus.debhelper.log
+debian/indicator-sus.postinst.debhelper
+debian/indicator-sus.postrm.debhelper
+debian/indicator-sus.substvars
 gtk-logout-helper
 .deps
 .libs

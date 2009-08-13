@@ -187,7 +187,7 @@ status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userda
 {
 	g_return_if_fail(status_image != NULL);
 	g_return_if_fail(icons != NULL);
-	g_return_if_fail(icons[0] == '\0');
+	g_return_if_fail(icons[0] != '\0');
 
 	g_debug("Changing status icon: '%s'", icons);
 	gtk_image_set_from_icon_name(status_image, icons, GTK_ICON_SIZE_MENU);

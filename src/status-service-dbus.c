@@ -34,7 +34,7 @@ static void status_service_dbus_init       (StatusServiceDbus *self);
 static void status_service_dbus_dispose    (GObject *object);
 static void status_service_dbus_finalize   (GObject *object);
 static gboolean _status_service_server_watch (StatusServiceDbus * service, GError ** error);
-static gboolean _status_service_server_status_icons (StatusServiceDbus * service, GArray * array, GError ** error);
+static gboolean _status_service_server_status_icons (StatusServiceDbus * service, gchar ** icon, GError ** error);
 static gboolean _status_service_server_pretty_user_name (StatusServiceDbus * service, gchar ** username, GError ** error);
 
 #include "status-service-server.h"
@@ -44,6 +44,7 @@ typedef struct _StatusServiceDbusPrivate StatusServiceDbusPrivate;
 struct _StatusServiceDbusPrivate
 {
 	gchar * name;
+	gchar * icon;
 };
 
 #define STATUS_SERVICE_DBUS_GET_PRIVATE(o) \
@@ -102,8 +103,8 @@ status_service_dbus_class_init (StatusServiceDbusClass *klass)
 	                                             G_SIGNAL_RUN_LAST,
 	                                             G_STRUCT_OFFSET(StatusServiceDbusClass, status_icons_changed),
 	                                             NULL, NULL,
-	                                             g_cclosure_marshal_VOID__POINTER,
-	                                             G_TYPE_NONE, 1, G_TYPE_POINTER);
+	                                             g_cclosure_marshal_VOID__STRING,
+	                                             G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	dbus_g_object_type_install_info(STATUS_SERVICE_DBUS_TYPE, &dbus_glib__status_service_server_object_info);
 	
@@ -120,7 +121,8 @@ status_service_dbus_init (StatusServiceDbus *self)
 										G_OBJECT(self));
 
 	StatusServiceDbusPrivate * priv = STATUS_SERVICE_DBUS_GET_PRIVATE(self);
-	priv->name = "test";
+	priv->name = NULL;
+	priv->icon = NULL;
 
 	return;
 }
@@ -149,8 +151,19 @@ _status_service_server_watch (StatusServiceDbus * service, GError ** error)
 }
 
 static gboolean
-_status_service_server_status_icons (StatusServiceDbus * service, GArray * array, GError ** error)
+_status_service_server_status_icons (StatusServiceDbus * service, gchar ** icon, GError ** error)
 {
+	if (!IS_STATUS_SERVICE_DBUS(service)) {
+		g_warning("NO BAD EVIL!");
+		return FALSE;
+	}
+
+	StatusServiceDbusPrivate * priv = STATUS_SERVICE_DBUS_GET_PRIVATE(service);
+	if (priv->icon == NULL) {
+		*icon = g_strdup("");
+	} else {
+		*icon = g_strdup(priv->icon);
+	}
 
 	return TRUE;
 }
@@ -171,4 +184,22 @@ _status_service_server_pretty_user_name (StatusServiceDbus * service, gchar ** u
 	}
 
 	return TRUE;
+}
+
+void
+status_service_dbus_set_status (StatusServiceDbus * self, const gchar * icon)
+{
+	g_return_if_fail(IS_STATUS_SERVICE_DBUS(self));
+
+	g_debug("Setting icon to: %s", icon);
+
+	StatusServiceDbusPrivate * priv = STATUS_SERVICE_DBUS_GET_PRIVATE(self);
+
+	if (priv->icon != NULL) {
+		g_free(priv->icon);
+	}
+	priv->icon = g_strdup(icon);
+
+	g_signal_emit(G_OBJECT(self), signals[STATUS_ICONS_CHANGED], 0, priv->icon, TRUE);
+	return;
 }

@@ -1,5 +1,5 @@
 
-iconsdir = $(pkgdatadir)/icons/hicolor/16x16/actions
+iconsdir = $(INDICATORICONSDIR)/hicolor/16x16/actions
 
 icons_DATA =  \
 	system-shutdown.png		\

@@ -318,6 +318,7 @@ set_status (StatusProvider * sp, StatusProviderStatus status)
 		error = NULL;
 	}
 
+	g_signal_emit(G_OBJECT(sp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, pg_to_sp_map[priv->pg_status], TRUE);
 	return;
 }
 

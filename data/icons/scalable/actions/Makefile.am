@@ -1,5 +1,5 @@
 
-iconsdir = $(pkgdatadir)/icons/hicolor/scalable/actions
+iconsdir = $(INDICATORICONSDIR)/hicolor/scalable/actions
 
 icons_DATA =  \
 	system-restart.svg \

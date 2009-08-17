@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <node name="/">
-	<interface name="org.ayatana.indicator.status">
+	<interface name="org.ayatana.indicator.status.service">
 
 <!-- Methods -->
 		<method name="Watch">
 			<annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
 		</method>
 		<method name="StatusIcons">
-			<arg type="a(s)" name="icons" direction="out" />
+			<arg type="s" name="icons" direction="out" />
 		</method>
 		<method name="PrettyUserName">
 			<arg type="s" name="name" direction="out" />
@@ -18,7 +18,7 @@
 			<arg type="s" name="name" direction="out" />
 		</signal>
 		<signal name="StatusIconsChanged">
-			<arg type="a(s)" name="icons" direction="out" />
+			<arg type="s" name="icons" direction="out" />
 		</signal>
 
 	</interface>

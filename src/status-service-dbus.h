@@ -52,6 +52,7 @@ struct _StatusServiceDbus {
 };
 
 GType status_service_dbus_get_type (void);
+void status_service_dbus_set_status (StatusServiceDbus * self, const gchar * icon);
 
 G_END_DECLS
 

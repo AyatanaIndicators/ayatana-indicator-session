@@ -1,4 +1,11 @@
-indicator-sus (0.1-0ubuntu2) UNRELEASED; urgency=low
+indicator-sus (0.1-0ubuntu3~ppa1) UNRELEASED; urgency=low
+
+  * Merging in the branch that adds in the status icons to
+    the panel.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 17 Aug 2009 09:07:21 -0500
+
+indicator-sus (0.1-0ubuntu2) UNRELEASE; urgency=low
 
   * Fixed Vcs-Bzr location, part of the  indicator-applet project
   * specify Vcs-Bzr-Browser

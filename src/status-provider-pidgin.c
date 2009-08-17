@@ -101,6 +101,25 @@ status_provider_pidgin_class_init (StatusProviderPidginClass *klass)
 }
 
 static void
+changed_status (DBusGProxy * proxy, gint savedstatus, GError ** error, StatusProviderPidgin * spp)
+{
+
+	return;
+}
+
+static void
+proxy_destroy (DBusGProxy * proxy, StatusProviderPidgin * spp)
+{
+	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(spp);
+
+	priv->proxy = NULL;
+	priv->pg_status = PG_STATUS_OFFLINE;
+
+	g_signal_emit(G_OBJECT(spp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, pg_to_sp_map[priv->pg_status], TRUE);
+	return;
+}
+
+static void
 status_provider_pidgin_init (StatusProviderPidgin *self)
 {
 	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(self);
@@ -121,6 +140,30 @@ status_provider_pidgin_init (StatusProviderPidgin *self)
 	if (error != NULL) {
 		g_debug("Unable to get Pidgin proxy: %s", error->message);
 		g_error_free(error);
+		return;
+	}
+
+	if (priv->proxy != NULL) {
+		g_object_add_weak_pointer (G_OBJECT(priv->proxy), (gpointer *)&priv->proxy);
+		g_signal_connect(G_OBJECT(priv->proxy), "destroy",
+		                 G_CALLBACK(proxy_destroy), self);
+
+		g_debug("Adding Pidgin Signals");
+		dbus_g_object_register_marshaller(_status_provider_pidgin_marshal_VOID__INT_INT,
+		                            G_TYPE_NONE,
+		                            G_TYPE_INT,
+		                            G_TYPE_INT,
+		                            G_TYPE_INVALID);
+		dbus_g_proxy_add_signal    (priv->proxy,
+		                            "SavedstatusChanged",
+		                            G_TYPE_INT,
+		                            G_TYPE_INT,
+		                            G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(priv->proxy,
+		                            "SavedstatusChanged",
+		                            G_CALLBACK(changed_status),
+		                            (void *)self,
+		                            NULL);
 	}
 
 	return;
@@ -167,12 +210,79 @@ status_provider_pidgin_new (void)
 static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {
-	g_debug("\tSetting Pidgin Status: %d", status);
+	gchar * message = "";
+
 	g_return_if_fail(IS_STATUS_PROVIDER_PIDGIN(sp));
 	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(sp);
-	pg_status_t pg_status = sp_to_pg_map[status];
-	priv->pg_status = pg_status;
-	g_signal_emit(G_OBJECT(sp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, pg_to_sp_map[priv->pg_status], TRUE);
+
+	g_debug("\tPidgin set status to %d", status);
+	if (priv->proxy == NULL) {
+		return;
+	}
+
+	priv->pg_status = sp_to_pg_map[status];
+	gint status_val = 0;
+	gboolean ret = FALSE;
+	GError * error = NULL;
+
+	ret = dbus_g_proxy_call(priv->proxy,
+	                        "PurpleSavedstatusFindTransientByTypeAndMessage", &error,
+							G_TYPE_INT, priv->pg_status,
+							G_TYPE_STRING, message,
+	                        G_TYPE_INVALID,
+	                        G_TYPE_INT, &status_val,
+	                        G_TYPE_INVALID);
+
+	if (!ret) {
+		if (error != NULL) {
+			g_error_free(error);
+		}
+		error = NULL;
+		status_val = 0;
+		g_debug("No Pidgin saved status to apply");
+	}
+
+	if (status_val == 0) {
+		ret = dbus_g_proxy_call(priv->proxy,
+								"PurpleSavedstatusNew", &error,
+								G_TYPE_STRING, message,
+								G_TYPE_INT, priv->pg_status,
+								G_TYPE_INVALID,
+								G_TYPE_INT, &status_val,
+								G_TYPE_INVALID);
+
+		if (!ret) {
+			status_val = 0;
+			if (error != NULL) {
+				g_warning("Unable to create Pidgin status for %d: %s", status, error->message);
+				g_error_free(error);
+			} else {
+				g_warning("Unable to create Pidgin status for %d", status);
+			}
+			error = NULL;
+		}
+	}
+
+	if (status_val == 0) {
+		return;
+	}
+
+	ret = dbus_g_proxy_call(priv->proxy,
+	                        "PurpleSavedstatusActivate", &error,
+	                        G_TYPE_INT, status_val,
+	                        G_TYPE_INVALID,
+	                        G_TYPE_INVALID);
+
+	if (!ret) {
+		if (error != NULL) {
+			g_warning("Pidgin unable to change to status: %s", error->message);
+			g_error_free(error);
+		} else {
+			g_warning("Pidgin unable to change to status");
+		}
+		error = NULL;
+	}
+
 	return;
 }
 

@@ -30,7 +30,9 @@ indicator_status_service_SOURCES = \
 	status-provider-pidgin.h \
 	status-provider-pidgin.c \
 	status-provider-pidgin-marshal.h \
-	status-provider-pidgin-marshal.c
+	status-provider-pidgin-marshal.c \
+	status-provider-telepathy-marshal.h \
+	status-provider-telepathy-marshal.c
 indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS) -Wall -Werror
 indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
 
@@ -58,6 +60,16 @@ status-provider-pidgin-marshal.c: $(srcdir)/status-provider-pidgin.list
 		--prefix=_status_provider_pidgin_marshal $(srcdir)/status-provider-pidgin.list \
 		> status-provider-pidgin-marshal.c
 
+status-provider-telepathy-marshal.h: $(srcdir)/status-provider-telepathy.list
+	glib-genmarshal --header \
+		--prefix=_status_provider_telepathy_marshal $(srcdir)/status-provider-telepathy.list \
+		> status-provider-telepathy-marshal.h
+
+status-provider-telepathy-marshal.c: $(srcdir)/status-provider-telepathy.list
+	glib-genmarshal --body \
+		--prefix=_status_provider_telepathy_marshal $(srcdir)/status-provider-telepathy.list \
+		> status-provider-telepathy-marshal.c
+
 ###############
 # Users Stuff
 ###############
@@ -82,11 +94,14 @@ BUILT_SOURCES = \
 	status-service-client.h \
 	status-service-server.h \
 	status-provider-pidgin-marshal.h \
-	status-provider-pidgin-marshal.c
+	status-provider-pidgin-marshal.c \
+	status-provider-telepathy-marshal.h \
+	status-provider-telepathy-marshal.c
 
 EXTRA_DIST = \
 	status-service.xml \
-	status-provider-pidgin.list
+	status-provider-pidgin.list \
+	status-provider-telepathy.list
 
 CLEANFILES = \
 	$(BUILT_SOURCES)

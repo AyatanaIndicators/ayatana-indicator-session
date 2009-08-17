@@ -28,7 +28,9 @@ indicator_status_service_SOURCES = \
 	status-provider.h \
 	status-provider.c \
 	status-provider-pidgin.h \
-	status-provider-pidgin.c
+	status-provider-pidgin.c \
+	status-provider-pidgin-marshal.h \
+	status-provider-pidgin-marshal.c
 indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS) -Wall -Werror
 indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
 
@@ -45,6 +47,16 @@ status-service-server.h: $(srcdir)/status-service.xml
 		--mode=glib-server \
 		--output=status-service-server.h \
 		$(srcdir)/status-service.xml
+
+status-provider-pidgin-marshal.h: $(srcdir)/status-provider-pidgin.list
+	glib-genmarshal --header \
+		--prefix=_status_provider_pidgin_marshal $(srcdir)/status-provider-pidgin.list \
+		> status-provider-pidgin-marshal.h
+
+status-provider-pidgin-marshal.c: $(srcdir)/status-provider-pidgin.list
+	glib-genmarshal --body \
+		--prefix=_status_provider_pidgin_marshal $(srcdir)/status-provider-pidgin.list \
+		> status-provider-pidgin-marshal.c
 
 ###############
 # Users Stuff
@@ -68,10 +80,13 @@ indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS)
 
 BUILT_SOURCES = \
 	status-service-client.h \
-	status-service-server.h
+	status-service-server.h \
+	status-provider-pidgin-marshal.h \
+	status-provider-pidgin-marshal.c
 
 EXTRA_DIST = \
-	status-service.xml
+	status-service.xml \
+	status-provider-pidgin.list
 
 CLEANFILES = \
 	$(BUILT_SOURCES)

@@ -38,3 +38,5 @@ debian/indicator-sus.substvars
 gtk-logout-helper
 .deps
 .libs
+src/status-provider-pidgin-marshal.c
+src/status-provider-pidgin-marshal.h

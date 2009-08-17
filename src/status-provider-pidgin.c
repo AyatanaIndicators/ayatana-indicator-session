@@ -26,6 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "status-provider.h"
 #include "status-provider-pidgin.h"
+#include "status-provider-pidgin-marshal.h"
 
 #include <dbus/dbus-glib.h>
 

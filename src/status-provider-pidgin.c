@@ -102,9 +102,43 @@ status_provider_pidgin_class_init (StatusProviderPidginClass *klass)
 }
 
 static void
+type_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
+{
+	GError * error = NULL;
+	gint status = 0;
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_INT, &status, G_TYPE_INVALID)) {
+		g_warning("Unable to get type from Pidgin: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(userdata);
+	if (status != priv->pg_status) {
+		priv->pg_status = status;
+
+		g_signal_emit(G_OBJECT(userdata), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, pg_to_sp_map[priv->pg_status], TRUE);
+	}
+
+	return;
+}
+
+static void
+saved_status_to_type (StatusProviderPidgin * spp, gint savedstatus)
+{
+	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(spp);
+
+	g_debug("Pidgin figuring out type for %d", savedstatus);
+	dbus_g_proxy_begin_call(priv->proxy,
+	                        "PurpleSavedstatusGetType", type_cb, spp, NULL,
+	                        G_TYPE_INT, savedstatus, G_TYPE_INVALID);
+
+	return;
+}
+
+static void
 changed_status (DBusGProxy * proxy, gint savedstatus, GError ** error, StatusProviderPidgin * spp)
 {
-
+	saved_status_to_type(spp, savedstatus);
 	return;
 }
 

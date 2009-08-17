@@ -136,6 +136,22 @@ saved_status_to_type (StatusProviderPidgin * spp, gint savedstatus)
 }
 
 static void
+savedstatus_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
+{
+	GError * error = NULL;
+	gint status = 0;
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_INT, &status, G_TYPE_INVALID)) {
+		g_warning("Unable to get saved status from Pidgin: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	saved_status_to_type(STATUS_PROVIDER_PIDGIN(userdata), status);
+	return;
+}
+
+
+static void
 changed_status (DBusGProxy * proxy, gint savedstatus, GError ** error, StatusProviderPidgin * spp)
 {
 	saved_status_to_type(spp, savedstatus);
@@ -199,6 +215,13 @@ status_provider_pidgin_init (StatusProviderPidgin *self)
 		                            G_CALLBACK(changed_status),
 		                            (void *)self,
 		                            NULL);
+
+		dbus_g_proxy_begin_call(priv->proxy,
+		                        "PurpleSavedstatusGetCurrent",
+		                        savedstatus_cb,
+		                        self,
+		                        NULL,
+		                        G_TYPE_INVALID);
 	}
 
 	return;

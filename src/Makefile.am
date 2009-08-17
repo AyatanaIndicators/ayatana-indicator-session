@@ -31,6 +31,8 @@ indicator_status_service_SOURCES = \
 	status-provider-pidgin.c \
 	status-provider-pidgin-marshal.h \
 	status-provider-pidgin-marshal.c \
+	status-provider-telepathy.h \
+	status-provider-telepathy.c \
 	status-provider-telepathy-marshal.h \
 	status-provider-telepathy-marshal.c
 indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS) -Wall -Werror

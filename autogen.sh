@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PKG_NAME="indicator-sus"
+PKG_NAME="indicator-session"
 
 which gnome-autogen.sh || {
 	echo "You need gnome-common from GNOME SVN"

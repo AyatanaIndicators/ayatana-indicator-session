@@ -38,3 +38,5 @@ debian/indicator-sus.substvars
 gtk-logout-helper
 .deps
 .libs
+src/libsession.la
+src/libsession_la-indicator-session.lo

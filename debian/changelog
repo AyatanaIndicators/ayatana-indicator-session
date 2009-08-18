@@ -1,11 +1,11 @@
-indicator-session (0.1~bzr17-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-session (0.1~bzr17-0ubuntu1~ppa1) karmic; urgency=low
 
   * Merging in trunk with rename from 'sus' to 'session'
   * debian/control: Switching to indicator-session and conflicting
     and replacing indicator-sus
   * debian/watch: Switching to indicator-session*
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 18 Aug 2009 16:59:58 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 18 Aug 2009 17:07:35 -0500
 
 indicator-sus (0.1-0ubuntu3~ppa1) karmic; urgency=low
 

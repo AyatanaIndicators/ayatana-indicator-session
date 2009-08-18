@@ -1,6 +1,9 @@
 indicator-session (0.1~bzr17-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
   * Merging in trunk with rename from 'sus' to 'session'
+  * debian/control: Switching to indicator-session and conflicting
+    and replacing indicator-sus
+  * debian/watch: Switching to indicator-session*
 
  -- Ted Gould <ted@ubuntu.com>  Tue, 18 Aug 2009 16:59:58 -0500
 

@@ -1,4 +1,4 @@
-Source: indicator-sus
+Source: indicator-session
 Section: gnome
 Priority: optional
 Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
@@ -18,9 +18,9 @@ Homepage: https://launchpad.net/indicator-applet
 Vcs-Bzr: lp:~ubuntu-core-dev/indicator-applet/sus-ubuntu
 Vcs-Bzr-Browser: http://bazaar.launchpad.net/~ubuntu-core-dev/indicator-applet/sus-ubuntu
 
-Package: indicator-sus
+Package: indicator-session
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet (>= 0.2), devicekit-power, gdm
-Conflicts: gdm (<= 2.27.4-0ubuntu9)
-Description: Applet for the GNOME panel providing various indicators for
- display to users.
+Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
+Replaces: indicator-sus
+Description: An indicator providing session management, status control and user switching.

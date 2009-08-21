@@ -1,4 +1,4 @@
-indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
+indicator-session (0.1~bzr17-0ubuntu1) UNRELEASE; urgency=low
 
   * Package rename from 'indicator-sus' to 'indicator-session'
   * Merging in the branch that adds in the status icons to

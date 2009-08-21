@@ -1,18 +1,13 @@
-indicator-session (0.1~bzr17-0ubuntu1~ppa1) karmic; urgency=low
+indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
 
-  * Merging in trunk with rename from 'sus' to 'session'
+  * Package rename from 'indicator-sus' to 'indicator-session'
+  * Merging in the branch that adds in the status icons to
+    the panel.
   * debian/control: Switching to indicator-session and conflicting
     and replacing indicator-sus
   * debian/watch: Switching to indicator-session*
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 18 Aug 2009 17:07:35 -0500
-
-indicator-sus (0.1-0ubuntu3~ppa1) karmic; urgency=low
-
-  * Merging in the branch that adds in the status icons to
-    the panel.
-
- -- Ted Gould <ted@ubuntu.com>  Mon, 17 Aug 2009 09:08:53 -0500
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 21 Aug 2009 12:28:13 -0400
 
 indicator-sus (0.1-0ubuntu2) UNRELEASE; urgency=low
 

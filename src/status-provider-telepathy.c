@@ -30,10 +30,38 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <dbus/dbus-glib.h>
 
+typedef enum {
+	MC_STATUS_UNSET,
+	MC_STATUS_OFFLINE,
+	MC_STATUS_AVAILABLE,
+	MC_STATUS_AWAY,
+	MC_STATUS_EXTENDED_AWAY,
+	MC_STATUS_HIDDEN,
+	MC_STATUS_DND
+} mc_status_t;
+
+static StatusProviderStatus mc_to_sp_map[] = {
+	/* MC_STATUS_UNSET,         */  STATUS_PROVIDER_STATUS_OFFLINE,
+	/* MC_STATUS_OFFLINE,       */  STATUS_PROVIDER_STATUS_OFFLINE,
+	/* MC_STATUS_AVAILABLE,     */  STATUS_PROVIDER_STATUS_ONLINE,
+	/* MC_STATUS_AWAY,          */  STATUS_PROVIDER_STATUS_AWAY,
+	/* MC_STATUS_EXTENDED_AWAY, */  STATUS_PROVIDER_STATUS_AWAY,
+	/* MC_STATUS_HIDDEN,        */  STATUS_PROVIDER_STATUS_INVISIBLE,
+	/* MC_STATUS_DND            */  STATUS_PROVIDER_STATUS_DND
+};
+
+static mc_status_t sp_to_mc_map[] = {
+	/* STATUS_PROVIDER_STATUS_ONLINE,  */  MC_STATUS_AVAILABLE,
+	/* STATUS_PROVIDER_STATUS_AWAY,    */  MC_STATUS_AWAY,
+	/* STATUS_PROVIDER_STATUS_DND      */  MC_STATUS_DND,
+	/* STATUS_PROVIDER_STATUS_INVISIBLE*/  MC_STATUS_HIDDEN,
+	/* STATUS_PROVIDER_STATUS_OFFLINE  */  MC_STATUS_OFFLINE
+};
 
 typedef struct _StatusProviderTelepathyPrivate StatusProviderTelepathyPrivate;
 struct _StatusProviderTelepathyPrivate {
 	DBusGProxy * proxy;
+	mc_status_t  mc_status;
 };
 
 #define STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(o) \
@@ -45,6 +73,9 @@ static void status_provider_telepathy_class_init (StatusProviderTelepathyClass *
 static void status_provider_telepathy_init       (StatusProviderTelepathy *self);
 static void status_provider_telepathy_dispose    (GObject *object);
 static void status_provider_telepathy_finalize   (GObject *object);
+/* Internal Funcs */
+static void set_status (StatusProvider * sp, StatusProviderStatus status);
+static StatusProviderStatus get_status (StatusProvider * sp);
 
 G_DEFINE_TYPE (StatusProviderTelepathy, status_provider_telepathy, STATUS_PROVIDER_TYPE);
 
@@ -58,10 +89,10 @@ status_provider_telepathy_class_init (StatusProviderTelepathyClass *klass)
 	object_class->dispose = status_provider_telepathy_dispose;
 	object_class->finalize = status_provider_telepathy_finalize;
 
-	//StatusProviderClass * spclass = STATUS_PROVIDER_CLASS(klass);
+	StatusProviderClass * spclass = STATUS_PROVIDER_CLASS(klass);
 
-	//spclass->set_status = set_status;
-	//spclass->get_status = get_status;
+	spclass->set_status = set_status;
+	spclass->get_status = get_status;
 
 	return;
 }
@@ -70,7 +101,10 @@ status_provider_telepathy_class_init (StatusProviderTelepathyClass *klass)
 static void
 status_provider_telepathy_init (StatusProviderTelepathy *self)
 {
-	//StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(self);
+	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(self);
+
+	priv->proxy = NULL;
+	priv->mc_status = MC_STATUS_OFFLINE;
 
 	return;
 }
@@ -111,3 +145,16 @@ status_provider_telepathy_new (void)
 	return STATUS_PROVIDER(g_object_new(STATUS_PROVIDER_TELEPATHY_TYPE, NULL));
 }
 
+static void
+set_status (StatusProvider * sp, StatusProviderStatus status)
+{
+	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(sp);
+	priv->mc_status = sp_to_mc_map[status];	
+	return;
+}
+static StatusProviderStatus
+get_status (StatusProvider * sp)
+{
+	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(sp);
+	return mc_to_sp_map[priv->mc_status];
+}

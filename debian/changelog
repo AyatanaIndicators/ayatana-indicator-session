@@ -1,8 +1,8 @@
-indicator-session (0.1~bzr17-0ubuntu1~ppa2~morestatus3) UNRELEASED; urgency=low
+indicator-session (0.1~bzr17-0ubuntu1~ppa2~morestatus3) karmic; urgency=low
 
   * Fixing status.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 24 Aug 2009 23:47:42 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 24 Aug 2009 23:48:05 -0500
 
 indicator-session (0.1~bzr17-0ubuntu1~ppa2~morestatus2) karmic; urgency=low
 

@@ -75,12 +75,12 @@ static StatusProviderStatus global_status = STATUS_PROVIDER_STATUS_OFFLINE;
 static void
 status_update (void) {
 	StatusProviderStatus oldglobal = global_status;
-	global_status = STATUS_PROVIDER_STATUS_ONLINE;
+	global_status = STATUS_PROVIDER_STATUS_OFFLINE;
 
 	int i;
 	for (i = 0; i < STATUS_PROVIDER_CNT; i++) {
 		StatusProviderStatus localstatus = status_provider_get_status(status_providers[i]);
-		if (localstatus > global_status) {
+		if (localstatus < global_status) {
 			global_status = localstatus;
 		}
 	}

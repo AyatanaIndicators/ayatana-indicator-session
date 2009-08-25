@@ -1,3 +1,9 @@
+indicator-session (0.1~bzr17-0ubuntu1~ppa2~morestatus2) UNRELEASED; urgency=low
+
+  * More status...
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 24 Aug 2009 23:38:48 -0500
+
 indicator-session (0.1~bzr17-0ubuntu1~ppa2~morestatus1) karmic; urgency=low
 
   * Merging in the status work branch

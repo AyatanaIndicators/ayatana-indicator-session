@@ -1,9 +1,9 @@
-indicator-session (0.1~bzr18-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-session (0.1~bzr18-0ubuntu1~ppa1) karmic; urgency=low
 
   * Merging in the upstream branch which has base support for
     status with Pidgin and Telepathy.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 25 Aug 2009 16:23:36 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 25 Aug 2009 16:25:37 -0500
 
 indicator-session (0.1~bzr17-0ubuntu1) UNRELEASE; urgency=low
 

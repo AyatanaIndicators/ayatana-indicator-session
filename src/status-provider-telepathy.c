@@ -112,6 +112,11 @@ status_provider_telepathy_init (StatusProviderTelepathy *self)
 	GError * error = NULL;
 
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	if (session_bus == NULL) {
+		g_warning("Unable to connect to Session Bus: %s", error == NULL ? "No message" : error->message);
+		g_error_free(error);
+		return;
+	}
 
 	priv->proxy = NULL;
 	priv->proxy = dbus_g_proxy_new_for_name_owner(session_bus,

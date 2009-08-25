@@ -76,6 +76,8 @@ static void status_provider_telepathy_finalize   (GObject *object);
 /* Internal Funcs */
 static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
+static void changed_status (DBusGProxy * proxy, guint status, gchar * message, StatusProvider * sp);
+static void proxy_destroy (DBusGProxy * proxy, StatusProvider * sp);
 
 G_DEFINE_TYPE (StatusProviderTelepathy, status_provider_telepathy, STATUS_PROVIDER_TYPE);
 
@@ -105,6 +107,44 @@ status_provider_telepathy_init (StatusProviderTelepathy *self)
 
 	priv->proxy = NULL;
 	priv->mc_status = MC_STATUS_OFFLINE;
+
+	GError * error = NULL;
+
+	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+
+	priv->proxy = NULL;
+	priv->proxy = dbus_g_proxy_new_for_name_owner(session_bus,
+	                         "org.freedesktop.Telepathy.MissionControl",
+	                        "/org/freedesktop/Telepathy/MissionControl",
+	                         "org.freedesktop.Telepathy.MissionControl",
+							 &error);
+
+	if (priv->proxy != NULL) {
+		g_object_add_weak_pointer (G_OBJECT(priv->proxy), (gpointer *)&priv->proxy);
+		g_signal_connect(G_OBJECT(priv->proxy), "destroy",
+		                 G_CALLBACK(proxy_destroy), self);
+
+		dbus_g_object_register_marshaller(_status_provider_telepathy_marshal_VOID__UINT_STRING,
+		                            G_TYPE_NONE,
+		                            G_TYPE_UINT,
+		                            G_TYPE_STRING,
+		                            G_TYPE_INVALID);
+		dbus_g_proxy_add_signal    (priv->proxy,
+		                            "PresenceChanged",
+		                            G_TYPE_UINT,
+		                            G_TYPE_STRING,
+		                            G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(priv->proxy,
+		                            "PresenceChanged",
+		                            G_CALLBACK(changed_status),
+		                            (void *)self,
+		                            NULL);
+	} else {
+		g_warning("Unable to connect to Mission Control");
+		if (error != NULL) {
+			g_error_free(error);
+		}
+	}
 
 	return;
 }
@@ -156,5 +196,25 @@ static StatusProviderStatus
 get_status (StatusProvider * sp)
 {
 	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(sp);
+
+	if (priv->proxy == NULL) {
+		return mc_to_sp_map[MC_STATUS_OFFLINE];
+	}
+
 	return mc_to_sp_map[priv->mc_status];
 }
+
+static void
+changed_status (DBusGProxy * proxy, guint status, gchar * message, StatusProvider * sp)
+{
+	g_signal_emit(G_OBJECT(sp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, STATUS_PROVIDER_STATUS_OFFLINE, TRUE);
+}
+
+static void
+proxy_destroy (DBusGProxy * proxy, StatusProvider * sp)
+{
+	g_debug("Signal: Mission Control proxy destroyed");
+	g_signal_emit(G_OBJECT(sp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, STATUS_PROVIDER_STATUS_OFFLINE, TRUE);
+	return;
+}
+

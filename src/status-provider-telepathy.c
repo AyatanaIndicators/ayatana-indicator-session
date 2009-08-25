@@ -189,9 +189,58 @@ static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {
 	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(sp);
+	if (priv->proxy == NULL) {
+		priv->mc_status = MC_STATUS_OFFLINE;
+		return;
+	}
+
 	priv->mc_status = sp_to_mc_map[status];	
+
+	guint mcstatus = MC_STATUS_UNSET;
+	gboolean ret = FALSE;
+	GError * error = NULL;
+
+	ret = dbus_g_proxy_call(priv->proxy,
+	                        "GetPresence", &error,
+	                        G_TYPE_INVALID,
+	                        G_TYPE_UINT, &priv->mc_status,
+	                        G_TYPE_INVALID);
+
+	/* If we can't get the  get call to work, let's not set */
+	if (!ret) {
+		if (error != NULL) {
+			g_error_free(error);
+		}
+		return;
+	}
+	
+	/* If the get call doesn't return a status, that means that there
+	   are no clients connected.  We don't want to connect them by telling
+	   MC that we're going online -- we'd like to be more passive than that. */
+	if (mcstatus == MC_STATUS_UNSET) {
+		return;
+	}
+
+	ret = dbus_g_proxy_call(priv->proxy,
+	                        "SetPresence", &error,
+	                        G_TYPE_UINT, priv->mc_status,
+	                        G_TYPE_STRING, "",
+	                        G_TYPE_INVALID,
+	                        G_TYPE_INVALID);
+
+	if (!ret) {
+		if (error != NULL) {
+			g_warning("Unable to set Mission Control Presence: %s", error->message);
+			g_error_free(error);
+		} else {
+			g_warning("Unable to set Mission Control Presence");
+		}
+		return;
+	}
+
 	return;
 }
+
 static StatusProviderStatus
 get_status (StatusProvider * sp)
 {
@@ -207,7 +256,9 @@ get_status (StatusProvider * sp)
 static void
 changed_status (DBusGProxy * proxy, guint status, gchar * message, StatusProvider * sp)
 {
-	g_signal_emit(G_OBJECT(sp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, STATUS_PROVIDER_STATUS_OFFLINE, TRUE);
+	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(sp);
+	priv->mc_status = status;
+	g_signal_emit(G_OBJECT(sp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, mc_to_sp_map[priv->mc_status], TRUE);
 }
 
 static void

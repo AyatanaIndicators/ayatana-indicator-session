@@ -78,6 +78,7 @@ static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
 static void changed_status (DBusGProxy * proxy, guint status, gchar * message, StatusProvider * sp);
 static void proxy_destroy (DBusGProxy * proxy, StatusProvider * sp);
+static void get_status_async (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata);
 
 G_DEFINE_TYPE (StatusProviderTelepathy, status_provider_telepathy, STATUS_PROVIDER_TYPE);
 
@@ -117,7 +118,7 @@ status_provider_telepathy_init (StatusProviderTelepathy *self)
 	                         "org.freedesktop.Telepathy.MissionControl",
 	                        "/org/freedesktop/Telepathy/MissionControl",
 	                         "org.freedesktop.Telepathy.MissionControl",
-							 &error);
+	                         &error);
 
 	if (priv->proxy != NULL) {
 		g_object_add_weak_pointer (G_OBJECT(priv->proxy), (gpointer *)&priv->proxy);
@@ -139,6 +140,14 @@ status_provider_telepathy_init (StatusProviderTelepathy *self)
 		                            G_CALLBACK(changed_status),
 		                            (void *)self,
 		                            NULL);
+
+		/* Do a get here, to init the status */
+		dbus_g_proxy_begin_call(priv->proxy,
+		                        "GetStatus",
+		                        get_status_async,
+		                        self,
+		                        NULL,
+		                        G_TYPE_INVALID);
 	} else {
 		g_warning("Unable to connect to Mission Control");
 		if (error != NULL) {
@@ -269,3 +278,29 @@ proxy_destroy (DBusGProxy * proxy, StatusProvider * sp)
 	return;
 }
 
+static void
+get_status_async (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
+{
+	GError * error = NULL;
+	guint status = 0;
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_UINT, &status, G_TYPE_INVALID)) {
+		g_warning("Unable to get type from Mission Control: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(userdata);
+
+	gboolean changed = FALSE;
+	if (status != priv->mc_status) {
+		changed = TRUE;
+	}
+
+	priv->mc_status = status;
+
+	if (changed) {
+		g_signal_emit(G_OBJECT(userdata), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, mc_to_sp_map[priv->mc_status], TRUE);
+	}
+
+	return;
+}

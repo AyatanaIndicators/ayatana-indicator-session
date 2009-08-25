@@ -72,8 +72,6 @@ GType status_provider_get_type (void);
 void status_provider_set_status (StatusProvider * sp, StatusProviderStatus status);
 StatusProviderStatus status_provider_get_status (StatusProvider * sp);
 
-void status_provider_emit_status_changed (StatusProvider * sp, StatusProviderStatus newstatus);
-
 G_END_DECLS
 
 #endif

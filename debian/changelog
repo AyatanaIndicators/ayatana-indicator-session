@@ -9,7 +9,10 @@ indicator-session (0.1-0ubuntu1) UNRELEASED; urgency=low
     - fixed url
 
   [ Martin Pitt ]
+  Re-add fixes which got lost in branch renaming:
   * debian/control: Fix Vcs-* links.
+  * debian/rules: debian/rules: Update *.a/*.la cleanup for -sus → -session
+    renaming.
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 13:46:29 -0500
 

@@ -40,3 +40,7 @@ gtk-logout-helper
 .libs
 src/libsession.la
 src/libsession_la-indicator-session.lo
+src/status-provider-pidgin-marshal.c
+src/status-provider-pidgin-marshal.h
+src/status-provider-telepathy-marshal.c
+src/status-provider-telepathy-marshal.h

@@ -99,10 +99,3 @@ status_provider_get_status (StatusProvider * sp)
 	return class->get_status(sp);
 }
 
-void
-status_provider_emit_status_changed (StatusProvider * sp, StatusProviderStatus newstatus)
-{
-	g_return_if_fail(IS_STATUS_PROVIDER(sp));
-	g_signal_emit(sp, signals[STATUS_CHANGED], 0, newstatus, TRUE);
-	return;
-}

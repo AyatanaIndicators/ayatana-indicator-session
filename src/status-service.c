@@ -39,11 +39,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "status-provider.h"
 #include "status-provider-pidgin.h"
+#include "status-provider-telepathy.h"
 
 typedef StatusProvider * (*newfunc) (void);
-#define STATUS_PROVIDER_CNT   1
+#define STATUS_PROVIDER_CNT   2
 static newfunc status_provider_newfuncs[STATUS_PROVIDER_CNT] = {
-	status_provider_pidgin_new
+	status_provider_pidgin_new,
+	status_provider_telepathy_new
 };
 static StatusProvider * status_providers[STATUS_PROVIDER_CNT] = { 0 };
 
@@ -73,12 +75,12 @@ static StatusProviderStatus global_status = STATUS_PROVIDER_STATUS_OFFLINE;
 static void
 status_update (void) {
 	StatusProviderStatus oldglobal = global_status;
-	global_status = STATUS_PROVIDER_STATUS_ONLINE;
+	global_status = STATUS_PROVIDER_STATUS_OFFLINE;
 
 	int i;
 	for (i = 0; i < STATUS_PROVIDER_CNT; i++) {
 		StatusProviderStatus localstatus = status_provider_get_status(status_providers[i]);
-		if (localstatus > global_status) {
+		if (localstatus < global_status) {
 			global_status = localstatus;
 		}
 	}

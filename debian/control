@@ -16,7 +16,7 @@ Build-Depends: debhelper (>= 5.0),
 Standards-Version: 3.8.2
 Homepage: https://launchpad.net/indicator-session
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubuntu
-Vcs-Bzr-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubuntu
+Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubuntu
 
 Package: indicator-session
 Architecture: any

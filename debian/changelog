@@ -1,9 +1,9 @@
-indicator-session (0.1~bzr18-0ubuntu1~ppa3~dbusmenu2) UNRELEASED; urgency=low
+indicator-session (0.1~bzr18-0ubuntu1~ppa3~dbusmenu2) karmic; urgency=low
 
   * Merge from upstream
   * debian/control: Looking for libdbusmenu* >= 0.1.0
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 13:34:56 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 13:37:10 -0500
 
 indicator-session (0.1~bzr18-0ubuntu1~ppa3~dbusmenu1) karmic; urgency=low
 

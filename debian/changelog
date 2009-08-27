@@ -9,6 +9,8 @@ indicator-session (0.1-0ubuntu1) UNRELEASED; urgency=low
     - fixed url
 
   [ Martin Pitt ]
+  * Re-add dropped debian/compat.
+
   Re-add fixes which got lost in branch renaming:
   * debian/control: Fix Vcs-* links.
   * debian/rules: debian/rules: Update *.a/*.la cleanup for -sus → -session

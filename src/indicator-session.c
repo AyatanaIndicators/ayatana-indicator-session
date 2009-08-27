@@ -61,6 +61,7 @@ static void child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, gu
 static guint status_menu_pos_offset (void);
 static guint users_menu_pos_offset (void);
 static guint session_menu_pos_offset (void);
+static void child_realized (DbusmenuMenuitem * child, gpointer userdata);
 
 GtkLabel *
 get_label (void)
@@ -79,14 +80,44 @@ get_icon (void)
 	return status_image;
 }
 
+typedef struct _realized_data_t realized_data_t;
+struct _realized_data_t {
+	guint position;
+	section_t section;
+};
+
 static void
 child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, gpointer section)
 {
+	realized_data_t * data = g_new0(realized_data_t, 1);
+	if (data == NULL) {
+		g_warning("Unable to allocate data for realization of item");
+		return;
+	}
+
+	data->position = position;
+	data->section = GPOINTER_TO_UINT(section);
+
+	g_signal_connect(G_OBJECT(child), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(child_realized), data);
+	return;
+}
+
+static void
+child_realized (DbusmenuMenuitem * child, gpointer userdata)
+{
+	g_return_if_fail(userdata != NULL);
+	g_return_if_fail(DBUSMENU_IS_MENUITEM(child));
+
+	realized_data_t * data = (realized_data_t *)userdata;	
+	guint position = data->position;
+	section_t section = data->section;
+	g_free(data);
+
 	DbusmenuGtkClient * client = NULL;
 	gchar * errorstr = NULL;
 	guint (*posfunc) (void) = NULL;
 
-	switch (GPOINTER_TO_UINT(section)) {
+	switch (section) {
 		case STATUS_SECTION:
 			client = status_client;
 			errorstr = "Status";

@@ -14,6 +14,7 @@ indicator-session (0.1~bzr17-0ubuntu1) UNRELEASE; urgency=low
   * debian/control:
     - Switching to indicator-session and conflicting
     - Changed Vcs-Bzr to point to ~ubuntu-desktop
+    - Changed the project homepage
     and replacing indicator-sus
   * debian/watch: Switching to indicator-session*
 

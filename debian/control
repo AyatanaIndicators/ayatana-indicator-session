@@ -14,9 +14,9 @@ Build-Depends: debhelper (>= 5.0),
                libpolkit-gnome-dev,
                intltool
 Standards-Version: 3.8.2
-Homepage: https://launchpad.net/indicator-applet
-Vcs-Bzr: lp:~ubuntu-desktop/indicator-applet/indicator-session-ubuntu
-Vcs-Bzr-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-applet/indicator-session-ubuntu
+Homepage: https://launchpad.net/indicator-session
+Vcs-Bzr: lp:~ubuntu-desktop/indicator-session/ubuntu
+Vcs-Bzr-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubuntu
 
 Package: indicator-session
 Architecture: any

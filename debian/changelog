@@ -1,9 +1,9 @@
-indicator-session (0.1~bzr18-0ubuntu1~ppa2) UNRELEASED; urgency=low
+indicator-session (0.1~bzr18-0ubuntu1~ppa2) karmic; urgency=low
 
   * debian/control: Shortening the short description and lengthening
     the long one.  Fixes a bug (LP: #412024)
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 26 Aug 2009 21:16:31 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 26 Aug 2009 21:19:20 -0500
 
 indicator-session (0.1~bzr18-0ubuntu1~ppa1) karmic; urgency=low
 

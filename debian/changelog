@@ -4,6 +4,8 @@ indicator-session (0.1-0ubuntu1) UNRELEASD; urgency=low
   * debian/control: Looking for libdbusmenu* >= 0.1.0
   * debian/control: Shortening the short description and lengthening
     the long one.  Fixes a bug (LP: #412024)
+  * debian/watch:
+    - fixed url
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 13:46:29 -0500
 

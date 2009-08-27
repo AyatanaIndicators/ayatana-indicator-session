@@ -1,13 +1,13 @@
 indicator-session (0.1-0ubuntu1) UNRELEASD; urgency=low
 
-  * Upstream version 0.1
+  * Upstream version 0.1 (LP: #420108)
   * debian/control: Looking for libdbusmenu* >= 0.1.0
   * debian/control: Shortening the short description and lengthening
     the long one.  Fixes a bug (LP: #412024)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 13:46:29 -0500
 
-indicator-session (0.1~bzr17-0ubuntu1) UNRELEASE; urgency=low
+indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
 
   * New snapshot (LP: #417035)
   * Package rename from 'indicator-sus' to 'indicator-session'

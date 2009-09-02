@@ -8,6 +8,8 @@ AM_INIT_AUTOMAKE(indicator-session, 0.1)
 
 AM_MAINTAINER_MODE
 
+IT_PROG_INTLTOOL([0.35.0])
+
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_C_O
@@ -55,6 +57,16 @@ PKG_CHECK_MODULES(GTKLOGOUTHELPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
 
 AC_SUBST(GTKLOGOUTHELPER_CFLAGS)
 AC_SUBST(GTKLOGOUTHELPER_LIBS)
+
+AC_PATH_PROG(GCONFTOOL, gconftool-2)
+dnl Specify the gconf configuration source,
+dnl default to xml::$(sysconfdir)/gconf/gconf.xml.defaults
+
+AM_GCONF_SOURCE_2
+
+PKG_CHECK_MODULES(GCONF, gconf-2.0 >= 2.0)
+AC_SUBST(GCONF_CFLAGS)
+AC_SUBST(GCONF_LIBS)
 
 ###########################
 # Check to see if we're local
@@ -115,6 +127,7 @@ data/icons/48x48/status/Makefile
 data/icons/scalable/Makefile
 data/icons/scalable/status/Makefile
 data/icons/scalable/actions/Makefile
+po/Makefile.in
 ])
 
 ###########################

@@ -31,6 +31,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "dbus-shared-names.h"
 
+#include "gtk-dialog/gconf-helper.h"
+
 #define DKP_ADDRESS    "org.freedesktop.DeviceKit.Power"
 #define DKP_OBJECT     "/org/freedesktop/DeviceKit/Power"
 #define DKP_INTERFACE  "org.freedesktop.DeviceKit.Power"
@@ -223,7 +225,11 @@ create_items (DbusmenuMenuitem * root) {
 	DbusmenuMenuitem * mi = NULL;
 
 	mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(mi, "label", _("Log Out"));
+	if (supress_confirmations()) {
+		dbusmenu_menuitem_property_set(mi, "label", _("Log Out"));
+	} else {
+		dbusmenu_menuitem_property_set(mi, "label", _("Log Out ..."));
+	}
 	dbusmenu_menuitem_child_append(root, mi);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
 
@@ -240,12 +246,20 @@ create_items (DbusmenuMenuitem * root) {
 	g_signal_connect(G_OBJECT(hibernate_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Hibernate");
 
 	mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(mi, "label", _("Restart"));
+	if (supress_confirmations()) {
+		dbusmenu_menuitem_property_set(mi, "label", _("Restart"));
+	} else {
+		dbusmenu_menuitem_property_set(mi, "label", _("Restart ..."));
+	}
 	dbusmenu_menuitem_child_append(root, mi);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "restart");
 
 	mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(mi, "label", _("Shutdown"));
+	if (supress_confirmations()) {
+		dbusmenu_menuitem_property_set(mi, "label", _("Shutdown"));
+	} else {
+		dbusmenu_menuitem_property_set(mi, "label", _("Shutdown ..."));
+	}
 	dbusmenu_menuitem_child_append(root, mi);
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "shutdown");
 

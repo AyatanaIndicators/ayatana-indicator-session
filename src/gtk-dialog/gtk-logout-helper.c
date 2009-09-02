@@ -6,6 +6,7 @@ Copyright 2009 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Christoph Korn <c_korn@gmx.de>
 
 This program is free software: you can redistribute it and/or modify it 
 under the terms of the GNU General Public License version 3, as published 
@@ -26,6 +27,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbus/dbus-glib.h>
 #include "logout-dialog.h"
 #include "ck-pk-helper.h"
+#include "gconf-helper.h"
 
 static void
 session_action (LogoutDialogAction action)
@@ -132,7 +134,7 @@ main (int argc, char * argv[])
 	}
 
 	GtkWidget * dialog = NULL;
-	if (!pk_require_auth(type)) {	
+	if (!pk_require_auth(type) && !supress_confirmations()) {
 		dialog = logout_dialog_new(type);
 	}
 

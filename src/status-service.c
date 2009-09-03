@@ -88,7 +88,7 @@ status_update (void) {
 	if (global_status != oldglobal) {
 		g_debug("Global status changed to: %s", _(status_strings[global_status]));
 
-		dbusmenu_menuitem_property_set(status_menuitem, "label", _(status_strings[global_status]));
+		dbusmenu_menuitem_property_set(status_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _(status_strings[global_status]));
 		status_service_dbus_set_status(dbus_interface, status_icons[global_status]);
 	}
 
@@ -167,8 +167,8 @@ build_user_item (DbusmenuMenuitem * root)
 
 		if (name[0] != '\0') {
 			DbusmenuMenuitem * useritem = dbusmenu_menuitem_new();
-			dbusmenu_menuitem_property_set(useritem, "label", name);
-			dbusmenu_menuitem_property_set(useritem, "sensitive", "false");
+			dbusmenu_menuitem_property_set(useritem, DBUSMENU_MENUITEM_PROP_LABEL, name);
+			dbusmenu_menuitem_property_set(useritem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
 			dbusmenu_menuitem_child_append(root, useritem);
 		}
 
@@ -189,15 +189,15 @@ build_menu (gpointer data)
 	build_user_item(root);
 
 	status_menuitem = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(status_menuitem, "label", _(status_strings[global_status]));
+	dbusmenu_menuitem_property_set(status_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _(status_strings[global_status]));
 	dbusmenu_menuitem_child_append(root, status_menuitem);
 
 	StatusProviderStatus i;
 	for (i = STATUS_PROVIDER_STATUS_ONLINE; i < STATUS_PROVIDER_STATUS_LAST; i++) {
 		DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
 
-		dbusmenu_menuitem_property_set(mi, "label", _(status_strings[i]));
-		dbusmenu_menuitem_property_set(mi, "icon", status_icons[i]);
+		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _(status_strings[i]));
+		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_ICON, status_icons[i]);
 		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(status_menu_click), GINT_TO_POINTER(i));
 
 		dbusmenu_menuitem_child_append(status_menuitem, mi);
@@ -206,7 +206,7 @@ build_menu (gpointer data)
 	}
 
 	DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(mi, "label", _("Lock Screen"));
+	dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
 	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), GINT_TO_POINTER(i));
 	dbusmenu_menuitem_child_append(root, mi);
 

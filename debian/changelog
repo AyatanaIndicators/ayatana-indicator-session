@@ -1,6 +1,7 @@
 indicator-session (0.1-0ubuntu1~ppa2~dbusmenu011r1) UNRELEASED; urgency=low
 
   * Upstream update for dbusmenu 0.1.1
+  * debian/control: Increasing dbusmenu dep to 0.1.1
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 14:34:48 -0500
 

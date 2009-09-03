@@ -165,10 +165,12 @@ build_user_item (DbusmenuMenuitem * root)
 		while (*walker != '\0' && *walker != ',') { walker++; }
 		*walker = '\0';
 
-		DbusmenuMenuitem * useritem = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(useritem, "label", name);
-		dbusmenu_menuitem_property_set(useritem, "sensitive", "false");
-		dbusmenu_menuitem_child_append(root, useritem);
+		if (name[0] != '\0') {
+			DbusmenuMenuitem * useritem = dbusmenu_menuitem_new();
+			dbusmenu_menuitem_property_set(useritem, "label", name);
+			dbusmenu_menuitem_property_set(useritem, "sensitive", "false");
+			dbusmenu_menuitem_child_append(root, useritem);
+		}
 
 		g_free(name);
 	} else {

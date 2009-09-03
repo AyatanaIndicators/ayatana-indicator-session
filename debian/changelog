@@ -1,3 +1,10 @@
+indicator-session (0.1.1-0ubuntu1) UNRELEASED; urgency=low
+
+  * Upstream update 0.1.1 for dbusmenu 0.1.2 (LP: #423975)
+  * debian/control: Increasing dbusmenu dep to 0.1.2
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 15:18:34 -0500
+
 indicator-session (0.1-0ubuntu1) karmic; urgency=low
 
   [ Ted Gould ]

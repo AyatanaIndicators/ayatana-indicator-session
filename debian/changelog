@@ -1,8 +1,8 @@
-indicator-session (0.1-0ubuntu1~ppa2~dbusmenu011r2) UNRELEASED; urgency=low
+indicator-session (0.1-0ubuntu1~ppa2~dbusmenu011r2) karmic; urgency=low
 
   * Update to set menuitem type.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 14:54:15 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 14:54:39 -0500
 
 indicator-session (0.1-0ubuntu1~ppa2~dbusmenu011r1) karmic; urgency=low
 

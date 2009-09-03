@@ -113,14 +113,14 @@ create_items (DbusmenuMenuitem * root) {
 
 	if (check_guest_session()) {
 		mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(mi, "label", _("Guest Session"));
+		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
 		dbusmenu_menuitem_child_append(root, mi);
 		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_guest_session), NULL);
 	}
 
 	if (check_new_session()) {
 		mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(mi, "label", _("New Session..."));
+		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("New Session..."));
 		dbusmenu_menuitem_child_append(root, mi);
 		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_new_session), NULL);
 	}

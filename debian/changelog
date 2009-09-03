@@ -5,16 +5,27 @@ indicator-session (0.1.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 15:14:07 -0500
 
-indicator-session (0.1-0ubuntu1~ppa1) karmic; urgency=low
+indicator-session (0.1-0ubuntu1) karmic; urgency=low
 
-  * Upstream version 0.1
+  [ Ted Gould ]
+  * Upstream version 0.1 (LP: #420108)
   * debian/control: Looking for libdbusmenu* >= 0.1.0
   * debian/control: Shortening the short description and lengthening
     the long one.  Fixes a bug (LP: #412024)
+  * debian/watch:
+    - fixed url
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 13:46:29 -0500
+  [ Martin Pitt ]
+  * Re-add dropped debian/compat.
 
-indicator-session (0.1~bzr17-0ubuntu1) UNRELEASE; urgency=low
+  Re-add fixes which got lost in branch renaming:
+  * debian/control: Fix Vcs-* links.
+  * debian/rules: debian/rules: Update *.a/*.la cleanup for -sus → -session
+    renaming.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 21:30:27 +0200
+
+indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
 
   * New snapshot (LP: #417035)
   * Package rename from 'indicator-sus' to 'indicator-session'

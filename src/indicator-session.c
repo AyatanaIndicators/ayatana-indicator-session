@@ -367,7 +367,7 @@ build_users_menu (gpointer userdata)
 	}
 
 	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_USERS_DBUS_NAME, 0, &returnval, &error)) {
-		g_error("Unable to send message to DBus to start service: %s", error != NULL ? error->message : "(NULL error)" );
+		g_error("Unable to send message to DBus to start service");
 		g_error_free(error);
 		return FALSE;
 	}

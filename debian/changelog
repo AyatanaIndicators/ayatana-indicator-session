@@ -1,9 +1,12 @@
-indicator-session (0.1.1-0ubuntu1~ppa1) karmic; urgency=low
+indicator-session (0.1.1-0ubuntu1) karmic; urgency=low
 
-  * Upstream update 0.1.1 for dbusmenu 0.1.1
-  * debian/control: Increasing dbusmenu dep to 0.1.1
+  * set bzr-builddeb merge mode to true for easy tarball build
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Sep 2009 15:18:34 -0500
+  [ Ted Gould ]
+  * Upstream update 0.1.1 for dbusmenu 0.1.2 (LP: #423975)
+  * debian/control: Increasing dbusmenu dep to 0.1.2
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 04 Sep 2009 11:46:25 +0200
 
 indicator-session (0.1-0ubuntu1) karmic; urgency=low
 

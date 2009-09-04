@@ -1,9 +1,9 @@
-indicator-session (0.1.1-0ubuntu2~ppa1) UNRELEASED; urgency=low
+indicator-session (0.1.1-0ubuntu2~ppa1) karmic; urgency=low
 
   * Removing printing DBus error message as it sometimes isn't
     valid.  (LP: #420238)
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 04 Sep 2009 13:28:07 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Sep 2009 13:44:45 -0500
 
 indicator-session (0.1.1-0ubuntu1) karmic; urgency=low
 

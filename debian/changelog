@@ -1,3 +1,38 @@
+indicator-session (0.1.2-0ubuntu1) karmic; urgency=low
+
+  * debian/control:
+    - build-depends on libgconf2-dev
+
+  [ Ted Gould ]
+  * Upstream version 0.1.2
+    * Adds translation setup.  (fixes LP: #425598)
+    * Packaging fix to use upstream tarball.  (fixes LP: #418769)
+    * Shows elipsis when dialogs are enabled (fixes LP: #421693)
+    * Adds GConf key for configure whether dialogs on shutdown and
+      logout are shown.  (fixes LP: #422025)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 08 Sep 2009 18:15:03 +0200
+
+indicator-session (0.1.2-0ubuntu1~ppa1) karmic; urgency=low
+
+  * Upstream version 0.1.2 fixes LP: #425598, LP: #418769, LP: #421693
+    and LP: #422025.
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 08 Sep 2009 10:51:59 -0500
+
+indicator-session (0.1.1-0ubuntu2~ppa2) karmic; urgency=low
+
+  * Merging in c_korn's branch.
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 08 Sep 2009 10:18:56 -0500
+
+indicator-session (0.1.1-0ubuntu2~ppa1) karmic; urgency=low
+
+  * Removing printing DBus error message as it sometimes isn't
+    valid.  (LP: #420238)
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Sep 2009 13:44:45 -0500
+
 indicator-session (0.1.1-0ubuntu1) karmic; urgency=low
 
   * set bzr-builddeb merge mode to true for easy tarball build

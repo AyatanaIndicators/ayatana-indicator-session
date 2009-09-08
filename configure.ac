@@ -4,9 +4,11 @@ AC_INIT(src/indicator-session.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 0.1.1)
+AM_INIT_AUTOMAKE(indicator-session, 0.1.2)
 
 AM_MAINTAINER_MODE
+
+IT_PROG_INTLTOOL([0.35.0])
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -56,6 +58,16 @@ PKG_CHECK_MODULES(GTKLOGOUTHELPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
 AC_SUBST(GTKLOGOUTHELPER_CFLAGS)
 AC_SUBST(GTKLOGOUTHELPER_LIBS)
 
+AC_PATH_PROG(GCONFTOOL, gconftool-2)
+dnl Specify the gconf configuration source,
+dnl default to xml::$(sysconfdir)/gconf/gconf.xml.defaults
+
+AM_GCONF_SOURCE_2
+
+PKG_CHECK_MODULES(GCONF, gconf-2.0 >= 2.0)
+AC_SUBST(GCONF_CFLAGS)
+AC_SUBST(GCONF_LIBS)
+
 ###########################
 # Check to see if we're local
 ###########################
@@ -88,6 +100,33 @@ else
 fi
 AC_SUBST(DBUSSERVICEDIR)
 
+##############################
+# Custom Junk
+##############################
+
+AC_DEFUN([AC_DEFINE_PATH], [
+	test "x$prefix" = xNONE && prefix="$ac_default_prefix"
+	test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
+	ac_define_path=`eval echo [$]$2`
+	ac_define_path=`eval echo [$]ac_define_path`
+	$1="$ac_define_path"
+	AC_SUBST($1)
+	ifelse($3, ,
+		AC_DEFINE_UNQUOTED($1, "$ac_define_path"),
+		AC_DEFINE_UNQUOTED($1, "$ac_define_path", $3))
+])
+
+###########################
+# Internationalization
+###########################
+
+GETTEXT_PACKAGE=indicator-session
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Name of the default get text domain])
+AC_DEFINE_PATH(GNOMELOCALEDIR, "${datadir}/locale", [locale directory])
+
+AM_GLIB_GNU_GETTEXT
+
 ###########################
 # Files
 ###########################
@@ -115,6 +154,7 @@ data/icons/48x48/status/Makefile
 data/icons/scalable/Makefile
 data/icons/scalable/status/Makefile
 data/icons/scalable/actions/Makefile
+po/Makefile.in
 ])
 
 ###########################

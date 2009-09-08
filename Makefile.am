@@ -1,7 +1,8 @@
 
 SUBDIRS = \
 	src \
-	data
+	data \
+	po
 
 EXTRA_DIST = COPYING.LGPL
 

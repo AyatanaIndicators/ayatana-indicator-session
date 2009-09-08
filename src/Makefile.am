@@ -84,9 +84,9 @@ indicator_users_service_LDADD = $(USERSSERVICE_LIBS)
 # Session Stuff
 #################
 
-indicator_session_service_SOURCES = session-service.c
-indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror
-indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS)
+indicator_session_service_SOURCES = session-service.c gtk-dialog/gconf-helper.c
+indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) $(GCONF_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror
+indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 
 ###############
 # Other Stuff

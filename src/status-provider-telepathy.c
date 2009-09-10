@@ -55,7 +55,8 @@ static mc_status_t sp_to_mc_map[] = {
 	/* STATUS_PROVIDER_STATUS_AWAY,    */  MC_STATUS_AWAY,
 	/* STATUS_PROVIDER_STATUS_DND      */  MC_STATUS_DND,
 	/* STATUS_PROVIDER_STATUS_INVISIBLE*/  MC_STATUS_HIDDEN,
-	/* STATUS_PROVIDER_STATUS_OFFLINE  */  MC_STATUS_OFFLINE
+	/* STATUS_PROVIDER_STATUS_OFFLINE  */  MC_STATUS_OFFLINE,
+	/* STATUS_PROVIDER_STATUS_DISCONNECTED*/MC_STATUS_OFFLINE
 };
 
 typedef struct _StatusProviderTelepathyPrivate StatusProviderTelepathyPrivate;
@@ -258,10 +259,11 @@ set_status (StatusProvider * sp, StatusProviderStatus status)
 static StatusProviderStatus
 get_status (StatusProvider * sp)
 {
+	g_return_val_if_fail(IS_STATUS_PROVIDER_TELEPATHY(sp), STATUS_PROVIDER_STATUS_DISCONNECTED);
 	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(sp);
 
 	if (priv->proxy == NULL) {
-		return mc_to_sp_map[MC_STATUS_OFFLINE];
+		return STATUS_PROVIDER_STATUS_DISCONNECTED;
 	}
 
 	return mc_to_sp_map[priv->mc_status];

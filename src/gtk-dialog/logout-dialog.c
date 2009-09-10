@@ -298,8 +298,9 @@ logout_dialog_init (LogoutDialog *logout_dialog)
 						  GTK_RESPONSE_OK);
   gtk_widget_grab_default (logout_dialog->ok_button);
 
-  /* Title */
+  /* Window Title and Icon */
   gtk_window_set_title (GTK_WINDOW(logout_dialog), _(title_strings[logout_dialog->action]));
+  gtk_window_set_icon_name (GTK_WINDOW(logout_dialog), icon_strings[logout_dialog->action]);
 
   /* hbox */
   logout_dialog->hbox = gtk_hbox_new (FALSE, 12);

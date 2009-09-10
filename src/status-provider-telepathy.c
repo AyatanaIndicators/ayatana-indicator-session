@@ -75,6 +75,7 @@ static void status_provider_telepathy_init       (StatusProviderTelepathy *self)
 static void status_provider_telepathy_dispose    (GObject *object);
 static void status_provider_telepathy_finalize   (GObject *object);
 /* Internal Funcs */
+static void build_telepathy_proxy (StatusProviderTelepathy * self);
 static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
 static void changed_status (DBusGProxy * proxy, guint status, gchar * message, StatusProvider * sp);
@@ -109,6 +110,16 @@ status_provider_telepathy_init (StatusProviderTelepathy *self)
 
 	priv->proxy = NULL;
 	priv->mc_status = MC_STATUS_OFFLINE;
+
+	build_telepathy_proxy(self);
+
+	return;
+}
+
+static void
+build_telepathy_proxy (StatusProviderTelepathy * self)
+{
+	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(self);
 
 	GError * error = NULL;
 

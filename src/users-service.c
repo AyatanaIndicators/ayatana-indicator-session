@@ -7,16 +7,16 @@ Copyright 2009 Canonical Ltd.
 Authors:
     Ted Gould <ted@canonical.com>
 
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -31,15 +31,22 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/menuitem.h>
 
 #include "dbus-shared-names.h"
+#include "users-service-dbus.h"
 
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
+#define MINIMUM_USERS           1
+#define MAXIMUM_USERS           7
 
-static DBusGConnection * session_bus = NULL;
-static DBusGConnection * system_bus = NULL;
-static DBusGProxy * bus_proxy = NULL;
-static DBusGProxy * gdm_proxy = NULL;
-static DbusmenuMenuitem * root_menuitem = NULL;
-static GMainLoop * mainloop = NULL;
+static DBusGConnection   *session_bus = NULL;
+static DBusGConnection   *system_bus = NULL;
+static DBusGProxy        *bus_proxy = NULL;
+static DBusGProxy        *gdm_proxy = NULL;
+static DbusmenuMenuitem  *root_menuitem = NULL;
+static GMainLoop         *mainloop = NULL;
+static UsersServiceDbus  *dbus_interface = NULL;
+
+static gint   count;
+static GList *users;
 
 static gboolean
 check_guest_session (void)
@@ -108,24 +115,84 @@ activate_new_session (DbusmenuMenuitem * mi, gpointer user_data)
 }
 
 static void
-create_items (DbusmenuMenuitem * root) {
-	DbusmenuMenuitem * mi = NULL;
+activate_user_session (DbusmenuMenuitem *mi, gpointer user_data)
+{
+}
 
-	if (check_guest_session()) {
-		mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
-		dbusmenu_menuitem_child_append(root, mi);
-		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_guest_session), NULL);
-	}
+static void
+remove_menu_item (DbusmenuMenuitem *root, gpointer user_data)
+{
+  DbusmenuMenuitem *child = (DbusmenuMenuitem *)user_data;
 
-	if (check_new_session()) {
-		mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("New Session..."));
-		dbusmenu_menuitem_child_append(root, mi);
-		g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(activate_new_session), NULL);
-	}
+  dbusmenu_menuitem_child_delete (root, child);
+}
 
-	return;
+static void
+rebuild_items (DbusmenuMenuitem *root,
+               UsersServiceDbus *service)
+{
+  DbusmenuMenuitem *mi = NULL;
+  GList *u;
+  UserData *user;
+
+  if (check_guest_session ()) {
+    mi = dbusmenu_menuitem_new ();
+    dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
+    dbusmenu_menuitem_child_append (root, mi);
+    g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
+  }
+
+  if (count > 1 && count < 7)
+    {
+      for (u = users; u != NULL; u = g_list_next (u))
+        {
+          user = u->data;
+
+          mi = dbusmenu_menuitem_new ();
+          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, user->real_name);
+          dbusmenu_menuitem_child_append (root, mi);
+          g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+        }
+    }
+
+  if (check_new_session ()) {
+    mi = dbusmenu_menuitem_new ();
+    dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("New Session..."));
+    dbusmenu_menuitem_child_append (root, mi);
+    g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
+  }
+}
+
+static void
+create_items (DbusmenuMenuitem *root,
+              UsersServiceDbus *service)
+{
+  g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
+
+  dbusmenu_menuitem_foreach (root, remove_menu_item, NULL);
+
+  count = users_service_dbus_get_user_count (service);
+  if (count > 1 && count < 7)
+    {
+      users = users_service_dbus_get_user_list (service);
+    }
+
+  rebuild_items (root, service);
+}
+
+static void
+user_added (UsersServiceDbus *service,
+            gpointer          user_data)
+{
+  /* Never thought you'd see a gpointer user_data get casted to a UserData* did you? */
+  users = g_list_append (users, (UserData *) user_data);
+}
+
+static void
+user_removed (UsersServiceDbus *service,
+              gpointer          user_data)
+{
+  users = g_list_remove (users, (UserData *) user_data);
 }
 
 int
@@ -134,27 +201,38 @@ main (int argc, char ** argv)
     g_type_init();
 
     session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-    bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+    bus_proxy = dbus_g_proxy_new_for_name (session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
     GError * error = NULL;
     guint nameret = 0;
 
     if (!org_freedesktop_DBus_request_name(bus_proxy, INDICATOR_USERS_DBUS_NAME, 0, &nameret, &error)) {
         g_error("Unable to call to request name");
         return 1;
-    }   
+    }
 
     if (nameret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
         g_error("Unable to get name");
         return 1;
-    }   
+    }
+
+    dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
 
     root_menuitem = dbusmenu_menuitem_new();
-	g_debug("Root ID: %d", dbusmenu_menuitem_get_id(root_menuitem));
+    g_debug ("Root ID: %d", dbusmenu_menuitem_get_id (root_menuitem));
 
-	create_items(root_menuitem);
+    create_items (root_menuitem, dbus_interface);
 
     DbusmenuServer * server = dbusmenu_server_new(INDICATOR_USERS_DBUS_OBJECT);
     dbusmenu_server_set_root(server, root_menuitem);
+
+    g_signal_connect (G_OBJECT (dbus_interface),
+                      "user-added",
+                      G_CALLBACK (user_added),
+                      root_menuitem);
+    g_signal_connect (G_OBJECT (dbus_interface),
+                      "user-removed",
+                      G_CALLBACK (user_removed),
+                      root_menuitem);
 
     mainloop = g_main_loop_new(NULL, FALSE);
     g_main_loop_run(mainloop);

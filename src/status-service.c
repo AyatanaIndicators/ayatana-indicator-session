@@ -7,16 +7,16 @@ Copyright 2009 Canonical Ltd.
 Authors:
     Ted Gould <ted@canonical.com>
 
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -228,12 +228,12 @@ main (int argc, char ** argv)
     if (!org_freedesktop_DBus_request_name(bus_proxy, INDICATOR_STATUS_DBUS_NAME, 0, &nameret, &error)) {
         g_error("Unable to call to request name");
         return 1;
-    }   
+    }
 
     if (nameret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
         g_error("Unable to get name");
         return 1;
-    }   
+    }
 
 	g_idle_add(build_providers, NULL);
 

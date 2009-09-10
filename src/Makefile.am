@@ -11,7 +11,8 @@ sessionlib_LTLIBRARIES = libsession.la
 libsession_la_SOURCES = \
 	indicator-session.c \
 	dbus-shared-names.h \
-	status-service-client.h
+	status-service-client.h \
+	users-service-client.h
 libsession_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
 libsession_la_LIBADD = $(APPLET_LIBS)
 libsession_la_LDFLAGS = -module -avoid-version
@@ -25,6 +26,9 @@ indicator_status_service_SOURCES = \
 	status-service-dbus.h \
 	status-service-dbus.c \
 	status-service-server.h \
+	users-service-dbus.h \
+	users-service-dbus.c \
+	users-service-server.h \
 	status-provider.h \
 	status-provider.c \
 	status-provider-pidgin.h \
@@ -37,6 +41,20 @@ indicator_status_service_SOURCES = \
 	status-provider-telepathy-marshal.c
 indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS) -Wall -Werror
 indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
+
+users-service-client.h: $(srcdir)/users-service.xml
+	dbus-binding-tool \
+		--prefix=_users_service_client \
+		--mode=glib-client \
+		--output=users-service-client.h \
+		$(srcdir)/users-service.xml
+
+users-service-server.h: $(srcdir)/users-service.xml
+	dbus-binding-tool \
+		--prefix=_users_service_server \
+		--mode=glib-server \
+		--output=users-service-server.h \
+		$(srcdir)/users-service.xml
 
 status-service-client.h: $(srcdir)/status-service.xml
 	dbus-binding-tool \
@@ -93,6 +111,8 @@ indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 ###############
 
 BUILT_SOURCES = \
+	users-service-client.h \
+	users-service-server.h \
 	status-service-client.h \
 	status-service-server.h \
 	status-provider-pidgin-marshal.h \

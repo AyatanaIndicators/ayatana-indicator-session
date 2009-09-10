@@ -234,7 +234,9 @@ build_menu (gpointer data)
 		dbusmenu_menuitem_property_set(status_menuitems[i], "type", DBUSMENU_CLIENT_TYPES_IMAGE);
 		dbusmenu_menuitem_property_set(status_menuitems[i], DBUSMENU_MENUITEM_PROP_LABEL, _(status_strings[i]));
 		dbusmenu_menuitem_property_set(status_menuitems[i], DBUSMENU_MENUITEM_PROP_ICON, status_icons[i]);
-		dbusmenu_menuitem_property_set(status_menuitems[i], DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
+		if (global_status == STATUS_PROVIDER_STATUS_DISCONNECTED) {
+			dbusmenu_menuitem_property_set(status_menuitems[i], DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
+		}
 		g_signal_connect(G_OBJECT(status_menuitems[i]), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(status_menu_click), GINT_TO_POINTER(i));
 
 		dbusmenu_menuitem_child_append(status_menuitem, status_menuitems[i]);

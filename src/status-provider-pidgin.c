@@ -59,7 +59,8 @@ static const pg_status_t sp_to_pg_map[STATUS_PROVIDER_STATUS_LAST] = {
 	/* STATUS_PROVIDER_STATUS_AWAY,    */  PG_STATUS_AWAY,
 	/* STATUS_PROVIDER_STATUS_DND      */  PG_STATUS_UNAVAILABLE,
 	/* STATUS_PROVIDER_STATUS_INVISIBLE*/  PG_STATUS_INVISIBLE,
-	/* STATUS_PROVIDER_STATUS_OFFLINE  */  PG_STATUS_OFFLINE
+	/* STATUS_PROVIDER_STATUS_OFFLINE  */  PG_STATUS_OFFLINE,
+	/* STATUS_PROVIDER_STATUS_DISCONNECTED*/ PG_STATUS_OFFLINE
 };
 
 typedef struct _StatusProviderPidginPrivate StatusProviderPidginPrivate;
@@ -346,11 +347,17 @@ set_status (StatusProvider * sp, StatusProviderStatus status)
 }
 
 /* Takes the cached Pidgin status and makes it into the generic
-   Status provider status */
+   Status provider status.  If there is no Pidgin proxy then it
+   returns the disconnected state. */
 static StatusProviderStatus
 get_status (StatusProvider * sp)
 {
-	g_return_val_if_fail(IS_STATUS_PROVIDER_PIDGIN(sp), STATUS_PROVIDER_STATUS_OFFLINE);
+	g_return_val_if_fail(IS_STATUS_PROVIDER_PIDGIN(sp), STATUS_PROVIDER_STATUS_DISCONNECTED);
 	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(sp);
+
+	if (priv->proxy == NULL) {
+		return STATUS_PROVIDER_STATUS_DISCONNECTED;
+	}
+
 	return pg_to_sp_map[priv->pg_status];
 }

@@ -83,6 +83,7 @@ static void status_provider_pidgin_finalize   (GObject *object);
 static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
 static void setup_pidgin_proxy (StatusProviderPidgin * self);
+static void dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderPidgin * self);
 
 G_DEFINE_TYPE (StatusProviderPidgin, status_provider_pidgin, STATUS_PROVIDER_TYPE);
 
@@ -185,13 +186,48 @@ status_provider_pidgin_init (StatusProviderPidgin *self)
 	g_return_if_fail(bus != NULL); /* Can't do anymore DBus stuff without this,
 	                                  all non-DBus stuff should be done */
 
-	/* GError * error = NULL; */
+	GError * error = NULL;
+
+	/* Set up the dbus Proxy */
+	priv->dbus_proxy = dbus_g_proxy_new_for_name_owner (bus,
+	                                                    DBUS_SERVICE_DBUS,
+	                                                    DBUS_PATH_DBUS,
+	                                                    DBUS_INTERFACE_DBUS,
+	                                                    &error);
+	if (error != NULL) {
+		g_warning("Unable to connect to DBus events: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* Configure the name owner changing */
+	dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+							G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_CALLBACK(dbus_namechange),
+	                        self, NULL);
 
 	setup_pidgin_proxy(self);
 
 	return;
 }
 
+/* Watch to see if the Pidgin comes up on Dbus */
+static void
+dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderPidgin * self)
+{
+	g_return_if_fail(name != NULL);
+	g_return_if_fail(new != NULL);
+
+	if (g_strcmp0(name, "im.pidgin.purple.PurpleService") == 0) {
+		setup_pidgin_proxy(self);
+	}
+	return;
+}
+
+/* Setup the Pidgin proxy so that we can talk to it
+   and get signals from it.  */
 static void
 setup_pidgin_proxy (StatusProviderPidgin * self)
 {

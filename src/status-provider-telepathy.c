@@ -62,6 +62,7 @@ static mc_status_t sp_to_mc_map[] = {
 typedef struct _StatusProviderTelepathyPrivate StatusProviderTelepathyPrivate;
 struct _StatusProviderTelepathyPrivate {
 	DBusGProxy * proxy;
+	DBusGProxy * dbus_proxy;
 	mc_status_t  mc_status;
 };
 
@@ -76,6 +77,7 @@ static void status_provider_telepathy_dispose    (GObject *object);
 static void status_provider_telepathy_finalize   (GObject *object);
 /* Internal Funcs */
 static void build_telepathy_proxy (StatusProviderTelepathy * self);
+static void dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderTelepathy * self);
 static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
 static void changed_status (DBusGProxy * proxy, guint status, gchar * message, StatusProvider * sp);
@@ -109,7 +111,38 @@ status_provider_telepathy_init (StatusProviderTelepathy *self)
 	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(self);
 
 	priv->proxy = NULL;
+	priv->dbus_proxy = NULL;
 	priv->mc_status = MC_STATUS_OFFLINE;
+
+	GError * error = NULL;
+
+	/* Grabbing the session bus */
+	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	if (bus == NULL) {
+		g_warning("Unable to connect to Session Bus: %s", error == NULL ? "No message" : error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* Set up the dbus Proxy */
+	priv->dbus_proxy = dbus_g_proxy_new_for_name_owner (bus,
+	                                                    DBUS_SERVICE_DBUS,
+	                                                    DBUS_PATH_DBUS,
+	                                                    DBUS_INTERFACE_DBUS,
+	                                                    &error);
+	if (error != NULL) {
+		g_warning("Unable to connect to DBus events: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* Configure the name owner changing */
+	dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+							G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_CALLBACK(dbus_namechange),
+	                        self, NULL);
 
 	build_telepathy_proxy(self);
 
@@ -181,6 +214,19 @@ build_telepathy_proxy (StatusProviderTelepathy * self)
 		}
 	}
 
+	return;
+}
+
+/* Watch to see if the Mission Control comes up on Dbus */
+static void
+dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderTelepathy * self)
+{
+	g_return_if_fail(name != NULL);
+	g_return_if_fail(new != NULL);
+
+	if (g_strcmp0(name, "org.freedesktop.Telepathy.MissionControl") == 0) {
+		build_telepathy_proxy(self);
+	}
 	return;
 }
 

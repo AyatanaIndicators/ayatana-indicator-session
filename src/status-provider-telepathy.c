@@ -121,8 +121,14 @@ build_telepathy_proxy (StatusProviderTelepathy * self)
 {
 	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(self);
 
+	if (priv->proxy != NULL) {
+		g_debug("Hmm, being asked to build a proxy we alredy have.");
+		return;
+	}
+
 	GError * error = NULL;
 
+	/* Grabbing the session bus */
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 	if (session_bus == NULL) {
 		g_warning("Unable to connect to Session Bus: %s", error == NULL ? "No message" : error->message);
@@ -130,7 +136,7 @@ build_telepathy_proxy (StatusProviderTelepathy * self)
 		return;
 	}
 
-	priv->proxy = NULL;
+	/* Get the proxy to Mission Control */
 	priv->proxy = dbus_g_proxy_new_for_name_owner(session_bus,
 	                         "org.freedesktop.Telepathy.MissionControl",
 	                        "/org/freedesktop/Telepathy/MissionControl",
@@ -138,10 +144,13 @@ build_telepathy_proxy (StatusProviderTelepathy * self)
 	                         &error);
 
 	if (priv->proxy != NULL) {
+		/* If it goes, we set the proxy to NULL */
 		g_object_add_weak_pointer (G_OBJECT(priv->proxy), (gpointer *)&priv->proxy);
+		/* And we clean up other variables associated */
 		g_signal_connect(G_OBJECT(priv->proxy), "destroy",
 		                 G_CALLBACK(proxy_destroy), self);
 
+		/* Set up the signal handler for watching when status changes. */
 		dbus_g_object_register_marshaller(_status_provider_telepathy_marshal_VOID__UINT_STRING,
 		                            G_TYPE_NONE,
 		                            G_TYPE_UINT,

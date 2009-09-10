@@ -149,9 +149,13 @@ status_provider_telepathy_init (StatusProviderTelepathy *self)
 	return;
 }
 
+/* Builds up the proxy to Mission Control and configures all of the
+   signals for getting info from the proxy.  Also does a call to get
+   the inital value of the status. */
 static void
 build_telepathy_proxy (StatusProviderTelepathy * self)
 {
+	g_debug("Building Telepathy Proxy");
 	StatusProviderTelepathyPrivate * priv = STATUS_PROVIDER_TELEPATHY_GET_PRIVATE(self);
 
 	if (priv->proxy != NULL) {

@@ -6,6 +6,7 @@ Copyright 2009 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Cody Russell <crussell@canonical.com>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3, as published
@@ -135,6 +136,8 @@ rebuild_items (DbusmenuMenuitem *root,
   GList *u;
   UserData *user;
 
+  dbusmenu_menuitem_foreach (root, remove_menu_item, NULL);
+
   if (check_guest_session ()) {
     mi = dbusmenu_menuitem_new ();
     dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
@@ -169,8 +172,6 @@ create_items (DbusmenuMenuitem *root,
 {
   g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
 
-  dbusmenu_menuitem_foreach (root, remove_menu_item, NULL);
-
   count = users_service_dbus_get_user_count (service);
   if (count > 1 && count < 7)
     {
@@ -182,17 +183,26 @@ create_items (DbusmenuMenuitem *root,
 
 static void
 user_added (UsersServiceDbus *service,
+            UserData         *user,
             gpointer          user_data)
 {
-  /* Never thought you'd see a gpointer user_data get casted to a UserData* did you? */
-  users = g_list_append (users, (UserData *) user_data);
+  DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
+
+  users = g_list_append (users, user);
+
+  rebuild_items (root, service);
 }
 
 static void
 user_removed (UsersServiceDbus *service,
+              UserData         *user,
               gpointer          user_data)
 {
-  users = g_list_remove (users, (UserData *) user_data);
+  DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
+
+  users = g_list_remove (users, user);
+
+  rebuild_items (root, service);
 }
 
 int
@@ -217,7 +227,7 @@ main (int argc, char ** argv)
 
     dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
 
-    root_menuitem = dbusmenu_menuitem_new();
+    root_menuitem = dbusmenu_menuitem_new ();
     g_debug ("Root ID: %d", dbusmenu_menuitem_get_id (root_menuitem));
 
     create_items (root_menuitem, dbus_interface);

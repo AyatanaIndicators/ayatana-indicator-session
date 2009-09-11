@@ -58,8 +58,8 @@ struct _UsersServiceDbusClass {
 
   void     (* users_loaded)       (UsersServiceDbus *self, gpointer user_data);
 
-  void     (* user_added)         (UsersServiceDbus *self, gint64 uid, gpointer user_data);
-  void     (* user_removed)       (UsersServiceDbus *self, gint64 uid, gpointer user_data);
+  void     (* user_added)         (UsersServiceDbus *self, UserData *user, gpointer user_data);
+  void     (* user_removed)       (UsersServiceDbus *self, UserData *user, gpointer user_data);
   void     (* user_updated)       (UsersServiceDbus *self, gint64 uid, gpointer user_data);
 };
 

@@ -1,4 +1,4 @@
-indicator-session (0.1.3-0ubuntu1~ppa1) karmic; urgency=low
+indicator-session (0.1.3-0ubuntu1) karmic; urgency=low
 
   * Upstream release 0.1.3
     * GConf Key change listening

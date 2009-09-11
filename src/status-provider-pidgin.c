@@ -59,12 +59,14 @@ static const pg_status_t sp_to_pg_map[STATUS_PROVIDER_STATUS_LAST] = {
 	/* STATUS_PROVIDER_STATUS_AWAY,    */  PG_STATUS_AWAY,
 	/* STATUS_PROVIDER_STATUS_DND      */  PG_STATUS_UNAVAILABLE,
 	/* STATUS_PROVIDER_STATUS_INVISIBLE*/  PG_STATUS_INVISIBLE,
-	/* STATUS_PROVIDER_STATUS_OFFLINE  */  PG_STATUS_OFFLINE
+	/* STATUS_PROVIDER_STATUS_OFFLINE  */  PG_STATUS_OFFLINE,
+	/* STATUS_PROVIDER_STATUS_DISCONNECTED*/ PG_STATUS_OFFLINE
 };
 
 typedef struct _StatusProviderPidginPrivate StatusProviderPidginPrivate;
 struct _StatusProviderPidginPrivate {
 	DBusGProxy * proxy;
+	DBusGProxy * dbus_proxy;
 	pg_status_t  pg_status;
 };
 
@@ -80,6 +82,8 @@ static void status_provider_pidgin_finalize   (GObject *object);
 /* Internal Funcs */
 static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
+static void setup_pidgin_proxy (StatusProviderPidgin * self);
+static void dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderPidgin * self);
 
 G_DEFINE_TYPE (StatusProviderPidgin, status_provider_pidgin, STATUS_PROVIDER_TYPE);
 
@@ -183,22 +187,85 @@ status_provider_pidgin_init (StatusProviderPidgin *self)
 	                                  all non-DBus stuff should be done */
 
 	GError * error = NULL;
+
+	/* Set up the dbus Proxy */
+	priv->dbus_proxy = dbus_g_proxy_new_for_name_owner (bus,
+	                                                    DBUS_SERVICE_DBUS,
+	                                                    DBUS_PATH_DBUS,
+	                                                    DBUS_INTERFACE_DBUS,
+	                                                    &error);
+	if (error != NULL) {
+		g_warning("Unable to connect to DBus events: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* Configure the name owner changing */
+	dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+							G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_CALLBACK(dbus_namechange),
+	                        self, NULL);
+
+	setup_pidgin_proxy(self);
+
+	return;
+}
+
+/* Watch to see if the Pidgin comes up on Dbus */
+static void
+dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderPidgin * self)
+{
+	g_return_if_fail(name != NULL);
+	g_return_if_fail(new != NULL);
+
+	if (g_strcmp0(name, "im.pidgin.purple.PurpleService") == 0) {
+		setup_pidgin_proxy(self);
+	}
+	return;
+}
+
+/* Setup the Pidgin proxy so that we can talk to it
+   and get signals from it.  */
+static void
+setup_pidgin_proxy (StatusProviderPidgin * self)
+{
+	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(self);
+
+	if (priv->proxy != NULL) {
+		g_debug("Odd, we were asked to set up a Pidgin proxy when we already had one.");
+		return;
+	}
+
+	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	g_return_if_fail(bus != NULL); /* Can't do anymore DBus stuff without this,
+	                                  all non-DBus stuff should be done */
+
+	GError * error = NULL;
+
+	/* Set up the Pidgin Proxy */
 	priv->proxy = dbus_g_proxy_new_for_name_owner (bus,
 	                                               "im.pidgin.purple.PurpleService",
 	                                               "/im/pidgin/purple/PurpleObject",
 	                                               "im.pidgin.purple.PurpleInterface",
 	                                               &error);
+	/* Report any errors */
 	if (error != NULL) {
 		g_debug("Unable to get Pidgin proxy: %s", error->message);
 		g_error_free(error);
-		return;
 	}
 
+	/* If we have a proxy, let's start using it */
 	if (priv->proxy != NULL) {
+		/* Set the proxy to NULL if it's destroyed */
 		g_object_add_weak_pointer (G_OBJECT(priv->proxy), (gpointer *)&priv->proxy);
+		/* If it's destroyed, let's clean up as well */
 		g_signal_connect(G_OBJECT(priv->proxy), "destroy",
 		                 G_CALLBACK(proxy_destroy), self);
 
+		/* Watching for the status change coming from the
+		   Pidgin side of things. */
 		g_debug("Adding Pidgin Signals");
 		dbus_g_object_register_marshaller(_status_provider_pidgin_marshal_VOID__INT_INT,
 		                            G_TYPE_NONE,
@@ -216,6 +283,8 @@ status_provider_pidgin_init (StatusProviderPidgin *self)
 		                            (void *)self,
 		                            NULL);
 
+		/* Get the current status to update our cached
+		   value of the status. */
 		dbus_g_proxy_begin_call(priv->proxy,
 		                        "PurpleSavedstatusGetCurrent",
 		                        savedstatus_cb,
@@ -346,11 +415,17 @@ set_status (StatusProvider * sp, StatusProviderStatus status)
 }
 
 /* Takes the cached Pidgin status and makes it into the generic
-   Status provider status */
+   Status provider status.  If there is no Pidgin proxy then it
+   returns the disconnected state. */
 static StatusProviderStatus
 get_status (StatusProvider * sp)
 {
-	g_return_val_if_fail(IS_STATUS_PROVIDER_PIDGIN(sp), STATUS_PROVIDER_STATUS_OFFLINE);
+	g_return_val_if_fail(IS_STATUS_PROVIDER_PIDGIN(sp), STATUS_PROVIDER_STATUS_DISCONNECTED);
 	StatusProviderPidginPrivate * priv = STATUS_PROVIDER_PIDGIN_GET_PRIVATE(sp);
+
+	if (priv->proxy == NULL) {
+		return STATUS_PROVIDER_STATUS_DISCONNECTED;
+	}
+
 	return pg_to_sp_map[priv->pg_status];
 }

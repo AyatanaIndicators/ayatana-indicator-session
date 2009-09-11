@@ -133,6 +133,10 @@ main (int argc, char * argv[])
 		return 1;
 	}
 
+	/* Init some theme/icon stuff */
+	gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(),
+	                                  INDICATOR_ICONS_DIR);
+
 	GtkWidget * dialog = NULL;
 	if (!pk_require_auth(type) && !supress_confirmations()) {
 		dialog = logout_dialog_new(type);

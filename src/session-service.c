@@ -6,6 +6,7 @@ Copyright 2009 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Christoph Korn <c_korn@gmx.de>
 
 This program is free software: you can redistribute it and/or modify it 
 under the terms of the GNU General Public License version 3, as published 
@@ -47,6 +48,9 @@ static DBusGProxyCall * hibernate_call = NULL;
 
 static DbusmenuMenuitem * hibernate_mi = NULL;
 static DbusmenuMenuitem * suspend_mi = NULL;
+static DbusmenuMenuitem * logout_mi = NULL;
+static DbusmenuMenuitem * restart_mi = NULL;
+static DbusmenuMenuitem * shutdown_mi = NULL;
 
 /* Let's put this machine to sleep, with some info on how
    it should sleep.  */
@@ -222,16 +226,14 @@ show_dialog (DbusmenuMenuitem * mi, gchar * type)
    provides in the UI.  It also connects them to the callbacks. */
 static void
 create_items (DbusmenuMenuitem * root) {
-	DbusmenuMenuitem * mi = NULL;
-
-	mi = dbusmenu_menuitem_new();
+	logout_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out"));
+		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out"));
 	} else {
-		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out ..."));
+		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out..."));
 	}
-	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
+	dbusmenu_menuitem_child_append(root, logout_mi);
+	g_signal_connect(G_OBJECT(logout_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
 
 	suspend_mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, "false");
@@ -245,23 +247,30 @@ create_items (DbusmenuMenuitem * root) {
 	dbusmenu_menuitem_child_append(root, hibernate_mi);
 	g_signal_connect(G_OBJECT(hibernate_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Hibernate");
 
-	mi = dbusmenu_menuitem_new();
+	restart_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart"));
+		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart"));
 	} else {
-		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart ..."));
+		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart..."));
 	}
-	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "restart");
+	dbusmenu_menuitem_child_append(root, restart_mi);
+	g_signal_connect(G_OBJECT(restart_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "restart");
 
-	mi = dbusmenu_menuitem_new();
+	shutdown_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shutdown"));
+		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shutdown"));
 	} else {
-		dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shutdown ..."));
+		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shutdown..."));
 	}
-	dbusmenu_menuitem_child_append(root, mi);
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "shutdown");
+	dbusmenu_menuitem_child_append(root, shutdown_mi);
+	g_signal_connect(G_OBJECT(shutdown_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "shutdown");
+
+	RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi = g_new0 (RestartShutdownLogoutMenuItems, 1);
+	restart_shutdown_logout_mi->logout_mi = logout_mi;
+	restart_shutdown_logout_mi->restart_mi = restart_mi;
+	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
+
+	update_menu_entries(restart_shutdown_logout_mi);
 
 	return;
 }

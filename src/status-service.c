@@ -124,33 +124,6 @@ status_update (void) {
 	return;
 }
 
-/* A fun little function to actually lock the screen.  If,
-   that's what you want, let's do it! */
-static void
-lock_screen (DbusmenuMenuitem * mi, gpointer data)
-{
-	g_debug("Lock Screen");
-
-	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	g_return_if_fail(session_bus != NULL);
-
-	DBusGProxy * proxy = dbus_g_proxy_new_for_name_owner(session_bus,
-	                                                     "org.gnome.ScreenSaver",
-	                                                     "/",
-	                                                     "org.gnome.ScreenSaver",
-	                                                     NULL);
-	g_return_if_fail(proxy != NULL);
-
-	dbus_g_proxy_call_no_reply(proxy,
-	                           "Lock",
-	                           G_TYPE_INVALID,
-	                           G_TYPE_INVALID);
-
-	g_object_unref(proxy);
-
-	return;
-}
-
 static void
 status_menu_click (DbusmenuMenuitem * mi, gpointer data)
 {
@@ -243,11 +216,6 @@ build_menu (gpointer data)
 
 		g_debug("Built %s", status_strings[i]);
 	}
-
-	DbusmenuMenuitem * mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
-	g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), GINT_TO_POINTER(i));
-	dbusmenu_menuitem_child_append(root, mi);
 
 	return FALSE;
 }

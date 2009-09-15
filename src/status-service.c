@@ -95,8 +95,6 @@ status_update (void) {
 	if (global_status != oldglobal) {
 		g_debug("Global status changed to: %s", _(status_strings[global_status]));
 
-		/* Set the status name on the menu item */
-		dbusmenu_menuitem_property_set(status_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _(status_strings[global_status]));
 		/* Configure the icon on the panel */
 		status_service_dbus_set_status(dbus_interface, status_icons[global_status]);
 
@@ -191,7 +189,7 @@ build_menu (gpointer data)
 	build_user_item(root);
 
 	status_menuitem = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(status_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _(status_strings[global_status]));
+	dbusmenu_menuitem_property_set(status_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Set Status"));
 	dbusmenu_menuitem_child_append(root, status_menuitem);
 
 	StatusProviderStatus i;

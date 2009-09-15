@@ -1,3 +1,9 @@
+indicator-session (0.1.3-0ubuntu2~ppa1~design1) UNRELEASED; urgency=low
+
+  * Fixes for the design team.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 14 Sep 2009 21:19:00 -0500
+
 indicator-session (0.1.3-0ubuntu1) karmic; urgency=low
 
   * Upstream release 0.1.3

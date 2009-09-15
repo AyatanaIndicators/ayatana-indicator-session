@@ -21,7 +21,7 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+#include <config.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <dbus/dbus-glib.h>
@@ -120,6 +120,12 @@ int
 main (int argc, char * argv[])
 {
 	gtk_init(&argc, &argv);
+
+	/* Setting up i18n and gettext.  Apparently, we need
+	   all of these. */
+	setlocale (LC_ALL, "");
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	textdomain (GETTEXT_PACKAGE);
 
 	GError * error = NULL;
 	GOptionContext * context = g_option_context_new(" - logout of the current session");

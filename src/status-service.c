@@ -61,7 +61,7 @@ static const gchar * status_strings [STATUS_PROVIDER_STATUS_LAST] = {
 };
 
 static const gchar * status_icons[STATUS_PROVIDER_STATUS_LAST] = {
-  /* STATUS_PROVIDER_STATUS_ONLINE, */     "user-online",
+  /* STATUS_PROVIDER_STATUS_ONLINE, */     "user-available",
   /* STATUS_PROVIDER_STATUS_AWAY, */       "user-away",
   /* STATUS_PROVIDER_STATUS_DND, */        "user-busy",
   /* STATUS_PROVIDER_STATUS_INVISIBLE, */  "user-invisible",

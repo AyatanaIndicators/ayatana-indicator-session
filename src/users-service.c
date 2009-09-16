@@ -20,6 +20,8 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <config.h>
+
 #include <unistd.h>
 
 #include <glib/gi18n.h>
@@ -132,6 +134,12 @@ int
 main (int argc, char ** argv)
 {
     g_type_init();
+
+	/* Setting up i18n and gettext.  Apparently, we need
+	   all of these. */
+	setlocale (LC_ALL, "");
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	textdomain (GETTEXT_PACKAGE);
 
     session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
     bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);

@@ -44,3 +44,5 @@ src/status-provider-pidgin-marshal.c
 src/status-provider-pidgin-marshal.h
 src/status-provider-telepathy-marshal.c
 src/status-provider-telepathy-marshal.h
+src/status-provider-mc5-marshal.c
+src/status-provider-mc5-marshal.h

@@ -2,7 +2,7 @@
 iconsdir = $(INDICATORICONSDIR)/hicolor/scalable/status
 
 icons_DATA =  \
-	user-online.svg			\
+	user-available.svg			\
 	user-offline.svg		\
 	user-away.svg			\
 	user-busy.svg			\

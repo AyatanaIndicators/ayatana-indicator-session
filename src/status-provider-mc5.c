@@ -24,6 +24,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "config.h"
 #endif
 
+#include "libempathy/empathy-account-manager.h"
+
 #include "status-provider.h"
 #include "status-provider-mc5.h"
 #include "status-provider-mc5-marshal.h"

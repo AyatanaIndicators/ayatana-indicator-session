@@ -188,7 +188,10 @@ presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_st
 
 	g_debug("MC5 Status changed: %d %s %s", type, type_str, message);
 
-	priv->status = tp_to_sp_map[type];
+	if (priv->status != tp_to_sp_map[type]) {
+		priv->status = tp_to_sp_map[type];
+		g_signal_emit(G_OBJECT(sp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, priv->status, TRUE);
+	}
 
 	return;
 }

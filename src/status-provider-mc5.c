@@ -32,40 +32,28 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <dbus/dbus-glib.h>
 
-typedef enum {
-	MC_STATUS_UNSET,
-	MC_STATUS_OFFLINE,
-	MC_STATUS_AVAILABLE,
-	MC_STATUS_AWAY,
-	MC_STATUS_EXTENDED_AWAY,
-	MC_STATUS_HIDDEN,
-	MC_STATUS_DND
-} mc_status_t;
-
-static StatusProviderStatus mc_to_sp_map[] = {
-	/* MC_STATUS_UNSET,         */  STATUS_PROVIDER_STATUS_OFFLINE,
-	/* MC_STATUS_OFFLINE,       */  STATUS_PROVIDER_STATUS_OFFLINE,
-	/* MC_STATUS_AVAILABLE,     */  STATUS_PROVIDER_STATUS_ONLINE,
-	/* MC_STATUS_AWAY,          */  STATUS_PROVIDER_STATUS_AWAY,
-	/* MC_STATUS_EXTENDED_AWAY, */  STATUS_PROVIDER_STATUS_AWAY,
-	/* MC_STATUS_HIDDEN,        */  STATUS_PROVIDER_STATUS_INVISIBLE,
-	/* MC_STATUS_DND            */  STATUS_PROVIDER_STATUS_DND
+static gchar * sp_to_mc_map[] = {
+	/* STATUS_PROVIDER_STATUS_ONLINE,  */  "available",
+	/* STATUS_PROVIDER_STATUS_AWAY,    */  "away",
+	/* STATUS_PROVIDER_STATUS_DND      */  "busy",
+	/* STATUS_PROVIDER_STATUS_INVISIBLE*/  "invisible",
+	/* STATUS_PROVIDER_STATUS_OFFLINE  */  "offline",
+	/* STATUS_PROVIDER_STATUS_DISCONNECTED*/NULL
 };
 
-static mc_status_t sp_to_mc_map[] = {
-	/* STATUS_PROVIDER_STATUS_ONLINE,  */  MC_STATUS_AVAILABLE,
-	/* STATUS_PROVIDER_STATUS_AWAY,    */  MC_STATUS_AWAY,
-	/* STATUS_PROVIDER_STATUS_DND      */  MC_STATUS_DND,
-	/* STATUS_PROVIDER_STATUS_INVISIBLE*/  MC_STATUS_HIDDEN,
-	/* STATUS_PROVIDER_STATUS_OFFLINE  */  MC_STATUS_OFFLINE,
-	/* STATUS_PROVIDER_STATUS_DISCONNECTED*/MC_STATUS_OFFLINE
+static TpConnectionPresenceType sp_to_tp_map[] = {
+	/* STATUS_PROVIDER_STATUS_ONLINE,  */    TP_CONNECTION_PRESENCE_TYPE_AVAILABLE,
+	/* STATUS_PROVIDER_STATUS_AWAY,    */    TP_CONNECTION_PRESENCE_TYPE_AWAY,
+	/* STATUS_PROVIDER_STATUS_DND      */    TP_CONNECTION_PRESENCE_TYPE_BUSY,
+	/* STATUS_PROVIDER_STATUS_INVISIBLE*/    TP_CONNECTION_PRESENCE_TYPE_HIDDEN,
+	/* STATUS_PROVIDER_STATUS_OFFLINE  */    TP_CONNECTION_PRESENCE_TYPE_OFFLINE,
+	/* STATUS_PROVIDER_STATUS_DISCONNECTED*/ TP_CONNECTION_PRESENCE_TYPE_UNSET
 };
 
 typedef struct _StatusProviderMC5Private StatusProviderMC5Private;
 struct _StatusProviderMC5Private {
-	DBusGProxy * proxy;
-	DBusGProxy * dbus_proxy;
-	mc_status_t  mc_status;
+	EmpathyAccountManager * manager;
+	StatusProviderStatus status;
 };
 
 #define STATUS_PROVIDER_MC5_GET_PRIVATE(o) \
@@ -78,13 +66,8 @@ static void status_provider_mc5_init       (StatusProviderMC5 *self);
 static void status_provider_mc5_dispose    (GObject *object);
 static void status_provider_mc5_finalize   (GObject *object);
 /* Internal Funcs */
-static void build_mc5_proxy (StatusProviderMC5 * self);
-static void dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self);
 static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
-static void changed_status (DBusGProxy * proxy, guint status, gchar * message, StatusProvider * sp);
-static void proxy_destroy (DBusGProxy * proxy, StatusProvider * sp);
-static void get_status_async (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata);
 
 G_DEFINE_TYPE (StatusProviderMC5, status_provider_mc5, STATUS_PROVIDER_TYPE);
 
@@ -112,127 +95,9 @@ status_provider_mc5_init (StatusProviderMC5 *self)
 {
 	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(self);
 
-	priv->proxy = NULL;
-	priv->dbus_proxy = NULL;
-	priv->mc_status = MC_STATUS_OFFLINE;
+	priv->status = STATUS_PROVIDER_STATUS_OFFLINE;
+	priv->manager = EMPATHY_ACCOUNT_MANAGER(g_object_new(EMPATHY_TYPE_ACCOUNT_MANAGER, NULL));
 
-	GError * error = NULL;
-
-	/* Grabbing the session bus */
-	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-	if (bus == NULL) {
-		g_warning("Unable to connect to Session Bus: %s", error == NULL ? "No message" : error->message);
-		g_error_free(error);
-		return;
-	}
-
-	/* Set up the dbus Proxy */
-	priv->dbus_proxy = dbus_g_proxy_new_for_name_owner (bus,
-	                                                    DBUS_SERVICE_DBUS,
-	                                                    DBUS_PATH_DBUS,
-	                                                    DBUS_INTERFACE_DBUS,
-	                                                    &error);
-	if (error != NULL) {
-		g_warning("Unable to connect to DBus events: %s", error->message);
-		g_error_free(error);
-		return;
-	}
-
-	/* Configure the name owner changing */
-	dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
-	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-							G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
-	                        G_CALLBACK(dbus_namechange),
-	                        self, NULL);
-
-	build_mc5_proxy(self);
-
-	return;
-}
-
-/* Builds up the proxy to Mission Control and configures all of the
-   signals for getting info from the proxy.  Also does a call to get
-   the inital value of the status. */
-static void
-build_mc5_proxy (StatusProviderMC5 * self)
-{
-	g_debug("Building MC5 Proxy");
-	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(self);
-
-	if (priv->proxy != NULL) {
-		g_debug("Hmm, being asked to build a proxy we alredy have.");
-		return;
-	}
-
-	GError * error = NULL;
-
-	/* Grabbing the session bus */
-	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-	if (session_bus == NULL) {
-		g_warning("Unable to connect to Session Bus: %s", error == NULL ? "No message" : error->message);
-		g_error_free(error);
-		return;
-	}
-
-	/* Get the proxy to Mission Control */
-	priv->proxy = dbus_g_proxy_new_for_name_owner(session_bus,
-	                         "org.freedesktop.Telepathy.MissionControl5",
-	                        "/org/freedesktop/Telepathy/MissionControl5",
-	                         "org.freedesktop.Telepathy.MissionControl5",
-	                         &error);
-
-	if (priv->proxy != NULL) {
-		/* If it goes, we set the proxy to NULL */
-		g_object_add_weak_pointer (G_OBJECT(priv->proxy), (gpointer *)&priv->proxy);
-		/* And we clean up other variables associated */
-		g_signal_connect(G_OBJECT(priv->proxy), "destroy",
-		                 G_CALLBACK(proxy_destroy), self);
-
-		/* Set up the signal handler for watching when status changes. */
-		dbus_g_object_register_marshaller(_status_provider_mc5_marshal_VOID__UINT_STRING,
-		                            G_TYPE_NONE,
-		                            G_TYPE_UINT,
-		                            G_TYPE_STRING,
-		                            G_TYPE_INVALID);
-		dbus_g_proxy_add_signal    (priv->proxy,
-		                            "PresenceChanged",
-		                            G_TYPE_UINT,
-		                            G_TYPE_STRING,
-		                            G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal(priv->proxy,
-		                            "PresenceChanged",
-		                            G_CALLBACK(changed_status),
-		                            (void *)self,
-		                            NULL);
-
-		/* Do a get here, to init the status */
-		dbus_g_proxy_begin_call(priv->proxy,
-		                        "GetStatus",
-		                        get_status_async,
-		                        self,
-		                        NULL,
-		                        G_TYPE_INVALID);
-	} else {
-		g_warning("Unable to connect to Mission Control");
-		if (error != NULL) {
-			g_error_free(error);
-		}
-	}
-
-	return;
-}
-
-/* Watch to see if the Mission Control comes up on Dbus */
-static void
-dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self)
-{
-	g_return_if_fail(name != NULL);
-	g_return_if_fail(new != NULL);
-
-	if (g_strcmp0(name, "org.freedesktop.Telepathy.MissionControl5") == 0) {
-		build_mc5_proxy(self);
-	}
 	return;
 }
 
@@ -241,9 +106,9 @@ status_provider_mc5_dispose (GObject *object)
 {
 	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(object);
 
-	if (priv->proxy != NULL) {
-		g_object_unref(priv->proxy);
-		priv->proxy = NULL;
+	if (priv->manager != NULL) {
+		g_object_unref(priv->manager);
+		priv->manager = NULL;
 	}
 
 	G_OBJECT_CLASS (status_provider_mc5_parent_class)->dispose (object);
@@ -276,54 +141,14 @@ static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {
 	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(sp);
-	if (priv->proxy == NULL) {
-		priv->mc_status = MC_STATUS_OFFLINE;
+	if (priv->manager == NULL) {
+		priv->status = STATUS_PROVIDER_STATUS_DISCONNECTED;
 		return;
 	}
 
-	priv->mc_status = sp_to_mc_map[status];	
+	priv->status = status;
 
-	guint mcstatus = MC_STATUS_UNSET;
-	gboolean ret = FALSE;
-	GError * error = NULL;
-
-	ret = dbus_g_proxy_call(priv->proxy,
-	                        "GetPresence", &error,
-	                        G_TYPE_INVALID,
-	                        G_TYPE_UINT, &priv->mc_status,
-	                        G_TYPE_INVALID);
-
-	/* If we can't get the  get call to work, let's not set */
-	if (!ret) {
-		if (error != NULL) {
-			g_error_free(error);
-		}
-		return;
-	}
-	
-	/* If the get call doesn't return a status, that means that there
-	   are no clients connected.  We don't want to connect them by telling
-	   MC that we're going online -- we'd like to be more passive than that. */
-	if (mcstatus == MC_STATUS_UNSET) {
-		return;
-	}
-
-	ret = dbus_g_proxy_call(priv->proxy,
-	                        "SetPresence", &error,
-	                        G_TYPE_UINT, priv->mc_status,
-	                        G_TYPE_STRING, "",
-	                        G_TYPE_INVALID,
-	                        G_TYPE_INVALID);
-
-	if (!ret) {
-		if (error != NULL) {
-			g_warning("Unable to set Mission Control Presence: %s", error->message);
-			g_error_free(error);
-		} else {
-			g_warning("Unable to set Mission Control Presence");
-		}
-		return;
-	}
+	empathy_account_manager_request_global_presence(priv->manager, sp_to_tp_map[status], sp_to_mc_map[status], "");
 
 	return;
 }
@@ -334,52 +159,10 @@ get_status (StatusProvider * sp)
 	g_return_val_if_fail(IS_STATUS_PROVIDER_MC5(sp), STATUS_PROVIDER_STATUS_DISCONNECTED);
 	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(sp);
 
-	if (priv->proxy == NULL) {
+	if (priv->manager == NULL) {
 		return STATUS_PROVIDER_STATUS_DISCONNECTED;
 	}
 
-	return mc_to_sp_map[priv->mc_status];
+	return priv->status;
 }
 
-static void
-changed_status (DBusGProxy * proxy, guint status, gchar * message, StatusProvider * sp)
-{
-	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(sp);
-	priv->mc_status = status;
-	g_signal_emit(G_OBJECT(sp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, mc_to_sp_map[priv->mc_status], TRUE);
-}
-
-static void
-proxy_destroy (DBusGProxy * proxy, StatusProvider * sp)
-{
-	g_debug("Signal: Mission Control proxy destroyed");
-	g_signal_emit(G_OBJECT(sp), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, STATUS_PROVIDER_STATUS_OFFLINE, TRUE);
-	return;
-}
-
-static void
-get_status_async (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
-{
-	GError * error = NULL;
-	guint status = 0;
-	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_UINT, &status, G_TYPE_INVALID)) {
-		g_warning("Unable to get type from Mission Control: %s", error->message);
-		g_error_free(error);
-		return;
-	}
-
-	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(userdata);
-
-	gboolean changed = FALSE;
-	if (status != priv->mc_status) {
-		changed = TRUE;
-	}
-
-	priv->mc_status = status;
-
-	if (changed) {
-		g_signal_emit(G_OBJECT(userdata), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, mc_to_sp_map[priv->mc_status], TRUE);
-	}
-
-	return;
-}

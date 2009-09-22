@@ -68,6 +68,7 @@ static void status_provider_mc5_finalize   (GObject *object);
 /* Internal Funcs */
 static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
+static void presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp);
 
 G_DEFINE_TYPE (StatusProviderMC5, status_provider_mc5, STATUS_PROVIDER_TYPE);
 
@@ -97,6 +98,8 @@ status_provider_mc5_init (StatusProviderMC5 *self)
 
 	priv->status = STATUS_PROVIDER_STATUS_OFFLINE;
 	priv->manager = EMPATHY_ACCOUNT_MANAGER(g_object_new(EMPATHY_TYPE_ACCOUNT_MANAGER, NULL));
+
+	g_signal_connect(G_OBJECT(priv->manager), "global-presence-changed", G_CALLBACK(presence_changed), self);
 
 	return;
 }
@@ -166,3 +169,14 @@ get_status (StatusProvider * sp)
 	return priv->status;
 }
 
+static void
+presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp)
+{
+	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(sp);
+
+	g_debug("MC5 Status changed: %d %s %s", type, type_str, message);
+
+	priv->status = type;
+
+	return;
+}

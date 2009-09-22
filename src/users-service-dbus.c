@@ -224,23 +224,28 @@ users_service_dbus_init (UsersServiceDbus *self)
       priv->error = g_strdup_printf ("Unable to get DisplayManager proxy: %s", error->message);
     }
 
+  dbus_g_object_register_marshaller (_users_service_marshal_VOID__INT64,
+                                     G_TYPE_NONE,
+                                     G_TYPE_INT64,
+                                     G_TYPE_INVALID);
+
   dbus_g_proxy_add_signal (priv->gdm_proxy,
                            "UsersLoaded",
                            G_TYPE_INVALID);
 
   dbus_g_proxy_add_signal (priv->gdm_proxy,
                            "UserAdded",
-                           G_TYPE_UINT64,
+                           G_TYPE_INT64,
                            G_TYPE_INVALID);
 
   dbus_g_proxy_add_signal (priv->gdm_proxy,
                            "UserRemoved",
-                           G_TYPE_UINT64,
+                           G_TYPE_INT64,
                            G_TYPE_INVALID);
 
   dbus_g_proxy_add_signal (priv->gdm_proxy,
                            "UserUpdated",
-                           G_TYPE_UINT64,
+                           G_TYPE_INT64,
                            G_TYPE_INVALID);
 
   dbus_g_proxy_connect_signal (priv->gdm_proxy,

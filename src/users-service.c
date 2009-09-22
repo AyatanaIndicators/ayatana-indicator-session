@@ -145,19 +145,11 @@ rebuild_items (DbusmenuMenuitem *root,
     g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
   }
 
-  mi = dbusmenu_menuitem_new ();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, g_strdup_printf ("START (count is %d)", count));
-  dbusmenu_menuitem_child_append (root, mi);
-
-  g_print ("count == %d\n", count);
-
   if (count > 1 && count < 7)
     {
       for (u = users; u != NULL; u = g_list_next (u))
         {
           user = u->data;
-
-          g_print ("user->real_name == %s\n", user->real_name);
 
           mi = dbusmenu_menuitem_new ();
           dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, user->real_name);

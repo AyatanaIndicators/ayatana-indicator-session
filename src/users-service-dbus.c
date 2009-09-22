@@ -360,11 +360,6 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
 {
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
-  g_print ("users_service_dbus_get_user_list()\n");
-
-  if (!priv->users)
-    g_print ("users_service_dbus_get_user_list(): priv->users is NULL\n");
-
   return priv->users;
 }
 

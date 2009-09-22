@@ -158,10 +158,6 @@ rebuild_items (DbusmenuMenuitem *root,
         }
     }
 
-  mi = dbusmenu_menuitem_new ();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, "END");
-  dbusmenu_menuitem_child_append (root,mi);
-
   if (check_new_session ()) {
     mi = dbusmenu_menuitem_new ();
     dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("New Session..."));

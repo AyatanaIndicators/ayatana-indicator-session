@@ -53,6 +53,9 @@ static gboolean _users_service_server_get_users_info   (UsersServiceDbus  *servi
                                                         const GArray      *uids,
                                                         GPtrArray        **user_info,
                                                         GError           **error);
+static void     create_session_proxy                   (UsersServiceDbus  *self);
+static void     create_system_proxy                    (UsersServiceDbus  *self);
+static void     create_gdm_proxy                       (UsersServiceDbus  *self);
 static void     users_loaded                           (DBusGProxy        *proxy,
                                                         gpointer           user_data);
 static void     user_added                             (DBusGProxy        *proxy,
@@ -154,26 +157,57 @@ users_service_dbus_init (UsersServiceDbus *self)
 
   /* Get the buses */
   priv->session_bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-  if (error != NULL) {
-    g_error ("Unable to get session bus: %s", error->message);
-    g_error_free (error);
+  if (error != NULL)
+    {
+      g_error ("Unable to get session bus: %s", error->message);
+      g_error_free (error);
 
-    return;
-  }
+      return;
+    }
 
   priv->system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-  if (error != NULL) {
-    g_error("Unable to get system bus: %s", error->message);
-    g_error_free(error);
+  if (error != NULL)
+    {
+      g_error("Unable to get system bus: %s", error->message);
+      g_error_free(error);
 
-    return;
-  }
+      return;
+    }
 
   dbus_g_connection_register_g_object (priv->session_bus,
                                        INDICATOR_USERS_SERVICE_DBUS_OBJECT,
                                        G_OBJECT (self));
 
-  /* Set up the DBUS service proxies */
+  dbus_g_object_register_marshaller (_users_service_marshal_VOID__INT64,
+                                     G_TYPE_NONE,
+                                     G_TYPE_INT64,
+                                     G_TYPE_INVALID);
+
+  create_session_proxy (self);
+  create_system_proxy (self);
+  create_gdm_proxy (self);
+
+  users_loaded (priv->gdm_proxy, self);
+}
+
+static void
+users_service_dbus_dispose (GObject *object)
+{
+  G_OBJECT_CLASS (users_service_dbus_parent_class)->dispose (object);
+}
+
+static void
+users_service_dbus_finalize (GObject *object)
+{
+  G_OBJECT_CLASS (users_service_dbus_parent_class)->finalize (object);
+}
+
+static void
+create_session_proxy (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  GError *error = NULL;
+
   priv->dbus_proxy_session = dbus_g_proxy_new_for_name_owner (priv->session_bus,
                                                               DBUS_SERVICE_DBUS,
                                                               DBUS_PATH_DBUS,
@@ -186,6 +220,13 @@ users_service_dbus_init (UsersServiceDbus *self)
 
       return;
     }
+}
+
+static void
+create_system_proxy (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  GError *error = NULL;
 
   priv->dbus_proxy_system = dbus_g_proxy_new_for_name_owner (priv->system_bus,
                                                              DBUS_SERVICE_DBUS,
@@ -199,6 +240,13 @@ users_service_dbus_init (UsersServiceDbus *self)
 
       return;
     }
+}
+
+static void
+create_gdm_proxy (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  GError *error = NULL;
 
   priv->gdm_proxy = dbus_g_proxy_new_for_name_owner (priv->system_bus,
                                                      "org.gnome.DisplayManager",
@@ -211,11 +259,6 @@ users_service_dbus_init (UsersServiceDbus *self)
       g_error ("Unable to get DisplayManager proxy on system bus: %s", error->message);
       g_error_free (error);
     }
-
-  dbus_g_object_register_marshaller (_users_service_marshal_VOID__INT64,
-                                     G_TYPE_NONE,
-                                     G_TYPE_INT64,
-                                     G_TYPE_INVALID);
 
   dbus_g_proxy_add_signal (priv->gdm_proxy,
                            "UsersLoaded",
@@ -259,20 +302,6 @@ users_service_dbus_init (UsersServiceDbus *self)
                                G_CALLBACK (user_updated),
                                self,
                                NULL);
-
-  users_loaded (priv->gdm_proxy, self);
-}
-
-static void
-users_service_dbus_dispose (GObject *object)
-{
-  G_OBJECT_CLASS (users_service_dbus_parent_class)->dispose (object);
-}
-
-static void
-users_service_dbus_finalize (GObject *object)
-{
-  G_OBJECT_CLASS (users_service_dbus_parent_class)->finalize (object);
 }
 
 static void

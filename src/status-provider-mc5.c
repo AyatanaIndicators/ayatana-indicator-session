@@ -32,7 +32,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <dbus/dbus-glib.h>
 
-static gchar * sp_to_mc_map[] = {
+static gchar * sp_to_mc_map[STATUS_PROVIDER_STATUS_LAST] = {
 	/* STATUS_PROVIDER_STATUS_ONLINE,  */  "available",
 	/* STATUS_PROVIDER_STATUS_AWAY,    */  "away",
 	/* STATUS_PROVIDER_STATUS_DND      */  "busy",
@@ -41,13 +41,25 @@ static gchar * sp_to_mc_map[] = {
 	/* STATUS_PROVIDER_STATUS_DISCONNECTED*/NULL
 };
 
-static TpConnectionPresenceType sp_to_tp_map[] = {
+static TpConnectionPresenceType sp_to_tp_map[STATUS_PROVIDER_STATUS_LAST] = {
 	/* STATUS_PROVIDER_STATUS_ONLINE,  */    TP_CONNECTION_PRESENCE_TYPE_AVAILABLE,
 	/* STATUS_PROVIDER_STATUS_AWAY,    */    TP_CONNECTION_PRESENCE_TYPE_AWAY,
 	/* STATUS_PROVIDER_STATUS_DND      */    TP_CONNECTION_PRESENCE_TYPE_BUSY,
 	/* STATUS_PROVIDER_STATUS_INVISIBLE*/    TP_CONNECTION_PRESENCE_TYPE_HIDDEN,
 	/* STATUS_PROVIDER_STATUS_OFFLINE  */    TP_CONNECTION_PRESENCE_TYPE_OFFLINE,
 	/* STATUS_PROVIDER_STATUS_DISCONNECTED*/ TP_CONNECTION_PRESENCE_TYPE_UNSET
+};
+
+static StatusProviderStatus tp_to_sp_map[TP_CONNECTION_PRESENCE_TYPE_ERROR + 1] = {
+	/* TP_CONNECTION_PRESENCE_TYPE_UNSET          */  STATUS_PROVIDER_STATUS_DISCONNECTED,
+	/* TP_CONNECTION_PRESENCE_TYPE_OFFLINE        */  STATUS_PROVIDER_STATUS_OFFLINE,
+	/* TP_CONNECTION_PRESENCE_TYPE_AVAILABLE      */  STATUS_PROVIDER_STATUS_ONLINE,
+	/* TP_CONNECTION_PRESENCE_TYPE_AWAY           */  STATUS_PROVIDER_STATUS_AWAY,
+	/* TP_CONNECTION_PRESENCE_TYPE_EXTENDED_AWAY  */  STATUS_PROVIDER_STATUS_AWAY,
+	/* TP_CONNECTION_PRESENCE_TYPE_HIDDEN         */  STATUS_PROVIDER_STATUS_INVISIBLE,
+	/* TP_CONNECTION_PRESENCE_TYPE_BUSY           */  STATUS_PROVIDER_STATUS_DND,
+	/* TP_CONNECTION_PRESENCE_TYPE_UNKNOWN        */  STATUS_PROVIDER_STATUS_DISCONNECTED,
+	/* TP_CONNECTION_PRESENCE_TYPE_ERROR          */  STATUS_PROVIDER_STATUS_DISCONNECTED
 };
 
 typedef struct _StatusProviderMC5Private StatusProviderMC5Private;
@@ -176,7 +188,7 @@ presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_st
 
 	g_debug("MC5 Status changed: %d %s %s", type, type_str, message);
 
-	priv->status = type;
+	priv->status = tp_to_sp_map[type];
 
 	return;
 }

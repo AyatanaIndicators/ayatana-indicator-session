@@ -18,6 +18,7 @@
       <arg name="user_name" direction="out" type="s"/>
       <arg name="real_name" direction="out" type="s"/>
       <arg name="shell" direction="out" type="s"/>
+      <arg name="login_count" direction="out" type="i"/>
       <arg name="icon_url" direction="out" type="s"/>
     </method>
 
@@ -25,22 +26,16 @@
     <method name="GetUsersInfo">
       <arg name="uid" direction="in" type="ax"/>
       <!-- (uid, user_name, real_name, shell, icon_url) -->
-      <arg name="user_info" direction="out" type="a(xssss)"/>
+      <arg name="user_info" direction="out" type="a(xsssis)"/>
     </method>
 
-    <!-- Triggered when user information is being reloaded.
-         All existing user information is invalid from this signal.
-         Wait for the UsersLoaded signal -->
-    <signal name="LoadingUsers"></signal>
+    <!-- Query if the initial user list is loaded -->
+    <method name="GetUsersLoaded">
+      <arg name="is_loaded" direction="out" type="b"/>
+    </method>
 
-    <!-- Triggered when user information has been reloaded.
-         A client should call GetUserList() now -->
+    <!-- Triggered when the initial user list is loaded -->
     <signal name="UsersLoaded"></signal>
-
-    <!-- Triggered when a user has updated information -->
-    <signal name="UserUpdated">
-      <arg name="uid" type="x"/>
-    </signal>
 
     <!-- Triggered when a users are added to/removed from the system.
          Clients should monitor these signals as soon as they connect to
@@ -49,6 +44,11 @@
       <arg name="uid" type="x"/>
     </signal>
     <signal name="UserRemoved">
+      <arg name="uid" type="x"/>
+    </signal>
+
+    <!-- Triggered when a user has updated information -->
+    <signal name="UserUpdated">
       <arg name="uid" type="x"/>
     </signal>
 

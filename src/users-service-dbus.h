@@ -38,10 +38,11 @@ typedef struct _UserData              UserData;
 
 struct _UserData
 {
-  guint64  uid;
+  uid_t    uid;
   gchar   *user_name;
   gchar   *real_name;
   gchar   *shell;
+  gint     login_count;
   gchar   *icon_url;
 };
 
@@ -58,15 +59,16 @@ struct _UsersServiceDbusClass {
 
   void     (* users_loaded)       (UsersServiceDbus *self, gpointer user_data);
 
-  void     (* user_added)         (UsersServiceDbus *self, UserData *user, gpointer user_data);
-  void     (* user_removed)       (UsersServiceDbus *self, UserData *user, gpointer user_data);
+  void     (* user_added)         (UsersServiceDbus *self, gint64 uid, gpointer user_data);
+  void     (* user_removed)       (UsersServiceDbus *self, gint64 uid, gpointer user_data);
   void     (* user_updated)       (UsersServiceDbus *self, gint64 uid, gpointer user_data);
 };
 
 GType users_service_dbus_get_type  (void) G_GNUC_CONST;
 
 gint   users_service_dbus_get_user_count (UsersServiceDbus *self);
-GList *users_service_dbus_get_user_list (UsersServiceDbus *self);
+GList *users_service_dbus_get_user_list  (UsersServiceDbus *self);
+gchar *users_service_dbus_get_error      (UsersServiceDbus *self);
 
 G_END_DECLS
 

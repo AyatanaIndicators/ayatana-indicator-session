@@ -26,36 +26,44 @@
 #include "dbus-shared-names.h"
 #include "users-service-dbus.h"
 #include "users-service-client.h"
+#include "users-service-marshal.h"
 
-static void      users_service_dbus_class_init       (UsersServiceDbusClass *klass);
-static void      users_service_dbus_init             (UsersServiceDbus  *self);
-static void      users_service_dbus_dispose          (GObject           *object);
-static void      users_service_dbus_finalize         (GObject           *object);
-static gboolean _users_service_server_count_users    (UsersServiceDbus  *service,
-                                                      gint              *count,
-                                                      GError           **error);
-static gboolean _users_service_server_get_user_list  (UsersServiceDbus  *service,
-                                                      GArray           **list,
-                                                      GError           **error);
-static gboolean _users_service_server_get_user_info  (UsersServiceDbus  *service,
-                                                      const gint64       uid,
-                                                      gchar            **username,
-                                                      gchar            **real_name,
-                                                      gchar            **shell,
-                                                      char             **icon_url,
-                                                      GError           **error);
-static gboolean _users_service_server_get_users_info (UsersServiceDbus  *service,
-                                                      const GArray      *uids,
-                                                      GPtrArray        **user_info,
-                                                      GError           **error);
-static void     users_loaded                         (DBusGProxy *proxy,
-                                                      gpointer    user_data);
-static void     user_added                           (DBusGProxy *proxy,
-                                                      guint       uid,
-                                                      gpointer    user_data);
-static void     user_removed                         (DBusGProxy *proxy,
-                                                      guint       uid,
-                                                      gpointer    user_data);
+static void      users_service_dbus_class_init         (UsersServiceDbusClass *klass);
+static void      users_service_dbus_init               (UsersServiceDbus  *self);
+static void      users_service_dbus_dispose            (GObject           *object);
+static void      users_service_dbus_finalize           (GObject           *object);
+static gboolean _users_service_server_count_users      (UsersServiceDbus  *service,
+                                                        gint              *count,
+                                                        GError           **error);
+static gboolean _users_service_server_get_users_loaded (UsersServiceDbus  *self,
+                                                        gboolean          *is_loaded,
+                                                        GError           **error);
+static gboolean _users_service_server_get_user_list    (UsersServiceDbus  *service,
+                                                        GArray           **list,
+                                                        GError           **error);
+static gboolean _users_service_server_get_user_info    (UsersServiceDbus  *service,
+                                                        const gint64       uid,
+                                                        gchar            **username,
+                                                        gchar            **real_name,
+                                                        gchar            **shell,
+                                                        gint              *login_count,
+                                                        gchar            **icon_url,
+                                                        GError           **error);
+static gboolean _users_service_server_get_users_info   (UsersServiceDbus  *service,
+                                                        const GArray      *uids,
+                                                        GPtrArray        **user_info,
+                                                        GError           **error);
+static void     users_loaded                           (DBusGProxy        *proxy,
+                                                        gpointer           user_data);
+static void     user_added                             (DBusGProxy        *proxy,
+                                                        guint              uid,
+                                                        gpointer           user_data);
+static void     user_removed                           (DBusGProxy        *proxy,
+                                                        guint              uid,
+                                                        gpointer           user_data);
+static void     user_updated                           (DBusGProxy        *proxy,
+                                                        guint              uid,
+                                                        gpointer           user_data);
 
 #include "users-service-server.h"
 
@@ -71,6 +79,9 @@ struct _UsersServiceDbusPrivate
   DBusGConnection *system_bus;
   DBusGProxy *dbus_proxy_session;
   DBusGProxy *dbus_proxy_system;
+  DBusGProxy *gdm_proxy;
+
+  gchar *error;
 };
 
 #define USERS_SERVICE_DBUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbusPrivate))
@@ -80,6 +91,7 @@ enum {
   USERS_LOADED,
   USER_ADDED,
   USER_REMOVED,
+  USER_UPDATED,
   LAST_SIGNAL
 };
 
@@ -111,16 +123,24 @@ users_service_dbus_class_init (UsersServiceDbusClass *klass)
                                       G_SIGNAL_RUN_LAST,
                                       G_STRUCT_OFFSET (UsersServiceDbusClass, user_added),
                                       NULL, NULL,
-                                      g_cclosure_marshal_VOID__INT,
-                                      G_TYPE_NONE, 1, G_TYPE_INT);
+                                      _users_service_marshal_VOID__INT64,
+                                      G_TYPE_NONE, 1, G_TYPE_INT64);
 
   signals[USER_REMOVED] = g_signal_new ("user-removed",
                                         G_TYPE_FROM_CLASS (klass),
                                         G_SIGNAL_RUN_LAST,
                                         G_STRUCT_OFFSET (UsersServiceDbusClass, user_removed),
                                         NULL, NULL,
-                                        g_cclosure_marshal_VOID__INT,
-                                        G_TYPE_NONE, 1, G_TYPE_INT);
+                                        _users_service_marshal_VOID__INT64,
+                                        G_TYPE_NONE, 1, G_TYPE_INT64);
+
+  signals[USER_UPDATED] = g_signal_new ("user-updated",
+                                        G_TYPE_FROM_CLASS (klass),
+                                        G_SIGNAL_RUN_LAST,
+                                        G_STRUCT_OFFSET (UsersServiceDbusClass, user_updated),
+                                        NULL, NULL,
+                                        _users_service_marshal_VOID__INT64,
+                                        G_TYPE_NONE, 1, G_TYPE_INT64);
 
   dbus_g_object_type_install_info (USERS_SERVICE_DBUS_TYPE, &dbus_glib__users_service_server_object_info);
 }
@@ -140,6 +160,8 @@ users_service_dbus_init (UsersServiceDbus *self)
     g_error ("Unable to get session bus: %s", error->message);
     g_error_free (error);
 
+    priv->error = g_strdup ("Failed to get session bus");
+
     return;
   }
 
@@ -147,6 +169,8 @@ users_service_dbus_init (UsersServiceDbus *self)
   if (error != NULL) {
     g_error("Unable to get system bus: %s", error->message);
     g_error_free(error);
+
+    priv->error = g_strdup ("Failed to get system bus");
 
     return;
   }
@@ -161,42 +185,89 @@ users_service_dbus_init (UsersServiceDbus *self)
                                                               DBUS_PATH_DBUS,
                                                               DBUS_INTERFACE_DBUS,
                                                               &error);
-  if (error != NULL) {
-    g_error ("Unable to get dbus proxy on session bus: %s", error->message);
-    g_error_free (error);
+  if (error != NULL)
+    {
+      g_error ("Unable to get dbus proxy on session bus: %s", error->message);
+      g_error_free (error);
 
-    return;
-  }
+      priv->error = g_strdup ("Failed to get session proxy");
+
+      return;
+    }
 
   priv->dbus_proxy_system = dbus_g_proxy_new_for_name_owner (priv->system_bus,
                                                              DBUS_SERVICE_DBUS,
                                                              DBUS_PATH_DBUS,
                                                              DBUS_INTERFACE_DBUS,
                                                              &error);
-  if (error != NULL) {
-    g_error ("Unable to get dbus proxy on system bus: %s", error->message);
-    g_error_free (error);
+  if (error != NULL)
+    {
+      g_error ("Unable to get dbus proxy on system bus: %s", error->message);
+      g_error_free (error);
 
-    return;
-  }
+      priv->error = g_strdup ("Failed to get system proxy");
 
-  dbus_g_proxy_connect_signal (priv->dbus_proxy_system,
+      return;
+    }
+
+  priv->gdm_proxy = dbus_g_proxy_new_for_name_owner (priv->system_bus, // XXX ?
+                                                     "org.gnome.DisplayManager",
+                                                     "/org/gnome/DisplayManager/UserManager",
+                                                     "org.gnome.DisplayManager.UserManager",
+                                                     &error);
+
+  if (error != NULL)
+    {
+      g_error ("Unable to get DisplayManager proxy on system bus: %s", error->message);
+      g_error_free (error);
+
+      priv->error = g_strdup_printf ("Unable to get DisplayManager proxy: %s", error->message);
+    }
+
+  dbus_g_proxy_add_signal (priv->gdm_proxy,
+                           "UsersLoaded",
+                           G_TYPE_INVALID);
+
+  dbus_g_proxy_add_signal (priv->gdm_proxy,
+                           "UserAdded",
+                           G_TYPE_UINT64,
+                           G_TYPE_INVALID);
+
+  dbus_g_proxy_add_signal (priv->gdm_proxy,
+                           "UserRemoved",
+                           G_TYPE_UINT64,
+                           G_TYPE_INVALID);
+
+  dbus_g_proxy_add_signal (priv->gdm_proxy,
+                           "UserUpdated",
+                           G_TYPE_UINT64,
+                           G_TYPE_INVALID);
+
+  dbus_g_proxy_connect_signal (priv->gdm_proxy,
                                "UsersLoaded",
                                G_CALLBACK (users_loaded),
                                self,
                                NULL);
 
-  dbus_g_proxy_connect_signal (priv->dbus_proxy_system,
+  dbus_g_proxy_connect_signal (priv->gdm_proxy,
                                "UserAdded",
                                G_CALLBACK (user_added),
                                self,
                                NULL);
 
-  dbus_g_proxy_connect_signal (priv->dbus_proxy_system,
+  dbus_g_proxy_connect_signal (priv->gdm_proxy,
                                "UserRemoved",
                                G_CALLBACK (user_removed),
                                self,
                                NULL);
+
+  dbus_g_proxy_connect_signal (priv->gdm_proxy,
+                               "UserUpdated",
+                               G_CALLBACK (user_updated),
+                               self,
+                               NULL);
+
+  users_loaded (priv->gdm_proxy, self);
 }
 
 static void
@@ -231,6 +302,7 @@ users_loaded (DBusGProxy *proxy,
                                                          &error))
     {
       g_warning ("failed to retrieve user count: %s", error->message);
+      priv->error = g_strdup_printf ("Failed to retrieve user count: %s", error->message);
       g_error_free (error);
 
       return;
@@ -243,6 +315,8 @@ users_loaded (DBusGProxy *proxy,
                                                            &error))
     {
       g_warning ("failed to retrieve user list: %s", error->message);
+      priv->error = g_strdup_printf ("Failed to retrieve user list: %s", error->message);
+      g_print ("priv->error == %s\n", priv->error);
       g_error_free (error);
 
       return;
@@ -254,6 +328,8 @@ users_loaded (DBusGProxy *proxy,
                                                             &error))
     {
       g_warning ("failed to retrieve user info: %s", error->message);
+      priv->error = g_strdup_printf ("Failed to get user info: %s", error->message);
+      g_print ("priv->error == %s\n", priv->error);
       g_error_free (error);
 
       return;
@@ -261,7 +337,13 @@ users_loaded (DBusGProxy *proxy,
 
   for (i = 0; i < users_info->len; i++)
     {
-      UserData *data = g_ptr_array_index (users_info, i);
+      UserData *data;
+
+      g_print (" -> setting up user %d\n", i);
+
+      data = g_ptr_array_index (users_info, i);
+
+      g_print ("     * user_name: %s\n", data->user_name);
 
       priv->users = g_list_prepend (priv->users, data);
     }
@@ -279,6 +361,11 @@ GList *
 users_service_dbus_get_user_list (UsersServiceDbus *self)
 {
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+
+  g_print ("users_service_dbus_get_user_list()\n");
+
+  if (!priv->users)
+    g_print ("users_service_dbus_get_user_list(): priv->users is NULL\n");
 
   return priv->users;
 }
@@ -300,6 +387,7 @@ user_added (DBusGProxy *proxy,
                                                            &user->user_name,
                                                            &user->real_name,
                                                            &user->shell,
+                                                           &user->login_count,
                                                            &user->icon_url,
                                                            &error))
     {
@@ -341,6 +429,26 @@ user_removed (DBusGProxy *proxy,
     }
 }
 
+static void
+user_updated (DBusGProxy *proxy,
+              guint       uid,
+              gpointer    user_data)
+{
+  UsersServiceDbus *service = (UsersServiceDbus *)user_data;
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
+  GList *l;
+
+  for (l = priv->users; l != NULL; l = g_list_next (l))
+    {
+      UserData *user = (UserData *)l->data;
+
+      if (user->uid == uid)
+        {
+          // XXX - update user data
+        }
+    }
+}
+
 static gboolean
 _users_service_server_count_users (UsersServiceDbus  *service,
                                    gint              *uids,
@@ -358,11 +466,20 @@ _users_service_server_get_user_list  (UsersServiceDbus  *service,
 }
 
 static gboolean
+_users_service_server_get_users_loaded (UsersServiceDbus  *self,
+                                        gboolean          *is_loaded,
+                                        GError           **error)
+{
+  return TRUE;
+}
+
+static gboolean
 _users_service_server_get_user_info  (UsersServiceDbus  *service,
                                       const gint64       uid,
                                       gchar            **username,
                                       gchar            **real_name,
                                       gchar            **shell,
+                                      gint              *login_count,
                                       char             **icon_url,
                                       GError           **error)
 {
@@ -376,4 +493,12 @@ _users_service_server_get_users_info (UsersServiceDbus  *service,
                                       GError           **error)
 {
   return TRUE;
+}
+
+gchar *
+users_service_dbus_get_error (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+
+  return priv->error;
 }

@@ -38,7 +38,7 @@ typedef struct _UserData              UserData;
 
 struct _UserData
 {
-  uid_t    uid;
+  gint64   uid;
   gchar   *user_name;
   gchar   *real_name;
   gchar   *shell;
@@ -68,7 +68,6 @@ GType users_service_dbus_get_type  (void) G_GNUC_CONST;
 
 gint   users_service_dbus_get_user_count (UsersServiceDbus *self);
 GList *users_service_dbus_get_user_list  (UsersServiceDbus *self);
-gchar *users_service_dbus_get_error      (UsersServiceDbus *self);
 
 G_END_DECLS
 

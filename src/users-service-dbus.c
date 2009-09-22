@@ -80,8 +80,6 @@ struct _UsersServiceDbusPrivate
   DBusGProxy *dbus_proxy_session;
   DBusGProxy *dbus_proxy_system;
   DBusGProxy *gdm_proxy;
-
-  gchar *error;
 };
 
 #define USERS_SERVICE_DBUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbusPrivate))
@@ -160,8 +158,6 @@ users_service_dbus_init (UsersServiceDbus *self)
     g_error ("Unable to get session bus: %s", error->message);
     g_error_free (error);
 
-    priv->error = g_strdup ("Failed to get session bus");
-
     return;
   }
 
@@ -169,8 +165,6 @@ users_service_dbus_init (UsersServiceDbus *self)
   if (error != NULL) {
     g_error("Unable to get system bus: %s", error->message);
     g_error_free(error);
-
-    priv->error = g_strdup ("Failed to get system bus");
 
     return;
   }
@@ -190,8 +184,6 @@ users_service_dbus_init (UsersServiceDbus *self)
       g_error ("Unable to get dbus proxy on session bus: %s", error->message);
       g_error_free (error);
 
-      priv->error = g_strdup ("Failed to get session proxy");
-
       return;
     }
 
@@ -205,12 +197,10 @@ users_service_dbus_init (UsersServiceDbus *self)
       g_error ("Unable to get dbus proxy on system bus: %s", error->message);
       g_error_free (error);
 
-      priv->error = g_strdup ("Failed to get system proxy");
-
       return;
     }
 
-  priv->gdm_proxy = dbus_g_proxy_new_for_name_owner (priv->system_bus, // XXX ?
+  priv->gdm_proxy = dbus_g_proxy_new_for_name_owner (priv->system_bus,
                                                      "org.gnome.DisplayManager",
                                                      "/org/gnome/DisplayManager/UserManager",
                                                      "org.gnome.DisplayManager.UserManager",
@@ -220,8 +210,6 @@ users_service_dbus_init (UsersServiceDbus *self)
     {
       g_error ("Unable to get DisplayManager proxy on system bus: %s", error->message);
       g_error_free (error);
-
-      priv->error = g_strdup_printf ("Unable to get DisplayManager proxy: %s", error->message);
     }
 
   dbus_g_object_register_marshaller (_users_service_marshal_VOID__INT64,
@@ -294,8 +282,8 @@ users_loaded (DBusGProxy *proxy,
   UsersServiceDbus        *service;
   UsersServiceDbusPrivate *priv;
   GError                  *error = NULL;
-  GArray                  *uids;
-  GPtrArray               *users_info;
+  GArray                  *uids = NULL;
+  GPtrArray               *users_info = NULL;
   gint                     count;
   int                      i;
 
@@ -307,7 +295,6 @@ users_loaded (DBusGProxy *proxy,
                                                          &error))
     {
       g_warning ("failed to retrieve user count: %s", error->message);
-      priv->error = g_strdup_printf ("Failed to retrieve user count: %s", error->message);
       g_error_free (error);
 
       return;
@@ -315,17 +302,19 @@ users_loaded (DBusGProxy *proxy,
 
   priv->count = count;
 
+  uids = g_array_new (FALSE, FALSE, sizeof (gint64));
+
   if (!org_gnome_DisplayManager_UserManager_get_user_list (proxy,
                                                            &uids,
                                                            &error))
     {
       g_warning ("failed to retrieve user list: %s", error->message);
-      priv->error = g_strdup_printf ("Failed to retrieve user list: %s", error->message);
-      g_print ("priv->error == %s\n", priv->error);
       g_error_free (error);
 
       return;
     }
+
+  users_info = g_ptr_array_new ();
 
   if (!org_gnome_DisplayManager_UserManager_get_users_info (proxy,
                                                             uids,
@@ -333,8 +322,6 @@ users_loaded (DBusGProxy *proxy,
                                                             &error))
     {
       g_warning ("failed to retrieve user info: %s", error->message);
-      priv->error = g_strdup_printf ("Failed to get user info: %s", error->message);
-      g_print ("priv->error == %s\n", priv->error);
       g_error_free (error);
 
       return;
@@ -342,13 +329,19 @@ users_loaded (DBusGProxy *proxy,
 
   for (i = 0; i < users_info->len; i++)
     {
+      GValueArray *values;
       UserData *data;
 
-      g_print (" -> setting up user %d\n", i);
+      values = g_ptr_array_index (users_info, i);
 
-      data = g_ptr_array_index (users_info, i);
+      data = g_new0 (UserData, 1);
 
-      g_print ("     * user_name: %s\n", data->user_name);
+      data->uid         = g_value_get_int64  (g_value_array_get_nth (values, 0));
+      data->user_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 1)));
+      data->real_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 2)));
+      data->shell       = g_strdup (g_value_get_string (g_value_array_get_nth (values, 3)));
+      data->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
+      data->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
 
       priv->users = g_list_prepend (priv->users, data);
     }
@@ -498,12 +491,4 @@ _users_service_server_get_users_info (UsersServiceDbus  *service,
                                       GError           **error)
 {
   return TRUE;
-}
-
-gchar *
-users_service_dbus_get_error (UsersServiceDbus *self)
-{
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-
-  return priv->error;
 }

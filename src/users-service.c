@@ -135,7 +135,6 @@ rebuild_items (DbusmenuMenuitem *root,
   DbusmenuMenuitem *mi = NULL;
   GList *u;
   UserData *user;
-  gchar *error;
 
   dbusmenu_menuitem_foreach (root, remove_menu_item, NULL);
 
@@ -148,12 +147,6 @@ rebuild_items (DbusmenuMenuitem *root,
 
   mi = dbusmenu_menuitem_new ();
   dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, g_strdup_printf ("START (count is %d)", count));
-  dbusmenu_menuitem_child_append (root, mi);
-
-  error = users_service_dbus_get_error (service);
-
-  mi = dbusmenu_menuitem_new ();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, g_strdup_printf ("ERROR: %s", error));
   dbusmenu_menuitem_child_append (root, mi);
 
   g_print ("count == %d\n", count);

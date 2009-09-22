@@ -24,7 +24,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <unistd.h>
 #include <glib.h>
 #include <dbus/dbus-glib.h>
-#include <polkit-gnome/polkit-gnome.h>
+#include <polkit/polkit.h>
 
 #include "logout-dialog.h"
 #include "ck-pk-helper.h"
@@ -170,67 +170,53 @@ pk_require_auth (LogoutDialogAction action) {
 		}
 	}
 
-	PolKitResult polres;
+	PolkitAuthorizationResult *polres = NULL;
+	gboolean ret = FALSE;
 	if (pk_can_do_action(pk_action, &polres)) {
-		if (polres == POLKIT_RESULT_YES) {
-			return FALSE;
+		if (polkit_authorization_result_get_is_challenge (polres)) {
+			ret = TRUE;
 		}
-		return TRUE;
+		g_debug ("pk_require_auth(%s): authorized, is_challenge: %i", pk_action, ret);
+	} else {
+		g_debug ("pk_require_auth(%s): not authorized", pk_action);
 	}
-	return FALSE;
+	if (polres) {
+		g_object_unref (polres);
+	}
+	return ret;
 }
 
 gboolean
-pk_can_do_action (const gchar    *action_id, PolKitResult * pol_result)
+pk_can_do_action (const gchar    *action_id, PolkitAuthorizationResult ** pol_result)
 {
-        PolKitGnomeContext *gnome_context;
-        PolKitAction *action;
-        PolKitCaller *caller;
-        DBusError dbus_error;
-        PolKitError *error;
-        PolKitResult result;
+	PolkitAuthority *authority;
+	PolkitSubject *subject;
+	PolkitAuthorizationResult *result;
+	gboolean ret;
 
-        gnome_context = polkit_gnome_context_get (NULL);
+	authority = polkit_authority_get();
+	if (!authority) {
+		g_warning ("Could not get PolicyKit authority instance");
+		return FALSE;
+	}
+	subject = polkit_unix_process_new (getpid());
 
-        if (gnome_context == NULL) {
-                return FALSE;
-        }
+	result = polkit_authority_check_authorization_sync (authority, subject, action_id, NULL, 0, NULL, NULL);
+	g_object_unref (authority);
 
-        if (gnome_context->pk_tracker == NULL) {
-                return FALSE;
-        }
-
-        dbus_error_init (&dbus_error);
-        caller = polkit_tracker_get_caller_from_pid (gnome_context->pk_tracker,
-                                                     getpid (),
-                                                     &dbus_error);
-        dbus_error_free (&dbus_error);
-
-        if (caller == NULL) {
-                return FALSE;
-        }
-
-        action = polkit_action_new ();
-        if (!polkit_action_set_action_id (action, action_id)) {
-                polkit_action_unref (action);
-                polkit_caller_unref (caller);
-                return FALSE;
-        }
-
-        result = POLKIT_RESULT_UNKNOWN;
-        error = NULL;
-        result = polkit_context_is_caller_authorized (gnome_context->pk_context,
-                                                      action, caller, FALSE,
-                                                      &error);
-        if (polkit_error_is_set (error)) {
-                polkit_error_free (error);
-        }
-        polkit_action_unref (action);
-                polkit_caller_unref (caller);
-
-		if (pol_result != NULL) {
-			*pol_result = result;
-		}
-
-        return result != POLKIT_RESULT_NO && result != POLKIT_RESULT_UNKNOWN;
+	ret = FALSE;
+	if (result) {
+		ret = polkit_authorization_result_get_is_authorized (result) || 
+		      polkit_authorization_result_get_is_challenge (result);
+		g_debug ("pk_can_do_action(%s): %i", action_id, ret);
+	} else {
+		g_warning ("pk_can_do_action(%s): check_authorization returned NULL", action_id);
+	}
+	if (pol_result) {
+		*pol_result = result;
+	} else {
+		g_object_unref (result);
+	}
+	return ret;
+	
 }

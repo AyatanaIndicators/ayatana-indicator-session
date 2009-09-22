@@ -12,7 +12,7 @@ Build-Depends: debhelper (>= 5.0),
                libindicator-dev,
                libdbusmenu-glib-dev (>= 0.1.2),
                libdbusmenu-gtk-dev (>= 0.1.2),
-               libpolkit-gnome-dev,
+               libpolkit-gobject-1-dev,
                intltool
 Standards-Version: 3.8.2
 Homepage: https://launchpad.net/indicator-session

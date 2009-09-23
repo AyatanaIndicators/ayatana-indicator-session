@@ -26,6 +26,8 @@
 #include <pwd.h>
 
 #include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
 
 #include "dbus-shared-names.h"
 #include "users-service-dbus.h"
@@ -81,7 +83,7 @@ static void     seat_proxy_session_added               (DBusGProxy        *seat_
 static void     seat_proxy_session_removed             (DBusGProxy        *seat_proxy,
                                                         const gchar       *session_id,
                                                         UsersServiceDbus  *service);
-static gboolean maybe_add_session_for_user             (UsersServiceDbus  *service,
+static gboolean do_add_session                         (UsersServiceDbus  *service,
                                                         UserData          *user,
                                                         const gchar       *ssid);
 static gchar *  get_seat_internal                      (UsersServiceDbus  *self);
@@ -464,11 +466,10 @@ get_seat (UsersServiceDbus *service)
       return NULL;
     }
 
+  g_print ("get_seat(): ssid is %s\n", ssid);
+
   priv->ssid = ssid;
   create_cksession_proxy (service);
-
-  if (ssid)
-    g_free (ssid);
 
   seat = get_seat_internal (service);
 
@@ -495,13 +496,15 @@ get_seat_internal (UsersServiceDbus *self)
         }
     }
 
+  g_print ("get_seat_internal: %s\n", seat);
+
   return seat;
 }
 
 static gboolean
-get_uid_from_session_id (UsersServiceDbus *service,
-                         const gchar      *session_id,
-                         uid_t            *uidp)
+get_unix_user (UsersServiceDbus *service,
+               const gchar      *session_id,
+               uid_t            *uidp)
 {
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
   GError     *error;
@@ -543,10 +546,65 @@ session_compare (const gchar *a,
   return strcmp (a, b);
 }
 
+static gchar *
+get_session_for_user (UsersServiceDbus *service,
+                      UserData         *user)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
+  gboolean    can_activate;
+  GError     *error = NULL;
+  GList      *l;
+
+  if (!priv->seat_proxy)
+    create_seat_proxy (service);
+
+  if (priv->seat == NULL || priv->seat[0] == '\0')
+    {
+      return NULL;
+    }
+
+  if (!dbus_g_proxy_call (priv->seat_proxy,
+                          "CanActivateSessions",
+                          &error,
+                          G_TYPE_INVALID,
+                          G_TYPE_BOOLEAN, &can_activate,
+                          G_TYPE_INVALID))
+    {
+      g_warning ("Failed to determine if seat can activate sessions: %s", error->message);
+      g_error_free (error);
+
+      return NULL;
+    }
+
+  if (!can_activate) {
+    return NULL;
+  }
+
+  if (!user->sessions || g_list_length (user->sessions) == 0)
+    {
+      return NULL;
+    }
+
+  for (l = user->sessions; l != NULL; l = l->next)
+    {
+      const char *ssid;
+
+      ssid = l->data;
+
+      /* FIXME: better way to choose? */
+      if (ssid != NULL)
+        {
+          return g_strdup (ssid);
+        }
+    }
+
+  return NULL;
+}
+
 static gboolean
-maybe_add_session_for_user (UsersServiceDbus *service,
-                            UserData         *user,
-                            const gchar      *ssid)
+do_add_session (UsersServiceDbus *service,
+                UserData         *user,
+                const gchar      *ssid)
 {
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
   GError *error = NULL;
@@ -576,6 +634,8 @@ maybe_add_session_for_user (UsersServiceDbus *service,
 
   if (!xdisplay || xdisplay[0] == '\0')
     return FALSE;
+
+  g_print ("xdisplay is %s\n", xdisplay);
 
   if (g_hash_table_lookup (priv->exclusions, user->user_name))
     return FALSE;
@@ -610,7 +670,7 @@ seat_proxy_session_added (DBusGProxy       *seat_proxy,
   struct passwd *pwent;
   UserData      *user;
 
-  if (!get_uid_from_session_id (service, session_id, &uid))
+  if (!get_unix_user (service, session_id, &uid))
     {
       g_warning ("Failed to lookup user for session");
       return;
@@ -636,7 +696,7 @@ seat_proxy_session_added (DBusGProxy       *seat_proxy,
       return;
     }
 
-  res = maybe_add_session_for_user (service, user, session_id);
+  res = do_add_session (service, user, session_id);
 }
 
 static void
@@ -763,6 +823,76 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
   return g_hash_table_get_values (priv->users);
+}
+
+gboolean
+users_service_dbus_activate_user_session (UsersServiceDbus *self,
+                                          UserData         *user)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  DBusMessage *message = NULL;
+  DBusMessage *reply = NULL;
+  DBusError error;
+  gchar *ssid;
+
+  dbus_error_init (&error);
+
+  if (!priv->seat)
+    priv->seat = get_seat (self);
+
+  ssid = get_session_for_user (self, user);
+
+  g_print ("users_service_dbus_activate_user_session...\n");
+  g_print ("seat is %s\n", priv->seat);
+  g_print ("ssid is %s\n", ssid);
+
+  if (!(message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
+                                                priv->seat,
+                                                "org.freedesktop.ConsoleKit.Seat",
+                                                "ActivateSession")))
+    {
+      g_warning ("failed to create new message");
+      return FALSE;
+    }
+
+  if (!dbus_message_append_args (message,
+                                 DBUS_TYPE_OBJECT_PATH,
+                                 &ssid,
+                                 DBUS_TYPE_INVALID))
+    {
+      g_warning ("failed to append args");
+      return FALSE;
+    }
+
+  if (!(reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (priv->system_bus),
+                                                           message,
+                                                           -1,
+                                                           &error)))
+    {
+      g_warning ("send_with_reply_and_block failed");
+
+      if (dbus_error_is_set (&error))
+        {
+          g_warning ("Unable to activate session: %s", error.message);
+          dbus_error_free (&error);
+
+          return FALSE;
+        }
+    }
+
+  g_print ("freeing shit up..\n");
+
+  if (message)
+    {
+      dbus_message_unref (message);
+    }
+
+  if (reply)
+    {
+      dbus_message_unref (reply);
+    }
+
+  return TRUE;
 }
 
 static void

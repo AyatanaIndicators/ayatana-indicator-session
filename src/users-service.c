@@ -38,6 +38,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MINIMUM_USERS           1
 #define MAXIMUM_USERS           7
 
+typedef struct _ActivateData ActivateData;
+struct _ActivateData
+{
+  UsersServiceDbus *service;
+  UserData *user;
+};
+
 static DBusGConnection   *session_bus = NULL;
 static DBusGConnection   *system_bus = NULL;
 static DBusGProxy        *bus_proxy = NULL;
@@ -118,6 +125,12 @@ activate_new_session (DbusmenuMenuitem * mi, gpointer user_data)
 static void
 activate_user_session (DbusmenuMenuitem *mi, gpointer user_data)
 {
+  UserData *user = (UserData *)user_data;
+  UsersServiceDbus *service = user->service;
+
+  g_print ("activating user session for %s\n", user->user_name);
+
+  users_service_dbus_activate_user_session (service, user);
 }
 
 static void
@@ -150,6 +163,8 @@ rebuild_items (DbusmenuMenuitem *root,
       for (u = users; u != NULL; u = g_list_next (u))
         {
           user = u->data;
+
+          user->service = service;
 
           mi = dbusmenu_menuitem_new ();
           dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, user->real_name);

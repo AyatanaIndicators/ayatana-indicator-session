@@ -173,8 +173,6 @@ set_status (StatusProvider * sp, StatusProviderStatus status)
 		return;
 	}
 
-	priv->status = status;
-
 	empathy_account_manager_request_global_presence(priv->manager, sp_to_tp_map[status], sp_to_mc_map[status], "");
 
 	return;

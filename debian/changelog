@@ -6,17 +6,28 @@ indicator-session (0.1.4-0ubuntu1~ppa2~mc1) karmic; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Tue, 22 Sep 2009 20:07:57 -0500
 
-indicator-session (0.1.4-0ubuntu1~ppa1) karmic; urgency=low
+indicator-session (0.1.4-0ubuntu3~ppa1) karmic; urgency=low
 
-  * Upstream release 0.1.4
+  * Merging in trunk (PK Changes)
+  * Removing patches 01_polkit-1.patch and 99_autoreconf.patch
+    as they were merged upstream.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 11:08:07 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Sep 2009 21:35:10 -0500
 
-indicator-session (0.1.3-0ubuntu2~ppa1) karmic; urgency=low
+indicator-session (0.1.4-0ubuntu2) karmic; urgency=low
 
+  * Add 01_polkit-1.patch: Port to polkit-1. (LP: #412601)
+  * Add 99_autoreconf.patch: Autoconf changes for above patch.
+  * debian/control: libpolkit-gnome-dev → libpolkit-gobject-1-dev
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 22 Sep 2009 09:17:43 +0200
+
+indicator-session (0.1.4-0ubuntu1) karmic; urgency=low
+
+  * Upstream release (LP: #432120)
   * Fixes to issues brought up by the design team.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 16 Sep 2009 16:14:34 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Sep 2009 11:08:07 -0500
 
 indicator-session (0.1.3-0ubuntu1) karmic; urgency=low
 

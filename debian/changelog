@@ -4,7 +4,7 @@ indicator-session (0.1.4-0ubuntu1~ppa2~mc1) karmic; urgency=low
   * debian/control: Adding in a libempathy-dev build dependency
     as it's now required by upstream.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Sep 2009 20:05:07 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Sep 2009 20:07:57 -0500
 
 indicator-session (0.1.4-0ubuntu1~ppa1) karmic; urgency=low
 

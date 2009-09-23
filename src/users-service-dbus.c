@@ -883,22 +883,6 @@ users_loaded (DBusGProxy *proxy,
     }
 }
 
-gint
-users_service_dbus_get_user_count (UsersServiceDbus *self)
-{
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-
-  return priv->count;
-}
-
-GList *
-users_service_dbus_get_user_list (UsersServiceDbus *self)
-{
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-
-  return g_hash_table_get_values (priv->users);
-}
-
 static gboolean
 session_is_login_window (UsersServiceDbus *self,
                          const char       *ssid)
@@ -1085,73 +1069,6 @@ start_new_user_session (UsersServiceDbus *self,
   return TRUE;
 }
 
-gboolean
-users_service_dbus_activate_user_session (UsersServiceDbus *self,
-                                          UserData         *user)
-{
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-  DBusMessage *message = NULL;
-  DBusMessage *reply = NULL;
-  DBusError error;
-  gchar *ssid;
-
-  dbus_error_init (&error);
-
-  if (!priv->seat)
-    priv->seat = get_seat (self);
-
-  ssid = get_session_for_user (self, user);
-
-  if (!ssid)
-    {
-      return start_new_user_session (self, user);
-    }
-
-  if (!(message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
-                                                priv->seat,
-                                                "org.freedesktop.ConsoleKit.Seat",
-                                                "ActivateSession")))
-    {
-      g_warning ("failed to create new message");
-      return FALSE;
-    }
-
-  if (!dbus_message_append_args (message,
-                                 DBUS_TYPE_OBJECT_PATH,
-                                 &ssid,
-                                 DBUS_TYPE_INVALID))
-    {
-      g_warning ("failed to append args");
-      return FALSE;
-    }
-
-  if (!(reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (priv->system_bus),
-                                                           message,
-                                                           -1,
-                                                           &error)))
-    {
-      if (dbus_error_is_set (&error))
-        {
-          g_warning ("Failed to send message: %s", error.message);
-          dbus_error_free (&error);
-
-          return FALSE;
-        }
-    }
-
-  if (message)
-    {
-      dbus_message_unref (message);
-    }
-
-  if (reply)
-    {
-      dbus_message_unref (reply);
-    }
-
-  return TRUE;
-}
-
 static void
 user_added (DBusGProxy *proxy,
             guint       uid,
@@ -1277,5 +1194,88 @@ _users_service_server_get_users_info (UsersServiceDbus  *service,
                                       GPtrArray        **user_info,
                                       GError           **error)
 {
+  return TRUE;
+}
+
+gint
+users_service_dbus_get_user_count (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+
+  return priv->count;
+}
+
+GList *
+users_service_dbus_get_user_list (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+
+  return g_hash_table_get_values (priv->users);
+}
+
+gboolean
+users_service_dbus_activate_user_session (UsersServiceDbus *self,
+                                          UserData         *user)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  DBusMessage *message = NULL;
+  DBusMessage *reply = NULL;
+  DBusError error;
+  gchar *ssid;
+
+  dbus_error_init (&error);
+
+  if (!priv->seat)
+    priv->seat = get_seat (self);
+
+  ssid = get_session_for_user (self, user);
+
+  if (!ssid)
+    {
+      return start_new_user_session (self, user);
+    }
+
+  if (!(message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
+                                                priv->seat,
+                                                "org.freedesktop.ConsoleKit.Seat",
+                                                "ActivateSession")))
+    {
+      g_warning ("failed to create new message");
+      return FALSE;
+    }
+
+  if (!dbus_message_append_args (message,
+                                 DBUS_TYPE_OBJECT_PATH,
+                                 &ssid,
+                                 DBUS_TYPE_INVALID))
+    {
+      g_warning ("failed to append args");
+      return FALSE;
+    }
+
+  if (!(reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (priv->system_bus),
+                                                           message,
+                                                           -1,
+                                                           &error)))
+    {
+      if (dbus_error_is_set (&error))
+        {
+          g_warning ("Failed to send message: %s", error.message);
+          dbus_error_free (&error);
+
+          return FALSE;
+        }
+    }
+
+  if (message)
+    {
+      dbus_message_unref (message);
+    }
+
+  if (reply)
+    {
+      dbus_message_unref (reply);
+    }
+
   return TRUE;
 }

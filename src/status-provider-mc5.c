@@ -84,6 +84,8 @@ static void presence_changed (EmpathyAccountManager * eam, guint type, const gch
 
 G_DEFINE_TYPE (StatusProviderMC5, status_provider_mc5, STATUS_PROVIDER_TYPE);
 
+/* Create the class.  We over ride a few functions but nothing
+   really shocking.  Most interesting is the set and get status. */
 static void
 status_provider_mc5_class_init (StatusProviderMC5Class *klass)
 {
@@ -102,7 +104,10 @@ status_provider_mc5_class_init (StatusProviderMC5Class *klass)
 	return;
 }
 
-
+/* Creating an instance of the status provider.  We set the variables
+   and create an EmpathyAccountManager object.  It does all the hard
+   work in this module of tracking MissionControl and enumerating the
+   accounts and all that jazz. */
 static void
 status_provider_mc5_init (StatusProviderMC5 *self)
 {
@@ -116,6 +121,8 @@ status_provider_mc5_init (StatusProviderMC5 *self)
 	return;
 }
 
+/* Unref the account manager and move on.  Sadly, we're
+   leaving the show. */
 static void
 status_provider_mc5_dispose (GObject *object)
 {
@@ -130,6 +137,7 @@ status_provider_mc5_dispose (GObject *object)
 	return;
 }
 
+/* Pass to superclass */
 static void
 status_provider_mc5_finalize (GObject *object)
 {
@@ -152,6 +160,10 @@ status_provider_mc5_new (void)
 	return STATUS_PROVIDER(g_object_new(STATUS_PROVIDER_MC5_TYPE, NULL));
 }
 
+/* Setting the status in the empathy account manager.  We're
+   basically requesting a global status.  This may or may not
+   get applied to all accounts.  It's really the best we can
+   hope to do. */
 static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {
@@ -168,6 +180,8 @@ set_status (StatusProvider * sp, StatusProviderStatus status)
 	return;
 }
 
+/* Gets the status, uses the cached value that we have.  Asking
+   would just be painful. */
 static StatusProviderStatus
 get_status (StatusProvider * sp)
 {
@@ -181,6 +195,9 @@ get_status (StatusProvider * sp)
 	return priv->status;
 }
 
+/* A signal handler for when the EmpatyAccountManager believes
+   that the global status has changed.  It roughly calculates this
+   by finding the most available of all accounts that are active. */
 static void
 presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp)
 {
@@ -195,3 +212,4 @@ presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_st
 
 	return;
 }
+

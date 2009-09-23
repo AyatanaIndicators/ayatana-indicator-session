@@ -1,3 +1,9 @@
+indicator-session (0.1.4-0ubuntu3~ppa2~mc4) karmic; urgency=low
+
+  * String fix
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Sep 2009 08:11:06 -0500
+
 indicator-session (0.1.4-0ubuntu3~ppa2~mc3) karmic; urgency=low
 
   * Comments.  But getting everything up to date.

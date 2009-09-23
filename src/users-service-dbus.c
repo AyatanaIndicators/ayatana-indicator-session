@@ -180,8 +180,31 @@ users_service_dbus_init (UsersServiceDbus *self)
 {
   GError *error = NULL;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-
-  g_print ("INIT\n");
+  gint i = 0;
+  const gchar *excludes[] =
+    { "bin",
+      "root", /* excludes taken from gdm */
+      "daemon",
+      "adm",
+      "lp",
+      "sync",
+      "shutdown",
+      "halt",
+      "mail",
+      "news",
+      "uucp",
+      "operator",
+      "nobody",
+      "nobody4",
+      "noaccess",
+      "gdm",
+      "postgres",
+      "pvm",
+      "rpm",
+      "nfsnobody",
+      "pcap",
+      NULL
+    };
 
   priv->users = NULL;
   priv->count = 0;
@@ -199,7 +222,7 @@ users_service_dbus_init (UsersServiceDbus *self)
   priv->system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
   if (error != NULL)
     {
-      g_error("Unable to get system bus: %s", error->message);
+      g_error ("Unable to get system bus: %s", error->message);
       g_error_free(error);
 
       return;
@@ -209,6 +232,18 @@ users_service_dbus_init (UsersServiceDbus *self)
                                             g_str_equal,
                                             g_free,
                                             NULL);
+
+  for (i = 0; excludes[i] != NULL; i++)
+    {
+      g_hash_table_insert (priv->exclusions,
+                           g_strdup (excludes [i]),
+                           GUINT_TO_POINTER (TRUE));
+    }
+
+  priv->sessions = g_hash_table_new_full (g_str_hash,
+                                          g_str_equal,
+                                          g_free,
+                                          g_free);
 
   priv->users = g_hash_table_new_full (g_str_hash,
                                        g_str_equal,
@@ -368,7 +403,7 @@ create_ck_proxy (UsersServiceDbus *self)
 
   if (!priv->ck_proxy)
     {
-      g_warning ("Failed to setup ConsoleKit proxy.");
+      g_warning ("Failed to get ConsoleKit proxy.");
       return;
     }
 }
@@ -379,16 +414,12 @@ create_seat_proxy (UsersServiceDbus *self)
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   GError *error = NULL;
 
-  g_print ("create_seat_proxy ()\n");
-
   priv->seat = get_seat (self);
   if (priv->seat == NULL)
     {
-      g_print (" ** no priv->seat, returning\n");
       return;
     }
 
-  g_print ("setup priv->seat_proxy...\n");
   priv->seat_proxy = dbus_g_proxy_new_for_name_owner (priv->system_bus,
                                                       "org.freedesktop.ConsoleKit",
                                                       priv->seat,
@@ -397,8 +428,6 @@ create_seat_proxy (UsersServiceDbus *self)
 
   if (!priv->seat_proxy)
     {
-      g_print ("some error...\n");
-
       if (error != NULL)
         {
           g_warning ("Failed to connect to the ConsoleKit seat: %s", error->message);
@@ -408,12 +437,10 @@ create_seat_proxy (UsersServiceDbus *self)
       return;
     }
 
-  g_print ("... SessionAdded\n");
   dbus_g_proxy_add_signal (priv->seat_proxy,
                            "SessionAdded",
                            DBUS_TYPE_G_OBJECT_PATH,
                            G_TYPE_INVALID);
-  g_print ("... SessionRemoved\n");
   dbus_g_proxy_add_signal (priv->seat_proxy,
                            "SessionRemoved",
                            DBUS_TYPE_G_OBJECT_PATH,
@@ -443,7 +470,7 @@ create_cksession_proxy (UsersServiceDbus *service)
 
   if (!priv->session_proxy)
     {
-      g_warning ("Failed to connect to ConsoleKit session");
+      g_warning ("Failed to get ConsoleKit session proxy");
       return;
     }
 }
@@ -466,7 +493,7 @@ get_seat (UsersServiceDbus *service)
     {
       if (error)
         {
-          g_debug ("Failed to get session: %s", error->message);
+          g_debug ("Failed to call GetCurrentSession: %s", error->message);
           g_error_free (error);
         }
 
@@ -475,8 +502,6 @@ get_seat (UsersServiceDbus *service)
 
       return NULL;
     }
-
-  g_print ("get_seat(): ssid is %s\n", ssid);
 
   priv->ssid = ssid;
   create_cksession_proxy (service);
@@ -491,7 +516,7 @@ get_seat_internal (UsersServiceDbus *self)
 {
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   GError *error = NULL;
-  gchar *seat;
+  gchar *seat = NULL;
 
   if (!dbus_g_proxy_call (priv->session_proxy,
                           "GetSeatId",
@@ -502,11 +527,11 @@ get_seat_internal (UsersServiceDbus *self)
     {
       if (error)
         {
-          g_debug ("Failed to identify the current seat: %s", error->message);
+          g_debug ("Failed to call GetSeatId: %s", error->message);
+
+          return NULL;
         }
     }
-
-  g_print ("get_seat_internal: %s\n", seat);
 
   return seat;
 }
@@ -517,7 +542,7 @@ get_unix_user (UsersServiceDbus *service,
                uid_t            *uidp)
 {
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
-  GError     *error;
+  GError     *error = NULL;
   guint       uid;
 
   if (dbus_g_proxy_call (priv->session_proxy,
@@ -529,7 +554,7 @@ get_unix_user (UsersServiceDbus *service,
     {
       if (error)
         {
-          g_warning ("Failed to get the session: %s", error->message);
+          g_warning ("Failed to call GetUnixUser: %s", error->message);
           g_error_free (error);
         }
 
@@ -586,14 +611,13 @@ get_session_for_user (UsersServiceDbus *service,
       return NULL;
     }
 
-  if (!can_activate) {
-    g_warning ("Can't activate sessions");
-    return NULL;
-  }
+  if (!can_activate)
+    {
+      return NULL;
+    }
 
   if (!user->sessions || g_list_length (user->sessions) == 0)
     {
-      g_print (" *** no user sessions\n");
       return NULL;
     }
 
@@ -603,10 +627,8 @@ get_session_for_user (UsersServiceDbus *service,
 
       ssid = l->data;
 
-      /* FIXME: better way to choose? */
-      if (ssid != NULL)
+      if (ssid)
         {
-          g_print ("  ==== ssid is %s\n", ssid);
           return g_strdup (ssid);
         }
     }
@@ -625,10 +647,8 @@ do_add_session (UsersServiceDbus *service,
   gchar *xdisplay = NULL;
   GList *l;
 
-  g_print ("DO_ADD_SESSION (ssid is %s)\n", ssid);
-
   seat = get_seat_internal (service);
-  g_print (" *** seat is %s\n", seat);
+
   if (!seat || !priv->seat || strcmp (seat, priv->seat) != 0)
     return FALSE;
 
@@ -641,7 +661,7 @@ do_add_session (UsersServiceDbus *service,
     {
       if (error)
         {
-          g_debug ("Failed to get X11 display: %s", error->message);
+          g_debug ("Failed to call GetX11Display: %s", error->message);
           g_error_free (error);
         }
 
@@ -650,8 +670,6 @@ do_add_session (UsersServiceDbus *service,
 
   if (!xdisplay || xdisplay[0] == '\0')
     return FALSE;
-
-  g_print ("xdisplay is %s\n", xdisplay);
 
   if (g_hash_table_lookup (priv->exclusions, user->user_name))
     return FALSE;
@@ -694,7 +712,7 @@ add_sessions_for_user (UsersServiceDbus *self,
                           &sessions,
                           G_TYPE_INVALID))
     {
-      g_debug ("Failed to find sessions for user: %s", error->message);
+      g_debug ("Failed to call GetSessionsForUnixUser: %s", error->message);
       g_error_free (error);
 
       return;
@@ -771,7 +789,7 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
   if (!user)
     return;
 
-  //_user_remove_session (user, session_id);
+  // remove_session_from_user (user, session_id); ??
 
   l = g_list_find_custom (user->sessions,
                           session_id,
@@ -841,9 +859,6 @@ users_loaded (DBusGProxy *proxy,
       return;
     }
 
-  g_print ("***************\n");
-  g_print ("*** users_info->len is %d\n", users_info->len);
-
   for (i = 0; i < users_info->len; i++)
     {
       GValueArray *values;
@@ -860,15 +875,11 @@ users_loaded (DBusGProxy *proxy,
       user->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
       user->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
 
-      g_print ("*** username is %s\n", user->user_name);
-
       g_hash_table_insert (priv->users,
                            g_strdup (user->user_name),
                            user);
 
-      g_print ("  ... adding sessions for %s\n", user->user_name);
       add_sessions_for_user (service, user);
-      g_print ("***************\n");
     }
 }
 
@@ -888,6 +899,192 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
   return g_hash_table_get_values (priv->users);
 }
 
+static gboolean
+session_is_login_window (UsersServiceDbus *self,
+                         const char       *ssid)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  DBusGProxy *proxy = NULL;
+  GError     *error = NULL;
+  char       *type = NULL;
+
+  if (!(proxy = dbus_g_proxy_new_for_name (priv->system_bus,
+                                           "org.freedesktop.ConsoleKit",
+                                           ssid,
+                                           "org.freedesktop.ConsoleKit.Session")))
+    {
+      g_warning ("Failed to get ConsoleKit proxy");
+
+      return FALSE;
+    }
+
+  if (!dbus_g_proxy_call (proxy,
+                          "GetSessionType",
+                          &error,
+                          G_TYPE_INVALID,
+                          G_TYPE_STRING, &type,
+                          G_TYPE_INVALID))
+    {
+      g_warning ("Can't call GetSessionType: %s", error->message);
+      g_error_free (error);
+
+      if (proxy)
+        g_object_unref (proxy);
+
+      return FALSE;
+    }
+
+  if (proxy)
+    g_object_unref (proxy);
+
+  return (type && type[0] != '\0' && strcmp (type, "LoginWindow") == 0);
+}
+
+static char *
+get_login_session (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  gboolean    can_activate;
+  GError     *error = NULL;
+  GPtrArray  *sessions = NULL;
+  char       *ssid = NULL;
+  int         i;
+
+  if (!priv->seat || priv->seat[0] == '\0')
+    {
+      return NULL;
+    }
+
+  if (!dbus_g_proxy_call (priv->seat_proxy,
+                          "CanActivateSessions",
+                          &error,
+                          G_TYPE_INVALID,
+                          G_TYPE_BOOLEAN, &can_activate,
+                          G_TYPE_INVALID))
+    {
+      g_warning ("Failed to call CanActivateSessions: %s", error->message);
+      g_error_free (error);
+
+      return NULL;
+    }
+
+  if (!can_activate)
+    {
+      return NULL;
+    }
+
+  error = NULL;
+  if (!dbus_g_proxy_call (priv->seat_proxy,
+                          "GetSessions",
+                          &error,
+                          G_TYPE_INVALID,
+                          dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH), &sessions,
+                          G_TYPE_INVALID))
+    {
+      g_warning ("Failed to call GetSessions: %s", error->message);
+      g_error_free (error);
+
+      return NULL;
+  }
+
+  for (i = 0; i < sessions->len; i++)
+    {
+      char *s = g_ptr_array_index (sessions, i);
+
+      if (session_is_login_window (self, s))
+        {
+          ssid = g_strdup (s);
+          break;
+        }
+    }
+
+  g_ptr_array_foreach (sessions, (GFunc)g_free, NULL);
+  g_ptr_array_free (sessions, TRUE);
+
+  return ssid;
+}
+
+static gboolean
+activate_user_session (UsersServiceDbus *self,
+                       const char       *seat,
+                       const char       *ssid)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  DBusMessage *message = NULL;
+  DBusMessage *reply   = NULL;
+  DBusError    error;
+
+  if (!(message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
+                                                seat,
+                                                "org.freedesktop.ConsoleKit.Seat",
+                                                "ActivateSession")))
+    {
+      return FALSE;
+    }
+
+  if (!dbus_message_append_args (message,
+                                 DBUS_TYPE_OBJECT_PATH, &ssid,
+                                 DBUS_TYPE_INVALID))
+    {
+      return FALSE;
+    }
+
+  dbus_error_init (&error);
+  if (!(reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (priv->system_bus),
+                                                           message,
+                                                           -1,
+                                                           &error)))
+    {
+      if (dbus_error_is_set (&error))
+        {
+          g_warning ("Can't activate session: %s", error.message);
+          dbus_error_free (&error);
+
+          return FALSE;
+        }
+    }
+
+  if (message)
+    {
+      dbus_message_unref (message);
+    }
+
+  if (reply)
+    {
+      dbus_message_unref (reply);
+    }
+
+  return TRUE;
+}
+
+gboolean
+start_new_user_session (UsersServiceDbus *self,
+                        UserData         *user)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  GError   *error = NULL;
+  char     *ssid;
+
+  ssid = get_login_session (self);
+  if (ssid)
+    {
+      if (!activate_user_session (self, priv->seat, ssid))
+        {
+          return FALSE;
+        }
+    }
+
+  if (!g_spawn_command_line_async ("gdmflexiserver -s", &error))
+    {
+      g_warning ("Failed to start new login session: %s", error->message);
+      g_error_free (error);
+
+      return FALSE;
+    }
+
+  return TRUE;
+}
+
 gboolean
 users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                           UserData         *user)
@@ -905,9 +1102,10 @@ users_service_dbus_activate_user_session (UsersServiceDbus *self,
 
   ssid = get_session_for_user (self, user);
 
-  g_print ("users_service_dbus_activate_user_session...\n");
-  g_print ("seat is %s\n", priv->seat);
-  g_print ("ssid is %s\n", ssid);
+  if (!ssid)
+    {
+      return start_new_user_session (self, user);
+    }
 
   if (!(message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
                                                 priv->seat,
@@ -932,18 +1130,14 @@ users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                                            -1,
                                                            &error)))
     {
-      g_warning ("send_with_reply_and_block failed");
-
       if (dbus_error_is_set (&error))
         {
-          g_warning ("Unable to activate session: %s", error.message);
+          g_warning ("Failed to send message: %s", error.message);
           dbus_error_free (&error);
 
           return FALSE;
         }
     }
-
-  g_print ("freeing shit up..\n");
 
   if (message)
     {

@@ -1,6 +1,8 @@
 indicator-session (0.1.4-0ubuntu3~ppa1) UNRELEASED; urgency=low
 
   * Merging in trunk (PK Changes)
+  * Removing patches 01_polkit-1.patch and 99_autoreconf.patch
+    as they were merged upstream.
 
  -- Ted Gould <ted@ubuntu.com>  Tue, 22 Sep 2009 21:30:52 -0500
 

@@ -53,6 +53,33 @@ static DbusmenuMenuitem * logout_mi = NULL;
 static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
 
+/* A fun little function to actually lock the screen.  If,
+   that's what you want, let's do it! */
+static void
+lock_screen (void)
+{
+	g_debug("Lock Screen");
+
+	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	g_return_if_fail(session_bus != NULL);
+
+	DBusGProxy * proxy = dbus_g_proxy_new_for_name_owner(session_bus,
+	                                                     "org.gnome.ScreenSaver",
+	                                                     "/",
+	                                                     "org.gnome.ScreenSaver",
+	                                                     NULL);
+	g_return_if_fail(proxy != NULL);
+
+	dbus_g_proxy_call_no_reply(proxy,
+	                           "Lock",
+	                           G_TYPE_INVALID,
+	                           G_TYPE_INVALID);
+
+	g_object_unref(proxy);
+
+	return;
+}
+
 /* Let's put this machine to sleep, with some info on how
    it should sleep.  */
 static void
@@ -63,6 +90,8 @@ sleep (DbusmenuMenuitem * mi, gpointer userdata)
 	if (dkp_main_proxy == NULL) {
 		g_warning("Can not %s as no DeviceKit Power Proxy", type);
 	}
+
+	lock_screen();
 
 	dbus_g_proxy_call_no_reply(dkp_main_proxy,
 	                           type,

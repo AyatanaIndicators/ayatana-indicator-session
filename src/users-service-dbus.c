@@ -1213,6 +1213,17 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
   return g_hash_table_get_values (priv->users);
 }
 
+/*
+ * XXX - TODO: Right now we switch to a session that another user
+ *             already has open, but if there are no open sessions
+ *             for this user we go to the login screen and the
+ *             user at the seat must select a user and enter a
+ *             password.  This kind of defeats the purpose of
+ *             actually selecting a username, since selecting any
+ *             user will do the same thing here.  We need to change
+ *             it so you only need to enter a password for the
+ *             specified user.
+ */
 gboolean
 users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                           UserData         *user)

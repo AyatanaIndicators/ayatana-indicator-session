@@ -44,6 +44,8 @@ struct _UserData
   gchar   *shell;
   gint     login_count;
   gchar   *icon_url;
+
+  GList   *sessions;
 };
 
 struct _UsersServiceDbus {

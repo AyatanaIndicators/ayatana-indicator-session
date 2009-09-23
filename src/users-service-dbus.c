@@ -21,6 +21,10 @@
 #include "config.h"
 #endif
 
+#include <string.h>
+#include <errno.h>
+#include <pwd.h>
+
 #include <dbus/dbus-glib.h>
 
 #include "dbus-shared-names.h"
@@ -56,6 +60,10 @@ static gboolean _users_service_server_get_users_info   (UsersServiceDbus  *servi
 static void     create_session_proxy                   (UsersServiceDbus  *self);
 static void     create_system_proxy                    (UsersServiceDbus  *self);
 static void     create_gdm_proxy                       (UsersServiceDbus  *self);
+static void     create_seat_proxy                      (UsersServiceDbus  *self);
+static void     create_ck_proxy                        (UsersServiceDbus *self);
+static void     create_cksession_proxy                 (UsersServiceDbus *self);
+static gchar   *get_seat                               (UsersServiceDbus *service);
 static void     users_loaded                           (DBusGProxy        *proxy,
                                                         gpointer           user_data);
 static void     user_added                             (DBusGProxy        *proxy,
@@ -67,6 +75,16 @@ static void     user_removed                           (DBusGProxy        *proxy
 static void     user_updated                           (DBusGProxy        *proxy,
                                                         guint              uid,
                                                         gpointer           user_data);
+static void     seat_proxy_session_added               (DBusGProxy        *seat_proxy,
+                                                        const gchar       *session_id,
+                                                        UsersServiceDbus  *service);
+static void     seat_proxy_session_removed             (DBusGProxy        *seat_proxy,
+                                                        const gchar       *session_id,
+                                                        UsersServiceDbus  *service);
+static gboolean maybe_add_session_for_user             (UsersServiceDbus  *service,
+                                                        UserData          *user,
+                                                        const gchar       *ssid);
+static gchar *  get_seat_internal                      (UsersServiceDbus  *self);
 
 #include "users-service-server.h"
 
@@ -75,14 +93,23 @@ typedef struct _UsersServiceDbusPrivate UsersServiceDbusPrivate;
 
 struct _UsersServiceDbusPrivate
 {
-  GList *users;
-  gint   count;
+  GHashTable *users;
+  gint        count;
+  gchar      *seat;
+  gchar      *ssid;
 
   DBusGConnection *session_bus;
   DBusGConnection *system_bus;
+
   DBusGProxy *dbus_proxy_session;
   DBusGProxy *dbus_proxy_system;
   DBusGProxy *gdm_proxy;
+  DBusGProxy *ck_proxy;
+  DBusGProxy *seat_proxy;
+  DBusGProxy *session_proxy;
+
+  GHashTable *exclusions;
+  GHashTable *sessions;
 };
 
 #define USERS_SERVICE_DBUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbusPrivate))
@@ -174,6 +201,16 @@ users_service_dbus_init (UsersServiceDbus *self)
       return;
     }
 
+  priv->exclusions = g_hash_table_new_full (g_str_hash,
+                                            g_str_equal,
+                                            g_free,
+                                            NULL);
+
+  priv->users = g_hash_table_new_full (g_str_hash,
+                                       g_str_equal,
+                                       g_free,
+                                       NULL);
+
   dbus_g_connection_register_g_object (priv->session_bus,
                                        INDICATOR_USERS_SERVICE_DBUS_OBJECT,
                                        G_OBJECT (self));
@@ -186,6 +223,8 @@ users_service_dbus_init (UsersServiceDbus *self)
   create_session_proxy (self);
   create_system_proxy (self);
   create_gdm_proxy (self);
+  create_seat_proxy (self);
+  create_ck_proxy (self);
 
   users_loaded (priv->gdm_proxy, self);
 }
@@ -233,12 +272,16 @@ create_system_proxy (UsersServiceDbus *self)
                                                              DBUS_PATH_DBUS,
                                                              DBUS_INTERFACE_DBUS,
                                                              &error);
-  if (error != NULL)
-    {
-      g_error ("Unable to get dbus proxy on system bus: %s", error->message);
-      g_error_free (error);
 
-      return;
+  if (!priv->dbus_proxy_system)
+    {
+      if (error != NULL)
+        {
+          g_error ("Unable to get dbus proxy on system bus: %s", error->message);
+          g_error_free (error);
+
+          return;
+        }
     }
 }
 
@@ -254,10 +297,15 @@ create_gdm_proxy (UsersServiceDbus *self)
                                                      "org.gnome.DisplayManager.UserManager",
                                                      &error);
 
-  if (error != NULL)
+  if (!priv->gdm_proxy)
     {
-      g_error ("Unable to get DisplayManager proxy on system bus: %s", error->message);
-      g_error_free (error);
+      if (error != NULL)
+        {
+          g_error ("Unable to get DisplayManager proxy on system bus: %s", error->message);
+          g_error_free (error);
+        }
+
+      return;
     }
 
   dbus_g_proxy_add_signal (priv->gdm_proxy,
@@ -302,6 +350,329 @@ create_gdm_proxy (UsersServiceDbus *self)
                                G_CALLBACK (user_updated),
                                self,
                                NULL);
+}
+
+static void
+create_ck_proxy (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+
+  priv->ck_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
+                                              "org.freedesktop.ConsoleKit",
+                                              "/org/freedesktop/ConsoleKit/Manager",
+                                              "org.freedesktop.ConsoleKit.Manager");
+
+  if (!priv->ck_proxy)
+    {
+      g_warning ("Failed to setup ConsoleKit proxy.");
+      return;
+    }
+}
+
+static void
+create_seat_proxy (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  GError *error = NULL;
+
+  priv->seat = get_seat (self);
+  if (priv->seat == NULL)
+    {
+      return;
+    }
+
+  priv->seat_proxy = dbus_g_proxy_new_for_name_owner (priv->system_bus,
+                                                      "org.freedesktop.ConsoleKit",
+                                                      priv->seat,
+                                                      "org.freedesktop.ConsoleKit.Seat",
+                                                      &error);
+
+  if (!priv->seat_proxy)
+    {
+      if (error != NULL)
+        {
+          g_warning ("Failed to connect to the ConsoleKit seat: %s", error->message);
+          g_error_free (error);
+        }
+
+      return;
+    }
+
+  dbus_g_proxy_add_signal (priv->seat_proxy,
+                           "SessionAdded",
+                           DBUS_TYPE_G_OBJECT_PATH,
+                           G_TYPE_INVALID);
+  dbus_g_proxy_add_signal (priv->seat_proxy,
+                           "SessionRemoved",
+                           DBUS_TYPE_G_OBJECT_PATH,
+                           G_TYPE_INVALID);
+
+  dbus_g_proxy_connect_signal (priv->seat_proxy,
+                               "SessionAdded",
+                               G_CALLBACK (seat_proxy_session_added),
+                               self,
+                               NULL);
+  dbus_g_proxy_connect_signal (priv->seat_proxy,
+                               "SessionRemoved",
+                               G_CALLBACK (seat_proxy_session_removed),
+                               self,
+                               NULL);
+}
+
+static void
+create_cksession_proxy (UsersServiceDbus *service)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
+
+  priv->session_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
+                                                   "org.freedesktop.ConsoleKit",
+                                                   priv->ssid,
+                                                   "org.freedesktop.ConsoleKit.Session");
+
+  if (!priv->session_proxy)
+    {
+      g_warning ("Failed to connect to ConsoleKit session");
+      return;
+    }
+}
+
+static gchar *
+get_seat (UsersServiceDbus *service)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
+  GError     *error = NULL;
+  gchar      *ssid = NULL;
+  gchar      *seat;
+
+  if (!dbus_g_proxy_call (priv->ck_proxy,
+                          "GetCurrentSession",
+                          &error,
+                          G_TYPE_INVALID,
+                          DBUS_TYPE_G_OBJECT_PATH,
+                          &ssid,
+                          G_TYPE_INVALID))
+    {
+      if (error)
+        {
+          g_debug ("Failed to get session: %s", error->message);
+          g_error_free (error);
+        }
+
+      if (ssid)
+        g_free (ssid);
+
+      return NULL;
+    }
+
+  priv->ssid = ssid;
+  create_cksession_proxy (service);
+
+  if (ssid)
+    g_free (ssid);
+
+  seat = get_seat_internal (service);
+
+  return seat;
+}
+
+static gchar *
+get_seat_internal (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  GError *error = NULL;
+  gchar *seat;
+
+  if (!dbus_g_proxy_call (priv->session_proxy,
+                          "GetSeatId",
+                          &error,
+                          G_TYPE_INVALID,
+                          DBUS_TYPE_G_OBJECT_PATH, &seat,
+                          G_TYPE_INVALID))
+    {
+      if (error)
+        {
+          g_debug ("Failed to identify the current seat: %s", error->message);
+        }
+    }
+
+  return seat;
+}
+
+static gboolean
+get_uid_from_session_id (UsersServiceDbus *service,
+                         const gchar      *session_id,
+                         uid_t            *uidp)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
+  GError     *error;
+  guint       uid;
+
+  if (dbus_g_proxy_call (priv->session_proxy,
+                         "GetUnixUser",
+                         &error,
+                         G_TYPE_INVALID,
+                         G_TYPE_UINT, &uid,
+                         G_TYPE_INVALID))
+    {
+      if (error)
+        {
+          g_warning ("Failed to get the session: %s", error->message);
+          g_error_free (error);
+        }
+
+      return FALSE;
+    }
+
+  if (uidp != NULL)
+    {
+      *uidp = (uid_t)uid;
+    }
+
+  return TRUE;
+}
+
+static gint
+session_compare (const gchar *a,
+                 const gchar *b)
+{
+  if (a == NULL)
+    return 1;
+  else if (b == NULL)
+    return -1;
+
+  return strcmp (a, b);
+}
+
+static gboolean
+maybe_add_session_for_user (UsersServiceDbus *service,
+                            UserData         *user,
+                            const gchar      *ssid)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
+  GError *error = NULL;
+  gchar *seat = NULL;
+  gchar *xdisplay = NULL;
+  GList *l;
+
+  seat = get_seat_internal (service);
+  if (!seat || !priv->seat || strcmp (seat, priv->seat) != 0)
+    return FALSE;
+
+   if (!dbus_g_proxy_call (priv->session_proxy,
+                          "GetX11Display",
+                          &error,
+                          G_TYPE_INVALID,
+                          G_TYPE_STRING, &xdisplay,
+                          G_TYPE_INVALID))
+    {
+      if (error)
+        {
+          g_debug ("Failed to get X11 display: %s", error->message);
+          g_error_free (error);
+        }
+
+      return FALSE;
+    }
+
+  if (!xdisplay || xdisplay[0] == '\0')
+    return FALSE;
+
+  if (g_hash_table_lookup (priv->exclusions, user->user_name))
+    return FALSE;
+
+  g_hash_table_insert (priv->sessions,
+                       g_strdup (ssid),
+                       g_strdup (user->user_name));
+
+  l = g_list_find_custom (user->sessions, ssid, (GCompareFunc)session_compare);
+  if (l == NULL)
+    {
+      g_debug ("Adding session %s", ssid);
+
+      user->sessions = g_list_prepend (user->sessions, g_strdup (ssid));
+    }
+  else
+    {
+      g_debug ("User %s already has session %s", user->user_name, ssid);
+    }
+
+  return TRUE;
+}
+
+static void
+seat_proxy_session_added (DBusGProxy       *seat_proxy,
+                          const gchar      *session_id,
+                          UsersServiceDbus *service)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
+  uid_t          uid;
+  gboolean       res;
+  struct passwd *pwent;
+  UserData      *user;
+
+  if (!get_uid_from_session_id (service, session_id, &uid))
+    {
+      g_warning ("Failed to lookup user for session");
+      return;
+    }
+
+  errno = 0;
+  pwent = getpwuid (uid);
+  if (!pwent)
+    {
+      g_warning ("Failed to lookup user id %d: %s", (int)uid, g_strerror (errno));
+      return;
+    }
+
+  if (g_hash_table_lookup (priv->exclusions, pwent->pw_name))
+    {
+      g_debug ("Excluding user %s", pwent->pw_name);
+      return;
+    }
+
+  user = g_hash_table_lookup (priv->users, pwent->pw_name);
+  if (!user)
+    {
+      return;
+    }
+
+  res = maybe_add_session_for_user (service, user, session_id);
+}
+
+static void
+seat_proxy_session_removed (DBusGProxy       *seat_proxy,
+                            const gchar      *session_id,
+                            UsersServiceDbus *service)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
+  UserData *user;
+  gchar    *username;
+  GList    *l;
+
+  username = g_hash_table_lookup (priv->sessions, session_id);
+  if (!username)
+    return;
+
+  user = g_hash_table_lookup (priv->users, username);
+  if (!user)
+    return;
+
+  //_user_remove_session (user, session_id);
+
+  l = g_list_find_custom (user->sessions,
+                          session_id,
+                          (GCompareFunc)session_compare);
+  if (l)
+    {
+      g_debug ("Removing session %s", session_id);
+
+      g_free (l->data);
+      user->sessions = g_list_delete_link (user->sessions, l);
+    }
+  else
+    {
+      g_debug ("Session not found: %s", session_id);
+    }
 }
 
 static void
@@ -359,20 +730,22 @@ users_loaded (DBusGProxy *proxy,
   for (i = 0; i < users_info->len; i++)
     {
       GValueArray *values;
-      UserData *data;
+      UserData *user;
 
       values = g_ptr_array_index (users_info, i);
 
-      data = g_new0 (UserData, 1);
+      user = g_new0 (UserData, 1);
 
-      data->uid         = g_value_get_int64  (g_value_array_get_nth (values, 0));
-      data->user_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 1)));
-      data->real_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 2)));
-      data->shell       = g_strdup (g_value_get_string (g_value_array_get_nth (values, 3)));
-      data->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
-      data->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
+      user->uid         = g_value_get_int64  (g_value_array_get_nth (values, 0));
+      user->user_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 1)));
+      user->real_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 2)));
+      user->shell       = g_strdup (g_value_get_string (g_value_array_get_nth (values, 3)));
+      user->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
+      user->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
 
-      priv->users = g_list_prepend (priv->users, data);
+      g_hash_table_insert (priv->users,
+                           g_strdup (user->user_name),
+                           user);
     }
 }
 
@@ -389,7 +762,7 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
 {
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
-  return priv->users;
+  return g_hash_table_get_values (priv->users);
 }
 
 static void
@@ -423,9 +796,19 @@ user_added (DBusGProxy *proxy,
 
   user->uid = uid;
 
-  priv->users = g_list_prepend (priv->users, user);
+  g_hash_table_insert (priv->users,
+                       g_strdup (user->user_name),
+                       user);
 
   g_signal_emit (G_OBJECT (service), signals[USER_ADDED], 0, user, TRUE);
+}
+
+static gboolean
+compare_users_by_uid (gpointer key,
+                      gpointer value,
+                      gpointer user_data)
+{
+  return (GPOINTER_TO_UINT (value) == GPOINTER_TO_UINT (user_data));
 }
 
 static void
@@ -435,20 +818,16 @@ user_removed (DBusGProxy *proxy,
 {
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
-  GList *l;
+  UserData *user;
+
+  user = g_hash_table_find (priv->users,
+                            compare_users_by_uid,
+                            GUINT_TO_POINTER (uid));
+
+  g_hash_table_remove (priv->users,
+                       user->user_name);
 
   priv->count--;
-
-  for (l = priv->users; l != NULL; l = g_list_next (l))
-    {
-      UserData *user = (UserData *)l->data;
-
-      if (user->uid == uid)
-        {
-          priv->users = g_list_remove (priv->users, l->data);
-          g_signal_emit (G_OBJECT (service), signals[USER_REMOVED], 0, user, TRUE);
-        }
-    }
 }
 
 static void
@@ -456,19 +835,16 @@ user_updated (DBusGProxy *proxy,
               guint       uid,
               gpointer    user_data)
 {
+#if 0
+  // XXX - TODO
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
-  GList *l;
+  UserData *user;
 
-  for (l = priv->users; l != NULL; l = g_list_next (l))
-    {
-      UserData *user = (UserData *)l->data;
-
-      if (user->uid == uid)
-        {
-          // XXX - update user data
-        }
-    }
+  user = g_hash_table_find (priv->users,
+                            compare_users_by_uid,
+                            GUINT_TO_POINTER (uid));
+#endif
 }
 
 static gboolean

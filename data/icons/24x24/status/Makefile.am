@@ -2,7 +2,7 @@
 iconsdir = $(INDICATORICONSDIR)/hicolor/24x24/status
 
 icons_DATA =  \
-	user-online.png			\
+	user-available.png			\
 	user-offline.png		\
 	user-away.png			\
 	user-busy.png			\

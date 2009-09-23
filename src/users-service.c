@@ -21,6 +21,8 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <config.h>
+
 #include <unistd.h>
 
 #include <glib/gi18n.h>
@@ -122,13 +124,38 @@ activate_new_session (DbusmenuMenuitem * mi, gpointer user_data)
 	return;
 }
 
+/* A fun little function to actually lock the screen.  If,
+   that's what you want, let's do it! */
+static void
+lock_screen (DbusmenuMenuitem * mi, gpointer data)
+{
+	g_debug("Lock Screen");
+
+	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	g_return_if_fail(session_bus != NULL);
+
+	DBusGProxy * proxy = dbus_g_proxy_new_for_name_owner(session_bus,
+	                                                     "org.gnome.ScreenSaver",
+	                                                     "/",
+	                                                     "org.gnome.ScreenSaver",
+	                                                     NULL);
+	g_return_if_fail(proxy != NULL);
+
+	dbus_g_proxy_call_no_reply(proxy,
+	                           "Lock",
+	                           G_TYPE_INVALID,
+	                           G_TYPE_INVALID);
+
+	g_object_unref(proxy);
+
+	return;
+}
+
 static void
 activate_user_session (DbusmenuMenuitem *mi, gpointer user_data)
 {
   UserData *user = (UserData *)user_data;
   UsersServiceDbus *service = user->service;
-
-  g_print ("activating user session for %s\n", user->user_name);
 
   users_service_dbus_activate_user_session (service, user);
 }
@@ -151,12 +178,18 @@ rebuild_items (DbusmenuMenuitem *root,
 
   dbusmenu_menuitem_foreach (root, remove_menu_item, NULL);
 
-  if (check_guest_session ()) {
-    mi = dbusmenu_menuitem_new ();
-    dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
-    dbusmenu_menuitem_child_append (root, mi);
-    g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
-  }
+  mi = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+  g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
+  dbusmenu_menuitem_child_append(root, mi);
+
+  if (check_guest_session ())
+    {
+      mi = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
+      dbusmenu_menuitem_child_append (root, mi);
+      g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
+    }
 
   if (count > 1 && count < 7)
     {
@@ -173,27 +206,13 @@ rebuild_items (DbusmenuMenuitem *root,
         }
     }
 
-  if (check_new_session ()) {
-    mi = dbusmenu_menuitem_new ();
-    dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("New Session..."));
-    dbusmenu_menuitem_child_append (root, mi);
-    g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
-  }
-}
-
-static void
-create_items (DbusmenuMenuitem *root,
-              UsersServiceDbus *service)
-{
-  g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
-
-  count = users_service_dbus_get_user_count (service);
-  if (count > 1 && count < 7)
+  if (check_new_session ())
     {
-      users = users_service_dbus_get_user_list (service);
+      mi = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("New Session..."));
+      dbusmenu_menuitem_child_append (root, mi);
+      g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
     }
-
-  rebuild_items (root, service);
 }
 
 static void
@@ -220,10 +239,31 @@ user_removed (UsersServiceDbus *service,
   rebuild_items (root, service);
 }
 
+static void
+create_items (DbusmenuMenuitem *root,
+              UsersServiceDbus *service)
+{
+  g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
+
+  count = users_service_dbus_get_user_count (service);
+  if (count > 1 && count < 7)
+    {
+      users = users_service_dbus_get_user_list (service);
+    }
+
+  rebuild_items (root, service);
+}
+
 int
 main (int argc, char ** argv)
 {
     g_type_init();
+
+    /* Setting up i18n and gettext.  Apparently, we need
+       all of these. */
+    setlocale (LC_ALL, "");
+    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+    textdomain (GETTEXT_PACKAGE);
 
     session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
     bus_proxy = dbus_g_proxy_new_for_name (session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);

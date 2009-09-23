@@ -1,8 +1,8 @@
-indicator-session (0.1.4-0ubuntu3~ppa2~mc3) UNRELEASED; urgency=low
+indicator-session (0.1.4-0ubuntu3~ppa2~mc3) karmic; urgency=low
 
   * Comments.  But getting everything up to date.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 22 Sep 2009 21:46:38 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 22 Sep 2009 21:47:39 -0500
 
 indicator-session (0.1.4-0ubuntu3~ppa2~mc2) karmic; urgency=low
 

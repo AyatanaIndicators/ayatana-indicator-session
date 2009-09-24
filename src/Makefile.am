@@ -28,7 +28,6 @@ indicator_status_service_SOURCES = \
 	status-service-server.h \
 	users-service-dbus.h \
 	users-service-dbus.c \
-	users-service-server.h \
 	users-service-marshal.c \
 	users-service-marshal.h \
 	status-provider.h \
@@ -49,13 +48,6 @@ users-service-client.h: $(srcdir)/users-service.xml
 		--prefix=_users_service_client \
 		--mode=glib-client \
 		--output=users-service-client.h \
-		$(srcdir)/users-service.xml
-
-users-service-server.h: $(srcdir)/users-service.xml
-	dbus-binding-tool \
-		--prefix=_users_service_server \
-		--mode=glib-server \
-		--output=users-service-server.h \
 		$(srcdir)/users-service.xml
 
 status-service-client.h: $(srcdir)/status-service.xml
@@ -124,7 +116,6 @@ indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 
 BUILT_SOURCES = \
 	users-service-client.h \
-	users-service-server.h \
 	status-service-client.h \
 	status-service-server.h \
 	users-service-marshal.h \

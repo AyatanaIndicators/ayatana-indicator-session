@@ -38,27 +38,6 @@ static void      users_service_dbus_class_init         (UsersServiceDbusClass *k
 static void      users_service_dbus_init               (UsersServiceDbus  *self);
 static void      users_service_dbus_dispose            (GObject           *object);
 static void      users_service_dbus_finalize           (GObject           *object);
-static gboolean _users_service_server_count_users      (UsersServiceDbus  *service,
-                                                        gint              *count,
-                                                        GError           **error);
-static gboolean _users_service_server_get_users_loaded (UsersServiceDbus  *self,
-                                                        gboolean          *is_loaded,
-                                                        GError           **error);
-static gboolean _users_service_server_get_user_list    (UsersServiceDbus  *service,
-                                                        GArray           **list,
-                                                        GError           **error);
-static gboolean _users_service_server_get_user_info    (UsersServiceDbus  *service,
-                                                        const gint64       uid,
-                                                        gchar            **username,
-                                                        gchar            **real_name,
-                                                        gchar            **shell,
-                                                        gint              *login_count,
-                                                        gchar            **icon_url,
-                                                        GError           **error);
-static gboolean _users_service_server_get_users_info   (UsersServiceDbus  *service,
-                                                        const GArray      *uids,
-                                                        GPtrArray        **user_info,
-                                                        GError           **error);
 static void     create_system_proxy                    (UsersServiceDbus  *self);
 static void     create_gdm_proxy                       (UsersServiceDbus  *self);
 static void     create_seat_proxy                      (UsersServiceDbus  *self);
@@ -86,8 +65,6 @@ static gboolean do_add_session                         (UsersServiceDbus  *servi
                                                         UserData          *user,
                                                         const gchar       *ssid);
 static gchar *  get_seat_internal                      (UsersServiceDbus  *self);
-
-#include "users-service-server.h"
 
 /* Private */
 typedef struct _UsersServiceDbusPrivate UsersServiceDbusPrivate;
@@ -1062,52 +1039,6 @@ user_updated (DBusGProxy *proxy,
                             compare_users_by_uid,
                             GUINT_TO_POINTER (uid));
 #endif
-}
-
-static gboolean
-_users_service_server_count_users (UsersServiceDbus  *service,
-                                   gint              *uids,
-                                   GError           **error)
-{
-  return TRUE;
-}
-
-static gboolean
-_users_service_server_get_user_list  (UsersServiceDbus  *service,
-                                      GArray           **list,
-                                      GError           **error)
-{
-  return TRUE;
-}
-
-static gboolean
-_users_service_server_get_users_loaded (UsersServiceDbus  *self,
-                                        gboolean          *is_loaded,
-                                        GError           **error)
-{
-  return TRUE;
-}
-
-static gboolean
-_users_service_server_get_user_info  (UsersServiceDbus  *service,
-                                      const gint64       uid,
-                                      gchar            **username,
-                                      gchar            **real_name,
-                                      gchar            **shell,
-                                      gint              *login_count,
-                                      char             **icon_url,
-                                      GError           **error)
-{
-  return TRUE;
-}
-
-static gboolean
-_users_service_server_get_users_info (UsersServiceDbus  *service,
-                                      const GArray      *uids,
-                                      GPtrArray        **user_info,
-                                      GError           **error)
-{
-  return TRUE;
 }
 
 gint

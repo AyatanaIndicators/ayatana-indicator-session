@@ -72,6 +72,7 @@ GType users_service_dbus_get_type  (void) G_GNUC_CONST;
 
 gint      users_service_dbus_get_user_count        (UsersServiceDbus *self);
 GList    *users_service_dbus_get_user_list         (UsersServiceDbus *self);
+gboolean  users_service_dbus_can_activate_session  (UsersServiceDbus *self);
 gboolean  users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                                     UserData         *user);
 

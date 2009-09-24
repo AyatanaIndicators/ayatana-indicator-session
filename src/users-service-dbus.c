@@ -447,33 +447,9 @@ static gchar *
 get_session_for_user (UsersServiceDbus *service,
                       UserData         *user)
 {
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
-  gboolean    can_activate;
-  GError     *error = NULL;
-  GList      *l;
+  GList *l;
 
-  if (!priv->seat_proxy)
-    create_seat_proxy (service);
-
-  if (priv->seat == NULL || priv->seat[0] == '\0')
-    {
-      return NULL;
-    }
-
-  if (!dbus_g_proxy_call (priv->seat_proxy,
-                          "CanActivateSessions",
-                          &error,
-                          G_TYPE_INVALID,
-                          G_TYPE_BOOLEAN, &can_activate,
-                          G_TYPE_INVALID))
-    {
-      g_warning ("Failed to determine if seat can activate sessions: %s", error->message);
-      g_error_free (error);
-
-      return NULL;
-    }
-
-  if (!can_activate)
+  if (!users_service_dbus_can_activate_session (service))
     {
       return NULL;
     }
@@ -1094,4 +1070,37 @@ users_service_dbus_activate_user_session (UsersServiceDbus *self,
     }
 
   return TRUE;
+}
+
+gboolean
+users_service_dbus_can_activate_session (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+  gboolean can_activate = FALSE;
+  GError *error = NULL;
+
+  if (!priv->seat_proxy)
+    {
+      create_seat_proxy (self);
+    }
+
+  if (!priv->seat || priv->seat[0] == '\0')
+    {
+      return FALSE;
+    }
+
+  if (!dbus_g_proxy_call (priv->seat_proxy,
+                          "CanActivateSessions",
+                          &error,
+                          G_TYPE_INVALID,
+                          G_TYPE_BOOLEAN, &can_activate,
+                          G_TYPE_INVALID))
+    {
+      g_warning ("Failed to determine if seat can activate sessions: %s", error->message);
+      g_error_free (error);
+
+      return FALSE;
+    }
+
+  return can_activate;
 }

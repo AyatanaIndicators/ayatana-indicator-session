@@ -53,8 +53,97 @@ static DbusmenuMenuitem  *root_menuitem = NULL;
 static GMainLoop         *mainloop = NULL;
 static UsersServiceDbus  *dbus_interface = NULL;
 
+static DBusGProxy * gdm_settings_proxy = NULL;
+static gboolean gdm_auto_login = FALSE;
+static const gchar * gdm_auto_login_string = "daemon/AutomaticLoginEnable";
+
 static gint   count;
 static GList *users;
+
+/* Respond to the signal of autologin changing to see if the
+   setting for timed login changes. */
+static void
+gdm_settings_change (DBusGProxy * proxy, const gchar * value, const gchar * old, const gchar * new, gpointer data)
+{
+	if (g_strcmp0(value, gdm_auto_login_string)) {
+		/* This is not a setting that we care about,
+		   there is only one. */
+		return;
+	}
+	g_debug("GDM Settings change: %s", new);
+
+	if (g_strcmp0(new, "true") == 0) {
+		gdm_auto_login = TRUE;
+	} else {
+		gdm_auto_login = FALSE;
+	}
+
+	return;
+}
+
+/* Get back the data from querying to see if there is auto
+   login enabled in GDM */
+static void
+gdm_get_autologin (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
+{
+	GError * error = NULL;
+	gchar * value = NULL;
+
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_STRING, &value, G_TYPE_INVALID)) {
+		g_warning("Unable to get autologin setting: %s", error != NULL ? error->message : "null");
+		g_error_free(error);
+		return;
+	}
+
+	g_return_if_fail(value != NULL);
+	gdm_settings_change(proxy, gdm_auto_login_string, NULL, value, NULL);
+
+	return;
+}
+
+/* Sets up the proxy and queries for the setting to know
+   whether we're doing an autologin. */
+static gboolean
+build_gdm_proxy (gpointer null_data)
+{
+	g_return_val_if_fail(gdm_settings_proxy == NULL, FALSE);
+
+	/* Grab the system bus */
+	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
+	g_return_val_if_fail(bus != NULL, FALSE);
+
+	/* Get the settings proxy */
+	gdm_settings_proxy = dbus_g_proxy_new_for_name_owner(bus,
+	                                                     "org.gnome.DisplayManager",
+	                                                     "/org/gnome/DisplayManager/Settings",
+	                                                     "org.gnome.DisplayManager.Settings", NULL);
+	g_return_val_if_fail(gdm_settings_proxy != NULL, FALSE);
+
+	/* Signal for value changed */
+	dbus_g_proxy_add_signal(gdm_settings_proxy,
+	                        "ValueChanged",
+	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
+	                        G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(gdm_settings_proxy,
+	                            "ValueChanged",
+	                            G_CALLBACK(gdm_settings_change),
+	                            NULL,
+	                            NULL);
+
+	/* Start to get the initial value */
+	dbus_g_proxy_begin_call(gdm_settings_proxy,
+	                        "GetValue",
+	                        gdm_get_autologin,
+	                        NULL,
+	                        NULL,
+	                        G_TYPE_STRING,
+	                        gdm_auto_login_string,
+	                        G_TYPE_INVALID);
+
+	return FALSE;
+}
 
 static gboolean
 check_guest_session (void)
@@ -128,6 +217,10 @@ static void
 lock_screen (DbusmenuMenuitem * mi, gpointer data)
 {
 	g_debug("Lock Screen");
+	if (gdm_auto_login) {
+		g_debug("\tGDM set to autologin, blocking lock");
+		return;
+	}
 
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	g_return_if_fail(session_bus != NULL);
@@ -305,6 +398,8 @@ main (int argc, char ** argv)
         g_error("Unable to get name");
         return 1;
     }
+
+	g_idle_add(build_gdm_proxy, NULL);
 
     dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
 

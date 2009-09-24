@@ -992,7 +992,7 @@ user_removed (DBusGProxy *proxy,
     {
       user = g_hash_table_find (priv->users,
                                 compare_users_by_uid,
-                                GUINT_TO_POINTER (uid));
+                                GUINT_TO_POINTER ((gint)uid));
 
       if (user != NULL)
         {

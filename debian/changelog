@@ -1,4 +1,4 @@
-indicator-session (0.1.5-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-session (0.1.5-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream release 0.1.5
     * PolicyKit-1 support (LP: #418643)
@@ -10,7 +10,7 @@ indicator-session (0.1.5-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * Removing patches 01_polkit-1.patch and 99_autoreconf.patch
     as they were merged upstream.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Sep 2009 17:03:58 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 24 Sep 2009 17:07:51 -0500
 
 indicator-session (0.1.4-0ubuntu2) karmic; urgency=low
 

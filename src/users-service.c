@@ -223,6 +223,7 @@ user_added (UsersServiceDbus *service,
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
 
   users = g_list_append (users, user);
+  count++;
 
   rebuild_items (root, service);
 }
@@ -235,6 +236,7 @@ user_removed (UsersServiceDbus *service,
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
 
   users = g_list_remove (users, user);
+  count--;
 
   rebuild_items (root, service);
 }

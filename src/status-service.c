@@ -40,12 +40,14 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "status-service-dbus.h"
 
 #include "status-provider.h"
+#include "status-provider-mc5.h"
 #include "status-provider-pidgin.h"
 #include "status-provider-telepathy.h"
 
 typedef StatusProvider * (*newfunc) (void);
-#define STATUS_PROVIDER_CNT   2
+#define STATUS_PROVIDER_CNT   3
 static newfunc status_provider_newfuncs[STATUS_PROVIDER_CNT] = {
+	status_provider_mc5_new,
 	status_provider_pidgin_new,
 	status_provider_telepathy_new
 };

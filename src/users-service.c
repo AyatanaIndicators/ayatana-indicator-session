@@ -297,24 +297,21 @@ rebuild_items (DbusmenuMenuitem *root,
           g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
         }
 
-      if (count > 1 && count < 7)
+      if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
         {
-          if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
+          if (users != NULL)
             {
-              if (users != NULL)
+              GList *l = NULL;
+
+              for (l = users; l != NULL; l = l->next)
                 {
-                  GList *l = NULL;
-
-                  for (l = users; l != NULL; l = l->next)
-                    {
-                      users = g_list_delete_link (users, l);
-                    }
-
-                  users = NULL;
+                  users = g_list_delete_link (users, l);
                 }
 
-              users = users_service_dbus_get_user_list (service);
+              users = NULL;
             }
+
+          users = users_service_dbus_get_user_list (service);
 
           users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
 

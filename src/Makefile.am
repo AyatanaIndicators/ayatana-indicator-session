@@ -32,6 +32,10 @@ indicator_status_service_SOURCES = \
 	users-service-marshal.h \
 	status-provider.h \
 	status-provider.c \
+	status-provider-mc5.h \
+	status-provider-mc5.c \
+	status-provider-mc5-marshal.h \
+	status-provider-mc5-marshal.c \
 	status-provider-pidgin.h \
 	status-provider-pidgin.c \
 	status-provider-pidgin-marshal.h \
@@ -94,6 +98,16 @@ status-provider-telepathy-marshal.c: $(srcdir)/status-provider-telepathy.list
 		--prefix=_status_provider_telepathy_marshal $(srcdir)/status-provider-telepathy.list \
 		> status-provider-telepathy-marshal.c
 
+status-provider-mc5-marshal.h: $(srcdir)/status-provider-mc5.list
+	glib-genmarshal --header \
+		--prefix=_status_provider_mc5_marshal $(srcdir)/status-provider-mc5.list \
+		> status-provider-mc5-marshal.h
+
+status-provider-mc5-marshal.c: $(srcdir)/status-provider-mc5.list
+	glib-genmarshal --body \
+		--prefix=_status_provider_mc5_marshal $(srcdir)/status-provider-mc5.list \
+		> status-provider-mc5-marshal.c
+
 ###############
 # Users Stuff
 ###############
@@ -118,6 +132,8 @@ BUILT_SOURCES = \
 	users-service-client.h \
 	status-service-client.h \
 	status-service-server.h \
+	status-provider-mc5-marshal.h \
+	status-provider-mc5-marshal.c \
 	users-service-marshal.h \
 	users-service-marshal.c \
 	status-provider-pidgin-marshal.h \
@@ -127,6 +143,7 @@ BUILT_SOURCES = \
 
 EXTRA_DIST = \
 	status-service.xml \
+	status-provider-mc5.list \
 	status-provider-pidgin.list \
 	status-provider-telepathy.list
 

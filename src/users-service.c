@@ -158,14 +158,6 @@ activate_user_session (DbusmenuMenuitem *mi, gpointer user_data)
   users_service_dbus_activate_user_session (service, user);
 }
 
-static void
-remove_menu_item (DbusmenuMenuitem *root, gpointer user_data)
-{
-  DbusmenuMenuitem *child = (DbusmenuMenuitem *)user_data;
-
-  dbusmenu_menuitem_child_delete (root, child);
-}
-
 static gint
 compare_users_by_username (const gchar *a,
                            const gchar *b)
@@ -184,10 +176,13 @@ rebuild_items (DbusmenuMenuitem *root,
   GList *u;
   UserData *user;
   gboolean can_activate;
+  GList *children;
 
   can_activate = users_service_dbus_can_activate_session (service);
 
-  dbusmenu_menuitem_foreach (root, remove_menu_item, NULL);
+  children = dbusmenu_menuitem_take_children (root);
+  g_list_foreach (children, (GFunc)g_object_unref, NULL);
+  g_list_free (children);
 
   mi = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));

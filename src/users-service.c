@@ -183,6 +183,9 @@ rebuild_items (DbusmenuMenuitem *root,
   DbusmenuMenuitem *mi = NULL;
   GList *u;
   UserData *user;
+  gboolean can_activate;
+
+  can_activate = users_service_dbus_can_activate_session (service);
 
   dbusmenu_menuitem_foreach (root, remove_menu_item, NULL);
 
@@ -191,54 +194,57 @@ rebuild_items (DbusmenuMenuitem *root,
   g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
   dbusmenu_menuitem_child_append(root, mi);
 
-  if (check_guest_session ())
+  if (can_activate == TRUE)
     {
-      mi = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
-      dbusmenu_menuitem_child_append (root, mi);
-      g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
-    }
-
-  if (count > 1 && count < 7)
-    {
-      if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
+      if (check_guest_session ())
         {
-          if (users != NULL)
-            {
-              GList *l = NULL;
+          mi = dbusmenu_menuitem_new ();
+          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
+          dbusmenu_menuitem_child_append (root, mi);
+          g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
+        }
 
-              for (l = users; l != NULL; l = l->next)
+      if (count > 1 && count < 7)
+        {
+          if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
+            {
+              if (users != NULL)
                 {
-                  users = g_list_delete_link (users, l);
+                  GList *l = NULL;
+
+                  for (l = users; l != NULL; l = l->next)
+                    {
+                      users = g_list_delete_link (users, l);
+                    }
+
+                  users = NULL;
                 }
 
-              users = NULL;
+              users = users_service_dbus_get_user_list (service);
             }
 
-          users = users_service_dbus_get_user_list (service);
+          users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+
+          for (u = users; u != NULL; u = g_list_next (u))
+            {
+              user = u->data;
+
+              user->service = service;
+
+              mi = dbusmenu_menuitem_new ();
+              dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, user->real_name);
+              dbusmenu_menuitem_child_append (root, mi);
+              g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+            }
         }
 
-      users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
-
-      for (u = users; u != NULL; u = g_list_next (u))
+      if (check_new_session ())
         {
-          user = u->data;
-
-          user->service = service;
-
           mi = dbusmenu_menuitem_new ();
-          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, user->real_name);
+          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("New Session..."));
           dbusmenu_menuitem_child_append (root, mi);
-          g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+          g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
         }
-    }
-
-  if (check_new_session ())
-    {
-      mi = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("New Session..."));
-      dbusmenu_menuitem_child_append (root, mi);
-      g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
     }
 }
 

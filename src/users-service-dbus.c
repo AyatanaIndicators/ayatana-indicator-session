@@ -46,10 +46,10 @@ static gchar   *get_seat                               (UsersServiceDbus *servic
 static void     users_loaded                           (DBusGProxy        *proxy,
                                                         gpointer           user_data);
 static void     user_added                             (DBusGProxy        *proxy,
-                                                        guint              uid,
+                                                        gint64             uid,
                                                         gpointer           user_data);
 static void     user_removed                           (DBusGProxy        *proxy,
-                                                        guint              uid,
+                                                        gint64             uid,
                                                         gpointer           user_data);
 static void     user_updated                           (DBusGProxy        *proxy,
                                                         guint              uid,
@@ -916,7 +916,7 @@ start_new_user_session (UsersServiceDbus *self,
 
 static void
 user_added (DBusGProxy *proxy,
-            guint       uid,
+            gint64      uid,
             gpointer    user_data)
 {
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
@@ -972,7 +972,7 @@ compare_users_by_uid (gpointer key,
 
 static void
 user_removed (DBusGProxy *proxy,
-              guint       uid,
+              gint64      uid,
               gpointer    user_data)
 {
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;

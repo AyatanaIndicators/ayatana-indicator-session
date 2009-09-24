@@ -166,6 +166,16 @@ remove_menu_item (DbusmenuMenuitem *root, gpointer user_data)
   dbusmenu_menuitem_child_delete (root, child);
 }
 
+static gint
+compare_users_by_username (const gchar *a,
+                           const gchar *b)
+{
+  UserData *user1 = (UserData *)a;
+  UserData *user2 = (UserData *)b;
+
+  return g_strcmp0 (user1->user_name, user2->user_name);
+}
+
 static void
 rebuild_items (DbusmenuMenuitem *root,
                UsersServiceDbus *service)
@@ -207,6 +217,8 @@ rebuild_items (DbusmenuMenuitem *root,
 
           users = users_service_dbus_get_user_list (service);
         }
+
+      users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
 
       for (u = users; u != NULL; u = g_list_next (u))
         {

@@ -171,8 +171,6 @@ users_service_dbus_class_init (UsersServiceDbusClass *klass)
                                         NULL, NULL,
                                         _users_service_marshal_VOID__INT64,
                                         G_TYPE_NONE, 1, G_TYPE_INT64);
-
-  dbus_g_object_type_install_info (USERS_SERVICE_DBUS_TYPE, &dbus_glib__users_service_server_object_info);
 }
 
 static void

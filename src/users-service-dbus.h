@@ -50,6 +50,9 @@ struct _UserData
   UsersServiceDbus *service;
 };
 
+#define MINIMUM_USERS           1
+#define MAXIMUM_USERS           7
+
 struct _UsersServiceDbus {
   GObject parent;
 };

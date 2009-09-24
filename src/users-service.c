@@ -37,8 +37,6 @@
 #include "users-service-dbus.h"
 
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
-#define MINIMUM_USERS           1
-#define MAXIMUM_USERS           7
 
 typedef struct _ActivateData ActivateData;
 struct _ActivateData
@@ -193,6 +191,23 @@ rebuild_items (DbusmenuMenuitem *root,
 
   if (count > 1 && count < 7)
     {
+      if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
+        {
+          if (users != NULL)
+            {
+              GList *l = NULL;
+
+              for (l = users; l != NULL; l = l->next)
+                {
+                  users = g_list_delete_link (users, l);
+                }
+
+              users = NULL;
+            }
+
+          users = users_service_dbus_get_user_list (service);
+        }
+
       for (u = users; u != NULL; u = g_list_next (u))
         {
           user = u->data;
@@ -222,7 +237,6 @@ user_added (UsersServiceDbus *service,
 {
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
 
-  users = g_list_append (users, user);
   count++;
 
   rebuild_items (root, service);
@@ -235,7 +249,6 @@ user_removed (UsersServiceDbus *service,
 {
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
 
-  users = g_list_remove (users, user);
   count--;
 
   rebuild_items (root, service);
@@ -248,7 +261,7 @@ create_items (DbusmenuMenuitem *root,
   g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
 
   count = users_service_dbus_get_user_count (service);
-  if (count > 1 && count < 7)
+  if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
     {
       users = users_service_dbus_get_user_list (service);
     }

@@ -635,16 +635,80 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
 }
 
 static void
+sync_users (UsersServiceDbus *self)
+{
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+
+  if (g_hash_table_size (priv->users) > 0)
+    {
+      return;
+    }
+
+  if (priv->count > MINIMUM_USERS && priv->count < MAXIMUM_USERS)
+    {
+      GArray *uids = NULL;
+      GPtrArray *users_info = NULL;
+      GError *error = NULL;
+      gint i;
+
+      uids = g_array_new (FALSE, FALSE, sizeof (gint64));
+
+      if (!org_gnome_DisplayManager_UserManager_get_user_list (priv->gdm_proxy,
+                                                               &uids,
+                                                               &error))
+        {
+          g_warning ("failed to retrieve user list: %s", error->message);
+          g_error_free (error);
+
+          return;
+        }
+
+      users_info = g_ptr_array_new ();
+
+      if (!org_gnome_DisplayManager_UserManager_get_users_info (priv->gdm_proxy,
+                                                                uids,
+                                                                &users_info,
+                                                                &error))
+        {
+          g_warning ("failed to retrieve user info: %s", error->message);
+          g_error_free (error);
+
+          return;
+        }
+
+      for (i = 0; i < users_info->len; i++)
+        {
+          GValueArray *values;
+          UserData *user;
+
+          values = g_ptr_array_index (users_info, i);
+
+          user = g_new0 (UserData, 1);
+
+          user->uid         = g_value_get_int64  (g_value_array_get_nth (values, 0));
+          user->user_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 1)));
+          user->real_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 2)));
+          user->shell       = g_strdup (g_value_get_string (g_value_array_get_nth (values, 3)));
+          user->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
+          user->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
+
+          g_hash_table_insert (priv->users,
+                               g_strdup (user->user_name),
+                               user);
+
+          add_sessions_for_user (self, user);
+        }
+    }
+}
+
+static void
 users_loaded (DBusGProxy *proxy,
               gpointer    user_data)
 {
   UsersServiceDbus        *service;
   UsersServiceDbusPrivate *priv;
   GError                  *error = NULL;
-  GArray                  *uids = NULL;
-  GPtrArray               *users_info = NULL;
   gint                     count;
-  int                      i;
 
   service = (UsersServiceDbus *)user_data;
   priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
@@ -661,53 +725,7 @@ users_loaded (DBusGProxy *proxy,
 
   priv->count = count;
 
-  uids = g_array_new (FALSE, FALSE, sizeof (gint64));
-
-  if (!org_gnome_DisplayManager_UserManager_get_user_list (proxy,
-                                                           &uids,
-                                                           &error))
-    {
-      g_warning ("failed to retrieve user list: %s", error->message);
-      g_error_free (error);
-
-      return;
-    }
-
-  users_info = g_ptr_array_new ();
-
-  if (!org_gnome_DisplayManager_UserManager_get_users_info (proxy,
-                                                            uids,
-                                                            &users_info,
-                                                            &error))
-    {
-      g_warning ("failed to retrieve user info: %s", error->message);
-      g_error_free (error);
-
-      return;
-    }
-
-  for (i = 0; i < users_info->len; i++)
-    {
-      GValueArray *values;
-      UserData *user;
-
-      values = g_ptr_array_index (users_info, i);
-
-      user = g_new0 (UserData, 1);
-
-      user->uid         = g_value_get_int64  (g_value_array_get_nth (values, 0));
-      user->user_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 1)));
-      user->real_name   = g_strdup (g_value_get_string (g_value_array_get_nth (values, 2)));
-      user->shell       = g_strdup (g_value_get_string (g_value_array_get_nth (values, 3)));
-      user->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
-      user->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
-
-      g_hash_table_insert (priv->users,
-                           g_strdup (user->user_name),
-                           user);
-
-      add_sessions_for_user (service, user);
-    }
+  sync_users (service);
 }
 
 static gboolean
@@ -908,30 +926,40 @@ user_added (DBusGProxy *proxy,
 
   priv->count++;
 
-  if (!org_gnome_DisplayManager_UserManager_get_user_info (proxy,
-                                                           uid,
-                                                           &user->user_name,
-                                                           &user->real_name,
-                                                           &user->shell,
-                                                           &user->login_count,
-                                                           &user->icon_url,
-                                                           &error))
+  if (priv->count < MAXIMUM_USERS)
     {
-      g_warning ("unable to retrieve user info: %s", error->message);
-      g_error_free (error);
+      if ((priv->count - g_hash_table_size (priv->users)) > 1)
+        {
+          sync_users (service);
+        }
+      else
+        {
+          if (!org_gnome_DisplayManager_UserManager_get_user_info (proxy,
+                                                                   uid,
+                                                                   &user->user_name,
+                                                                   &user->real_name,
+                                                                   &user->shell,
+                                                                   &user->login_count,
+                                                                   &user->icon_url,
+                                                                   &error))
+            {
+              g_warning ("unable to retrieve user info: %s", error->message);
+              g_error_free (error);
 
-      g_free (user);
+              g_free (user);
 
-      return;
+              return;
+            }
+
+          user->uid = uid;
+
+          g_hash_table_insert (priv->users,
+                               g_strdup (user->user_name),
+                               user);
+
+          g_signal_emit (G_OBJECT (service), signals[USER_ADDED], 0, user, TRUE);
+        }
     }
-
-  user->uid = uid;
-
-  g_hash_table_insert (priv->users,
-                       g_strdup (user->user_name),
-                       user);
-
-  g_signal_emit (G_OBJECT (service), signals[USER_ADDED], 0, user, TRUE);
 }
 
 static gboolean
@@ -950,15 +978,28 @@ user_removed (DBusGProxy *proxy,
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
   UserData *user;
+  gint size;
 
-  user = g_hash_table_find (priv->users,
-                            compare_users_by_uid,
-                            GUINT_TO_POINTER (uid));
-
-  g_hash_table_remove (priv->users,
-                       user->user_name);
+  size = g_hash_table_size (priv->users);
 
   priv->count--;
+
+  if (size == 0 || (size - priv->count) > 1)
+    {
+      sync_users (service);
+    }
+  else
+    {
+      user = g_hash_table_find (priv->users,
+                                compare_users_by_uid,
+                                GUINT_TO_POINTER (uid));
+
+      if (user != NULL)
+        {
+          g_hash_table_remove (priv->users,
+                               user->user_name);
+        }
+    }
 }
 
 static void

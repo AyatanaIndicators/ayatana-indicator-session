@@ -144,7 +144,12 @@ main (int argc, char * argv[])
 	                                  INDICATOR_ICONS_DIR);
 
 	GtkWidget * dialog = NULL;
-	if (!pk_require_auth(type) && !supress_confirmations()) {
+	/* TODO: We're disabling PolicyKit checking here because there
+	   is a bug in ConsoleKit where the dialog doesn't come up until
+	   the session is entirely closed.  Stupid, but it's better than
+	   not getting a dialog at all. */
+	/* if (!pk_require_auth(type) && !supress_confirmations()) { */
+	if (!supress_confirmations()) {
 		dialog = logout_dialog_new(type);
 	}
 

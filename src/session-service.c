@@ -84,10 +84,12 @@ gdm_settings_change (DBusGProxy * proxy, const gchar * value, const gchar * old,
 static void
 gdm_get_autologin (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
 {
+	GError * error = NULL;
 	gchar * value = NULL;
 
-	if (dbus_g_proxy_end_call(proxy, call, NULL, G_TYPE_STRING, &value, G_TYPE_INVALID)) {
-		g_warning("Unable to get autologin setting.");
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_STRING, &value, G_TYPE_INVALID)) {
+		g_warning("Unable to get autologin setting: %s", error != NULL ? error->message : "null");
+		g_error_free(error);
 		return;
 	}
 

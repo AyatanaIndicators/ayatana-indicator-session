@@ -261,10 +261,6 @@ create_items (DbusmenuMenuitem *root,
   g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
 
   count = users_service_dbus_get_user_count (service);
-  if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
-    {
-      users = users_service_dbus_get_user_list (service);
-    }
 
   rebuild_items (root, service);
 }

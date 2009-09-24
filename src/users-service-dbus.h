@@ -61,9 +61,6 @@ struct _UsersServiceDbusClass {
   GObjectClass parent_class;
 
   /* Signals */
-  gboolean (*user_changed)        (UsersServiceDbus *self, gchar  **name,  gpointer user_data);
-  gboolean (*users_icons_changed) (UsersServiceDbus *self, GArray **icons, gpointer user_data);
-
   void     (* users_loaded)       (UsersServiceDbus *self, gpointer user_data);
 
   void     (* user_added)         (UsersServiceDbus *self, gint64 uid, gpointer user_data);

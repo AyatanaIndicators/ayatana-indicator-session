@@ -46,7 +46,7 @@ static DBusGProxy * dkp_prop_proxy = NULL;
 
 static DBusGProxy * gdm_settings_proxy = NULL;
 static gboolean gdm_auto_login = FALSE;
-static const gchar * gdm_auto_login_string = "daemon/TimedLoginEnable";
+static const gchar * gdm_auto_login_string = "daemon/AutomaticLoginEnable";
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
@@ -68,6 +68,7 @@ gdm_settings_change (DBusGProxy * proxy, const gchar * value, const gchar * old,
 		   there is only one. */
 		return;
 	}
+	g_debug("GDM Settings change: %s", new);
 
 	if (g_strcmp0(new, "true") == 0) {
 		gdm_auto_login = TRUE;

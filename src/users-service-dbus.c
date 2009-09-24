@@ -443,18 +443,6 @@ get_unix_user (UsersServiceDbus *service,
   return TRUE;
 }
 
-static gint
-session_compare (const gchar *a,
-                 const gchar *b)
-{
-  if (a == NULL)
-    return 1;
-  else if (b == NULL)
-    return -1;
-
-  return strcmp (a, b);
-}
-
 static gchar *
 get_session_for_user (UsersServiceDbus *service,
                       UserData         *user)
@@ -549,7 +537,7 @@ do_add_session (UsersServiceDbus *service,
                        g_strdup (ssid),
                        g_strdup (user->user_name));
 
-  l = g_list_find_custom (user->sessions, ssid, (GCompareFunc)session_compare);
+  l = g_list_find_custom (user->sessions, ssid, (GCompareFunc)g_strcmp0);
   if (l == NULL)
     {
       g_debug ("Adding session %s", ssid);
@@ -656,7 +644,7 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
 
   l = g_list_find_custom (user->sessions,
                           session_id,
-                          (GCompareFunc)session_compare);
+                          (GCompareFunc)g_strcmp0);
   if (l)
     {
       g_debug ("Removing session %s", session_id);

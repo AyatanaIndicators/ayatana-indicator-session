@@ -789,8 +789,6 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
   if (!user)
     return;
 
-  // remove_session_from_user (user, session_id); ??
-
   l = g_list_find_custom (user->sessions,
                           session_id,
                           (GCompareFunc)session_compare);

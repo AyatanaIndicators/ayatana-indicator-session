@@ -178,31 +178,6 @@ users_service_dbus_init (UsersServiceDbus *self)
 {
   GError *error = NULL;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-  gint i = 0;
-  const gchar *excludes[] =
-    { "bin",
-      "root", /* excludes taken from gdm */
-      "daemon",
-      "adm",
-      "lp",
-      "sync",
-      "shutdown",
-      "halt",
-      "mail",
-      "news",
-      "uucp",
-      "operator",
-      "nobody",
-      "nobody4",
-      "noaccess",
-      "gdm",
-      "postgres",
-      "pvm",
-      "rpm",
-      "nfsnobody",
-      "pcap",
-      NULL
-    };
 
   priv->users = NULL;
   priv->count = 0;
@@ -224,18 +199,6 @@ users_service_dbus_init (UsersServiceDbus *self)
       g_error_free(error);
 
       return;
-    }
-
-  priv->exclusions = g_hash_table_new_full (g_str_hash,
-                                            g_str_equal,
-                                            g_free,
-                                            NULL);
-
-  for (i = 0; excludes[i] != NULL; i++)
-    {
-      g_hash_table_insert (priv->exclusions,
-                           g_strdup (excludes [i]),
-                           GUINT_TO_POINTER (TRUE));
     }
 
   priv->sessions = g_hash_table_new_full (g_str_hash,
@@ -669,9 +632,6 @@ do_add_session (UsersServiceDbus *service,
   if (!xdisplay || xdisplay[0] == '\0')
     return FALSE;
 
-  if (g_hash_table_lookup (priv->exclusions, user->user_name))
-    return FALSE;
-
   g_hash_table_insert (priv->sessions,
                        g_strdup (ssid),
                        g_strdup (user->user_name));
@@ -751,12 +711,6 @@ seat_proxy_session_added (DBusGProxy       *seat_proxy,
   if (!pwent)
     {
       g_warning ("Failed to lookup user id %d: %s", (int)uid, g_strerror (errno));
-      return;
-    }
-
-  if (g_hash_table_lookup (priv->exclusions, pwent->pw_name))
-    {
-      g_debug ("Excluding user %s", pwent->pw_name);
       return;
     }
 

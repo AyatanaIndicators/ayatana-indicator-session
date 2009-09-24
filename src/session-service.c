@@ -114,6 +114,19 @@ build_gdm_proxy (gpointer null_data)
 	                                                     "org.gnome.DisplayManager.Settings", NULL);
 	g_return_val_if_fail(gdm_settings_proxy != NULL, FALSE);
 
+	/* Signal for value changed */
+	dbus_g_proxy_add_signal(gdm_settings_proxy,
+	                        "ValueChanged",
+	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
+	                        G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(gdm_settings_proxy,
+	                            "ValueChanged",
+	                            G_CALLBACK(gdm_settings_change),
+	                            NULL,
+	                            NULL);
+
 	/* Start to get the initial value */
 	dbus_g_proxy_begin_call(gdm_settings_proxy,
 	                        "GetValue",

@@ -44,6 +44,9 @@ static GMainLoop * mainloop = NULL;
 static DBusGProxy * dkp_main_proxy = NULL;
 static DBusGProxy * dkp_prop_proxy = NULL;
 
+static DBusGProxy * gdm_settings_proxy = NULL;
+static gboolean gdm_auto_login = FALSE;
+
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
 
@@ -53,12 +56,26 @@ static DbusmenuMenuitem * logout_mi = NULL;
 static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
 
+/* Sets up the proxy and queries for the setting to know
+   whether we're doing an autologin. */
+static gboolean
+build_gdm_proxy (gpointer null_data)
+{
+	gdm_settings_proxy = NULL;
+
+	return FALSE;
+}
+
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */
 static void
 lock_screen (void)
 {
 	g_debug("Lock Screen");
+	if (gdm_auto_login) {
+		g_debug("\tGDM set to autologin, blocking lock");
+		return;
+	}
 
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	g_return_if_fail(session_bus != NULL);
@@ -332,6 +349,8 @@ main (int argc, char ** argv)
         g_error("Unable to get name");
         return 1;
     }   
+
+	g_idle_add(build_gdm_proxy, NULL);
 
     root_menuitem = dbusmenu_menuitem_new();
 	g_debug("Root ID: %d", dbusmenu_menuitem_get_id(root_menuitem));

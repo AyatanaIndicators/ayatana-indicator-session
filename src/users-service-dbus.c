@@ -59,7 +59,6 @@ static gboolean _users_service_server_get_users_info   (UsersServiceDbus  *servi
                                                         const GArray      *uids,
                                                         GPtrArray        **user_info,
                                                         GError           **error);
-static void     create_session_proxy                   (UsersServiceDbus  *self);
 static void     create_system_proxy                    (UsersServiceDbus  *self);
 static void     create_gdm_proxy                       (UsersServiceDbus  *self);
 static void     create_seat_proxy                      (UsersServiceDbus  *self);
@@ -100,10 +99,8 @@ struct _UsersServiceDbusPrivate
   gchar      *seat;
   gchar      *ssid;
 
-  DBusGConnection *session_bus;
   DBusGConnection *system_bus;
 
-  DBusGProxy *dbus_proxy_session;
   DBusGProxy *dbus_proxy_system;
   DBusGProxy *gdm_proxy;
   DBusGProxy *ck_proxy;
@@ -182,16 +179,7 @@ users_service_dbus_init (UsersServiceDbus *self)
   priv->users = NULL;
   priv->count = 0;
 
-  /* Get the buses */
-  priv->session_bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-  if (error != NULL)
-    {
-      g_error ("Unable to get session bus: %s", error->message);
-      g_error_free (error);
-
-      return;
-    }
-
+  /* Get the system bus */
   priv->system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
   if (error != NULL)
     {
@@ -211,16 +199,11 @@ users_service_dbus_init (UsersServiceDbus *self)
                                        g_free,
                                        NULL);
 
-  dbus_g_connection_register_g_object (priv->session_bus,
-                                       INDICATOR_USERS_SERVICE_DBUS_OBJECT,
-                                       G_OBJECT (self));
-
   dbus_g_object_register_marshaller (_users_service_marshal_VOID__INT64,
                                      G_TYPE_NONE,
                                      G_TYPE_INT64,
                                      G_TYPE_INVALID);
 
-  create_session_proxy (self);
   create_system_proxy (self);
   create_gdm_proxy (self);
   create_ck_proxy (self);
@@ -239,26 +222,6 @@ static void
 users_service_dbus_finalize (GObject *object)
 {
   G_OBJECT_CLASS (users_service_dbus_parent_class)->finalize (object);
-}
-
-static void
-create_session_proxy (UsersServiceDbus *self)
-{
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-  GError *error = NULL;
-
-  priv->dbus_proxy_session = dbus_g_proxy_new_for_name_owner (priv->session_bus,
-                                                              DBUS_SERVICE_DBUS,
-                                                              DBUS_PATH_DBUS,
-                                                              DBUS_INTERFACE_DBUS,
-                                                              &error);
-  if (error != NULL)
-    {
-      g_error ("Unable to get dbus proxy on session bus: %s", error->message);
-      g_error_free (error);
-
-      return;
-    }
 }
 
 static void

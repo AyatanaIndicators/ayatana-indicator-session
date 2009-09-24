@@ -11,7 +11,8 @@ sessionlib_LTLIBRARIES = libsession.la
 libsession_la_SOURCES = \
 	indicator-session.c \
 	dbus-shared-names.h \
-	status-service-client.h
+	status-service-client.h \
+	users-service-client.h
 libsession_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
 libsession_la_LIBADD = $(APPLET_LIBS)
 libsession_la_LDFLAGS = -module -avoid-version
@@ -25,6 +26,10 @@ indicator_status_service_SOURCES = \
 	status-service-dbus.h \
 	status-service-dbus.c \
 	status-service-server.h \
+	users-service-dbus.h \
+	users-service-dbus.c \
+	users-service-marshal.c \
+	users-service-marshal.h \
 	status-provider.h \
 	status-provider.c \
 	status-provider-pidgin.h \
@@ -37,6 +42,13 @@ indicator_status_service_SOURCES = \
 	status-provider-telepathy-marshal.c
 indicator_status_service_CFLAGS = $(STATUSSERVICE_CFLAGS) -Wall -Werror
 indicator_status_service_LDADD = $(STATUSSERVICE_LIBS)
+
+users-service-client.h: $(srcdir)/users-service.xml
+	dbus-binding-tool \
+		--prefix=_users_service_client \
+		--mode=glib-client \
+		--output=users-service-client.h \
+		$(srcdir)/users-service.xml
 
 status-service-client.h: $(srcdir)/status-service.xml
 	dbus-binding-tool \
@@ -51,6 +63,16 @@ status-service-server.h: $(srcdir)/status-service.xml
 		--mode=glib-server \
 		--output=status-service-server.h \
 		$(srcdir)/status-service.xml
+
+users-service-marshal.h: $(srcdir)/users-service.list
+	glib-genmarshal --header \
+		--prefix=_users_service_marshal $(srcdir)/users-service.list \
+		> users-service-marshal.h
+
+users-service-marshal.c: $(srcdir)/users-service.list
+	glib-genmarshal --body \
+		--prefix=_users_service_marshal $(srcdir)/users-service.list \
+		> users-service-marshal.c
 
 status-provider-pidgin-marshal.h: $(srcdir)/status-provider-pidgin.list
 	glib-genmarshal --header \
@@ -76,7 +98,7 @@ status-provider-telepathy-marshal.c: $(srcdir)/status-provider-telepathy.list
 # Users Stuff
 ###############
 
-indicator_users_service_SOURCES = users-service.c
+indicator_users_service_SOURCES = users-service.c users-service-dbus.c users-service-marshal.c
 indicator_users_service_CFLAGS = $(USERSSERVICE_CFLAGS) -Wall -Werror
 indicator_users_service_LDADD = $(USERSSERVICE_LIBS)
 
@@ -93,8 +115,11 @@ indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 ###############
 
 BUILT_SOURCES = \
+	users-service-client.h \
 	status-service-client.h \
 	status-service-server.h \
+	users-service-marshal.h \
+	users-service-marshal.c \
 	status-provider-pidgin-marshal.h \
 	status-provider-pidgin-marshal.c \
 	status-provider-telepathy-marshal.h \

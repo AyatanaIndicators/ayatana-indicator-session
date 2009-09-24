@@ -46,6 +46,7 @@ static DBusGProxy * dkp_prop_proxy = NULL;
 
 static DBusGProxy * gdm_settings_proxy = NULL;
 static gboolean gdm_auto_login = FALSE;
+static const gchar * gdm_auto_login_string = "daemon/TimedLoginEnable";
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
@@ -56,12 +57,72 @@ static DbusmenuMenuitem * logout_mi = NULL;
 static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
 
+
+/* Respond to the signal of autologin changing to see if the
+   setting for timed login changes. */
+static void
+gdm_settings_change (DBusGProxy * proxy, const gchar * value, const gchar * old, const gchar * new, gpointer data)
+{
+	if (g_strcmp0(value, gdm_auto_login_string)) {
+		/* This is not a setting that we care about,
+		   there is only one. */
+		return;
+	}
+
+	if (g_strcmp0(new, "true") == 0) {
+		gdm_auto_login = TRUE;
+	} else {
+		gdm_auto_login = FALSE;
+	}
+
+	return;
+}
+
+/* Get back the data from querying to see if there is auto
+   login enabled in GDM */
+static void
+gdm_get_autologin (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
+{
+	gchar * value = NULL;
+
+	if (dbus_g_proxy_end_call(proxy, call, NULL, G_TYPE_STRING, &value, G_TYPE_INVALID)) {
+		g_warning("Unable to get autologin setting.");
+		return;
+	}
+
+	g_return_if_fail(value != NULL);
+	gdm_settings_change(proxy, gdm_auto_login_string, NULL, value, NULL);
+
+	return;
+}
+
 /* Sets up the proxy and queries for the setting to know
    whether we're doing an autologin. */
 static gboolean
 build_gdm_proxy (gpointer null_data)
 {
-	gdm_settings_proxy = NULL;
+	g_return_val_if_fail(gdm_settings_proxy == NULL, FALSE);
+
+	/* Grab the system bus */
+	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
+	g_return_val_if_fail(bus != NULL, FALSE);
+
+	/* Get the settings proxy */
+	gdm_settings_proxy = dbus_g_proxy_new_for_name_owner(bus,
+	                                                     "org.gnome.DisplayManager",
+	                                                     "/org/gnome/DisplayManager/Settings",
+	                                                     "org.gnome.DisplayManager.Settings", NULL);
+	g_return_val_if_fail(gdm_settings_proxy != NULL, FALSE);
+
+	/* Start to get the initial value */
+	dbus_g_proxy_begin_call(gdm_settings_proxy,
+	                        "GetValue",
+	                        gdm_get_autologin,
+	                        NULL,
+	                        NULL,
+	                        G_TYPE_STRING,
+	                        gdm_auto_login_string,
+	                        G_TYPE_INVALID);
 
 	return FALSE;
 }

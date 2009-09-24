@@ -1,4 +1,4 @@
-indicator-session (0.1.5-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (0.1.5-0ubuntu1) karmic; urgency=low
 
   * Upstream release 0.1.5 (LP: #436223)
     * PolicyKit-1 support (LP: #418643)

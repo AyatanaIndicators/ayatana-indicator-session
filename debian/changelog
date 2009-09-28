@@ -1,8 +1,8 @@
-indicator-session (0.1.5-0ubuntu1~ppa2~launch3) UNRELEASED; urgency=low
+indicator-session (0.1.5-0ubuntu1~ppa2~launch3) karmic; urgency=low
 
   * Starting *all* the services
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 28 Sep 2009 15:56:27 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 28 Sep 2009 15:57:25 -0500
 
 indicator-session (0.1.5-0ubuntu1~ppa2~launch2) karmic; urgency=low
 

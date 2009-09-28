@@ -269,6 +269,10 @@ connect_to_status (gpointer userdata)
 	return FALSE;
 }
 
+/* Follow up the service being started by connecting
+   up the DBus Menu Client and creating our separator.
+   Also creates an idle func to connect to the service for
+   getting the icon that we should be using on the panel. */
 static void
 status_followup (void)
 {
@@ -341,6 +345,8 @@ users_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, 
 	return;
 }
 
+/* Follow up the service being started by connecting
+   up the DBus Menu Client and creating our separator. */
 static void
 users_followup (void)
 {
@@ -399,6 +405,8 @@ session_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot
 	return;
 }
 
+/* Follow up the service being started by connecting
+   up the DBus Menu Client. */
 static void
 session_followup (void)
 {
@@ -409,9 +417,15 @@ session_followup (void)
 }
 
 /* Base menu stuff */
+
+/* This takes the response to the service starting up.
+   It checks to see if it's started and if so, continues
+   with the follow function for the particular area that
+   it's working in. */
 static void
 start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer data)
 {
+	/* If we've got an error respond to it */
 	if (error != NULL) {
 		g_critical("Starting service has resulted in error.");
 		g_error_free(error);
@@ -420,6 +434,7 @@ start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer
 		return;
 	}
 
+	/* If it's not running or we started it, try again */
 	if (status != DBUS_START_REPLY_SUCCESS && status != DBUS_START_REPLY_ALREADY_RUNNING) {
 		g_critical("Return value isn't indicative of success: %d", status);
 		/* Try it all again, we need to get this started! */
@@ -427,6 +442,8 @@ start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer
 		return;
 	}
 
+	/* Check which part of the menu we're in and do the
+	   appropriate follow up from the service being started. */
 	switch (GPOINTER_TO_INT(data)) {
 	case STATUS_SECTION:
 		status_followup();
@@ -445,6 +462,10 @@ start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer
 	return;
 }
 
+/* Our idle service starter.  It looks at the section that
+   we're doing and then asks async for that service to be
+   started by dbus.  Probably not really useful to be in
+   the idle loop as it's so quick, but why not. */
 static gboolean
 start_service (gpointer userdata)
 {
@@ -476,6 +497,9 @@ start_service (gpointer userdata)
 	return FALSE;
 }
 
+/* Indicator based function to get the menu for the whole
+   applet.  This starts up asking for the parts of the menu
+   from the various services. */
 GtkMenu *
 get_menu (void)
 {
@@ -485,10 +509,13 @@ get_menu (void)
 		g_warning("Unable to get proxy for DBus itself.  Seriously.");
 	}
 
+	/* Startup in the idle loop */
 	g_idle_add(start_service, GINT_TO_POINTER(STATUS_SECTION));
 	g_idle_add(start_service, GINT_TO_POINTER(USERS_SECTION));
 	g_idle_add(start_service, GINT_TO_POINTER(SESSION_SECTION));
 
+	/* Build a temp menu incase someone can ask for it
+	   before the services start.  Fast user! */
 	main_menu = GTK_MENU(gtk_menu_new());
 	loading_item = gtk_menu_item_new_with_label("Loading...");
 	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), loading_item);

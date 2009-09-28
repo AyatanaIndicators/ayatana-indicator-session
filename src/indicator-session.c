@@ -62,6 +62,8 @@ static guint status_menu_pos_offset (void);
 static guint users_menu_pos_offset (void);
 static guint session_menu_pos_offset (void);
 static void child_realized (DbusmenuMenuitem * child, gpointer userdata);
+static gboolean start_service (gpointer userdata);
+static void start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer data);
 
 GtkLabel *
 get_label (void)
@@ -136,6 +138,11 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 		default:
 			g_warning("Child Added called with an unknown position function!");
 			return;
+	}
+
+	if (client == NULL) {
+		g_warning("Child realized for a menu we don't have?  Section: %s", errorstr);
+		return;
 	}
 
 	position += posfunc();
@@ -262,29 +269,9 @@ connect_to_status (gpointer userdata)
 	return FALSE;
 }
 
-static gboolean
-build_status_menu (gpointer userdata)
+static void
+status_followup (void)
 {
-	g_debug("Building Status Menu");
-	guint returnval = 0;
-	GError * error = NULL;
-
-	if (proxy == NULL) {
-		/* If we don't have DBus, let's stay in the idle loop */
-		return TRUE;
-	}
-
-	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_STATUS_DBUS_NAME, 0, &returnval, &error)) {
-		g_error("Unable to send message to DBus to start service: %s", error != NULL ? error->message : "(NULL error)" );
-		g_error_free(error);
-		return FALSE;
-	}
-
-	if (returnval != DBUS_START_REPLY_SUCCESS && returnval != DBUS_START_REPLY_ALREADY_RUNNING) {
-		g_error("Return value isn't indicative of success: %d", returnval);
-		return FALSE;
-	}
-
 	status_client = dbusmenu_gtkclient_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT);
 	g_signal_connect(G_OBJECT(status_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(status_menu_root_changed), main_menu);
 
@@ -294,7 +281,7 @@ build_status_menu (gpointer userdata)
 
 	g_idle_add(connect_to_status, NULL);
 
-	return FALSE;
+	return;
 }
 
 /* Users menu */
@@ -354,29 +341,9 @@ users_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, 
 	return;
 }
 
-static gboolean
-build_users_menu (gpointer userdata)
+static void
+users_followup (void)
 {
-	g_debug("Building Users Menu");
-	guint returnval = 0;
-	GError * error = NULL;
-
-	if (proxy == NULL) {
-		/* If we don't have DBus, let's stay in the idle loop */
-		return TRUE;
-	}
-
-	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_USERS_DBUS_NAME, 0, &returnval, &error)) {
-		g_error("Unable to send message to DBus to start service");
-		g_error_free(error);
-		return FALSE;
-	}
-
-	if (returnval != DBUS_START_REPLY_SUCCESS && returnval != DBUS_START_REPLY_ALREADY_RUNNING) {
-		g_error("Return value isn't indicative of success: %d", returnval);
-		return FALSE;
-	}
-
 	users_client = dbusmenu_gtkclient_new(INDICATOR_USERS_DBUS_NAME, INDICATOR_USERS_DBUS_OBJECT);
 	g_signal_connect(G_OBJECT(users_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(users_menu_root_changed), main_menu);
 
@@ -384,7 +351,7 @@ build_users_menu (gpointer userdata)
 	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), users_separator);
 	gtk_widget_hide(users_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
 
-	return FALSE;
+	return;
 }
 
 /* Session Menu Stuff */
@@ -432,36 +399,82 @@ session_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot
 	return;
 }
 
-static gboolean
-build_session_menu (gpointer userdata)
+static void
+session_followup (void)
 {
-	g_debug("Building Session Menu");
-	guint returnval = 0;
-	GError * error = NULL;
+	session_client = dbusmenu_gtkclient_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
+	g_signal_connect(G_OBJECT(session_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(session_menu_root_changed), main_menu);
+
+	return;
+}
+
+/* Base menu stuff */
+static void
+start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer data)
+{
+	if (error != NULL) {
+		g_critical("Starting service has resulted in error.");
+		g_error_free(error);
+		/* Try it all again, we need to get this started! */
+		g_idle_add(start_service, data);
+		return;
+	}
+
+	if (status != DBUS_START_REPLY_SUCCESS && status != DBUS_START_REPLY_ALREADY_RUNNING) {
+		g_critical("Return value isn't indicative of success: %d", status);
+		/* Try it all again, we need to get this started! */
+		g_idle_add(start_service, data);
+		return;
+	}
+
+	switch (GPOINTER_TO_INT(data)) {
+	case STATUS_SECTION:
+		status_followup();
+		break;
+	case USERS_SECTION:
+		users_followup();
+		break;
+	case SESSION_SECTION:
+		session_followup();
+		break;
+	default:
+		g_critical("Oh, how can we get a value that we don't know!");
+		break;
+	}
+
+	return;
+}
+
+static gboolean
+start_service (gpointer userdata)
+{
+	g_debug("Starting a service");
 
 	if (proxy == NULL) {
 		/* If we don't have DBus, let's stay in the idle loop */
 		return TRUE;
 	}
 
-	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_SESSION_DBUS_NAME, 0, &returnval, &error)) {
-		g_error("Unable to send message to DBus to start service: %s", error != NULL ? error->message : "(NULL error)" );
-		g_error_free(error);
+	const gchar * service = NULL;
+	switch (GPOINTER_TO_INT(userdata)) {
+	case STATUS_SECTION:
+		service = INDICATOR_STATUS_DBUS_NAME;
+		break;
+	case USERS_SECTION:
+		service = INDICATOR_USERS_DBUS_NAME;
+		break;
+	case SESSION_SECTION:
+		service = INDICATOR_SESSION_DBUS_NAME;
+		break;
+	default:
+		g_critical("Oh, how can we get a value that we don't know!");
 		return FALSE;
 	}
 
-	if (returnval != DBUS_START_REPLY_SUCCESS && returnval != DBUS_START_REPLY_ALREADY_RUNNING) {
-		g_error("Return value isn't indicative of success: %d", returnval);
-		return FALSE;
-	}
-
-	session_client = dbusmenu_gtkclient_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
-	g_signal_connect(G_OBJECT(session_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(session_menu_root_changed), main_menu);
+	org_freedesktop_DBus_start_service_by_name_async (proxy, service, 0 /* Flags */, start_service_phase2, userdata);
 
 	return FALSE;
 }
-
-/* Base menu stuff */
 
 GtkMenu *
 get_menu (void)
@@ -472,9 +485,9 @@ get_menu (void)
 		g_warning("Unable to get proxy for DBus itself.  Seriously.");
 	}
 
-	g_idle_add(build_status_menu, NULL);
-	g_idle_add(build_users_menu, NULL);
-	g_idle_add(build_session_menu, NULL);
+	g_idle_add(start_service, GINT_TO_POINTER(STATUS_SECTION));
+	g_idle_add(start_service, GINT_TO_POINTER(USERS_SECTION));
+	g_idle_add(start_service, GINT_TO_POINTER(SESSION_SECTION));
 
 	main_menu = GTK_MENU(gtk_menu_new());
 	loading_item = gtk_menu_item_new_with_label("Loading...");

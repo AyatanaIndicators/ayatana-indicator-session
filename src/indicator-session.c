@@ -280,8 +280,10 @@ build_status_menu (gpointer userdata)
 	}
 
 	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_STATUS_DBUS_NAME, 0, &returnval, &error)) {
-		g_error("Unable to send message to DBus to start service: %s", error != NULL ? error->message : "(NULL error)" );
-		g_error_free(error);
+		g_critical("Unable to send message to DBus to start status service");
+		if (error != NULL) {
+			g_error_free(error);
+		}
 		return FALSE;
 	}
 
@@ -372,13 +374,15 @@ build_users_menu (gpointer userdata)
 	}
 
 	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_USERS_DBUS_NAME, 0, &returnval, &error)) {
-		g_error("Unable to send message to DBus to start service");
-		g_error_free(error);
+		g_critical("Unable to send message to DBus to start users service");
+		if (error != NULL) {
+			g_error_free(error);
+		}
 		return FALSE;
 	}
 
 	if (returnval != DBUS_START_REPLY_SUCCESS && returnval != DBUS_START_REPLY_ALREADY_RUNNING) {
-		g_error("Return value isn't indicative of success: %d", returnval);
+		g_critical("Return value isn't indicative of success: %d", returnval);
 		return FALSE;
 	}
 
@@ -450,7 +454,7 @@ build_session_menu (gpointer userdata)
 	}
 
 	if (!org_freedesktop_DBus_start_service_by_name (proxy, INDICATOR_SESSION_DBUS_NAME, 0 /* Flags */, &returnval, &error)) {
-		g_critical("Unable to send message to DBus to start service: %s", error != NULL ? error->message : "(NULL error)" );
+		g_critical("Unable to send message to DBus to start session service");
 		if (error != NULL) {
 			g_error_free(error);
 		}

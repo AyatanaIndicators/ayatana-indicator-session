@@ -455,7 +455,23 @@ start_service (gpointer userdata)
 		return TRUE;
 	}
 
-	org_freedesktop_DBus_start_service_by_name_async (proxy, INDICATOR_SESSION_DBUS_NAME, 0 /* Flags */, start_service_phase2, userdata);
+	const gchar * service = NULL;
+	switch (GPOINTER_TO_INT(userdata)) {
+	case STATUS_SECTION:
+		service = INDICATOR_STATUS_DBUS_NAME;
+		break;
+	case USERS_SECTION:
+		service = INDICATOR_USERS_DBUS_NAME;
+		break;
+	case SESSION_SECTION:
+		service = INDICATOR_SESSION_DBUS_NAME;
+		break;
+	default:
+		g_critical("Oh, how can we get a value that we don't know!");
+		return FALSE;
+	}
+
+	org_freedesktop_DBus_start_service_by_name_async (proxy, service, 0 /* Flags */, start_service_phase2, userdata);
 
 	return FALSE;
 }

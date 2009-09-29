@@ -1,6 +1,14 @@
-indicator-session (0.1.5-0ubuntu1~ppa1) karmic; urgency=low
+indicator-session (0.1.5-0ubuntu2) karmic; urgency=low
 
-  * Upstream release 0.1.5
+  * src/indicator-session.c: 
+    - Changing the start up of the services to be asynchronous, thank Ted Gould
+      (lp: #436181)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 29 Sep 2009 01:25:38 +0200
+
+indicator-session (0.1.5-0ubuntu1) karmic; urgency=low
+
+  * Upstream release 0.1.5 (LP: #436223)
     * PolicyKit-1 support (LP: #418643)
     * GDM User list support (LP: #422052)
     * MissionControl5 support (LP: #427643)

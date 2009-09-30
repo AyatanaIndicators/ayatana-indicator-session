@@ -54,6 +54,7 @@ static GMainLoop         *mainloop = NULL;
 static UsersServiceDbus  *dbus_interface = NULL;
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
+static gboolean is_guest = FALSE;
 
 static DBusGProxy * gdm_settings_proxy = NULL;
 static gboolean gdm_auto_login = FALSE;
@@ -81,7 +82,7 @@ gdm_settings_change (DBusGProxy * proxy, const gchar * value, const gchar * old,
 	}
 
 	if (lock_menuitem != NULL) {
-		if (gdm_auto_login) {
+		if (gdm_auto_login || is_guest) {
 			dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
 		} else {
 			dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "true");
@@ -291,7 +292,7 @@ rebuild_items (DbusmenuMenuitem *root,
   dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
   g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
   dbusmenu_menuitem_child_append(root, lock_menuitem);
-  if (gdm_auto_login) {
+  if (gdm_auto_login || is_guest) {
     dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
   } else {
     dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "true");
@@ -408,6 +409,10 @@ main (int argc, char ** argv)
         g_error("Unable to get name");
         return 1;
     }
+
+	if (!g_strcmp0(g_get_user_name(), "guest")) {
+		is_guest = TRUE;
+	}
 
 	g_idle_add(build_gdm_proxy, NULL);
 

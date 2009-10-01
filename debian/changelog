@@ -1,6 +1,10 @@
-indicator-session (0.1.5-0ubuntu3~ppa1) UNRELEASED; urgency=low
+indicator-session (0.1.6-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Merging in the branch for async startup.
+  * Upstream release 0.1.6 
+    * Making startup of services asynchronous (LP: #436181)
+    * Disabling "Lock Screen" item when action is blocked by
+      GDM autologin (LP: #436724)
+    * Disabling "Lock Screen" in guest session (LP: #439068)
 
  -- Ted Gould <ted@ubuntu.com>  Mon, 28 Sep 2009 21:01:22 -0500
 

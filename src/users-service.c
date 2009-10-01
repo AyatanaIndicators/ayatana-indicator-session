@@ -53,6 +53,9 @@ static DbusmenuMenuitem  *root_menuitem = NULL;
 static GMainLoop         *mainloop = NULL;
 static UsersServiceDbus  *dbus_interface = NULL;
 
+static DbusmenuMenuitem  *lock_menuitem = NULL;
+static gboolean is_guest = FALSE;
+
 static DBusGProxy * gdm_settings_proxy = NULL;
 static gboolean gdm_auto_login = FALSE;
 static const gchar * gdm_auto_login_string = "daemon/AutomaticLoginEnable";
@@ -76,6 +79,14 @@ gdm_settings_change (DBusGProxy * proxy, const gchar * value, const gchar * old,
 		gdm_auto_login = TRUE;
 	} else {
 		gdm_auto_login = FALSE;
+	}
+
+	if (lock_menuitem != NULL) {
+		if (gdm_auto_login || is_guest) {
+			dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
+		} else {
+			dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "true");
+		}
 	}
 
 	return;
@@ -277,10 +288,15 @@ rebuild_items (DbusmenuMenuitem *root,
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
 
-  mi = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
-  g_signal_connect(G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
-  dbusmenu_menuitem_child_append(root, mi);
+  lock_menuitem = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+  g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
+  dbusmenu_menuitem_child_append(root, lock_menuitem);
+  if (gdm_auto_login || is_guest) {
+    dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
+  } else {
+    dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "true");
+  }
 
   if (can_activate == TRUE)
     {
@@ -393,6 +409,10 @@ main (int argc, char ** argv)
         g_error("Unable to get name");
         return 1;
     }
+
+	if (!g_strcmp0(g_get_user_name(), "guest")) {
+		is_guest = TRUE;
+	}
 
 	g_idle_add(build_gdm_proxy, NULL);
 

@@ -1,3 +1,13 @@
+indicator-session (0.1.6-0ubuntu1) UNRELEASED; urgency=low
+
+  * Upstream release 0.1.6 (LP: #440216)
+    * Making startup of services asynchronous (LP: #436181)
+    * Disabling "Lock Screen" item when action is blocked by
+      GDM autologin (LP: #436724)
+    * Disabling "Lock Screen" in guest session (LP: #439068)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Oct 2009 15:26:19 -0500
+
 indicator-session (0.1.5-0ubuntu2) karmic; urgency=low
 
   * src/indicator-session.c: 

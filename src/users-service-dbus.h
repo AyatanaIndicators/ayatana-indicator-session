@@ -50,8 +50,11 @@ struct _UserData
   UsersServiceDbus *service;
 };
 
+/* XXX - MAXIMUM_USERS should be set to 7 once we've
+ *       got some gdm issues worked out.
+ */
 #define MINIMUM_USERS           1
-#define MAXIMUM_USERS           7
+#define MAXIMUM_USERS           1
 
 struct _UsersServiceDbus {
   GObject parent;

@@ -1,8 +1,8 @@
-indicator-session (0.1.6-0ubuntu1~ppa2~async1) UNRELEASED; urgency=low
+indicator-session (0.1.6-0ubuntu1~ppa2~async1) karmic; urgency=low
 
   * Resorting the menu all the time.
 
- -- Ted Gould <ted@ubuntu.com>  Sun, 04 Oct 2009 16:53:44 -0500
+ -- Ted Gould <ted@ubuntu.com>  Sun, 04 Oct 2009 16:55:24 -0500
 
 indicator-session (0.1.6-0ubuntu1~ppa1) karmic; urgency=low
 

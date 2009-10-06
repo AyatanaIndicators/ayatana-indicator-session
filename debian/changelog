@@ -1,8 +1,8 @@
-indicator-session (0.1.6-0ubuntu1~ppa6) UNRELEASED; urgency=low
+indicator-session (0.1.6-0ubuntu1~ppa6) karmic; urgency=low
 
   * New icon name.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 06 Oct 2009 18:52:42 -0400
+ -- Ted Gould <ted@ubuntu.com>  Tue, 06 Oct 2009 18:54:11 -0400
 
 indicator-session (0.1.6-0ubuntu1~ppa5) karmic; urgency=low
 

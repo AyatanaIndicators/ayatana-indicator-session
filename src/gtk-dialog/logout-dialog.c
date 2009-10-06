@@ -163,6 +163,7 @@ set_property (GObject * object, guint param_id, const GValue * value, GParamSpec
 
 	gtk_image_set_from_icon_name(GTK_IMAGE(dialog->image), icon_strings[dialog->action], GTK_ICON_SIZE_DIALOG);
 	gtk_window_set_title (GTK_WINDOW(dialog), _(title_strings[dialog->action]));
+	gtk_window_set_icon_name (GTK_WINDOW(dialog), icon_strings[dialog->action]);
 	gtk_widget_hide(dialog->message);
 	gtk_button_set_label(GTK_BUTTON(dialog->ok_button), _(button_strings[dialog->action]));
 

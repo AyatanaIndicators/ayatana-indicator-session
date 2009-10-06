@@ -76,8 +76,8 @@ get_label (void)
 GtkImage *
 get_icon (void)
 {
-	g_debug("Changing status icon: '%s'", "user-offline");
-	status_image = GTK_IMAGE(gtk_image_new_from_icon_name("user-offline", GTK_ICON_SIZE_MENU));
+	g_debug("Changing status icon: '%s'", "system-shutdown");
+	status_image = GTK_IMAGE(gtk_image_new_from_icon_name("system-shutdown", GTK_ICON_SIZE_MENU));
 	gtk_widget_show(GTK_WIDGET(status_image));
 	return status_image;
 }

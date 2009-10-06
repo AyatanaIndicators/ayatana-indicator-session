@@ -1,3 +1,9 @@
+indicator-session (0.1.6-0ubuntu1~ppa3) karmic; urgency=low
+
+  * Default icon too!
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 06 Oct 2009 14:40:03 -0400
+
 indicator-session (0.1.6-0ubuntu1~ppa2) karmic; urgency=low
 
   * Stupid, stupid, icon stuff

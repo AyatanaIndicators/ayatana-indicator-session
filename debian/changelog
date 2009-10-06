@@ -1,11 +1,11 @@
-indicator-session (0.1.6-0ubuntu3~ppa1) UNRELEASED; urgency=low
+indicator-session (0.1.6-0ubuntu3~ppa1) karmic; urgency=low
 
   * Asynchronized the menu handling so that it's in the right
     order with async startup.
   * String change, "New Session" to "Switch User" (LP: #444494) 
   * Removed debian/patches/switch_user_lp-444494.patch
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 06 Oct 2009 18:09:08 -0400
+ -- Ted Gould <ted@ubuntu.com>  Tue, 06 Oct 2009 18:14:16 -0400
 
 indicator-session (0.1.6-0ubuntu2) UNRELEASED; urgency=low
 

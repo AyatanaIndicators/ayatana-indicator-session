@@ -1,9 +1,9 @@
-indicator-session (0.1.6-0ubuntu1~ppa4) UNRELEASED; urgency=low
+indicator-session (0.1.6-0ubuntu1~ppa4) karmic; urgency=low
 
   * Making it so that the Empathy account manager doesn't start
     unless you set the status.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 06 Oct 2009 15:20:43 -0400
+ -- Ted Gould <ted@ubuntu.com>  Tue, 06 Oct 2009 15:22:07 -0400
 
 indicator-session (0.1.6-0ubuntu1~ppa3) karmic; urgency=low
 

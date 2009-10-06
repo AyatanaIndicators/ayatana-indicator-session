@@ -1,3 +1,10 @@
+indicator-session (0.1.6-0ubuntu2) UNRELEASED; urgency=low
+
+  * debian/patches/switch_user_lp-444494.patch
+    - String change, "New Session" to "Switch User" (LP: #444494) 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 06 Oct 2009 10:44:57 -0400
+
 indicator-session (0.1.6-0ubuntu1) karmic; urgency=low
 
   * Upstream release 0.1.6 (LP: #440216)

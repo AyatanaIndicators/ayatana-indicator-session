@@ -35,6 +35,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gtk-dialog/gconf-helper.h"
 
+#include "lock-helper.h"
+
 #define DKP_ADDRESS    "org.freedesktop.DeviceKit.Power"
 #define DKP_OBJECT     "/org/freedesktop/DeviceKit/Power"
 #define DKP_INTERFACE  "org.freedesktop.DeviceKit.Power"
@@ -43,10 +45,6 @@ static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 static DBusGProxy * dkp_main_proxy = NULL;
 static DBusGProxy * dkp_prop_proxy = NULL;
-
-static DBusGProxy * gdm_settings_proxy = NULL;
-static gboolean gdm_auto_login = FALSE;
-static const gchar * gdm_auto_login_string = "daemon/AutomaticLoginEnable";
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
@@ -57,122 +55,6 @@ static DbusmenuMenuitem * logout_mi = NULL;
 static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
 
-
-/* Respond to the signal of autologin changing to see if the
-   setting for timed login changes. */
-static void
-gdm_settings_change (DBusGProxy * proxy, const gchar * value, const gchar * old, const gchar * new, gpointer data)
-{
-	if (g_strcmp0(value, gdm_auto_login_string)) {
-		/* This is not a setting that we care about,
-		   there is only one. */
-		return;
-	}
-	g_debug("GDM Settings change: %s", new);
-
-	if (g_strcmp0(new, "true") == 0) {
-		gdm_auto_login = TRUE;
-	} else {
-		gdm_auto_login = FALSE;
-	}
-
-	return;
-}
-
-/* Get back the data from querying to see if there is auto
-   login enabled in GDM */
-static void
-gdm_get_autologin (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
-{
-	GError * error = NULL;
-	gchar * value = NULL;
-
-	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_STRING, &value, G_TYPE_INVALID)) {
-		g_warning("Unable to get autologin setting: %s", error != NULL ? error->message : "null");
-		g_error_free(error);
-		return;
-	}
-
-	g_return_if_fail(value != NULL);
-	gdm_settings_change(proxy, gdm_auto_login_string, NULL, value, NULL);
-
-	return;
-}
-
-/* Sets up the proxy and queries for the setting to know
-   whether we're doing an autologin. */
-static gboolean
-build_gdm_proxy (gpointer null_data)
-{
-	g_return_val_if_fail(gdm_settings_proxy == NULL, FALSE);
-
-	/* Grab the system bus */
-	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
-	g_return_val_if_fail(bus != NULL, FALSE);
-
-	/* Get the settings proxy */
-	gdm_settings_proxy = dbus_g_proxy_new_for_name_owner(bus,
-	                                                     "org.gnome.DisplayManager",
-	                                                     "/org/gnome/DisplayManager/Settings",
-	                                                     "org.gnome.DisplayManager.Settings", NULL);
-	g_return_val_if_fail(gdm_settings_proxy != NULL, FALSE);
-
-	/* Signal for value changed */
-	dbus_g_proxy_add_signal(gdm_settings_proxy,
-	                        "ValueChanged",
-	                        G_TYPE_STRING,
-	                        G_TYPE_STRING,
-	                        G_TYPE_STRING,
-	                        G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(gdm_settings_proxy,
-	                            "ValueChanged",
-	                            G_CALLBACK(gdm_settings_change),
-	                            NULL,
-	                            NULL);
-
-	/* Start to get the initial value */
-	dbus_g_proxy_begin_call(gdm_settings_proxy,
-	                        "GetValue",
-	                        gdm_get_autologin,
-	                        NULL,
-	                        NULL,
-	                        G_TYPE_STRING,
-	                        gdm_auto_login_string,
-	                        G_TYPE_INVALID);
-
-	return FALSE;
-}
-
-/* A fun little function to actually lock the screen.  If,
-   that's what you want, let's do it! */
-static void
-lock_screen (void)
-{
-	g_debug("Lock Screen");
-	if (gdm_auto_login) {
-		g_debug("\tGDM set to autologin, blocking lock");
-		return;
-	}
-
-	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	g_return_if_fail(session_bus != NULL);
-
-	DBusGProxy * proxy = dbus_g_proxy_new_for_name_owner(session_bus,
-	                                                     "org.gnome.ScreenSaver",
-	                                                     "/",
-	                                                     "org.gnome.ScreenSaver",
-	                                                     NULL);
-	g_return_if_fail(proxy != NULL);
-
-	dbus_g_proxy_call_no_reply(proxy,
-	                           "Lock",
-	                           G_TYPE_INVALID,
-	                           G_TYPE_INVALID);
-
-	g_object_unref(proxy);
-
-	return;
-}
 
 /* Let's put this machine to sleep, with some info on how
    it should sleep.  */
@@ -185,7 +67,7 @@ sleep (DbusmenuMenuitem * mi, gpointer userdata)
 		g_warning("Can not %s as no DeviceKit Power Proxy", type);
 	}
 
-	lock_screen();
+	lock_screen(NULL, NULL);
 
 	dbus_g_proxy_call_no_reply(dkp_main_proxy,
 	                           type,
@@ -427,7 +309,7 @@ main (int argc, char ** argv)
         return 1;
     }   
 
-	g_idle_add(build_gdm_proxy, NULL);
+	g_idle_add(lock_screen_setup, NULL);
 
     root_menuitem = dbusmenu_menuitem_new();
 	g_debug("Root ID: %d", dbusmenu_menuitem_get_id(root_menuitem));

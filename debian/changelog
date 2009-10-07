@@ -1,3 +1,9 @@
+indicator-session (0.1.6-0ubuntu3~ppa2~betterlock1) UNRELEASED; urgency=low
+
+  * Merging in better locking
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 07 Oct 2009 10:35:15 -0400
+
 indicator-session (0.1.6-0ubuntu3~ppa1) karmic; urgency=low
 
   * Asynchronized the menu handling so that it's in the right

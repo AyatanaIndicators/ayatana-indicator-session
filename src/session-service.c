@@ -55,6 +55,14 @@ static DbusmenuMenuitem * logout_mi = NULL;
 static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
 
+/* A return from the command to sleep the system.  Make sure
+   that we unthrottle the screensaver. */
+static void
+sleep_response (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
+{
+	screensaver_unthrottle();
+	return;
+}
 
 /* Let's put this machine to sleep, with some info on how
    it should sleep.  */
@@ -67,12 +75,15 @@ sleep (DbusmenuMenuitem * mi, gpointer userdata)
 		g_warning("Can not %s as no DeviceKit Power Proxy", type);
 	}
 
+	screensaver_throttle(type);
 	lock_screen(NULL, NULL);
 
-	dbus_g_proxy_call_no_reply(dkp_main_proxy,
-	                           type,
-	                           G_TYPE_INVALID,
-	                           G_TYPE_INVALID);
+	dbus_g_proxy_begin_call(dkp_main_proxy,
+	                        type,
+	                        sleep_response,
+	                        NULL,
+	                        NULL,
+	                        G_TYPE_INVALID);
 
 	return;
 }

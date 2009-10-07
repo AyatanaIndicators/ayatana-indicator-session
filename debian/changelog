@@ -1,3 +1,12 @@
+indicator-session (0.1.6-0ubuntu3~ppa2) UNRELEASED; urgency=low
+
+  * Handling the locking of the screensaver so that we ensure
+    the screensaver is active before suspending.  Also, we
+    throttle it to ensure it doesn't start until after suspend.
+    (LP: #444391)
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 07 Oct 2009 18:21:30 -0400
+
 indicator-session (0.1.6-0ubuntu3~ppa1) karmic; urgency=low
 
   * Asynchronized the menu handling so that it's in the right

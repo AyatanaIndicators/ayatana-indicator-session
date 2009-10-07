@@ -26,6 +26,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 typedef void (*gdm_autologin_cb_t) (void);
 
+void screensaver_throttle (gchar * reason);
+void screensaver_unthrottle (void);
+
 gboolean will_lock_screen (void);
 void lock_screen (DbusmenuMenuitem * mi, gpointer data);
 gboolean lock_screen_setup (gpointer data);

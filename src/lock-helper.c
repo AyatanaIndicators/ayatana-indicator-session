@@ -106,6 +106,7 @@ screensaver_throttle (gchar * reason)
 	cookie_call = dbus_g_proxy_begin_call(gss_proxy, "Throttle",
 	                                      throttle_return, NULL,
 	                                      NULL,
+	                                      G_TYPE_STRING, "Session Menu",
 	                                      G_TYPE_STRING, reason,
 	                                      G_TYPE_INVALID);
 

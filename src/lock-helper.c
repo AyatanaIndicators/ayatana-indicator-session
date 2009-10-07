@@ -2,6 +2,9 @@
 #include <dbus/dbus-glib.h>
 #include "lock-helper.h"
 
+static DBusGProxy * gss_proxy = NULL;
+static GMainLoop * gss_mainloop = NULL;
+
 static DBusGProxy * gdm_settings_proxy = NULL;
 static gboolean gdm_auto_login = FALSE;
 static const gchar * gdm_auto_login_string = "daemon/AutomaticLoginEnable";
@@ -126,6 +129,53 @@ build_gdm_proxy (void)
 	return;
 }
 
+/* When the screensave go active, if we've got a mainloop
+   running we should quit it. */
+static void
+gss_active_changed (DBusGProxy * proxy, gboolean active, gpointer data)
+{
+	if (active && gss_mainloop != NULL) {
+		g_main_loop_quit(gss_mainloop);
+	}
+
+	return;
+}
+
+/* Build the gss proxy and set up it's signals */
+void
+build_gss_proxy (void)
+{
+	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	g_return_if_fail(session_bus != NULL);
+
+	gss_proxy = dbus_g_proxy_new_for_name_owner(session_bus,
+	                                            "org.gnome.ScreenSaver",
+	                                            "/",
+	                                            "org.gnome.ScreenSaver",
+	                                            NULL);
+	g_return_if_fail(gss_proxy != NULL);
+
+	dbus_g_proxy_add_signal(gss_proxy, "ActiveChanged", G_TYPE_BOOLEAN, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(gss_proxy, "ActiveChanged", G_CALLBACK(gss_active_changed), NULL, NULL);
+
+	return;
+}
+
+/* This is a timeout, we only want to wait for the screen to
+   lock for a little bit, but not forever. */
+static gboolean
+activate_timeout (gpointer data)
+{
+	guint * address = (guint *)data;
+	*address = 0;
+
+	if (gss_mainloop != NULL) {
+		g_main_loop_quit(gss_mainloop);
+	}
+	
+	return FALSE;
+}
+
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */
 void
@@ -137,26 +187,30 @@ lock_screen (DbusmenuMenuitem * mi, gpointer data)
 		return;
 	}
 
-	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	g_return_if_fail(session_bus != NULL);
+	g_return_if_fail(gss_proxy != NULL);
 
-	DBusGProxy * proxy = dbus_g_proxy_new_for_name_owner(session_bus,
-	                                                     "org.gnome.ScreenSaver",
-	                                                     "/",
-	                                                     "org.gnome.ScreenSaver",
-	                                                     NULL);
-	g_return_if_fail(proxy != NULL);
-
-	dbus_g_proxy_call_no_reply(proxy,
+	dbus_g_proxy_call_no_reply(gss_proxy,
 	                           "Lock",
 	                           G_TYPE_INVALID,
 	                           G_TYPE_INVALID);
 
-	g_object_unref(proxy);
+	if (gss_mainloop == NULL) {
+		gss_mainloop = g_main_loop_new(NULL, FALSE);
+	}
+
+	guint timer = g_timeout_add_seconds(1, activate_timeout, &timer);
+
+	g_main_loop_run(gss_mainloop);
+
+	if (timer != 0) {
+		g_source_remove(timer);
+	}
 
 	return;
 }
 
+/* Do what it takes to make the lock screen function work
+   and be happy. */
 gboolean
 lock_screen_setup (gpointer data)
 {
@@ -165,6 +219,7 @@ lock_screen_setup (gpointer data)
 	}
 
 	build_gdm_proxy();
+	build_gss_proxy();
 
 	return FALSE;
 }

@@ -1,8 +1,8 @@
-indicator-session (0.1.6-0ubuntu3~ppa2~betterlock3) UNRELEASED; urgency=low
+indicator-session (0.1.6-0ubuntu3~ppa2~betterlock3) karmic; urgency=low
 
   * Right API
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 07 Oct 2009 13:11:07 -0400
+ -- Ted Gould <ted@ubuntu.com>  Wed, 07 Oct 2009 13:14:11 -0400
 
 indicator-session (0.1.6-0ubuntu3~ppa2~betterlock2) karmic; urgency=low
 

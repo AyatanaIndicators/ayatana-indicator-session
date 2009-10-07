@@ -59,13 +59,12 @@ static DbusmenuMenuitem  *lock_menuitem = NULL;
 static gint   count;
 static GList *users;
 
-#if 0
 /* Respond to the signal of autologin changing to see if the
    setting for timed login changes. */
 static void
-gdm_settings_change (gboolean autologin)
+gdm_settings_change (void)
 {
-	if (autologin) {
+	if (!will_lock_screen()) {
 		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
 	} else {
 		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "true");
@@ -73,7 +72,6 @@ gdm_settings_change (gboolean autologin)
 
 	return;
 }
-#endif
 
 static gboolean
 check_guest_session (void)
@@ -299,6 +297,7 @@ main (int argc, char ** argv)
     }
 
 	g_idle_add(lock_screen_setup, NULL);
+	lock_screen_gdm_cb_set(gdm_settings_change);
 
     dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
 

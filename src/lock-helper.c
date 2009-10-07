@@ -10,6 +10,18 @@ static gboolean is_guest = FALSE;
 
 static gdm_autologin_cb_t gdm_autologin_cb = NULL;
 
+/* Setting up a call back */
+void
+lock_screen_gdm_cb_set (gdm_autologin_cb_t cb)
+{
+	if (gdm_autologin_cb) {
+		g_warning("Already had a callback, setting up a new one...");
+	}
+
+	gdm_autologin_cb = cb;
+	return;
+}
+
 /* This is our logic on whether the screen should be locked
    or not.  It effects everything else. */
 gboolean

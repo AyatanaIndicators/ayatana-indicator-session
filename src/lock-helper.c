@@ -1,9 +1,31 @@
+/*
+A small helper for locking the screen.
+
+Copyright 2009 Canonical Ltd.
+
+Authors:
+    Ted Gould <ted@canonical.com>
+
+This program is free software: you can redistribute it and/or modify it 
+under the terms of the GNU General Public License version 3, as published 
+by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but 
+WITHOUT ANY WARRANTY; without even the implied warranties of 
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along 
+with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <dbus/dbus-glib.h>
 #include "lock-helper.h"
 
 static DBusGProxy * gss_proxy = NULL;
 static GMainLoop * gss_mainloop = NULL;
+static guint cookie = 0;
+static DBusGProxyCall * cookie_call = NULL;
 
 static DBusGProxy * gdm_settings_proxy = NULL;
 static gboolean gdm_auto_login = FALSE;
@@ -12,6 +34,83 @@ static const gchar * gdm_auto_login_string = "daemon/AutomaticLoginEnable";
 static gboolean is_guest = FALSE;
 
 static gdm_autologin_cb_t gdm_autologin_cb = NULL;
+
+/* Checks to see if there is an error and reports
+   it.  Not much else we can do. */
+static void
+unthrottle_return (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
+{
+	GError * error = NULL;
+	dbus_g_proxy_end_call(proxy, call, &error,
+	                      G_TYPE_INVALID);
+
+	if (error != NULL) {
+		g_warning("Unable to unthrottle: %s", error->message);
+	}
+	return;
+}
+
+/* Sends an unthrottle if we're throttled. */
+void
+screensaver_unthrottle (void)
+{
+	g_return_if_fail(cookie != 0);
+
+	dbus_g_proxy_begin_call(gss_proxy, "UnThrottle",
+	                        unthrottle_return, NULL,
+	                        NULL,
+	                        G_TYPE_UINT, cookie,
+	                        G_TYPE_INVALID);
+
+	cookie = 0;
+	return;
+}
+
+/* Gets there return cookie from the throttle command
+   and sets things valid */
+static void
+throttle_return (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
+{
+	GError * error = NULL;
+	cookie_call = NULL;
+
+	dbus_g_proxy_end_call(proxy, call, &error,
+	                      G_TYPE_UINT, &cookie,
+	                      G_TYPE_INVALID);
+
+	if (error != NULL) {
+		g_warning("Unable to throttle the screensaver: %s", error->message);
+		return;
+	}
+
+
+	if (cookie == 0) {
+		g_warning("We didn't get a throttle cookie!");
+	}
+
+	return;
+}
+
+/* Throttling the screensaver by using the screen saver
+   command. */
+void
+screensaver_throttle (gchar * reason)
+{
+	g_return_if_fail(cookie_call == NULL);
+	g_return_if_fail(will_lock_screen());
+
+	if (cookie != 0) {
+		screensaver_unthrottle();
+	}
+
+	cookie_call = dbus_g_proxy_begin_call(gss_proxy, "Throttle",
+	                                      throttle_return, NULL,
+	                                      NULL,
+	                                      G_TYPE_STRING, reason,
+	                                      G_TYPE_INVALID);
+
+	return;
+}
 
 /* Setting up a call back */
 void

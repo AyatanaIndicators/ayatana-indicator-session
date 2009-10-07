@@ -1,3 +1,9 @@
+indicator-session (0.1.6-0ubuntu3~ppa2~betterlock2) karmic; urgency=low
+
+  * Throttling
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 07 Oct 2009 12:59:43 -0400
+
 indicator-session (0.1.6-0ubuntu3~ppa2~betterlock1) karmic; urgency=low
 
   * Merging in better locking

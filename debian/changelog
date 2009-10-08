@@ -1,3 +1,9 @@
+indicator-session (0.1.7-0ubuntu1~ppa2~mc5fix5) UNRELEASED; urgency=low
+
+  * Signaling when we destory the item
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 08 Oct 2009 15:47:26 -0400
+
 indicator-session (0.1.7-0ubuntu1~ppa2~mc5fix4) karmic; urgency=low
 
   * DBus NULL sucks!

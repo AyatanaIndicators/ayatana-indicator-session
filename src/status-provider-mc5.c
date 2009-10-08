@@ -212,6 +212,9 @@ dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, con
 			g_object_unref(priv->manager);
 			priv->manager = NULL;
 		}
+
+		priv->status = STATUS_PROVIDER_STATUS_DISCONNECTED;
+		g_signal_emit(G_OBJECT(self), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, priv->status, TRUE);
 	}
 
 	return;

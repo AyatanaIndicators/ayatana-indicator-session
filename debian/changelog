@@ -1,4 +1,4 @@
-indicator-session (0.1.7-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (0.1.7-0ubuntu1) karmic; urgency=low
 
   * Upstream release 0.1.7
     * Changing the icon so that if you are disconnected it is

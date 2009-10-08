@@ -199,11 +199,11 @@ status_provider_mc5_finalize (GObject *object)
 static void
 dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self)
 {
-	if (new != NULL && g_strcmp0(name, MC5_WELL_KNOWN_NAME) == 0) {
+	if (new != NULL && g_strcmp0(new, MC5_WELL_KNOWN_NAME) == 0) {
 		g_debug("MC5 Coming online");
 		build_eam(self);
 	}
-	if (prev != NULL && g_strcmp0(name, MC5_WELL_KNOWN_NAME) == 0) {
+	if (prev != NULL && g_strcmp0(prev, MC5_WELL_KNOWN_NAME) == 0) {
 		g_debug("MC5 going offline");
 		StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(self);
 		if (priv->manager != NULL) {

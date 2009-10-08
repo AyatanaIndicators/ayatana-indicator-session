@@ -31,8 +31,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 G_BEGIN_DECLS
 
 #define STATUS_PROVIDER_MC5_TYPE            (status_provider_mc5_get_type ())
-#define STATUS_PROVIDER_MC5(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), STATUS_PROVIDER_MC5_TYPE, StatusProviderTelepathy))
-#define STATUS_PROVIDER_MC5_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), STATUS_PROVIDER_MC5_TYPE, StatusProviderTelepathyClass))
+#define STATUS_PROVIDER_MC5(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), STATUS_PROVIDER_MC5_TYPE, StatusProviderMC5))
+#define STATUS_PROVIDER_MC5_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), STATUS_PROVIDER_MC5_TYPE, StatusProviderMC5Class))
 #define IS_STATUS_PROVIDER_MC5(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), STATUS_PROVIDER_MC5_TYPE))
 #define IS_STATUS_PROVIDER_MC5_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), STATUS_PROVIDER_MC5_TYPE))
 #define STATUS_PROVIDER_MC5_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), STATUS_PROVIDER_MC5_TYPE, StatusProviderMC5Class))

@@ -1,29 +1,21 @@
-indicator-session (0.1.6-0ubuntu3~ppa3) karmic; urgency=low
+indicator-session (0.1.7-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Changing the icon so that if you are disconnected it is
-    'system-shutdown-panel' and making sure that we see it
-    sometimes by not allocating the EmpathyAccountManager isn't
-    allocated until status is set. (LP: #432635)
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 08 Oct 2009 11:00:32 -0400
-
-indicator-session (0.1.6-0ubuntu3~ppa2) karmic; urgency=low
-
-  * Handling the locking of the screensaver so that we ensure
-    the screensaver is active before suspending.  Also, we
-    throttle it to ensure it doesn't start until after suspend.
-    (LP: #444391)
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 07 Oct 2009 18:25:00 -0400
-
-indicator-session (0.1.6-0ubuntu3~ppa1) karmic; urgency=low
-
-  * Asynchronized the menu handling so that it's in the right
-    order with async startup.
-  * String change, "New Session" to "Switch User" (LP: #444494) 
+  * Upstream release 0.1.7
+    * Changing the icon so that if you are disconnected it is
+      'system-shutdown-panel' and making sure that we see it
+      sometimes by not allocating the EmpathyAccountManager isn't
+      allocated until status is set. (LP: #432635)
+      * Also fixes by happenstance: (LP: #444170 and LP: #437065)
+    * Handling the locking of the screensaver so that we ensure
+      the screensaver is active before suspending.  Also, we
+      throttle it to ensure it doesn't start until after suspend.
+      (LP: #444391)
+    * Asynchronized the menu handling so that it's in the right
+      order with async startup. (LP: #440484)
+    * String change, "New Session" to "Switch User" (LP: #444494) 
   * Removed debian/patches/switch_user_lp-444494.patch
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 06 Oct 2009 18:14:16 -0400
+ -- Ted Gould <ted@ubuntu.com>  Thu, 08 Oct 2009 11:00:47 -0400
 
 indicator-session (0.1.6-0ubuntu2) UNRELEASED; urgency=low
 

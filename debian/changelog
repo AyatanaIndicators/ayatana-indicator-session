@@ -1,11 +1,11 @@
-indicator-session (0.1.6-0ubuntu3~ppa3) UNRELEASED; urgency=low
+indicator-session (0.1.6-0ubuntu3~ppa3) karmic; urgency=low
 
   * Changing the icon so that if you are disconnected it is
     'system-shutdown-panel' and making sure that we see it
     sometimes by not allocating the EmpathyAccountManager isn't
     allocated until status is set. (LP: #432635)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 08 Oct 2009 10:53:40 -0400
+ -- Ted Gould <ted@ubuntu.com>  Thu, 08 Oct 2009 11:00:32 -0400
 
 indicator-session (0.1.6-0ubuntu3~ppa2) karmic; urgency=low
 

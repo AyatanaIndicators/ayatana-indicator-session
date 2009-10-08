@@ -199,6 +199,8 @@ status_provider_mc5_finalize (GObject *object)
 static void
 dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self)
 {
+	g_debug("DBUS NAMECHANGE: %s %s %s", name, prev, new);
+
 	if (new != NULL && g_strcmp0(new, MC5_WELL_KNOWN_NAME) == 0) {
 		g_debug("MC5 Coming online");
 		build_eam(self);

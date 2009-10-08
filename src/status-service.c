@@ -68,7 +68,7 @@ static const gchar * status_icons[STATUS_PROVIDER_STATUS_LAST] = {
   /* STATUS_PROVIDER_STATUS_DND, */        "user-busy",
   /* STATUS_PROVIDER_STATUS_INVISIBLE, */  "user-invisible",
   /* STATUS_PROVIDER_STATUS_OFFLINE */     "user-offline",
-  /* STATUS_PROVIDER_STATUS_DISCONNECTED */"user-offline"
+  /* STATUS_PROVIDER_STATUS_DISCONNECTED */"system-shutdown-panel"
 };
 
 

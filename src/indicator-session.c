@@ -76,17 +76,59 @@ get_label (void)
 GtkImage *
 get_icon (void)
 {
-	g_debug("Changing status icon: '%s'", "user-offline");
-	status_image = GTK_IMAGE(gtk_image_new_from_icon_name("user-offline", GTK_ICON_SIZE_MENU));
+	g_debug("Changing status icon: '%s'", "system-shutdown-panel");
+	status_image = GTK_IMAGE(gtk_image_new_from_icon_name("system-shutdown-panel", GTK_ICON_SIZE_MENU));
 	gtk_widget_show(GTK_WIDGET(status_image));
 	return status_image;
 }
 
 typedef struct _realized_data_t realized_data_t;
 struct _realized_data_t {
-	guint position;
 	section_t section;
 };
+
+static void 
+resort_menu (void)
+{
+	guint location = 0;
+	guint clientnum;
+
+	for (clientnum = 0; clientnum < 3; clientnum++) {
+		DbusmenuGtkClient * client = NULL;
+		if (clientnum == 0) client = status_client;
+		if (clientnum == 1) client = users_client;
+		if (clientnum == 2) client = session_client;
+
+		if (client == NULL) continue;
+
+		DbusmenuMenuitem * root = dbusmenu_client_get_root(DBUSMENU_CLIENT(client));
+
+		GList * children = dbusmenu_menuitem_get_children(root);
+		if (children == NULL) {
+			continue;
+		}
+
+		GList * child;
+		for (child = children; child != NULL; child = g_list_next(child)) {
+			GtkMenuItem * widget = dbusmenu_gtkclient_menuitem_get(client, DBUSMENU_MENUITEM(child->data));
+			if (widget != NULL) {
+				gtk_menu_reorder_child(main_menu, GTK_WIDGET(widget), location);
+				location++;
+			}
+		}
+
+		if (clientnum == 0) {
+			gtk_menu_reorder_child(main_menu, status_separator, location);
+			location++;
+		}
+		if (clientnum == 1) {
+			gtk_menu_reorder_child(main_menu, users_separator, location);
+			location++;
+		}
+	}
+
+	return;
+}
 
 static void
 child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, gpointer section)
@@ -97,7 +139,6 @@ child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position
 		return;
 	}
 
-	data->position = position;
 	data->section = GPOINTER_TO_UINT(section);
 
 	g_signal_connect(G_OBJECT(child), DBUSMENU_MENUITEM_SIGNAL_REALIZED, G_CALLBACK(child_realized), data);
@@ -111,7 +152,6 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 	g_return_if_fail(DBUSMENU_IS_MENUITEM(child));
 
 	realized_data_t * data = (realized_data_t *)userdata;	
-	guint position = data->position;
 	section_t section = data->section;
 	g_free(data);
 
@@ -145,8 +185,6 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 		return;
 	}
 
-	position += posfunc();
-	g_debug("SUS: Adding child: %d", position);
 	GtkMenuItem * widget = dbusmenu_gtkclient_menuitem_get(client, child);
 
 	if (widget == NULL) {
@@ -154,8 +192,10 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 		return;
 	}
 
-	gtk_menu_insert(main_menu, GTK_WIDGET(widget), position);
+	gtk_menu_append(main_menu, GTK_WIDGET(widget));
 	gtk_widget_show(GTK_WIDGET(widget));
+
+	resort_menu();
 
 	gtk_widget_hide(loading_item);
 

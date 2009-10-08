@@ -104,6 +104,23 @@ status_provider_mc5_class_init (StatusProviderMC5Class *klass)
 	return;
 }
 
+/* Build our empathy account manager instance if we don't
+   have one. */
+static void
+build_eam (StatusProviderMC5 * self)
+{
+	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(self);
+
+	if (priv->manager != NULL) {
+		return;
+	}
+
+	priv->manager = EMPATHY_ACCOUNT_MANAGER(g_object_new(EMPATHY_TYPE_ACCOUNT_MANAGER, NULL));
+	g_signal_connect(G_OBJECT(priv->manager), "global-presence-changed", G_CALLBACK(presence_changed), self);
+
+	return;
+}
+
 /* Creating an instance of the status provider.  We set the variables
    and create an EmpathyAccountManager object.  It does all the hard
    work in this module of tracking MissionControl and enumerating the
@@ -115,8 +132,6 @@ status_provider_mc5_init (StatusProviderMC5 *self)
 
 	priv->status = STATUS_PROVIDER_STATUS_DISCONNECTED;
 	priv->manager = NULL;
-
-	g_signal_connect(G_OBJECT(priv->manager), "global-presence-changed", G_CALLBACK(presence_changed), self);
 
 	return;
 }
@@ -168,9 +183,8 @@ static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {
 	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(sp);
-	if (priv->manager == NULL) {
-		priv->manager = EMPATHY_ACCOUNT_MANAGER(g_object_new(EMPATHY_TYPE_ACCOUNT_MANAGER, NULL));
-	}
+
+	build_eam(STATUS_PROVIDER_MC5(sp));
 
 	empathy_account_manager_request_global_presence(priv->manager, sp_to_tp_map[status], sp_to_mc_map[status], "");
 

@@ -31,6 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "status-provider-mc5-marshal.h"
 
 #include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
 
 static gchar * sp_to_mc_map[STATUS_PROVIDER_STATUS_LAST] = {
 	/* STATUS_PROVIDER_STATUS_ONLINE,  */  "available",
@@ -71,6 +72,7 @@ struct _StatusProviderMC5Private {
 
 #define STATUS_PROVIDER_MC5_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), STATUS_PROVIDER_MC5_TYPE, StatusProviderMC5Private))
+#define MC5_WELL_KNOWN_NAME  "org.freedesktop.Telepathy.MissionControl5"
 
 /* Prototypes */
 /* GObject stuff */
@@ -83,6 +85,7 @@ static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
 static void presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp);
 static void dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self);
+static void mc5_exists_cb (DBusGProxy * proxy, gboolean exists, GError * error, gpointer userdata);
 
 G_DEFINE_TYPE (StatusProviderMC5, status_provider_mc5, STATUS_PROVIDER_TYPE);
 
@@ -161,6 +164,8 @@ status_provider_mc5_init (StatusProviderMC5 *self)
 	                        G_CALLBACK(dbus_namechange),
 	                        self, NULL);
 
+	org_freedesktop_DBus_name_has_owner_async(priv->dbus_proxy, MC5_WELL_KNOWN_NAME, mc5_exists_cb, self);
+
 	return;
 }
 
@@ -194,7 +199,6 @@ status_provider_mc5_finalize (GObject *object)
 	return;
 }
 
-#define MC5_WELL_KNOWN_NAME  "org.freedesktop.Telepathy.MissionControl5"
 /* Watch for MC5 Coming on and off the bus. */
 static void
 dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self)
@@ -215,6 +219,24 @@ dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, con
 
 		priv->status = STATUS_PROVIDER_STATUS_DISCONNECTED;
 		g_signal_emit(G_OBJECT(self), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, priv->status, TRUE);
+	}
+
+	return;
+}
+
+/* Callback for the Dbus command to do HasOwner on
+   the MC5 service.  If it exists, we want to have an
+   account manager. */
+static void
+mc5_exists_cb (DBusGProxy * proxy, gboolean exists, GError * error, gpointer userdata)
+{
+	if (error) {
+		g_warning("Unable to check if MC5 is running: %s", error->message);
+		return;
+	}
+
+	if (exists) {
+		build_eam(STATUS_PROVIDER_MC5(userdata));
 	}
 
 	return;

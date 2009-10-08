@@ -66,6 +66,7 @@ typedef struct _StatusProviderMC5Private StatusProviderMC5Private;
 struct _StatusProviderMC5Private {
 	EmpathyAccountManager * manager;
 	StatusProviderStatus status;
+	DBusGProxy * dbus_proxy;
 };
 
 #define STATUS_PROVIDER_MC5_GET_PRIVATE(o) \
@@ -81,6 +82,7 @@ static void status_provider_mc5_finalize   (GObject *object);
 static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
 static void presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp);
+static void dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self);
 
 G_DEFINE_TYPE (StatusProviderMC5, status_provider_mc5, STATUS_PROVIDER_TYPE);
 
@@ -133,6 +135,32 @@ status_provider_mc5_init (StatusProviderMC5 *self)
 	priv->status = STATUS_PROVIDER_STATUS_DISCONNECTED;
 	priv->manager = NULL;
 
+	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	g_return_if_fail(bus != NULL); /* Can't do anymore DBus stuff without this,
+	                                  all non-DBus stuff should be done */
+
+	GError * error = NULL;
+
+	/* Set up the dbus Proxy */
+	priv->dbus_proxy = dbus_g_proxy_new_for_name_owner (bus,
+	                                                    DBUS_SERVICE_DBUS,
+	                                                    DBUS_PATH_DBUS,
+	                                                    DBUS_INTERFACE_DBUS,
+	                                                    &error);
+	if (error != NULL) {
+		g_warning("Unable to connect to DBus events: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* Configure the name owner changing */
+	dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+							G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_CALLBACK(dbus_namechange),
+	                        self, NULL);
+
 	return;
 }
 
@@ -148,6 +176,11 @@ status_provider_mc5_dispose (GObject *object)
 		priv->manager = NULL;
 	}
 
+	if (priv->dbus_proxy != NULL) {
+		g_object_unref(priv->dbus_proxy);
+		priv->dbus_proxy = NULL;
+	}
+
 	G_OBJECT_CLASS (status_provider_mc5_parent_class)->dispose (object);
 	return;
 }
@@ -158,6 +191,27 @@ status_provider_mc5_finalize (GObject *object)
 {
 
 	G_OBJECT_CLASS (status_provider_mc5_parent_class)->finalize (object);
+	return;
+}
+
+#define MC5_WELL_KNOWN_NAME  "org.freedesktop.Telepathy.MissionControl5"
+/* Watch for MC5 Coming on and off the bus. */
+static void
+dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self)
+{
+	if (new != NULL && g_strcmp0(name, MC5_WELL_KNOWN_NAME) == 0) {
+		g_debug("MC5 Coming online");
+		build_eam(self);
+	}
+	if (prev != NULL && g_strcmp0(name, MC5_WELL_KNOWN_NAME) == 0) {
+		g_debug("MC5 going offline");
+		StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(self);
+		if (priv->manager != NULL) {
+			g_object_unref(priv->manager);
+			priv->manager = NULL;
+		}
+	}
+
 	return;
 }
 

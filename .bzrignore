@@ -47,3 +47,10 @@ src/status-provider-telepathy-marshal.h
 src/status-provider-mc5-marshal.c
 src/status-provider-mc5-marshal.h
 data/indicator-session.schemas
+src/users-service-client.h
+src/users-service-marshal.c
+src/users-service-marshal.h
+indicator-session-[0-9].[0-9].[0-9].tar.gz
+indicator-session-[0-9].[0-9].tar.gz
+indicator-session-[0-9].[0-9].[0-9].tar.gz.asc
+indicator-session-[0-9].[0-9].tar.gz.asc

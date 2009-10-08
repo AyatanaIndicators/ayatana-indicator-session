@@ -113,8 +113,8 @@ status_provider_mc5_init (StatusProviderMC5 *self)
 {
 	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(self);
 
-	priv->status = STATUS_PROVIDER_STATUS_OFFLINE;
-	priv->manager = EMPATHY_ACCOUNT_MANAGER(g_object_new(EMPATHY_TYPE_ACCOUNT_MANAGER, NULL));
+	priv->status = STATUS_PROVIDER_STATUS_DISCONNECTED;
+	priv->manager = NULL;
 
 	g_signal_connect(G_OBJECT(priv->manager), "global-presence-changed", G_CALLBACK(presence_changed), self);
 
@@ -169,8 +169,7 @@ set_status (StatusProvider * sp, StatusProviderStatus status)
 {
 	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(sp);
 	if (priv->manager == NULL) {
-		priv->status = STATUS_PROVIDER_STATUS_DISCONNECTED;
-		return;
+		priv->manager = EMPATHY_ACCOUNT_MANAGER(g_object_new(EMPATHY_TYPE_ACCOUNT_MANAGER, NULL));
 	}
 
 	empathy_account_manager_request_global_presence(priv->manager, sp_to_tp_map[status], sp_to_mc_map[status], "");

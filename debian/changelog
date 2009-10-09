@@ -1,9 +1,9 @@
-indicator-session (0.1.7-0ubuntu2) UNRELEASED; urgency=low
+indicator-session (0.1.7-0ubuntu2) karmic; urgency=low
 
   * debian/patches/mc5-fixes.patch (LP: #427643)
     - Fix presence in mc5
 
- -- Ken VanDine <ken.vandine@canonical.com>  Thu, 08 Oct 2009 21:10:56 -0400
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 09 Oct 2009 08:20:46 +0200
 
 indicator-session (0.1.7-0ubuntu1) karmic; urgency=low
 

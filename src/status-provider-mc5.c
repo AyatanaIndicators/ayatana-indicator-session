@@ -31,6 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "status-provider-mc5-marshal.h"
 
 #include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
 
 static gchar * sp_to_mc_map[STATUS_PROVIDER_STATUS_LAST] = {
 	/* STATUS_PROVIDER_STATUS_ONLINE,  */  "available",
@@ -66,10 +67,12 @@ typedef struct _StatusProviderMC5Private StatusProviderMC5Private;
 struct _StatusProviderMC5Private {
 	EmpathyAccountManager * manager;
 	StatusProviderStatus status;
+	DBusGProxy * dbus_proxy;
 };
 
 #define STATUS_PROVIDER_MC5_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), STATUS_PROVIDER_MC5_TYPE, StatusProviderMC5Private))
+#define MC5_WELL_KNOWN_NAME  "org.freedesktop.Telepathy.MissionControl5"
 
 /* Prototypes */
 /* GObject stuff */
@@ -81,6 +84,8 @@ static void status_provider_mc5_finalize   (GObject *object);
 static void set_status (StatusProvider * sp, StatusProviderStatus status);
 static StatusProviderStatus get_status (StatusProvider * sp);
 static void presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp);
+static void dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self);
+static void mc5_exists_cb (DBusGProxy * proxy, gboolean exists, GError * error, gpointer userdata);
 
 G_DEFINE_TYPE (StatusProviderMC5, status_provider_mc5, STATUS_PROVIDER_TYPE);
 
@@ -104,6 +109,23 @@ status_provider_mc5_class_init (StatusProviderMC5Class *klass)
 	return;
 }
 
+/* Build our empathy account manager instance if we don't
+   have one. */
+static void
+build_eam (StatusProviderMC5 * self)
+{
+	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(self);
+
+	if (priv->manager != NULL) {
+		return;
+	}
+
+	priv->manager = EMPATHY_ACCOUNT_MANAGER(g_object_new(EMPATHY_TYPE_ACCOUNT_MANAGER, NULL));
+	g_signal_connect(G_OBJECT(priv->manager), "global-presence-changed", G_CALLBACK(presence_changed), self);
+
+	return;
+}
+
 /* Creating an instance of the status provider.  We set the variables
    and create an EmpathyAccountManager object.  It does all the hard
    work in this module of tracking MissionControl and enumerating the
@@ -116,7 +138,33 @@ status_provider_mc5_init (StatusProviderMC5 *self)
 	priv->status = STATUS_PROVIDER_STATUS_DISCONNECTED;
 	priv->manager = NULL;
 
-	g_signal_connect(G_OBJECT(priv->manager), "global-presence-changed", G_CALLBACK(presence_changed), self);
+	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	g_return_if_fail(bus != NULL); /* Can't do anymore DBus stuff without this,
+	                                  all non-DBus stuff should be done */
+
+	GError * error = NULL;
+
+	/* Set up the dbus Proxy */
+	priv->dbus_proxy = dbus_g_proxy_new_for_name_owner (bus,
+	                                                    DBUS_SERVICE_DBUS,
+	                                                    DBUS_PATH_DBUS,
+	                                                    DBUS_INTERFACE_DBUS,
+	                                                    &error);
+	if (error != NULL) {
+		g_warning("Unable to connect to DBus events: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	/* Configure the name owner changing */
+	dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+							G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
+	                        G_CALLBACK(dbus_namechange),
+	                        self, NULL);
+
+	org_freedesktop_DBus_name_has_owner_async(priv->dbus_proxy, MC5_WELL_KNOWN_NAME, mc5_exists_cb, self);
 
 	return;
 }
@@ -133,6 +181,11 @@ status_provider_mc5_dispose (GObject *object)
 		priv->manager = NULL;
 	}
 
+	if (priv->dbus_proxy != NULL) {
+		g_object_unref(priv->dbus_proxy);
+		priv->dbus_proxy = NULL;
+	}
+
 	G_OBJECT_CLASS (status_provider_mc5_parent_class)->dispose (object);
 	return;
 }
@@ -143,6 +196,49 @@ status_provider_mc5_finalize (GObject *object)
 {
 
 	G_OBJECT_CLASS (status_provider_mc5_parent_class)->finalize (object);
+	return;
+}
+
+/* Watch for MC5 Coming on and off the bus. */
+static void
+dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self)
+{
+	/* g_debug("DBUS NAMECHANGE: %s %s %s", name, prev, new); */
+
+	if (prev[0] == '\0' && g_strcmp0(name, MC5_WELL_KNOWN_NAME) == 0) {
+		g_debug("MC5 Coming online");
+		build_eam(self);
+	}
+	if (new[0] == '\0' && g_strcmp0(name, MC5_WELL_KNOWN_NAME) == 0) {
+		g_debug("MC5 going offline");
+		StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(self);
+		if (priv->manager != NULL) {
+			g_object_unref(priv->manager);
+			priv->manager = NULL;
+		}
+
+		priv->status = STATUS_PROVIDER_STATUS_DISCONNECTED;
+		g_signal_emit(G_OBJECT(self), STATUS_PROVIDER_SIGNAL_STATUS_CHANGED_ID, 0, priv->status, TRUE);
+	}
+
+	return;
+}
+
+/* Callback for the Dbus command to do HasOwner on
+   the MC5 service.  If it exists, we want to have an
+   account manager. */
+static void
+mc5_exists_cb (DBusGProxy * proxy, gboolean exists, GError * error, gpointer userdata)
+{
+	if (error) {
+		g_warning("Unable to check if MC5 is running: %s", error->message);
+		return;
+	}
+
+	if (exists) {
+		build_eam(STATUS_PROVIDER_MC5(userdata));
+	}
+
 	return;
 }
 
@@ -168,9 +264,8 @@ static void
 set_status (StatusProvider * sp, StatusProviderStatus status)
 {
 	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(sp);
-	if (priv->manager == NULL) {
-		priv->manager = EMPATHY_ACCOUNT_MANAGER(g_object_new(EMPATHY_TYPE_ACCOUNT_MANAGER, NULL));
-	}
+
+	build_eam(STATUS_PROVIDER_MC5(sp));
 
 	empathy_account_manager_request_global_presence(priv->manager, sp_to_tp_map[status], sp_to_mc_map[status], "");
 

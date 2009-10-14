@@ -1,3 +1,11 @@
+indicator-session (0.1.7-0ubuntu3) karmic; urgency=low
+
+  * debian/patches/01_locking_on_autologin.patch:
+    - don't stop users to lock their screen on autologin configs, 
+      thank David Barth (lp: #438936)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 14 Oct 2009 19:16:24 +0200
+
 indicator-session (0.1.7-0ubuntu2) karmic; urgency=low
 
   * debian/patches/mc5-fixes.patch (LP: #427643)

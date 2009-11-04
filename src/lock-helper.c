@@ -130,9 +130,11 @@ lock_screen_gdm_cb_set (gdm_autologin_cb_t cb)
 gboolean
 will_lock_screen (void)
 {
+/*
 	if (gdm_auto_login) {
 		return FALSE;
 	}
+*/
 	if (is_guest) {
 		return FALSE;
 	}

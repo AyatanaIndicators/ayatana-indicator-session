@@ -1,3 +1,9 @@
+indicator-session (0.2.0~dev-0ubuntu1~ppa1~update1) UNRELEASED; urgency=low
+
+  * Updating to the libindicate 0.3.0 API
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 04 Nov 2009 16:35:55 -0600
+
 indicator-session (0.1.7-0ubuntu3~ppa1) karmic; urgency=low
 
   * Listen on DBus for MissionControl coming on and off the bus

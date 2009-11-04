@@ -1,6 +1,7 @@
 indicator-session (0.2.0~dev-0ubuntu1~ppa1~update1) UNRELEASED; urgency=low
 
   * Updating to the libindicate 0.3.0 API
+  * debian/control: Upping the libindicator-dev version to >= 0.3.0~dev
 
  -- Ted Gould <ted@ubuntu.com>  Wed, 04 Nov 2009 16:35:55 -0600
 

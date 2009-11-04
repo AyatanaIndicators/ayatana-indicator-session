@@ -1,9 +1,11 @@
-indicator-session (0.2.0~dev-0ubuntu1~ppa1~update1) UNRELEASED; urgency=low
+indicator-session (0.2.0~dev-0ubuntu1~ppa1~update1) karmic; urgency=low
 
   * Updating to the libindicate 0.3.0 API
   * debian/control: Upping the libindicator-dev version to >= 0.3.0~dev
+  * debian/patches/01_locking_on_autologin.patch as it doesn't
+    apply.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 04 Nov 2009 16:35:55 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 04 Nov 2009 16:39:24 -0600
 
 indicator-session (0.1.7-0ubuntu3~ppa1) karmic; urgency=low
 

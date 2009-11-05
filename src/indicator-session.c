@@ -20,7 +20,8 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+#include <glib.h>
+#include <glib-object.h>
 #include <gtk/gtk.h>
 #include <libdbusmenu-gtk/client.h>
 
@@ -28,12 +29,36 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbus/dbus-glib-bindings.h>
 
 #include <libindicator/indicator.h>
-INDICATOR_SET_VERSION
-INDICATOR_SET_NAME("users-status-session")
+#include <libindicator/indicator-object.h>
 
 #include "dbus-shared-names.h"
 #include "status-service-client.h"
 
+#define INDICATOR_SESSION_TYPE            (indicator_session_get_type ())
+#define INDICATOR_SESSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_SESSION_TYPE, IndicatorSession))
+#define INDICATOR_SESSION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), INDICATOR_SESSION_TYPE, IndicatorSessionClass))
+#define IS_INDICATOR_SESSION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), INDICATOR_SESSION_TYPE))
+#define IS_INDICATOR_SESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), INDICATOR_SESSION_TYPE))
+#define INDICATOR_SESSION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), INDICATOR_SESSION_TYPE, IndicatorSessionClass))
+
+typedef struct _IndicatorSession      IndicatorSession;
+typedef struct _IndicatorSessionClass IndicatorSessionClass;
+
+struct _IndicatorSessionClass {
+	IndicatorObjectClass parent_class;
+};
+
+struct _IndicatorSession {
+	IndicatorObject parent;
+};
+
+GType indicator_session_get_type (void);
+
+/* Indicator stuff */
+INDICATOR_SET_VERSION
+INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
+
+/* Globals */
 static DbusmenuGtkClient * status_client = NULL;
 static DbusmenuGtkClient * users_client = NULL;
 static DbusmenuGtkClient * session_client = NULL;
@@ -57,6 +82,7 @@ typedef enum {
 	END_OF_SECTIONS
 } section_t;
 
+/* Prototypes */
 static void child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, gpointer section);
 static guint status_menu_pos_offset (void);
 static guint users_menu_pos_offset (void);
@@ -64,17 +90,66 @@ static guint session_menu_pos_offset (void);
 static void child_realized (DbusmenuMenuitem * child, gpointer userdata);
 static gboolean start_service (gpointer userdata);
 static void start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer data);
+static GtkLabel * get_label (IndicatorObject * io);
+static GtkImage * get_icon (IndicatorObject * io);
+static GtkMenu * get_menu (IndicatorObject * io);
 
-GtkLabel *
-get_label (void)
+static void indicator_session_class_init (IndicatorSessionClass *klass);
+static void indicator_session_init       (IndicatorSession *self);
+static void indicator_session_dispose    (GObject *object);
+static void indicator_session_finalize   (GObject *object);
+
+G_DEFINE_TYPE (IndicatorSession, indicator_session, INDICATOR_OBJECT_TYPE);
+
+static void
+indicator_session_class_init (IndicatorSessionClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+	object_class->dispose = indicator_session_dispose;
+	object_class->finalize = indicator_session_finalize;
+
+	IndicatorObjectClass * io_class = INDICATOR_OBJECT_CLASS(klass);
+	io_class->get_label = get_label;
+	io_class->get_image = get_icon;
+	io_class->get_menu = get_menu;
+
+	return;
+}
+
+static void
+indicator_session_init (IndicatorSession *self)
+{
+
+	return;
+}
+
+static void
+indicator_session_dispose (GObject *object)
+{
+
+	G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);
+	return;
+}
+
+static void
+indicator_session_finalize (GObject *object)
+{
+
+	G_OBJECT_CLASS (indicator_session_parent_class)->finalize (object);
+	return;
+}
+
+static GtkLabel *
+get_label (IndicatorObject * io)
 {
 	GtkLabel * returnval = GTK_LABEL(gtk_label_new(g_get_user_name()));
 	gtk_widget_show(GTK_WIDGET(returnval));
 	return returnval;
 }
 
-GtkImage *
-get_icon (void)
+static GtkImage *
+get_icon (IndicatorObject * io)
 {
 	g_debug("Changing status icon: '%s'", "system-shutdown-panel");
 	status_image = GTK_IMAGE(gtk_image_new_from_icon_name("system-shutdown-panel", GTK_ICON_SIZE_MENU));
@@ -260,7 +335,7 @@ status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot,
 	return;
 }
 
-void
+static void
 status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userdata)
 {
 	g_return_if_fail(status_image != NULL);
@@ -273,7 +348,7 @@ status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userda
 	return;
 }
 
-void
+static void
 status_icon_changed (DBusGProxy * proxy, gchar * icon, gpointer userdata)
 {
 	return status_icon_cb(proxy, icon, NULL, NULL);
@@ -540,8 +615,8 @@ start_service (gpointer userdata)
 /* Indicator based function to get the menu for the whole
    applet.  This starts up asking for the parts of the menu
    from the various services. */
-GtkMenu *
-get_menu (void)
+static GtkMenu *
+get_menu (IndicatorObject * io)
 {
 	connection = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);

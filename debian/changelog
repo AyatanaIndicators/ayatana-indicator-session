@@ -1,3 +1,12 @@
+indicator-session (0.2.0~dev-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Updating to the libindicate 0.3.0 API
+  * debian/control: Upping the libindicator-dev version to >= 0.3.0~dev
+  * debian/patches/01_locking_on_autologin.patch as it doesn't
+    apply.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 05 Nov 2009 09:19:25 -0600
+
 indicator-session (0.1.7-0ubuntu3~ppa1) karmic; urgency=low
 
   * Listen on DBus for MissionControl coming on and off the bus

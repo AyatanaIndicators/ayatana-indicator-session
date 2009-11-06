@@ -1,3 +1,12 @@
+indicator-session (0.2.0~dev-0ubuntu1~ppa2) karmic; urgency=low
+
+  * debian/rules
+    - removed the extra disable-scrollkeeper arg to configure (LP: #418772)
+  * debian/control
+    - removed the build dep for scrollkeeper
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 06 Nov 2009 10:24:06 -0500
+
 indicator-session (0.2.0~dev-0ubuntu1~ppa1) karmic; urgency=low
 
   * Updating to the libindicate 0.3.0 API

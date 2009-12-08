@@ -1,3 +1,14 @@
+indicator-session (0.1.7-0ubuntu4) lucid; urgency=low
+
+  * debian/patches/02_mc5-fixes.patch
+    - Renamed the patch for ordering
+  * debian/patches/03_tp_glib.patch
+    - Port from libempathy to telepathy-glib (LP: #461367)
+  * debian/patches/99_autoreconf.patch
+    - autoreconf for telepathy change
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Dec 2009 08:58:06 -0500
+
 indicator-session (0.1.7-0ubuntu3) karmic; urgency=low
 
   * debian/patches/01_locking_on_autologin.patch:

@@ -6,6 +6,8 @@ indicator-session (0.1.7-0ubuntu4) lucid; urgency=low
     - Port from libempathy to telepathy-glib (LP: #461367)
   * debian/patches/99_autoreconf.patch
     - autoreconf for telepathy change
+  * debian/control
+    - build depend on telepathy-glib-dev instead of libempathy-dev
 
  -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Dec 2009 08:58:06 -0500
 

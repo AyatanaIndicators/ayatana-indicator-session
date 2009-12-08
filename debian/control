@@ -14,7 +14,7 @@ Build-Depends: debhelper (>= 5.0),
                libdbusmenu-gtk-dev (>= 0.1.2),
                libpolkit-gobject-1-dev,
                intltool,
-               libempathy-dev (>= 2.27.0)
+               telepathy-glib-dev (>= 0.9.0)
 Standards-Version: 3.8.2
 Homepage: https://launchpad.net/indicator-session
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubuntu

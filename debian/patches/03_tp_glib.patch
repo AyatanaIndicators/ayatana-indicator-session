@@ -17,7 +17,7 @@
 
 === modified file 'src/status-provider-mc5.c'
 --- src/status-provider-mc5.c	2009-12-08 13:38:42 +0000
-+++ src/status-provider-mc5.c	2009-12-08 13:46:07 +0000
++++ src/status-provider-mc5.c	2009-12-08 14:06:05 +0000
 @@ -24,7 +24,7 @@
  #include "config.h"
  #endif
@@ -27,6 +27,41 @@
  
  #include "status-provider.h"
  #include "status-provider-mc5.h"
+@@ -65,7 +65,7 @@
+ 
+ typedef struct _StatusProviderMC5Private StatusProviderMC5Private;
+ struct _StatusProviderMC5Private {
+-	EmpathyAccountManager * manager;
++	TpAccountManager * manager;
+ 	StatusProviderStatus status;
+ 	DBusGProxy * dbus_proxy;
+ };
+@@ -83,7 +83,7 @@
+ /* Internal Funcs */
+ static void set_status (StatusProvider * sp, StatusProviderStatus status);
+ static StatusProviderStatus get_status (StatusProvider * sp);
+-static void presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp);
++static void presence_changed (TpAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp);
+ static void dbus_namechange (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, StatusProviderMC5 * self);
+ static void mc5_exists_cb (DBusGProxy * proxy, gboolean exists, GError * error, gpointer userdata);
+ 
+@@ -120,14 +120,14 @@
+ 		return;
+ 	}
+ 
+-	priv->manager = EMPATHY_ACCOUNT_MANAGER(g_object_new(EMPATHY_TYPE_ACCOUNT_MANAGER, NULL));
++	priv->manager = TP_ACCOUNT_MANAGER(g_object_new(TP_TYPE_ACCOUNT_MANAGER, NULL));
+ 	g_signal_connect(G_OBJECT(priv->manager), "global-presence-changed", G_CALLBACK(presence_changed), self);
+ 
+ 	return;
+ }
+ 
+ /* Creating an instance of the status provider.  We set the variables
+-   and create an EmpathyAccountManager object.  It does all the hard
++   and create an TpAccountManager object.  It does all the hard
+    work in this module of tracking MissionControl and enumerating the
+    accounts and all that jazz. */
+ static void
 @@ -267,7 +267,7 @@
  
  	build_eam(STATUS_PROVIDER_MC5(sp));
@@ -36,4 +71,18 @@
  
  	return;
  }
+@@ -287,11 +287,11 @@
+ 	return priv->status;
+ }
+ 
+-/* A signal handler for when the EmpatyAccountManager believes
++/* A signal handler for when the TpAccountManager believes
+    that the global status has changed.  It roughly calculates this
+    by finding the most available of all accounts that are active. */
+ static void
+-presence_changed (EmpathyAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp)
++presence_changed (TpAccountManager * eam, guint type, const gchar * type_str, const gchar * message, StatusProviderMC5 * sp)
+ {
+ 	StatusProviderMC5Private * priv = STATUS_PROVIDER_MC5_GET_PRIVATE(sp);
+ 
 

@@ -1,3 +1,10 @@
+indicator-session (0.1.7-0ubuntu5) lucid; urgency=low
+
+  * debian/patches/03_tp_glib.patch
+    - Updated patch to properly work with TpAccountManager 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Dec 2009 11:01:38 -0500
+
 indicator-session (0.1.7-0ubuntu4) lucid; urgency=low
 
   * debian/patches/02_mc5-fixes.patch

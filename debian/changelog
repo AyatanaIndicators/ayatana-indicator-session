@@ -2,6 +2,7 @@ indicator-session (0.2.0~dev-0ubuntu1~ppa2) karmic; urgency=low
 
   * debian/control
     - build depend on libtelepathy-glib-dev instead of libempathy-dev
+  * removed 03_tp_glib.patch and 99_autoreconf.patch, applied upstream
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 10:42:21 -0500
 

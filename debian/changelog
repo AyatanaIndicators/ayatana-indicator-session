@@ -1,5 +1,6 @@
 indicator-session (0.1.7+r58-0ubuntu1) lucid; urgency=low
 
+  * New snapshot for libindicator 0.3.0
   * debian/control
     - build depend on libtelepathy-glib-dev instead of libempathy-dev
     - build depend on libindicator-dev >= 0.3.0

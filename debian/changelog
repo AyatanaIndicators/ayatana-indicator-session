@@ -1,4 +1,4 @@
-indicator-session (0.1.7+r58-0ubuntu1) karmic; urgency=low
+indicator-session (0.1.7+r58-0ubuntu1) lucid; urgency=low
 
   * debian/control
     - build depend on libtelepathy-glib-dev instead of libempathy-dev

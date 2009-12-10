@@ -1,5 +1,32 @@
 indicator-session (0.2.0~dev-0ubuntu1~ppa2) karmic; urgency=low
 
+  * debian/control
+    - build depend on libtelepathy-glib-dev instead of libempathy-dev
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 10:42:21 -0500
+
+indicator-session (0.1.7-0ubuntu5) lucid; urgency=low
+
+  * debian/patches/03_tp_glib.patch
+    - Updated patch to properly work with TpAccountManager 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Dec 2009 11:01:38 -0500
+
+indicator-session (0.1.7-0ubuntu4) lucid; urgency=low
+
+  * debian/patches/02_mc5-fixes.patch
+    - Renamed the patch for ordering
+  * debian/patches/03_tp_glib.patch
+    - Port from libempathy to telepathy-glib (LP: #461367)
+  * debian/patches/99_autoreconf.patch
+    - autoreconf for telepathy change
+  * debian/control
+    - build depend on libtelepathy-glib-dev instead of libempathy-dev
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Dec 2009 08:58:06 -0500
+
+indicator-session (0.2.0~dev-0ubuntu1~ppa2) karmic; urgency=low
+
   * debian/rules
     - removed the extra disable-scrollkeeper arg to configure (LP: #418772)
   * debian/control

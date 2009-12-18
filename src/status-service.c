@@ -107,7 +107,7 @@ status_update (void) {
 			StatusProviderStatus i;
 			for (i = STATUS_PROVIDER_STATUS_ONLINE; i < STATUS_PROVIDER_STATUS_LAST; i++) {
 				if (status_menuitems[i] == NULL) continue;
-				dbusmenu_menuitem_property_set(status_menuitems[i], DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
+				dbusmenu_menuitem_property_set_bool(status_menuitems[i], DBUSMENU_MENUITEM_PROP_SENSITIVE, FALSE);
 			}
 		}
 
@@ -117,7 +117,7 @@ status_update (void) {
 			StatusProviderStatus i;
 			for (i = STATUS_PROVIDER_STATUS_ONLINE; i < STATUS_PROVIDER_STATUS_LAST; i++) {
 				if (status_menuitems[i] == NULL) continue;
-				dbusmenu_menuitem_property_set(status_menuitems[i], DBUSMENU_MENUITEM_PROP_SENSITIVE, "true");
+				dbusmenu_menuitem_property_set_bool(status_menuitems[i], DBUSMENU_MENUITEM_PROP_SENSITIVE, TRUE);
 			}
 		}
 	}
@@ -171,7 +171,7 @@ build_user_item (DbusmenuMenuitem * root)
 		if (name[0] != '\0') {
 			DbusmenuMenuitem * useritem = dbusmenu_menuitem_new();
 			dbusmenu_menuitem_property_set(useritem, DBUSMENU_MENUITEM_PROP_LABEL, name);
-			dbusmenu_menuitem_property_set(useritem, DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
+			dbusmenu_menuitem_property_set_bool(useritem, DBUSMENU_MENUITEM_PROP_SENSITIVE, FALSE);
 			dbusmenu_menuitem_child_append(root, useritem);
 		}
 
@@ -205,11 +205,10 @@ build_menu (gpointer data)
 
 		status_menuitems[i] = dbusmenu_menuitem_new();
 
-		dbusmenu_menuitem_property_set(status_menuitems[i], "type", DBUSMENU_CLIENT_TYPES_IMAGE);
 		dbusmenu_menuitem_property_set(status_menuitems[i], DBUSMENU_MENUITEM_PROP_LABEL, _(status_strings[i]));
 		dbusmenu_menuitem_property_set(status_menuitems[i], DBUSMENU_MENUITEM_PROP_ICON, status_icons[i]);
 		if (global_status == STATUS_PROVIDER_STATUS_DISCONNECTED) {
-			dbusmenu_menuitem_property_set(status_menuitems[i], DBUSMENU_MENUITEM_PROP_SENSITIVE, "false");
+			dbusmenu_menuitem_property_set_bool(status_menuitems[i], DBUSMENU_MENUITEM_PROP_SENSITIVE, FALSE);
 		}
 		g_signal_connect(G_OBJECT(status_menuitems[i]), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(status_menu_click), GINT_TO_POINTER(i));
 

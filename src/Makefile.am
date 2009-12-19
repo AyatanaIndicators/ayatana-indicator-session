@@ -154,7 +154,9 @@ EXTRA_DIST = \
 	status-service.xml \
 	status-provider-mc5.list \
 	status-provider-pidgin.list \
-	status-provider-telepathy.list
+	status-provider-telepathy.list \
+	users-service.xml \
+	users-service.list
 
 CLEANFILES = \
 	$(BUILT_SOURCES)

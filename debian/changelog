@@ -1,9 +1,9 @@
-indicator-session (0.2.0~dev-0ubuntu1~ppa3~dm1) UNRELEASED; urgency=low
+indicator-session (0.2.0~dev-0ubuntu1~ppa3~dm1) karmic; urgency=low
 
   * Updating to use dbusmenu 0.2.0
   * debian/control: Updating to depend on dbusmenu 0.2.0~dev or higher. 
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 21:13:35 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Dec 2009 21:16:00 -0600
 
 indicator-session (0.1.7+r58-0ubuntu1) lucid; urgency=low
 

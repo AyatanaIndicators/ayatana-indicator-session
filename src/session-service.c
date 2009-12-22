@@ -105,7 +105,7 @@ suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	g_debug("Got Suspend: %s", g_value_get_boolean(&candoit) ? "true" : "false");
 
 	if (suspend_mi != NULL) {
-		dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, g_value_get_boolean(&candoit) ? "true" : "false");
+		dbusmenu_menuitem_property_set_value(suspend_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, &candoit);
 	}
 
 	return;
@@ -128,7 +128,7 @@ hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	g_debug("Got Hibernate: %s", g_value_get_boolean(&candoit) ? "true" : "false");
 
 	if (suspend_mi != NULL) {
-		dbusmenu_menuitem_property_set(hibernate_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, g_value_get_boolean(&candoit) ? "true" : "false");
+		dbusmenu_menuitem_property_set_value(hibernate_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, &candoit);
 	}
 
 	return;
@@ -253,13 +253,13 @@ create_items (DbusmenuMenuitem * root) {
 	g_signal_connect(G_OBJECT(logout_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
 
 	suspend_mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, "false");
+	dbusmenu_menuitem_property_set_bool(suspend_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
 	dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Suspend"));
 	dbusmenu_menuitem_child_append(root, suspend_mi);
 	g_signal_connect(G_OBJECT(suspend_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Suspend");
 
 	hibernate_mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(hibernate_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, "false");
+	dbusmenu_menuitem_property_set_bool(hibernate_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
 	dbusmenu_menuitem_property_set(hibernate_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Hibernate"));
 	dbusmenu_menuitem_child_append(root, hibernate_mi);
 	g_signal_connect(G_OBJECT(hibernate_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(sleep), "Hibernate");

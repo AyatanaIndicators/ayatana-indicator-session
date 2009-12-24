@@ -32,7 +32,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator-object.h>
 
 #include "dbus-shared-names.h"
-#include "status-service-client.h"
 
 #define INDICATOR_SESSION_TYPE            (indicator_session_get_type ())
 #define INDICATOR_SESSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_SESSION_TYPE, IndicatorSession))
@@ -59,21 +58,18 @@ INDICATOR_SET_VERSION
 INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
 
 /* Globals */
-static DbusmenuGtkClient * status_client = NULL;
 static DbusmenuGtkClient * users_client = NULL;
 static DbusmenuGtkClient * session_client = NULL;
 
 static GtkMenu * main_menu = NULL;
 static GtkImage * status_image = NULL;
 
-static GtkWidget * status_separator = NULL;
 static GtkWidget * users_separator = NULL;
 #define SEPARATOR_SHOWN(sep) (sep != NULL && GTK_WIDGET_VISIBLE(sep))
 static GtkWidget * loading_item = NULL;
 
 static DBusGConnection * connection = NULL;
 static DBusGProxy * proxy = NULL;
-static DBusGProxy * status_proxy = NULL;
 
 typedef enum {
 	STATUS_SECTION,
@@ -84,7 +80,6 @@ typedef enum {
 
 /* Prototypes */
 static void child_added (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint position, gpointer section);
-static guint status_menu_pos_offset (void);
 static guint users_menu_pos_offset (void);
 static guint session_menu_pos_offset (void);
 static void child_realized (DbusmenuMenuitem * child, gpointer userdata);
@@ -170,7 +165,6 @@ resort_menu (void)
 
 	for (clientnum = 0; clientnum < 3; clientnum++) {
 		DbusmenuGtkClient * client = NULL;
-		if (clientnum == 0) client = status_client;
 		if (clientnum == 1) client = users_client;
 		if (clientnum == 2) client = session_client;
 
@@ -192,10 +186,6 @@ resort_menu (void)
 			}
 		}
 
-		if (clientnum == 0) {
-			gtk_menu_reorder_child(main_menu, status_separator, location);
-			location++;
-		}
 		if (clientnum == 1) {
 			gtk_menu_reorder_child(main_menu, users_separator, location);
 			location++;
@@ -235,11 +225,6 @@ child_realized (DbusmenuMenuitem * child, gpointer userdata)
 	guint (*posfunc) (void) = NULL;
 
 	switch (section) {
-		case STATUS_SECTION:
-			client = status_client;
-			errorstr = "Status";
-			posfunc = status_menu_pos_offset;
-			break;
 		case USERS_SECTION:
 			client = users_client;
 			errorstr = "Users";
@@ -284,136 +269,12 @@ child_moved (DbusmenuMenuitem * parent, DbusmenuMenuitem * child, guint newpos, 
 
 }
 
-
-/* Status Menu */
-static guint
-status_menu_pos_offset (void)
-{
-	return 0;
-}
-
-static void
-status_menu_added (DbusmenuMenuitem * root, DbusmenuMenuitem * child, guint position, gpointer user_data)
-{
-	gtk_widget_show(GTK_WIDGET(status_separator));
-	return;
-}
-
-static void
-status_menu_removed (DbusmenuMenuitem * root, DbusmenuMenuitem * child, gpointer user_data)
-{
-	if (g_list_length(dbusmenu_menuitem_get_children(root)) == 0) {
-		gtk_widget_hide(GTK_WIDGET(status_separator));
-	}
-
-	return;
-}
-
-static void
-status_menu_root_changed(DbusmenuGtkClient * client, DbusmenuMenuitem * newroot, GtkMenu * main)
-{
-	if (newroot == NULL) {
-		gtk_widget_hide(GTK_WIDGET(status_separator));
-		return;
-	}
-
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_ADDED,   G_CALLBACK(child_added),           GUINT_TO_POINTER(STATUS_SECTION));
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(status_menu_added),     NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_REMOVED, G_CALLBACK(status_menu_removed),   NULL);
-	g_signal_connect(G_OBJECT(newroot), DBUSMENU_MENUITEM_SIGNAL_CHILD_MOVED,   G_CALLBACK(child_moved),           GUINT_TO_POINTER(STATUS_SECTION));
-
-	GList * child = NULL;
-	guint count = 0;
-	for (child = dbusmenu_menuitem_get_children(newroot); child != NULL; child = g_list_next(child), count++) {
-		child_added(newroot, DBUSMENU_MENUITEM(child->data), count, GUINT_TO_POINTER(STATUS_SECTION));
-	}
-
-	if (count > 0) {
-		gtk_widget_show(GTK_WIDGET(status_separator));
-	}
-
-	return;
-}
-
-static void
-status_icon_cb (DBusGProxy * proxy, char * icons, GError *error, gpointer userdata)
-{
-	g_return_if_fail(status_image != NULL);
-	g_return_if_fail(icons != NULL);
-	g_return_if_fail(icons[0] != '\0');
-
-	g_debug("Changing status icon: '%s'", icons);
-	gtk_image_set_from_icon_name(status_image, icons, GTK_ICON_SIZE_MENU);
-
-	return;
-}
-
-static void
-status_icon_changed (DBusGProxy * proxy, gchar * icon, gpointer userdata)
-{
-	return status_icon_cb(proxy, icon, NULL, NULL);
-}
-
-
-static gboolean
-connect_to_status (gpointer userdata)
-{
-	if (status_proxy == NULL) {
-		GError * error = NULL;
-
-		DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-
-		status_proxy = dbus_g_proxy_new_for_name_owner(sbus,
-		                                               INDICATOR_STATUS_DBUS_NAME,
-		                                               INDICATOR_STATUS_SERVICE_DBUS_OBJECT,
-		                                               INDICATOR_STATUS_SERVICE_DBUS_INTERFACE,
-		                                               &error);
-
-		if (error != NULL) {
-			g_warning("Unable to get status proxy: %s", error->message);
-			g_error_free(error);
-			return FALSE;
-		}
-
-		dbus_g_proxy_add_signal(status_proxy, "StatusIconsChanged", G_TYPE_STRING, G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal(status_proxy, "StatusIconsChanged", G_CALLBACK(status_icon_changed), NULL, NULL);
-	}
-
-	org_ayatana_indicator_status_service_status_icons_async(status_proxy, status_icon_cb, NULL);
-
-	return FALSE;
-}
-
-/* Follow up the service being started by connecting
-   up the DBus Menu Client and creating our separator.
-   Also creates an idle func to connect to the service for
-   getting the icon that we should be using on the panel. */
-static void
-status_followup (void)
-{
-	status_client = dbusmenu_gtkclient_new(INDICATOR_STATUS_DBUS_NAME, INDICATOR_STATUS_DBUS_OBJECT);
-	g_signal_connect(G_OBJECT(status_client), DBUSMENU_GTKCLIENT_SIGNAL_ROOT_CHANGED, G_CALLBACK(status_menu_root_changed), main_menu);
-
-	status_separator = gtk_separator_menu_item_new();
-	gtk_menu_shell_append(GTK_MENU_SHELL(main_menu), status_separator);
-	gtk_widget_hide(status_separator); /* Should be default, I'm just being explicit.  $(%*#$ hide already!  */
-
-	g_idle_add(connect_to_status, NULL);
-
-	return;
-}
-
 /* Users menu */
 
 static guint
 users_menu_pos_offset (void)
 {
 	guint position = 0;
-	if (SEPARATOR_SHOWN(status_separator)) {
-		GList * location = g_list_find(GTK_MENU_SHELL(main_menu)->children, status_separator);
-		position = g_list_position(GTK_MENU_SHELL(main_menu)->children, location) + 1;
-	}
-
 	return position;
 }
 
@@ -483,9 +344,6 @@ session_menu_pos_offset (void)
 	guint position = 0;
 	if (SEPARATOR_SHOWN(users_separator)) {
 		GList * location = g_list_find(GTK_MENU_SHELL(main_menu)->children, users_separator);
-		position = g_list_position(GTK_MENU_SHELL(main_menu)->children, location) + 1;
-	} else if (SEPARATOR_SHOWN(status_separator)) {
-		GList * location = g_list_find(GTK_MENU_SHELL(main_menu)->children, status_separator);
 		position = g_list_position(GTK_MENU_SHELL(main_menu)->children, location) + 1;
 	}
 
@@ -560,9 +418,6 @@ start_service_phase2 (DBusGProxy * proxy, guint status, GError * error, gpointer
 	/* Check which part of the menu we're in and do the
 	   appropriate follow up from the service being started. */
 	switch (GPOINTER_TO_INT(data)) {
-	case STATUS_SECTION:
-		status_followup();
-		break;
 	case USERS_SECTION:
 		users_followup();
 		break;

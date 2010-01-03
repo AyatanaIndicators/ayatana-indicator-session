@@ -1,3 +1,9 @@
+indicator-session (0.2.0~dev-0ubuntu1~ppa4~nostatus1) karmic; urgency=low
+
+  * Removing status support
+
+ -- Ted Gould <ted@ubuntu.com>  Sat, 02 Jan 2010 23:51:01 -0600
+
 indicator-session (0.2.0~dev-0ubuntu1~ppa3) karmic; urgency=low
 
   * Updating to use dbusmenu 0.2.0

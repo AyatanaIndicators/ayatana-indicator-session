@@ -33,6 +33,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
+#include <libdbusmenu-glib/client.h>
 
 #include <libindicator/indicator-service.h>
 
@@ -446,6 +447,10 @@ rebuild_items (DbusmenuMenuitem *root,
           g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
         }
     }
+	
+	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+	dbusmenu_menuitem_child_append(root, separator);
 
 	logout_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {

@@ -7,6 +7,7 @@ Copyright 2009 Canonical Ltd.
 Authors:
     Ted Gould <ted@canonical.com>
     Christoph Korn <c_korn@gmx.de>
+    Cody Russell <crussell@canonical.com>
 
 This program is free software: you can redistribute it and/or modify it 
 under the terms of the GNU General Public License version 3, as published 
@@ -35,11 +36,14 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gtk-dialog/gconf-helper.h"
 
+#include "users-service-dbus.h"
 #include "lock-helper.h"
 
 #define DKP_ADDRESS    "org.freedesktop.DeviceKit.Power"
 #define DKP_OBJECT     "/org/freedesktop/DeviceKit/Power"
 #define DKP_INTERFACE  "org.freedesktop.DeviceKit.Power"
+
+#define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
 
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
@@ -243,6 +247,7 @@ show_dialog (DbusmenuMenuitem * mi, gchar * type)
    provides in the UI.  It also connects them to the callbacks. */
 static void
 create_items (DbusmenuMenuitem * root) {
+
 	logout_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
 		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out"));

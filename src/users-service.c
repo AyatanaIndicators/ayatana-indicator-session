@@ -1,44 +1,3 @@
-/*
- * A small wrapper utility to load indicators and put them as menu items
- * into the gnome-panel using it's applet interface.
- *
- * Copyright 2009 Canonical Ltd.
- *
- * Authors:
- *    Ted Gould <ted@canonical.com>
- *    Cody Russell <crussell@canonical.com>
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 3, as published
- * by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranties of
- * MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- *with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-#include <config.h>
-
-#include <unistd.h>
-
-#include <glib/gi18n.h>
-
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
-
-#include <libdbusmenu-glib/server.h>
-#include <libdbusmenu-glib/menuitem.h>
-
-#include "dbus-shared-names.h"
-#include "users-service-dbus.h"
-#include "lock-helper.h"
-
-#define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
-
 typedef struct _ActivateData ActivateData;
 struct _ActivateData
 {
@@ -273,29 +232,6 @@ create_items (DbusmenuMenuitem *root,
 int
 main (int argc, char ** argv)
 {
-    g_type_init();
-
-    /* Setting up i18n and gettext.  Apparently, we need
-       all of these. */
-    setlocale (LC_ALL, "");
-    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-    textdomain (GETTEXT_PACKAGE);
-
-    session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-    bus_proxy = dbus_g_proxy_new_for_name (session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
-    GError * error = NULL;
-    guint nameret = 0;
-
-    if (!org_freedesktop_DBus_request_name(bus_proxy, INDICATOR_USERS_DBUS_NAME, 0, &nameret, &error)) {
-        g_error("Unable to call to request name");
-        return 1;
-    }
-
-    if (nameret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-        g_error("Unable to get name");
-        return 1;
-    }
-
 	g_idle_add(lock_screen_setup, NULL);
 	lock_screen_gdm_cb_set(gdm_settings_change);
 
@@ -318,9 +254,5 @@ main (int argc, char ** argv)
                       G_CALLBACK (user_removed),
                       root_menuitem);
 
-    mainloop = g_main_loop_new(NULL, FALSE);
-    g_main_loop_run(mainloop);
-
-    return 0;
 }
 

@@ -1,6 +1,6 @@
 SUBDIRS = gtk-dialog
 
-libexec_PROGRAMS = indicator-users-service indicator-session-service
+libexec_PROGRAMS = indicator-session-service
 
 ###################
 # Indicator Stuff
@@ -34,19 +34,6 @@ users-service-marshal.c: $(srcdir)/users-service.list
 		--prefix=_users_service_marshal $(srcdir)/users-service.list \
 		> users-service-marshal.c
 
-###############
-# Users Stuff
-###############
-
-indicator_users_service_SOURCES = \
-	lock-helper.c \
-	lock-helper.h \
-	users-service.c \
-	users-service-dbus.c \
-	users-service-marshal.c
-indicator_users_service_CFLAGS = $(USERSSERVICE_CFLAGS) -Wall -Werror
-indicator_users_service_LDADD = $(USERSSERVICE_LIBS)
-
 #################
 # Session Stuff
 #################
@@ -55,7 +42,9 @@ indicator_session_service_SOURCES = \
 	lock-helper.c \
 	lock-helper.h \
 	session-service.c \
-	gtk-dialog/gconf-helper.c
+	gtk-dialog/gconf-helper.c \
+	users-service-dbus.c \
+	users-service-marshal.c
 indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) $(GCONF_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror
 indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 

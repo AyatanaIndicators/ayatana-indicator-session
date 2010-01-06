@@ -37,20 +37,9 @@ AC_SUBST(APPLET_CFLAGS)
 AC_SUBST(APPLET_LIBS)
 
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
-TELEPATHYGLIB_REQUIRED_VERSION=0.9.0
 
-PKG_CHECK_MODULES(STATUSSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                 telepathy-glib >= $TELEPATHYGLIB_REQUIRED_VERSION)
-
-AC_SUBST(STATUSERVICE_CFLAGS)
-AC_SUBST(STATUSERVICE_LIBS)
-
-PKG_CHECK_MODULES(USERSSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION)
-
-AC_SUBST(USERSERVICE_CFLAGS)
-AC_SUBST(USERSERVICE_LIBS)
-
-PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION)
+PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  indicator >= $INDICATOR_REQUIRED_VERSION)
 
 AC_SUBST(SESSIONERVICE_CFLAGS)
 AC_SUBST(SESSIONERVICE_LIBS)
@@ -142,21 +131,14 @@ src/gtk-dialog/Makefile
 data/Makefile
 data/icons/Makefile
 data/icons/16x16/Makefile
-data/icons/16x16/status/Makefile
 data/icons/16x16/actions/Makefile
 data/icons/22x22/Makefile
-data/icons/22x22/status/Makefile
 data/icons/22x22/actions/Makefile
 data/icons/24x24/Makefile
-data/icons/24x24/status/Makefile
 data/icons/24x24/actions/Makefile
 data/icons/32x32/Makefile
-data/icons/32x32/status/Makefile
 data/icons/32x32/actions/Makefile
-data/icons/48x48/Makefile
-data/icons/48x48/status/Makefile
 data/icons/scalable/Makefile
-data/icons/scalable/status/Makefile
 data/icons/scalable/actions/Makefile
 po/Makefile.in
 ])

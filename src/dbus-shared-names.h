@@ -36,5 +36,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define INDICATOR_SESSION_DBUS_NAME  "org.ayatana.indicator.session"
 #define INDICATOR_SESSION_DBUS_OBJECT "/org/ayatana/indicator/session/menu"
+#define INDICATOR_SESSION_DBUS_VERSION  0
 
 #endif /* __DBUS_SHARED_NAMES_H__ */

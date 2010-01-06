@@ -1,9 +1,9 @@
-indicator-session (0.2.0~dev-0ubuntu1~ppa5) UNRELEASED; urgency=low
+indicator-session (0.2.0~dev-0ubuntu1~ppa5) karmic; urgency=low
 
   * Upstream merge
     * Distcheck fixes
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 05 Jan 2010 23:37:06 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 05 Jan 2010 23:39:06 -0600
 
 indicator-session (0.2.0~dev-0ubuntu1~ppa4) karmic; urgency=low
 

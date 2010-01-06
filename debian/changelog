@@ -1,10 +1,10 @@
-indicator-session (0.2.0~dev-0ubuntu1~ppa4) UNRELEASED; urgency=low
+indicator-session (0.2.0~dev-0ubuntu1~ppa4) karmic; urgency=low
 
   * Upstream merge
     * Removing status support
     * Merging the users service and the session service
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 05 Jan 2010 22:41:29 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 05 Jan 2010 22:44:55 -0600
 
 indicator-session (0.2.0~dev-0ubuntu1~ppa3) karmic; urgency=low
 

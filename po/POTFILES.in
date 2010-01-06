@@ -6,9 +6,3 @@ src/gtk-dialog/gtk-logout-helper.c
 src/gtk-dialog/logout-dialog.c
 src/indicator-session.c
 src/session-service.c
-src/status-provider.c
-src/status-provider-pidgin.c
-src/status-provider-telepathy.c
-src/status-service.c
-src/status-service-dbus.c
-src/users-service.c

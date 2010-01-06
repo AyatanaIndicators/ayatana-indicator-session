@@ -43,6 +43,7 @@ indicator_session_service_SOURCES = \
 	lock-helper.h \
 	session-service.c \
 	gtk-dialog/gconf-helper.c \
+	users-service-dbus.h \
 	users-service-dbus.c \
 	users-service-marshal.c
 indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) $(GCONF_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror

@@ -1,8 +1,8 @@
-indicator-session (0.2.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-session (0.2.0-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream release 0.2.0
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 09:31:51 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 09:33:15 -0600
 
 indicator-session (0.2.0~dev-0ubuntu1~ppa5) karmic; urgency=low
 

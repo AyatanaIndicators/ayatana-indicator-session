@@ -9,11 +9,10 @@ Build-Depends: debhelper (>= 5.0),
                libdbus-glib-1-dev,
                gnome-doc-utils,
                libindicator-dev (>= 0.3.0),
-               libdbusmenu-glib-dev (>= 0.1.2),
-               libdbusmenu-gtk-dev (>= 0.1.2),
+               libdbusmenu-glib-dev (>= 0.2.0),
+               libdbusmenu-gtk-dev (>= 0.2.0),
                libpolkit-gobject-1-dev,
-               intltool,
-               libtelepathy-glib-dev (>= 0.9.0)
+               intltool
 Standards-Version: 3.8.2
 Homepage: https://launchpad.net/indicator-session
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubuntu

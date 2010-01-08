@@ -1,3 +1,13 @@
+indicator-session (0.2.0-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.0
+    * Removing status support
+    * Merging the users service and the session service
+  * debian/control: Updating to depend on dbusmenu 0.2.0 or higher. 
+  * debian/control: Dropping build depends for libtelepathy-glib-dev
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 09:33:15 -0600
+
 indicator-session (0.1.7+r58-0ubuntu1) lucid; urgency=low
 
   * New snapshot for libindicator 0.3.0

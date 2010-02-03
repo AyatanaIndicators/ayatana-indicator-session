@@ -101,7 +101,7 @@ machine_sleep (DbusmenuMenuitem * mi, gpointer userdata)
 	}
 
 	screensaver_throttle(type);
-	lock_screen(NULL, NULL);
+	lock_screen(NULL, 0, NULL);
 
 	dbus_g_proxy_begin_call(dkp_main_proxy,
 	                        type,

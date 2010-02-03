@@ -279,7 +279,7 @@ activate_timeout (gpointer data)
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */
 void
-lock_screen (DbusmenuMenuitem * mi, gpointer data)
+lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 {
 	g_debug("Lock Screen");
 	if (!will_lock_screen()) {

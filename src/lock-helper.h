@@ -30,7 +30,7 @@ void screensaver_throttle (gchar * reason);
 void screensaver_unthrottle (void);
 
 gboolean will_lock_screen (void);
-void lock_screen (DbusmenuMenuitem * mi, gpointer data);
+void lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data);
 gboolean lock_screen_setup (gpointer data);
 void lock_screen_gdm_cb_set (gdm_autologin_cb_t cb);
 

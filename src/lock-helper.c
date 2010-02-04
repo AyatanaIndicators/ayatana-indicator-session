@@ -248,11 +248,10 @@ build_gss_proxy (void)
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	g_return_if_fail(session_bus != NULL);
 
-	gss_proxy = dbus_g_proxy_new_for_name_owner(session_bus,
-	                                            "org.gnome.ScreenSaver",
-	                                            "/",
-	                                            "org.gnome.ScreenSaver",
-	                                            NULL);
+	gss_proxy = dbus_g_proxy_new_for_name(session_bus,
+	                                      "org.gnome.ScreenSaver",
+	                                      "/",
+	                                      "org.gnome.ScreenSaver");
 	g_return_if_fail(gss_proxy != NULL);
 
 	dbus_g_proxy_add_signal(gss_proxy, "ActiveChanged", G_TYPE_BOOLEAN, G_TYPE_INVALID);

@@ -1,11 +1,11 @@
-indicator-session (0.2.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-session (0.2.1-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.2.1
     * Dbusmenu 0.2.2 support
     * GNOME Screensaver fix (LP: #484603)
   * debian/control: Upping dbusmenu dependency to 0.2.2
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 04 Feb 2010 17:28:46 -0800
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Feb 2010 17:34:10 -0800
 
 indicator-session (0.2.0-0ubuntu1) lucid; urgency=low
 

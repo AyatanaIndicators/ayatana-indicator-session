@@ -92,7 +92,7 @@ sleep_response (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
 /* Let's put this machine to sleep, with some info on how
    it should sleep.  */
 static void
-machine_sleep (DbusmenuMenuitem * mi, gpointer userdata)
+machine_sleep (DbusmenuMenuitem * mi, guint timestamp, gpointer userdata)
 {
 	gchar * type = (gchar *)userdata;
 
@@ -101,7 +101,7 @@ machine_sleep (DbusmenuMenuitem * mi, gpointer userdata)
 	}
 
 	screensaver_throttle(type);
-	lock_screen(NULL, NULL);
+	lock_screen(NULL, 0, NULL);
 
 	dbus_g_proxy_begin_call(dkp_main_proxy,
 	                        type,
@@ -245,7 +245,7 @@ setup_dkp (void) {
    but it seems that in the future it should figure out
    what's going on and something better. */
 static void
-show_dialog (DbusmenuMenuitem * mi, gchar * type)
+show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 {
 	gchar * helper = g_build_filename(LIBEXECDIR, "gtk-logout-helper", NULL);
 	gchar * dialog_line = g_strdup_printf("%s --%s", helper, type);
@@ -270,9 +270,9 @@ static void
 gdm_settings_change (void)
 {
 	if (!will_lock_screen()) {
-		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, FALSE);
+		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, FALSE);
 	} else {
-		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, TRUE);
+		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, TRUE);
 	}
 
 	return;
@@ -298,7 +298,7 @@ check_guest_session (void)
 
 /* Called when someone clicks on the guest session item. */
 static void
-activate_guest_session (DbusmenuMenuitem * mi, gpointer user_data)
+activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
 	GError * error = NULL;
 	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER, &error)) {
@@ -338,7 +338,7 @@ check_new_session (void)
 
 /* Starts a new generic session */
 static void
-activate_new_session (DbusmenuMenuitem * mi, gpointer user_data)
+activate_new_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
 	GError * error = NULL;
 	if (!g_spawn_command_line_async("gdmflexiserver --startnew", &error)) {
@@ -351,7 +351,7 @@ activate_new_session (DbusmenuMenuitem * mi, gpointer user_data)
 
 /* Activates a session for a particular user. */
 static void
-activate_user_session (DbusmenuMenuitem *mi, gpointer user_data)
+activate_user_session (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data)
 {
   UserData *user = (UserData *)user_data;
   UsersServiceDbus *service = user->service;
@@ -393,9 +393,9 @@ rebuild_items (DbusmenuMenuitem *root,
   g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
   dbusmenu_menuitem_child_append(root, lock_menuitem);
   if (!will_lock_screen()) {
-    dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, FALSE);
+    dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, FALSE);
   } else {
-    dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_SENSITIVE, TRUE);
+    dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, TRUE);
   }
 
   if (can_activate == TRUE)

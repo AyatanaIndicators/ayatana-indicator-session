@@ -50,6 +50,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
 
+#define LOCKDOWN_DIR  "/desktop/gnome/lockdown"
+#define LOCKDOWN_KEY  LOCKDOWN_DIR "/disable_user_switching"
+
 typedef struct _ActivateData ActivateData;
 struct _ActivateData
 {
@@ -62,6 +65,7 @@ static DBusGProxy        *gdm_proxy = NULL;
 static UsersServiceDbus  *dbus_interface = NULL;
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
+static DbusmenuMenuitem  *switch_menuitem = NULL;
 
 static gint   count;
 static GList *users;
@@ -79,6 +83,53 @@ static DbusmenuMenuitem * suspend_mi = NULL;
 static DbusmenuMenuitem * logout_mi = NULL;
 static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
+
+static GConfClient * gconf_client = NULL;
+static guint notify_lockdown_id = 0;
+
+static void
+lockdown_changed (GConfClient *client,
+                  guint        cnxd_id,
+                  GConfEntry  *entry,
+                  gpointer     user_data)
+{
+  GConfValue  *value = gconf_entry_get_value (entry);
+  const gchar *key   = gconf_entry_get_key (entry);
+
+  if (!value || !key)
+    return;
+
+  if (g_strcmp0 (key, LOCKDOWN_KEY) == 0)
+    {
+      if (switch_menuitem)
+        {
+          if (gconf_value_get_bool (value))
+            {
+              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
+            }
+          else
+            {
+              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
+            }
+        }
+    }
+}
+
+static void
+ensure_gconf_client (void)
+{
+  if (!gconf_client)
+    {
+      gconf_client = gconf_client_get_default ();
+
+      notify_lockdown_id = gconf_client_notify_add (gconf_client,
+                                                    LOCKDOWN_KEY,
+                                                    lockdown_changed,
+                                                    NULL,
+                                                    NULL,
+                                                    NULL);
+    }
+}
 
 /* A return from the command to sleep the system.  Make sure
    that we unthrottle the screensaver. */
@@ -441,13 +492,24 @@ rebuild_items (DbusmenuMenuitem *root,
 
       if (check_new_session ())
         {
-          mi = dbusmenu_menuitem_new ();
-          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch User..."));
-          dbusmenu_menuitem_child_append (root, mi);
-          g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
+          ensure_gconf_client ();
+
+          switch_menuitem = dbusmenu_menuitem_new ();
+          dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch User..."));
+          dbusmenu_menuitem_child_append (root, switch_menuitem);
+          g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
+
+          if (gconf_client_get_bool (gconf_client, LOCKDOWN_KEY, NULL))
+            {
+              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
+            }
+          else
+            {
+              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
+            }
         }
     }
-	
+
 	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
 	dbusmenu_menuitem_child_append(root, separator);

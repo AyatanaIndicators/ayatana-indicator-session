@@ -101,13 +101,16 @@ lockdown_changed (GConfClient *client,
 
   if (g_strcmp0 (key, LOCKDOWN_KEY) == 0)
     {
-      if (gconf_value_get_bool (value))
+      if (switch_menuitem)
         {
-          dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-        }
-      else
-        {
-          dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
+          if (gconf_value_get_bool (value))
+            {
+              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
+            }
+          else
+            {
+              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
+            }
         }
     }
 }

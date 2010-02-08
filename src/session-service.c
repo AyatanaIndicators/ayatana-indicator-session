@@ -51,7 +51,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
 
 #define LOCKDOWN_DIR  "/desktop/gnome/lockdown"
-#define LOCKDOWN_KEY  LOCKDOWNDIR "/disable_user_switching"
+#define LOCKDOWN_KEY  LOCKDOWN_DIR "/disable_user_switching"
 
 typedef struct _ActivateData ActivateData;
 struct _ActivateData

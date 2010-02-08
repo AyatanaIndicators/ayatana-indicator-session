@@ -35,6 +35,8 @@ static gboolean is_guest = FALSE;
 
 static gdm_autologin_cb_t gdm_autologin_cb = NULL;
 
+void build_gss_proxy (void);
+
 /* Checks to see if there is an error and reports
    it.  Not much else we can do. */
 static void
@@ -55,6 +57,9 @@ void
 screensaver_unthrottle (void)
 {
 	g_return_if_fail(cookie != 0);
+
+	build_gss_proxy();
+	g_return_if_fail(gss_proxy != NULL);
 
 	dbus_g_proxy_begin_call(gss_proxy, "UnThrottle",
 	                        unthrottle_return, NULL,
@@ -102,6 +107,9 @@ screensaver_throttle (gchar * reason)
 	if (cookie != 0) {
 		screensaver_unthrottle();
 	}
+
+	build_gss_proxy();
+	g_return_if_fail(gss_proxy != NULL);
 
 	cookie_call = dbus_g_proxy_begin_call(gss_proxy, "Throttle",
 	                                      throttle_return, NULL,
@@ -247,17 +255,19 @@ gss_active_changed (DBusGProxy * proxy, gboolean active, gpointer data)
 void
 build_gss_proxy (void)
 {
-	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	g_return_if_fail(session_bus != NULL);
+	if (gss_proxy == NULL) {
+		DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+		g_return_if_fail(session_bus != NULL);
 
-	gss_proxy = dbus_g_proxy_new_for_name(session_bus,
-	                                      "org.gnome.ScreenSaver",
-	                                      "/",
-	                                      "org.gnome.ScreenSaver");
-	g_return_if_fail(gss_proxy != NULL);
+		gss_proxy = dbus_g_proxy_new_for_name(session_bus,
+		                                      "org.gnome.ScreenSaver",
+		                                      "/",
+		                                      "org.gnome.ScreenSaver");
+		g_return_if_fail(gss_proxy != NULL);
 
-	dbus_g_proxy_add_signal(gss_proxy, "ActiveChanged", G_TYPE_BOOLEAN, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal(gss_proxy, "ActiveChanged", G_CALLBACK(gss_active_changed), NULL, NULL);
+		dbus_g_proxy_add_signal(gss_proxy, "ActiveChanged", G_TYPE_BOOLEAN, G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(gss_proxy, "ActiveChanged", G_CALLBACK(gss_active_changed), NULL, NULL);
+	}
 
 	return;
 }
@@ -288,6 +298,7 @@ lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 		return;
 	}
 
+	build_gss_proxy();
 	g_return_if_fail(gss_proxy != NULL);
 
 	dbus_g_proxy_call_no_reply(gss_proxy,
@@ -320,7 +331,6 @@ lock_screen_setup (gpointer data)
 	}
 
 	build_gdm_proxy();
-	build_gss_proxy();
 
 	return FALSE;
 }

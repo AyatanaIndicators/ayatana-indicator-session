@@ -124,7 +124,7 @@ ensure_gconf_client (void)
 
       notify_lockdown_id = gconf_client_notify_add (gconf_client,
                                                     LOCKDOWN_KEY,
-                                                    (GConfClientNotifyFunc)lockdown_changed,
+                                                    lockdown_changed,
                                                     NULL,
                                                     NULL,
                                                     NULL);

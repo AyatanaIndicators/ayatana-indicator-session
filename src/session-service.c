@@ -315,20 +315,6 @@ show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 	return;
 }
 
-/* Respond to the signal of autologin changing to see if the
-   setting for timed login changes. */
-static void
-gdm_settings_change (void)
-{
-	if (!will_lock_screen()) {
-		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, FALSE);
-	} else {
-		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, TRUE);
-	}
-
-	return;
-}
-
 /* Checks to see if we should show the guest suession item */
 static gboolean
 check_guest_session (void)
@@ -636,7 +622,6 @@ main (int argc, char ** argv)
 	                 G_CALLBACK(service_shutdown), NULL);
 
 	g_idle_add(lock_screen_setup, NULL);
-	lock_screen_gdm_cb_set(gdm_settings_change);
 
     root_menuitem = dbusmenu_menuitem_new();
 	g_debug("Root ID: %d", dbusmenu_menuitem_get_id(root_menuitem));

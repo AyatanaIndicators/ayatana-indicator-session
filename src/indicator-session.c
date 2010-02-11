@@ -223,6 +223,9 @@ static gboolean
 build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
+	if (gmi == NULL) {
+		return FALSE;
+	}
 	/* TODO: Setup style update */
 
 	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
@@ -230,5 +233,5 @@ build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusme
 	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(switch_property_change), client);
 	switch_property_change(newitem, MENU_SWITCH_USER, dbusmenu_menuitem_property_get_value(newitem, MENU_SWITCH_USER), client);
 
-	return FALSE;
+	return TRUE;
 }

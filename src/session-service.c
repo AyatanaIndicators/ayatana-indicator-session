@@ -38,6 +38,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator-service.h>
 
 #include "dbus-shared-names.h"
+#include "dbusmenu-shared.h"
 
 #include "gtk-dialog/gconf-helper.h"
 
@@ -481,9 +482,8 @@ rebuild_items (DbusmenuMenuitem *root,
           ensure_gconf_client ();
 
           switch_menuitem = dbusmenu_menuitem_new ();
-		  gchar * switchlabel = g_strdup_printf(_("Switch from %s..."), g_get_user_name());
-          dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, switchlabel);
-		  g_free(switchlabel);
+		  dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_TYPE, MENU_SWITCH_TYPE);
+		  dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
           dbusmenu_menuitem_child_append (root, switch_menuitem);
           g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
 

@@ -177,6 +177,7 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 		GtkWidget * off = gtk_offscreen_window_new();
 		GtkWidget * label = gtk_label_new(username);
 		gtk_container_add(GTK_CONTAINER(off), label);
+		gtk_widget_realize(off);
 		GdkPixmap * pixmap = gtk_offscreen_window_get_pixmap(GTK_OFFSCREEN_WINDOW(off));
 
 		gint width, height;

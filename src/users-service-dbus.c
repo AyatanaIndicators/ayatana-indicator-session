@@ -443,37 +443,6 @@ get_unix_user (UsersServiceDbus *service,
   return TRUE;
 }
 
-static gchar *
-get_session_for_user (UsersServiceDbus *service,
-                      UserData         *user)
-{
-  GList *l;
-
-  if (!users_service_dbus_can_activate_session (service))
-    {
-      return NULL;
-    }
-
-  if (!user->sessions || g_list_length (user->sessions) == 0)
-    {
-      return NULL;
-    }
-
-  for (l = user->sessions; l != NULL; l = l->next)
-    {
-      const char *ssid;
-
-      ssid = l->data;
-
-      if (ssid)
-        {
-          return g_strdup (ssid);
-        }
-    }
-
-  return NULL;
-}
-
 static gboolean
 do_add_session (UsersServiceDbus *service,
                 UserData         *user,
@@ -1035,17 +1004,6 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
   return g_hash_table_get_values (priv->users);
 }
 
-/*
- * XXX - TODO: Right now we switch to a session that another user
- *             already has open, but if there are no open sessions
- *             for this user we go to the login screen and the
- *             user at the seat must select a user and enter a
- *             password.  This kind of defeats the purpose of
- *             actually selecting a username, since selecting any
- *             user will do the same thing here.  We need to change
- *             it so you only need to enter a password for the
- *             specified user.
- */
 gboolean
 users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                           UserData         *user)
@@ -1054,32 +1012,20 @@ users_service_dbus_activate_user_session (UsersServiceDbus *self,
   DBusMessage *message = NULL;
   DBusMessage *reply = NULL;
   DBusError error;
-  gchar *ssid;
 
   dbus_error_init (&error);
 
-  if (!priv->seat)
-    priv->seat = get_seat (self);
-
-  ssid = get_session_for_user (self, user);
-
-  if (!ssid)
-    {
-      return start_new_user_session (self, user);
-    }
-
-  if (!(message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
-                                                priv->seat,
-                                                "org.freedesktop.ConsoleKit.Seat",
-                                                "ActivateSession")))
+  if (!(message = dbus_message_new_method_call ("org.gnome.DisplayManager",
+                                                "/org/gnome/DisplayManager/LocalDisplayFactory",
+                                                "org.gnome.DisplayManager.LocalDisplayFactory",
+                                                "SwitchToUser")))
     {
       g_warning ("failed to create new message");
       return FALSE;
     }
 
   if (!dbus_message_append_args (message,
-                                 DBUS_TYPE_OBJECT_PATH,
-                                 &ssid,
+                                 DBUS_TYPE_STRING, &user->user_name,
                                  DBUS_TYPE_INVALID))
     {
       g_warning ("failed to append args");
@@ -1109,6 +1055,8 @@ users_service_dbus_activate_user_session (UsersServiceDbus *self,
     {
       dbus_message_unref (reply);
     }
+
+  dbus_error_free (&error);
 
   return TRUE;
 }

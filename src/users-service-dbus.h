@@ -54,7 +54,7 @@ struct _UserData
  *       got some gdm issues worked out.
  */
 #define MINIMUM_USERS           1
-#define MAXIMUM_USERS           1
+#define MAXIMUM_USERS           7
 
 struct _UsersServiceDbus {
   GObject parent;

@@ -52,7 +52,7 @@ struct _IndicatorSession {
 	IndicatorObject parent;
 	IndicatorServiceManager * service;
 	GtkImage * status_image;
-	GtkMenu * menu;
+	DbusmenuGtkMenu * menu;
 };
 
 GType indicator_session_get_type (void);
@@ -99,7 +99,7 @@ indicator_session_init (IndicatorSession *self)
 	self->service = indicator_service_manager_new_version(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_VERSION);
 
 	self->status_image = GTK_IMAGE(gtk_image_new_from_icon_name("system-shutdown-panel", GTK_ICON_SIZE_MENU));
-	self->menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT));
+	self->menu = dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
 
 	return;
 }
@@ -145,7 +145,7 @@ get_icon (IndicatorObject * io)
 static GtkMenu *
 get_menu (IndicatorObject * io)
 {
-	return INDICATOR_SESSION(io)->menu;
+	return GTK_MENU(INDICATOR_SESSION(io)->menu);
 }
 
 

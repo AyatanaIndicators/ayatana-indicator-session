@@ -11,6 +11,7 @@ sessionlib_LTLIBRARIES = libsession.la
 libsession_la_SOURCES = \
 	indicator-session.c \
 	dbus-shared-names.h \
+	dbusmenu-shared.h \
 	users-service-client.h
 libsession_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
 libsession_la_LIBADD = $(APPLET_LIBS)
@@ -42,6 +43,7 @@ indicator_session_service_SOURCES = \
 	lock-helper.c \
 	lock-helper.h \
 	session-service.c \
+	dbusmenu-shared.h \
 	gtk-dialog/gconf-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \

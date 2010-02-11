@@ -33,6 +33,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator-service-manager.h>
 
 #include "dbus-shared-names.h"
+#include "dbusmenu-shared.h"
 
 #define INDICATOR_SESSION_TYPE            (indicator_session_get_type ())
 #define INDICATOR_SESSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_SESSION_TYPE, IndicatorSession))
@@ -65,6 +66,7 @@ INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
 static GtkLabel * get_label (IndicatorObject * io);
 static GtkImage * get_icon (IndicatorObject * io);
 static GtkMenu * get_menu (IndicatorObject * io);
+static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
 static void indicator_session_class_init (IndicatorSessionClass *klass);
 static void indicator_session_init       (IndicatorSession *self);
@@ -100,6 +102,9 @@ indicator_session_init (IndicatorSession *self)
 
 	self->status_image = GTK_IMAGE(gtk_image_new_from_icon_name("system-shutdown-panel", GTK_ICON_SIZE_MENU));
 	self->menu = dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
+
+	DbusmenuClient * client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(self->menu));
+	dbusmenu_client_add_type_handler(client, MENU_SWITCH_TYPE, build_menu_switch);
 
 	return;
 }
@@ -148,4 +153,13 @@ get_menu (IndicatorObject * io)
 	return GTK_MENU(INDICATOR_SESSION(io)->menu);
 }
 
+/* This function checks to see if the user name is short enough
+   to not need ellipsing itself, or if, it will get ellipsed by
+   the standard label processor. */
+static gboolean
+build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+{
 
+
+	return FALSE;
+}

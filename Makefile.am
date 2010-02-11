@@ -4,7 +4,7 @@ SUBDIRS = \
 	data \
 	po
 
-EXTRA_DIST = COPYING.LGPL
+EXTRA_DIST = COPYING.LGPL autogen.sh
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-localinstall
 

@@ -51,6 +51,8 @@ struct _IndicatorSessionClass {
 struct _IndicatorSession {
 	IndicatorObject parent;
 	IndicatorServiceManager * service;
+	GtkImage * status_image;
+	GtkMenu * menu;
 };
 
 GType indicator_session_get_type (void);
@@ -96,6 +98,9 @@ indicator_session_init (IndicatorSession *self)
 	/* Now let's fire these guys up. */
 	self->service = indicator_service_manager_new_version(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_VERSION);
 
+	self->status_image = GTK_IMAGE(gtk_image_new_from_icon_name("system-shutdown-panel", GTK_ICON_SIZE_MENU));
+	self->menu = GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT));
+
 	return;
 }
 
@@ -130,9 +135,8 @@ get_label (IndicatorObject * io)
 static GtkImage *
 get_icon (IndicatorObject * io)
 {
-	GtkImage * status_image = GTK_IMAGE(gtk_image_new_from_icon_name("system-shutdown-panel", GTK_ICON_SIZE_MENU));
-	gtk_widget_show(GTK_WIDGET(status_image));
-	return status_image;
+	gtk_widget_show(GTK_WIDGET(INDICATOR_SESSION(io)->status_image));
+	return INDICATOR_SESSION(io)->status_image;
 }
 
 /* Indicator based function to get the menu for the whole
@@ -141,7 +145,7 @@ get_icon (IndicatorObject * io)
 static GtkMenu *
 get_menu (IndicatorObject * io)
 {
-	return GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT));
+	return INDICATOR_SESSION(io)->menu;
 }
 
 

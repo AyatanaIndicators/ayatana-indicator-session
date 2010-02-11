@@ -1,3 +1,13 @@
+indicator-session (0.2.2-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.2
+    * Check the user_switching lockdown key to disable user_switching
+    * Only create the screensaver proxy when needed.
+    * Removing unneeded GPM proxy
+    * Fixing and reenabling user switching
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 11 Feb 2010 10:53:06 -0600
+
 indicator-session (0.2.1-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.1

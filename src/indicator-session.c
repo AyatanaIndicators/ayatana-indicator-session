@@ -22,6 +22,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib.h>
 #include <glib-object.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <libdbusmenu-gtk/menu.h>
 
@@ -153,13 +154,81 @@ get_menu (IndicatorObject * io)
 	return GTK_MENU(INDICATOR_SESSION(io)->menu);
 }
 
+static void
+switch_property_change (DbusmenuMenuitem * item, const gchar * property, const GValue * value, gpointer user_data)
+{
+	if (g_strcmp0(property, MENU_SWITCH_USER) != 0) {
+		return;
+	}
+	
+	gchar * finalstring = NULL;
+	gboolean set_ellipsize = FALSE;
+
+	/* If there's a NULL string of some type, then we want to
+	   go back to our old 'Switch User' which isn't great but
+	   eh, this error condition should never happen. */
+	if (value == NULL || g_value_get_string(value) == NULL || g_value_get_string(value)[0] == '\0') {
+		finalstring = _("Switch User...");
+		set_ellipsize = FALSE;
+	}
+
+	if (finalstring == NULL) {
+		const gchar * username = g_value_get_string(value);
+		GtkWidget * off = gtk_offscreen_window_new();
+		GtkWidget * label = gtk_label_new(username);
+		gtk_container_add(GTK_CONTAINER(off), label);
+		GdkPixmap * pixmap = gtk_offscreen_window_get_pixmap(GTK_OFFSCREEN_WINDOW(off));
+
+		gint width, height;
+		gdk_drawable_get_size(GDK_DRAWABLE(pixmap), &width, &height);
+
+		GtkStyle * style = gtk_widget_get_style(label); /* TODO: Switch to menuitem label */
+		gint point = pango_font_description_get_size(style->font_desc);
+
+		gdouble dpi = gdk_screen_get_resolution(gdk_screen_get_default());
+
+		gdouble pixels_per_em = point * dpi / 72.0f;
+		gdouble ems = width / pixels_per_em;
+
+		/* TODO: We need some way to remove the elipsis from appearing
+		         twice in the label.  Not sure how to do that yet. */
+		finalstring = g_strdup_printf(_("Switch from %s..."), username);
+		if (ems >= 20.0f) {
+			set_ellipsize = TRUE;
+		} else {
+			set_ellipsize = FALSE;
+		}
+	}
+
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(DBUSMENU_GTKCLIENT(user_data), item);
+	gtk_menu_item_set_label(gmi, finalstring);
+
+	GtkLabel * label = GTK_LABEL(gtk_bin_get_child(GTK_BIN(gmi)));
+	if (label != NULL) {
+		if (set_ellipsize) {
+			gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
+		} else {
+			gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
+		}
+	}
+
+	return;
+}
+
+
 /* This function checks to see if the user name is short enough
    to not need ellipsing itself, or if, it will get ellipsed by
    the standard label processor. */
 static gboolean
 build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
+	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
+	/* TODO: Setup style update */
 
+	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+
+	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(switch_property_change), client);
+	switch_property_change(newitem, MENU_SWITCH_USER, dbusmenu_menuitem_property_get_value(newitem, MENU_SWITCH_USER), client);
 
 	return FALSE;
 }

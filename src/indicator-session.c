@@ -181,17 +181,17 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 		pango_layout_set_text(layout, username, -1);
 		pango_layout_set_font_description(layout, style->font_desc);
 
-		gint width, height;
-		pango_layout_get_pixel_size(layout, &width, &height);
+		gint width;
+		pango_layout_get_pixel_size(layout, &width, NULL);
 		g_debug("Username width %dpx", width);
 
 		gint point = pango_font_description_get_size(style->font_desc);
-		g_debug("Font size %d pt", point);
+		g_debug("Font size %f pt", (gfloat)point / PANGO_SCALE);
 
 		gdouble dpi = gdk_screen_get_resolution(gdk_screen_get_default());
 		g_debug("Screen DPI %f", dpi);
 
-		gdouble pixels_per_em = point * dpi / 72.0f;
+		gdouble pixels_per_em = ((point * dpi) / 72.0f) / PANGO_SCALE;
 		gdouble ems = width / pixels_per_em;
 		g_debug("Username width %fem", ems);
 

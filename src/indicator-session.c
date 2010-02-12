@@ -219,6 +219,20 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 	return;
 }
 
+static const gchar * dbusmenu_item_data = "dbusmenu-item";
+
+/* Callback for when the style changes so we can reevaluate the
+   size of the user name with the potentially new font. */
+static void
+switch_style_set (GtkWidget * widget, GtkStyle * prev_style, gpointer user_data)
+{
+	DbusmenuGtkClient * client = DBUSMENU_GTKCLIENT(user_data);
+	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), dbusmenu_item_data));
+
+	switch_property_change(mi, MENU_SWITCH_USER, dbusmenu_menuitem_property_get_value(mi, MENU_SWITCH_USER), client);
+	return;
+}
+
 
 /* This function checks to see if the user name is short enough
    to not need ellipsing itself, or if, it will get ellipsed by
@@ -230,11 +244,12 @@ build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusme
 	if (gmi == NULL) {
 		return FALSE;
 	}
-	/* TODO: Setup style update */
+	g_object_set_data(G_OBJECT(gmi), dbusmenu_item_data, newitem);
 
 	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
 
 	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(switch_property_change), client);
+	g_signal_connect(G_OBJECT(gmi), "style-set", G_CALLBACK(switch_style_set), client);
 	switch_property_change(newitem, MENU_SWITCH_USER, dbusmenu_menuitem_property_get_value(newitem, MENU_SWITCH_USER), client);
 
 	return TRUE;

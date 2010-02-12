@@ -161,6 +161,7 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 		return;
 	}
 	
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(DBUSMENU_GTKCLIENT(user_data), item);
 	gchar * finalstring = NULL;
 	gboolean set_ellipsize = FALSE;
 
@@ -174,22 +175,25 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 
 	if (finalstring == NULL) {
 		const gchar * username = g_value_get_string(value);
-		GtkWidget * off = gtk_offscreen_window_new();
-		GtkWidget * label = gtk_label_new(username);
-		gtk_container_add(GTK_CONTAINER(off), label);
-		gtk_widget_realize(off);
-		GdkPixmap * pixmap = gtk_offscreen_window_get_pixmap(GTK_OFFSCREEN_WINDOW(off));
+		GtkStyle * style = gtk_widget_get_style(GTK_WIDGET(gmi)); /* TODO: Switch to menuitem label */
+
+		PangoLayout * layout = pango_layout_new(gtk_widget_get_pango_context(GTK_WIDGET(gmi)));
+		pango_layout_set_text(layout, username, -1);
+		pango_layout_set_font_description(layout, style->font_desc);
 
 		gint width, height;
-		gdk_drawable_get_size(GDK_DRAWABLE(pixmap), &width, &height);
+		pango_layout_get_pixel_size(layout, &width, &height);
+		g_debug("Username width %dpx", width);
 
-		GtkStyle * style = gtk_widget_get_style(label); /* TODO: Switch to menuitem label */
 		gint point = pango_font_description_get_size(style->font_desc);
+		g_debug("Font size %d pt", point);
 
 		gdouble dpi = gdk_screen_get_resolution(gdk_screen_get_default());
+		g_debug("Screen DPI %f", dpi);
 
 		gdouble pixels_per_em = point * dpi / 72.0f;
 		gdouble ems = width / pixels_per_em;
+		g_debug("Username width %fem", ems);
 
 		/* TODO: We need some way to remove the elipsis from appearing
 		         twice in the label.  Not sure how to do that yet. */
@@ -201,7 +205,6 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 		}
 	}
 
-	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(DBUSMENU_GTKCLIENT(user_data), item);
 	gtk_menu_item_set_label(gmi, finalstring);
 
 	GtkLabel * label = GTK_LABEL(gtk_bin_get_child(GTK_BIN(gmi)));

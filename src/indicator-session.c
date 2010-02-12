@@ -210,9 +210,9 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 	GtkLabel * label = GTK_LABEL(gtk_bin_get_child(GTK_BIN(gmi)));
 	if (label != NULL) {
 		if (set_ellipsize) {
-			gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
-		} else {
 			gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
+		} else {
+			gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
 		}
 	}
 

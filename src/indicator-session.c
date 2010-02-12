@@ -175,7 +175,7 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 
 	if (finalstring == NULL) {
 		const gchar * username = g_value_get_string(value);
-		GtkStyle * style = gtk_widget_get_style(GTK_WIDGET(gmi)); /* TODO: Switch to menuitem label */
+		GtkStyle * style = gtk_widget_get_style(GTK_WIDGET(gmi));
 
 		PangoLayout * layout = pango_layout_new(gtk_widget_get_pango_context(GTK_WIDGET(gmi)));
 		pango_layout_set_text(layout, username, -1);

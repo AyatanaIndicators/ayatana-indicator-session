@@ -437,12 +437,35 @@ rebuild_items (DbusmenuMenuitem *root,
 
   if (can_activate == TRUE)
     {
+	  DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
+	  dbusmenu_menuitem_property_set(separator1, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+	  dbusmenu_menuitem_child_append(root, separator1);
+
       if (check_guest_session ())
         {
           mi = dbusmenu_menuitem_new ();
           dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
           dbusmenu_menuitem_child_append (root, mi);
           g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
+        }
+
+      if (check_new_session ())
+        {
+          ensure_gconf_client ();
+
+          switch_menuitem = dbusmenu_menuitem_new ();
+          dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch User..."));
+          dbusmenu_menuitem_child_append (root, switch_menuitem);
+          g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
+
+          if (gconf_client_get_bool (gconf_client, LOCKDOWN_KEY, NULL))
+            {
+              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
+            }
+          else
+            {
+              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
+            }
         }
 
       if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
@@ -476,24 +499,6 @@ rebuild_items (DbusmenuMenuitem *root,
             }
         }
 
-      if (check_new_session ())
-        {
-          ensure_gconf_client ();
-
-          switch_menuitem = dbusmenu_menuitem_new ();
-          dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch User..."));
-          dbusmenu_menuitem_child_append (root, switch_menuitem);
-          g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
-
-          if (gconf_client_get_bool (gconf_client, LOCKDOWN_KEY, NULL))
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-            }
-          else
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
-            }
-        }
     }
 
 	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();

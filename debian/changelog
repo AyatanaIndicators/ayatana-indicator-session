@@ -1,4 +1,4 @@
-indicator-session (0.2.2-0ubuntu2) UNRELEASED; urgency=low
+indicator-session (0.2.2-0ubuntu2) lucid; urgency=low
 
   * debian/control: Update devicekit-power dependency to upower.
   * Add debian/patches/01_port_to_upower.patch: Straightforward port to
@@ -6,7 +6,7 @@ indicator-session (0.2.2-0ubuntu2) UNRELEASED; urgency=low
     proposed upstream as well, but it's not yet clear whether to use the
     client library or the D-Bus API.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 16 Feb 2010 12:23:24 +0100
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 17 Feb 2010 11:30:00 +0100
 
 indicator-session (0.2.2-0ubuntu1) lucid; urgency=low
 

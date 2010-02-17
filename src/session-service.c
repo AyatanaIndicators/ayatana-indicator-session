@@ -44,9 +44,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "users-service-dbus.h"
 #include "lock-helper.h"
 
-#define DKP_ADDRESS    "org.freedesktop.DeviceKit.Power"
-#define DKP_OBJECT     "/org/freedesktop/DeviceKit/Power"
-#define DKP_INTERFACE  "org.freedesktop.DeviceKit.Power"
+#define UP_ADDRESS    "org.freedesktop.UPower"
+#define UP_OBJECT     "/org/freedesktop/UPower"
+#define UP_INTERFACE  "org.freedesktop.UPower"
 
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
 
@@ -72,8 +72,8 @@ static GList *users;
 
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
-static DBusGProxy * dkp_main_proxy = NULL;
-static DBusGProxy * dkp_prop_proxy = NULL;
+static DBusGProxy * up_main_proxy = NULL;
+static DBusGProxy * up_prop_proxy = NULL;
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
@@ -147,14 +147,14 @@ machine_sleep (DbusmenuMenuitem * mi, guint timestamp, gpointer userdata)
 {
 	gchar * type = (gchar *)userdata;
 
-	if (dkp_main_proxy == NULL) {
-		g_warning("Can not %s as no DeviceKit Power Proxy", type);
+	if (up_main_proxy == NULL) {
+		g_warning("Can not %s as no upower proxy", type);
 	}
 
 	screensaver_throttle(type);
 	lock_screen(NULL, 0, NULL);
 
-	dbus_g_proxy_begin_call(dkp_main_proxy,
+	dbus_g_proxy_begin_call(up_main_proxy,
 	                        type,
 	                        sleep_response,
 	                        NULL,
@@ -213,17 +213,17 @@ hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 /* A signal that we need to recheck to ensure we can still
    hibernate and/or suspend */
 static void
-dpk_changed_cb (DBusGProxy * proxy, gpointer user_data)
+up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 {
 	/* Start Async call to see if we can hibernate */
 	if (suspend_call == NULL) {
-		suspend_call = dbus_g_proxy_begin_call(dkp_prop_proxy,
+		suspend_call = dbus_g_proxy_begin_call(up_prop_proxy,
 		                                       "Get",
 		                                       suspend_prop_cb,
 		                                       NULL,
 		                                       NULL,
 		                                       G_TYPE_STRING,
-		                                       DKP_INTERFACE,
+		                                       UP_INTERFACE,
 		                                       G_TYPE_STRING,
 		                                       "can-suspend",
 		                                       G_TYPE_INVALID,
@@ -233,13 +233,13 @@ dpk_changed_cb (DBusGProxy * proxy, gpointer user_data)
 
 	/* Start Async call to see if we can suspend */
 	if (hibernate_call == NULL) {
-		hibernate_call = dbus_g_proxy_begin_call(dkp_prop_proxy,
+		hibernate_call = dbus_g_proxy_begin_call(up_prop_proxy,
 		                                         "Get",
 		                                         hibernate_prop_cb,
 		                                         NULL,
 		                                         NULL,
 		                                         G_TYPE_STRING,
-		                                         DKP_INTERFACE,
+		                                         UP_INTERFACE,
 		                                         G_TYPE_STRING,
 		                                         "can-hibernate",
 		                                         G_TYPE_INVALID,
@@ -254,39 +254,39 @@ dpk_changed_cb (DBusGProxy * proxy, gpointer user_data)
    DKp checking.  We're even setting up the calls for the props
    we need */
 static void
-setup_dkp (void) {
+setup_up (void) {
 	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
 	g_return_if_fail(bus != NULL);
 
-	if (dkp_main_proxy == NULL) {
-		dkp_main_proxy = dbus_g_proxy_new_for_name(bus,
-		                                           DKP_ADDRESS,
-		                                           DKP_OBJECT,
-		                                           DKP_INTERFACE);
+	if (up_main_proxy == NULL) {
+		up_main_proxy = dbus_g_proxy_new_for_name(bus,
+		                                           UP_ADDRESS,
+		                                           UP_OBJECT,
+		                                           UP_INTERFACE);
 	}
-	g_return_if_fail(dkp_main_proxy != NULL);
+	g_return_if_fail(up_main_proxy != NULL);
 
-	if (dkp_prop_proxy == NULL) {
-		dkp_prop_proxy = dbus_g_proxy_new_for_name(bus,
-		                                           DKP_ADDRESS,
-		                                           DKP_OBJECT,
+	if (up_prop_proxy == NULL) {
+		up_prop_proxy = dbus_g_proxy_new_for_name(bus,
+		                                           UP_ADDRESS,
+		                                           UP_OBJECT,
 		                                           DBUS_INTERFACE_PROPERTIES);
 	}
-	g_return_if_fail(dkp_prop_proxy != NULL);
+	g_return_if_fail(up_prop_proxy != NULL);
 
 	/* Connect to changed signal */
-	dbus_g_proxy_add_signal(dkp_main_proxy,
+	dbus_g_proxy_add_signal(up_main_proxy,
 	                        "Changed",
 	                        G_TYPE_INVALID);
 
-	dbus_g_proxy_connect_signal(dkp_main_proxy,
+	dbus_g_proxy_connect_signal(up_main_proxy,
 	                            "Changed",
-	                            G_CALLBACK(dpk_changed_cb),
+	                            G_CALLBACK(up_changed_cb),
 	                            NULL,
 	                            NULL);
 
 	/* Force an original "changed" event */
-	dpk_changed_cb(dkp_main_proxy, NULL);
+	up_changed_cb(up_main_proxy, NULL);
 
 	return;
 }
@@ -639,7 +639,7 @@ main (int argc, char ** argv)
                       G_CALLBACK (user_removed),
                       root_menuitem);
 
-	setup_dkp();
+	setup_up();
 
     DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
     dbusmenu_server_set_root(server, root_menuitem);

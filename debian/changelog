@@ -1,3 +1,13 @@
+indicator-session (0.2.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Upstream release 0.2.3
+    * Switch menu ordering to match design spec
+    * Change switch menu item to "Switch from..."
+    * Move from Devkit-Power to upower
+    * Adding in user logged in icon and menu item
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 09:42:50 -0600
+
 indicator-session (0.2.2-0ubuntu2) lucid; urgency=low
 
   * debian/control: Update devicekit-power dependency to upower.

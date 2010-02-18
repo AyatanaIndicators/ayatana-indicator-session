@@ -38,4 +38,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define INDICATOR_SESSION_DBUS_OBJECT "/org/ayatana/indicator/session/menu"
 #define INDICATOR_SESSION_DBUS_VERSION  0
 
+#define USER_ITEM_TYPE            "x-canonical-user-item"
+#define USER_ITEM_PROP_NAME       "user-item-name"
+#define USER_ITEM_PROP_LOGGED_IN  "user-item-logged-in"
+
 #endif /* __DBUS_SHARED_NAMES_H__ */

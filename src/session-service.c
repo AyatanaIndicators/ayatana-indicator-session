@@ -495,7 +495,9 @@ rebuild_items (DbusmenuMenuitem *root,
               user->service = service;
 
               mi = dbusmenu_menuitem_new ();
-              dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, user->real_name);
+              dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+              dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
+			  dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
               dbusmenu_menuitem_child_append (root, mi);
               g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
             }

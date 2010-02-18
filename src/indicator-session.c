@@ -135,11 +135,33 @@ get_icon (IndicatorObject * io)
 	return status_image;
 }
 
+/* Builds an item with a hip little logged in icon. */
 static gboolean
 new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
+	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
+	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
 
-	return FALSE;
+	GtkWidget * label = gtk_label_new(dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+	gtk_widget_show(label);
+
+	GtkWidget * icon = gtk_image_new_from_icon_name("account-logged-in", GTK_ICON_SIZE_MENU);
+	gtk_misc_set_alignment(GTK_MISC(icon), 1.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
+	if (dbusmenu_menuitem_property_get_bool(newitem, USER_ITEM_PROP_LOGGED_IN)) {
+		gtk_widget_show(icon);
+	} else {
+		gtk_widget_hide(icon);
+	}
+
+	gtk_container_add(GTK_CONTAINER(gmi), hbox);
+	gtk_widget_show(hbox);
+
+	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+
+	return TRUE;
 }
 
 /* Indicator based function to get the menu for the whole

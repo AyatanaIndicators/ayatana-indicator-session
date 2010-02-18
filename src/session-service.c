@@ -444,7 +444,9 @@ rebuild_items (DbusmenuMenuitem *root,
       if (check_guest_session ())
         {
           mi = dbusmenu_menuitem_new ();
-          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Guest Session"));
+		  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+          dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, _("Guest Session"));
+          dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
           dbusmenu_menuitem_child_append (root, mi);
           g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
         }

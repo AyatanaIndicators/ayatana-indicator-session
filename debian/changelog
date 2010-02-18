@@ -1,4 +1,4 @@
-indicator-session (0.2.3-0ubuntu1~ppa1) lucid; urgency=low
+indicator-session (0.2.3-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.3
     * Switch menu ordering to match design spec

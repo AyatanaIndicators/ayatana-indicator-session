@@ -135,13 +135,25 @@ get_icon (IndicatorObject * io)
 	return status_image;
 }
 
+static gboolean
+new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+{
+
+	return FALSE;
+}
+
 /* Indicator based function to get the menu for the whole
    applet.  This starts up asking for the parts of the menu
    from the various services. */
 static GtkMenu *
 get_menu (IndicatorObject * io)
 {
-	return GTK_MENU(dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT));
+	DbusmenuGtkMenu * menu = dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
+	DbusmenuGtkClient * client = dbusmenu_gtkmenu_get_client(menu);
+
+	dbusmenu_client_add_type_handler(DBUSMENU_CLIENT(client), USER_ITEM_TYPE, new_user_item);
+
+	return GTK_MENU(menu);
 }
 
 

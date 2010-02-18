@@ -5,6 +5,8 @@ indicator-session (0.2.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Change switch menu item to "Switch from..."
     * Move from Devkit-Power to upower
     * Adding in user logged in icon and menu item
+  * Removed debian/patches/01_port_to_upower.patch as it is now merged
+    upstream.
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 09:42:50 -0600
 

@@ -1,4 +1,4 @@
-indicator-session (0.2.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-session (0.2.3-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.2.3
     * Switch menu ordering to match design spec
@@ -8,7 +8,7 @@ indicator-session (0.2.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * Removed debian/patches/01_port_to_upower.patch as it is now merged
     upstream.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 09:42:50 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Feb 2010 09:49:22 -0600
 
 indicator-session (0.2.2-0ubuntu2) lucid; urgency=low
 

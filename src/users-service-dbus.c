@@ -1,3 +1,4 @@
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*- */
 /*
  * Copyright 2009 Canonical Ltd.
  *
@@ -183,7 +184,8 @@ users_service_dbus_init (UsersServiceDbus *self)
   create_ck_proxy (self);
   create_seat_proxy (self);
 
-  users_loaded (priv->gdm_proxy, self);
+  if (priv->gdm_proxy)
+    users_loaded (priv->gdm_proxy, self);
 }
 
 static void
@@ -214,7 +216,7 @@ create_gdm_proxy (UsersServiceDbus *self)
     {
       if (error != NULL)
         {
-          g_error ("Unable to get DisplayManager proxy on system bus: %s", error->message);
+          g_warning ("Unable to get DisplayManager proxy on system bus: %s", error->message);
           g_error_free (error);
         }
 
@@ -679,6 +681,8 @@ users_loaded (DBusGProxy *proxy,
   GError                  *error = NULL;
   gint                     count;
 
+  g_return_if_fail (proxy != NULL);
+
   service = (UsersServiceDbus *)user_data;
   priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
 
@@ -859,6 +863,8 @@ gboolean
 start_new_user_session (UsersServiceDbus *self,
                         UserData         *user)
 {
+  g_return_val_if_fail (IS_USERS_SERVICE_DBUS (self), FALSE);
+
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   GError   *error = NULL;
   char     *ssid;

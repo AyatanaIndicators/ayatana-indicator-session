@@ -1,3 +1,11 @@
+indicator-session (0.2.3-0ubuntu2) lucid; urgency=low
+
+  * debian/patches/fix-session-menu-without-gdm.patch
+    - Don't fail with a g_error when we fail to get a list of user sessions 
+      from gdm (LP: #506683)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 09:43:14 -0500
+
 indicator-session (0.2.3-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.3

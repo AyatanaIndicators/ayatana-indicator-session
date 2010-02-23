@@ -226,7 +226,7 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 		                                       G_TYPE_STRING,
 		                                       UP_INTERFACE,
 		                                       G_TYPE_STRING,
-		                                       "can-suspend",
+		                                       "CanSuspend",
 		                                       G_TYPE_INVALID,
 		                                       G_TYPE_VALUE,
 		                                       G_TYPE_INVALID);
@@ -242,7 +242,7 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 		                                         G_TYPE_STRING,
 		                                         UP_INTERFACE,
 		                                         G_TYPE_STRING,
-		                                         "can-hibernate",
+		                                         "CanHibernate",
 		                                         G_TYPE_INVALID,
 		                                         G_TYPE_VALUE,
 		                                         G_TYPE_INVALID);

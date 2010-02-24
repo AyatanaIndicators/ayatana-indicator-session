@@ -56,3 +56,10 @@ logout_dialog_finalize (GObject *object)
 	G_OBJECT_CLASS (logout_dialog_parent_class)->finalize (object);
 	return;
 }
+
+LogoutDialog *
+logout_dialog_new (LogoutDialogType type)
+{
+
+	return NULL;
+}

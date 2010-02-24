@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <polkit/polkit.h>
 
-gboolean pk_require_auth (LogoutDialogAction action);
+gboolean pk_require_auth (LogoutDialogType action);
 gboolean pk_can_do_action (const gchar *action_id, PolkitAuthorizationResult ** pol_result);
 
 #endif /* __CK_PK_HELPER__ */

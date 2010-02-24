@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbus/dbus-glib.h>
 #include <polkit/polkit.h>
 
-#include "logout-dialog.h"
+#include "dialog.h"
 #include "ck-pk-helper.h"
 
 static gboolean
@@ -150,20 +150,20 @@ ck_multiple_users (void)
 }
 
 gboolean
-pk_require_auth (LogoutDialogAction action) {
-	if (action == LOGOUT_DIALOG_LOGOUT) {
+pk_require_auth (LogoutDialogType action) {
+	if (action == LOGOUT_DIALOG_TYPE_LOG_OUT) {
 		return FALSE;
 	}
 
 	gchar * pk_action;
 	if (ck_multiple_users()) {
-		if (action == LOGOUT_DIALOG_RESTART) {
+		if (action == LOGOUT_DIALOG_TYPE_RESTART) {
 			pk_action = "org.freedesktop.consolekit.system.restart-multiple-users";
 		} else {
 			pk_action = "org.freedesktop.consolekit.system.stop-multiple-users";
 		}
 	} else {
-		if (action == LOGOUT_DIALOG_RESTART) {
+		if (action == LOGOUT_DIALOG_TYPE_RESTART) {
 			pk_action = "org.freedesktop.consolekit.system.restart";
 		} else {
 			pk_action = "org.freedesktop.consolekit.system.stop";

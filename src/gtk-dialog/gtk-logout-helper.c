@@ -30,6 +30,44 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "gconf-helper.h"
 
 static void
+consolekit_fallback (LogoutDialogAction action)
+{
+	DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
+	g_return_if_fail(sbus != NULL); /* worst case */
+	DBusGProxy * proxy = dbus_g_proxy_new_for_name(sbus, "org.freedesktop.ConsoleKit",
+	                                                     "/org/freedesktop/ConsoleKit/Manager",
+	                                                     "org.freedesktop.ConsoleKit.Manager");
+
+	if (proxy == NULL) {
+		g_warning("Unable to get consolekit proxy");
+		return;
+	}
+
+	switch (action) {
+		case LOGOUT_DIALOG_LOGOUT:
+			g_warning("Unable to fallback to ConsoleKit for logout as it's a session issue.  We need some sort of session handler.");
+			break;
+		case LOGOUT_DIALOG_SHUTDOWN:
+			dbus_g_proxy_call_no_reply(proxy,
+			                           "Stop",
+			                           G_TYPE_INVALID);
+			break;
+		case LOGOUT_DIALOG_RESTART:
+			dbus_g_proxy_call_no_reply(proxy,
+			                           "Restart",
+			                           G_TYPE_INVALID);
+			break;
+		default:
+			g_warning("Unknown action");
+			break;
+	}
+
+	g_object_unref(proxy);
+
+	return;
+}
+
+static void
 session_action (LogoutDialogAction action)
 {
 	DBusGConnection * sbus;
@@ -50,6 +88,8 @@ session_action (LogoutDialogAction action)
 	if (sm_proxy == NULL) {
 		g_warning("Unable to get DBus proxy to SessionManager interface: %s", error->message);
 		g_error_free(error);
+
+		consolekit_fallback(action);
 		return;
 	}		
 	

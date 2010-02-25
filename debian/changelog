@@ -1,3 +1,18 @@
+indicator-session (0.2.4-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.2.4
+    * When we can't shutdown with gnome-session fallback to using
+      ConsoleKit.
+    * Detect when GPM isn't available and don't error out.
+    * Change suspend and hibernate detection property names for
+      adjustment to upower.
+
+  [Ken VanDine]
+  * debian/patches/fix-session-menu-without-gdm.patch
+    - dropped patch, merged upstream
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Feb 2010 11:57:41 -0600
+
 indicator-session (0.2.3-0ubuntu2) lucid; urgency=low
 
   * debian/patches/fix-session-menu-without-gdm.patch
@@ -341,3 +356,4 @@ indicator-sus (0.1~ppa1) intrepid; urgency=low
   * Initial release
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 04 Dec 2008 23:51:41 -0800
+

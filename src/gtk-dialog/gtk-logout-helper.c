@@ -30,6 +30,15 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "gconf-helper.h"
 
 static void
+console_kit_action_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
+{
+	g_return_if_fail(DBUS_IS_G_PROXY(proxy));
+	g_return_if_fail(call != NULL);
+
+
+}
+
+static void
 consolekit_fallback (LogoutDialogAction action)
 {
 	DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
@@ -48,14 +57,20 @@ consolekit_fallback (LogoutDialogAction action)
 			g_warning("Unable to fallback to ConsoleKit for logout as it's a session issue.  We need some sort of session handler.");
 			break;
 		case LOGOUT_DIALOG_SHUTDOWN:
-			dbus_g_proxy_call_no_reply(proxy,
-			                           "Stop",
-			                           G_TYPE_INVALID);
+			dbus_g_proxy_begin_call(proxy,
+			                        "Stop",
+			                        console_kit_action_cb,
+			                        NULL, /* data */
+			                        NULL, /* destroy notifier */
+			                        G_TYPE_INVALID);
 			break;
 		case LOGOUT_DIALOG_RESTART:
-			dbus_g_proxy_call_no_reply(proxy,
-			                           "Restart",
-			                           G_TYPE_INVALID);
+			dbus_g_proxy_begin_call(proxy,
+			                        "Restart",
+			                        console_kit_action_cb,
+			                        NULL, /* data */
+			                        NULL, /* destroy notifier */
+			                        G_TYPE_INVALID);
 			break;
 		default:
 			g_warning("Unknown action");

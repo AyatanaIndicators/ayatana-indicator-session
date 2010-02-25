@@ -43,19 +43,23 @@ consolekit_fallback (LogoutDialogAction action)
 		return;
 	}
 
+	GError * error = NULL;
+
 	switch (action) {
 		case LOGOUT_DIALOG_LOGOUT:
 			g_warning("Unable to fallback to ConsoleKit for logout as it's a session issue.  We need some sort of session handler.");
 			break;
 		case LOGOUT_DIALOG_SHUTDOWN:
-			dbus_g_proxy_call_no_reply(proxy,
-			                           "Stop",
-			                           G_TYPE_INVALID);
+			dbus_g_proxy_call(proxy,
+			                  "Stop",
+			                  &error,
+			                  G_TYPE_INVALID);
 			break;
 		case LOGOUT_DIALOG_RESTART:
-			dbus_g_proxy_call_no_reply(proxy,
-			                           "Restart",
-			                           G_TYPE_INVALID);
+			dbus_g_proxy_call(proxy,
+			                  "Restart",
+			                  &error,
+			                  G_TYPE_INVALID);
 			break;
 		default:
 			g_warning("Unknown action");
@@ -63,6 +67,11 @@ consolekit_fallback (LogoutDialogAction action)
 	}
 
 	g_object_unref(proxy);
+
+	if (error != NULL) {
+		g_error("Unable to signal ConsoleKit: %s", error->message);
+		g_error_free(error);
+	}
 
 	return;
 }

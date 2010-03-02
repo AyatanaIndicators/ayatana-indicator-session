@@ -214,6 +214,7 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 
 		gint width;
 		pango_layout_get_pixel_size(layout, &width, NULL);
+		g_object_unref(layout);
 		g_debug("Username width %dpx", width);
 
 		gint point = pango_font_description_get_size(style->font_desc);

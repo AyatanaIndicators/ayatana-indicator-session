@@ -17,6 +17,12 @@ libsession_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
 libsession_la_LIBADD = $(APPLET_LIBS)
 libsession_la_LDFLAGS = -module -avoid-version
 
+consolekit-manager-client.h: $(srcdir)/consolekit-manager.xml
+	dbus-binding-tool \
+		--prefix=_consolekit_manager_client \
+		--mode=glib-client \
+		--output=consolekit-manager-client.h \
+		$(srcdir)/consolekit-manager.xml
 
 users-service-client.h: $(srcdir)/users-service.xml
 	dbus-binding-tool \
@@ -56,11 +62,13 @@ indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 ###############
 
 BUILT_SOURCES = \
+	consolekit-manager-client.h \
 	users-service-client.h \
 	users-service-marshal.h \
 	users-service-marshal.c
 
 EXTRA_DIST = \
+	consolekit-manager.xml \
 	users-service.xml \
 	users-service.list
 

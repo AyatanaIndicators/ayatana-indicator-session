@@ -406,7 +406,7 @@ compare_users_by_username (const gchar *a,
   UserData *user1 = (UserData *)a;
   UserData *user2 = (UserData *)b;
 
-  return g_strcmp0 (user1->user_name, user2->user_name);
+  return g_strcmp0 (user1->real_name, user2->real_name);
 }
 
 /* Builds up the menu for us */

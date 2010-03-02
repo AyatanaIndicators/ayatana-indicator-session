@@ -68,8 +68,6 @@ static UsersServiceDbus  *dbus_interface = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
-static gint   count;
-
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 static DBusGProxy * up_main_proxy = NULL;
@@ -473,8 +471,9 @@ rebuild_items (DbusmenuMenuitem *root,
 
 		GList * users = NULL;
 		users = users_service_dbus_get_user_list (service);
+		guint user_count = g_list_length(users);
 
-      if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
+      if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS)
         {
           users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
 
@@ -563,8 +562,6 @@ user_added (UsersServiceDbus *service,
 {
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
 
-  count++;
-
   rebuild_items (root, service);
 }
 
@@ -577,8 +574,6 @@ user_removed (UsersServiceDbus *service,
 {
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
 
-  count--;
-
   rebuild_items (root, service);
 }
 
@@ -589,8 +584,6 @@ create_items (DbusmenuMenuitem *root,
               UsersServiceDbus *service)
 {
   g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
-
-  count = users_service_dbus_get_user_count (service);
 
   rebuild_items (root, service);
 }

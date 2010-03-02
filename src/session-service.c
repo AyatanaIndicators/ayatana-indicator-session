@@ -412,6 +412,7 @@ rebuild_items (DbusmenuMenuitem *root,
                UsersServiceDbus *service)
 {
   DbusmenuMenuitem *mi = NULL;
+  DbusmenuMenuitem * guest_mi = NULL;
   GList *u;
   UserData *user;
   gboolean can_activate;
@@ -441,12 +442,12 @@ rebuild_items (DbusmenuMenuitem *root,
 
       if (check_guest_session ())
         {
-          mi = dbusmenu_menuitem_new ();
-		  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-          dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, _("Guest Session"));
-          dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
-          dbusmenu_menuitem_child_append (root, mi);
-          g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
+          guest_mi = dbusmenu_menuitem_new ();
+		  dbusmenu_menuitem_property_set (guest_mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+          dbusmenu_menuitem_property_set (guest_mi, USER_ITEM_PROP_NAME, _("Guest Session"));
+          dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
+          dbusmenu_menuitem_child_append (root, guest_mi);
+          g_signal_connect (G_OBJECT (guest_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
         }
 
       if (check_new_session ())
@@ -473,32 +474,45 @@ rebuild_items (DbusmenuMenuitem *root,
 		users = users_service_dbus_get_user_list (service);
 		guint user_count = g_list_length(users);
 
-      if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS)
-        {
-          users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+		if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+			users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+		}
 
-          for (u = users; u != NULL; u = g_list_next (u))
-            {
-              user = u->data;
+		for (u = users; u != NULL; u = g_list_next (u)) {
+			user = u->data;
+			user->service = service;
 
-              user->service = service;
+			if (user->uid == getuid()) {
+				/* Hide me from the list */
+				continue;
+			}
 
-              if (user->uid == getuid()) {
-                /* Hide me from the list */
-                continue;
-              }
+			if (g_strcmp0(user->user_name, "guest") == 0) {
+				/* Check to see if the guest has sessions and so therefore should
+				   get a check mark. */
+				if (user->sessions != NULL) {
+					dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, TRUE);
+				}
+				/* If we're showing user accounts, keep going through the list */
+				if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+					continue;
+				}
+				/* If not, we can stop here */
+				break;
+			}
 
-              mi = dbusmenu_menuitem_new ();
-              dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-              dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
-			  dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
-              dbusmenu_menuitem_child_append (root, mi);
-              g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
-            }
-        }
+			if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+				mi = dbusmenu_menuitem_new ();
+				dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+				dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
+				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
+				dbusmenu_menuitem_child_append (root, mi);
+				g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+			}
+		}
 
 		g_list_free(users);
-    }
+	}
 
 	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);

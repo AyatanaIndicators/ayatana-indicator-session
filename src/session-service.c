@@ -496,6 +496,11 @@ rebuild_items (DbusmenuMenuitem *root,
 
               user->service = service;
 
+              if (user->uid == getuid()) {
+                /* Hide me from the list */
+                continue;
+              }
+
               mi = dbusmenu_menuitem_new ();
               dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
               dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);

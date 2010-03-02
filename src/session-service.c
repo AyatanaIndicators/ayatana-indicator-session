@@ -406,7 +406,15 @@ compare_users_by_username (const gchar *a,
   UserData *user1 = (UserData *)a;
   UserData *user2 = (UserData *)b;
 
-  return g_strcmp0 (user1->real_name, user2->real_name);
+  gint retval = g_strcmp0 (user1->real_name, user2->real_name);
+
+  /* If they're the same, they're both in conflict. */
+  if (retval == 0) {
+    user1->real_name_conflict = TRUE;
+    user2->real_name_conflict = TRUE;
+  }
+
+  return retval;
 }
 
 /* Builds up the menu for us */

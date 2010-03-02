@@ -662,6 +662,7 @@ sync_users (UsersServiceDbus *self)
           user->shell       = g_strdup (g_value_get_string (g_value_array_get_nth (values, 3)));
           user->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
           user->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
+          user->real_name_conflict = FALSE;
 
           g_hash_table_insert (priv->users,
                                g_strdup (user->user_name),

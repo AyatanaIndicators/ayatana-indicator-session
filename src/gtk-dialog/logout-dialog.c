@@ -278,7 +278,6 @@ logout_dialog_init (LogoutDialog *logout_dialog)
   gtk_widget_realize(GTK_WIDGET(logout_dialog));
   /* remove superfluous window buttons */
   gdk_window_set_functions (GTK_WIDGET(logout_dialog)->window, 0);
-  gdk_window_set_decorations (GTK_WIDGET(logout_dialog)->window, GDK_DECOR_BORDER | GDK_DECOR_TITLE);
 
   /* center window */
   gtk_window_set_position (GTK_WINDOW(logout_dialog), GTK_WIN_POS_CENTER);

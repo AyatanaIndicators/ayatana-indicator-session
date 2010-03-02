@@ -1,3 +1,9 @@
+indicator-session (0.2.4-0ubuntu2) lucid; urgency=low
+
+  * Backport upstream change to fix decoration rendering issues
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 02 Mar 2010 16:03:20 +0100
+
 indicator-session (0.2.4-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.4

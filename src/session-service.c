@@ -69,7 +69,6 @@ static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
 static gint   count;
-static GList *users;
 
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
@@ -472,22 +471,11 @@ rebuild_items (DbusmenuMenuitem *root,
             }
         }
 
+		GList * users = NULL;
+		users = users_service_dbus_get_user_list (service);
+
       if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
         {
-          if (users != NULL)
-            {
-              GList *l = NULL;
-
-              for (l = users; l != NULL; l = l->next)
-                {
-                  users = g_list_delete_link (users, l);
-                }
-
-              users = NULL;
-            }
-
-          users = users_service_dbus_get_user_list (service);
-
           users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
 
           for (u = users; u != NULL; u = g_list_next (u))
@@ -509,6 +497,8 @@ rebuild_items (DbusmenuMenuitem *root,
               g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
             }
         }
+
+		g_list_free(users);
     }
 
 	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();

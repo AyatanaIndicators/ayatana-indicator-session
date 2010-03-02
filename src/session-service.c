@@ -556,36 +556,13 @@ rebuild_items (DbusmenuMenuitem *root,
 /* Signal called when a user is added.  It updates the count and
    rebuilds the menu */
 static void
-user_added (UsersServiceDbus *service,
-            UserData         *user,
-            gpointer          user_data)
+user_change (UsersServiceDbus *service,
+             UserData         *user,
+             gpointer          user_data)
 {
-  DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
-
-  rebuild_items (root, service);
-}
-
-/* Signal called when a user is deleted.  It updates the count and
-   rebuilds the menu */
-static void
-user_removed (UsersServiceDbus *service,
-              UserData         *user,
-              gpointer          user_data)
-{
-  DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
-
-  rebuild_items (root, service);
-}
-
-/* Wrapper around rebuild_items that is used on the first call
-   so that we can initialize the count variable. */
-static void
-create_items (DbusmenuMenuitem *root,
-              UsersServiceDbus *service)
-{
-  g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
-
-  rebuild_items (root, service);
+	DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
+	rebuild_items (root, service);
+	return;
 }
 
 /* When the service interface starts to shutdown, we
@@ -626,15 +603,15 @@ main (int argc, char ** argv)
 
     dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
 
-    create_items (root_menuitem, dbus_interface);
+    rebuild_items (root_menuitem, dbus_interface);
 
     g_signal_connect (G_OBJECT (dbus_interface),
                       "user-added",
-                      G_CALLBACK (user_added),
+                      G_CALLBACK (user_change),
                       root_menuitem);
     g_signal_connect (G_OBJECT (dbus_interface),
                       "user-removed",
-                      G_CALLBACK (user_removed),
+                      G_CALLBACK (user_change),
                       root_menuitem);
 
 	setup_up();

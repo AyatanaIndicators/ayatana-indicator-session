@@ -506,7 +506,13 @@ rebuild_items (DbusmenuMenuitem *root,
 
               mi = dbusmenu_menuitem_new ();
               dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+			  if (user->real_name_conflict) {
+				gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
+				dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
+				g_free(conflictedname);
+			  } else {
               dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
+			  }
 			  dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
               dbusmenu_menuitem_child_append (root, mi);
               g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);

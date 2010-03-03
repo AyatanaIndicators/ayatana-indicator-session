@@ -3,8 +3,6 @@ libexec_PROGRAMS = gtk-logout-helper
 
 gtk_logout_helper_SOURCES = \
 	gtk-logout-helper.c \
-	ck-pk-helper.c \
-	ck-pk-helper.h \
 	gconf-helper.c \
 	gconf-helper.h \
 	dialog.c \

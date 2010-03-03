@@ -27,6 +27,14 @@ static const gchar * button_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button", "Switch Off")
 };
 
+/* TRANSLATORS: These strings have an ellipsis so that the user knows
+   they are also going to get a password dialog to do the action. */
+static const gchar * button_auth_strings[LOGOUT_DIALOG_TYPE_CNT] = {
+	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("button auth", "Log Out"),
+	/* LOGOUT_DIALOG_RESTART, */	NC_("button auth", "Restart..."),
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button auth", "Switch Off...")
+};
+
 /*
 static const gchar * restart_updates = N_("Restart Instead");
 static const gchar * restart_auth = N_("Restart...");
@@ -165,9 +173,16 @@ logout_dialog_new (LogoutDialogType type)
 		restart_required = check_restart_required();
 	}
 
+	const gchar * button_text;
+	if (allowed) {
+		button_text = _(button_strings[type]);
+	} else {
+		button_text = _(button_auth_strings[type]);
+	}
+
 	gtk_dialog_add_buttons(GTK_DIALOG(dialog),
 	                       _("Cancel"), GTK_RESPONSE_CANCEL,
-	                       _(button_strings[type]), GTK_RESPONSE_OK,
+	                       button_text, GTK_RESPONSE_OK,
 	                       NULL);
 
 	return dialog;

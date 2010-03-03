@@ -3,6 +3,6 @@ data/indicator-session.schemas.in
 src/gtk-dialog/ck-pk-helper.c
 src/gtk-dialog/gconf-helper.c
 src/gtk-dialog/gtk-logout-helper.c
-src/gtk-dialog/logout-dialog.c
+src/gtk-dialog/dialog.c
 src/indicator-session.c
 src/session-service.c

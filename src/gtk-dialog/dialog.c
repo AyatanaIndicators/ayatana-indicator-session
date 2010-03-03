@@ -96,6 +96,9 @@ logout_dialog_finalize (GObject *object)
 LogoutDialog *
 logout_dialog_new (LogoutDialogType type)
 {
+	GtkWidget * image = gtk_image_new_from_icon_name(icon_strings[type], GTK_ICON_SIZE_DIALOG);
+	gtk_widget_show(image);
+
 	LogoutDialog * dialog = LOGOUT_DIALOG(g_object_new(LOGOUT_DIALOG_TYPE,
 	                                      /* Window */
 	                                      "icon-name", icon_strings[type],
@@ -103,11 +106,10 @@ logout_dialog_new (LogoutDialogType type)
 	                                      "resizable", FALSE,
 	                                      "title", _(title_strings[type]),
 	                                      "window-position", GTK_WIN_POS_CENTER_ALWAYS,
-	                                      /* Dialog */
-	                                      "has-separator", FALSE,
 	                                      /* Message Dialog */
-	                                      "message-type", GTK_MESSAGE_OTHER,
 	                                      "buttons", GTK_BUTTONS_NONE,
+	                                      "image", image,
+	                                      "message-type", GTK_MESSAGE_OTHER,
 	                                      "text", _(body_strings[type]),
 	                                      NULL));
 

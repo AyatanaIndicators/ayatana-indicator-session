@@ -35,8 +35,11 @@ static const gchar * button_auth_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button auth", "Switch Off...")
 };
 
+/* TRANSLATORS: This button appears on the logout dialog when
+   there are updates that require restart.  It will do a restart
+   in place of a log out. */
 static const gchar * restart_updates = N_("Restart Instead");
-static const gchar * restart_auth = N_("Restart...");
+static const gchar * restart_auth = N_("Restart Instead...");
 static const gchar * body_logout_update = N_("Some software updates won't apply until the computer next restarts.");
 
 static const gchar * icon_strings[LOGOUT_DIALOG_TYPE_CNT] = {

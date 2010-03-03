@@ -93,6 +93,25 @@ logout_dialog_finalize (GObject *object)
 	return;
 }
 
+/* Checks for updates that would signal that a restart is
+   required for them to apply */
+static gboolean
+check_restart_required (void)
+{
+
+	return FALSE;
+}
+
+/* Checks with console kit to see if we can do what we want */
+static gboolean
+ck_check_allowed (LogoutDialogType type)
+{
+
+
+
+	return TRUE;
+}
+
 LogoutDialog *
 logout_dialog_new (LogoutDialogType type)
 {
@@ -112,6 +131,18 @@ logout_dialog_new (LogoutDialogType type)
 	                                      "message-type", GTK_MESSAGE_OTHER,
 	                                      "text", _(body_strings[type]),
 	                                      NULL));
+
+	gboolean allowed = FALSE;
+	if (type == LOGOUT_DIALOG_TYPE_LOG_OUT) {
+		allowed = ck_check_allowed(LOGOUT_DIALOG_TYPE_RESTART);
+	} else {
+		allowed = ck_check_allowed(type);
+	}
+
+	gboolean restart_required = FALSE;
+	if (type == LOGOUT_DIALOG_TYPE_LOG_OUT) {
+		restart_required = check_restart_required();
+	}
 
 	gtk_dialog_add_buttons(GTK_DIALOG(dialog),
 	                       _("Cancel"), GTK_RESPONSE_CANCEL,

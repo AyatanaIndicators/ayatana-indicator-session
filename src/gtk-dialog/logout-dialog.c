@@ -62,13 +62,13 @@ get_plural_string (LogoutDialog * dialog);
 static const gchar * title_strings[LOGOUT_DIALOG_ACTION_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("title", "Log Out"),
 	/* LOGOUT_DIALOG_RESTART, */	NC_("title", "Restart"),
-	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("title", "Shut Down")
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("title", "Switch Off")
 };
 
 static const gchar * button_strings[LOGOUT_DIALOG_ACTION_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("button", "Log Out"),
 	/* LOGOUT_DIALOG_RESTART, */	NC_("button", "Restart"),
-	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button", "Shut Down")
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button", "Switch Off")
 };
 
 static const gchar * restart_auth = N_("Restart...");
@@ -126,8 +126,8 @@ get_plural_string (LogoutDialog * dialog)
 			       dialog->timeout);
       break;
     case LOGOUT_DIALOG_SHUTDOWN:
-      plural_string = ngettext("The computer will be shut down in %d second.",
-			       "The computer will be shut down in %d seconds.",
+      plural_string = ngettext("The computer will switch off in %d second.",
+			       "The computer will switch off in %d seconds.",
 			       dialog->timeout);
       break;
 	default:

@@ -35,11 +35,9 @@ static const gchar * button_auth_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button auth", "Switch Off...")
 };
 
-/*
 static const gchar * restart_updates = N_("Restart Instead");
 static const gchar * restart_auth = N_("Restart...");
 static const gchar * body_logout_update = N_("Some software updates won't apply until the computer next restarts.");
-*/
 
 static const gchar * icon_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	"system-log-out",
@@ -107,8 +105,7 @@ logout_dialog_finalize (GObject *object)
 static gboolean
 check_restart_required (void)
 {
-
-	return FALSE;
+	return g_file_test("/var/run/reboot-required", G_FILE_TEST_EXISTS);
 }
 
 /* Checks with console kit to see if we can do what we want */
@@ -180,10 +177,27 @@ logout_dialog_new (LogoutDialogType type)
 		button_text = _(button_auth_strings[type]);
 	}
 
-	gtk_dialog_add_buttons(GTK_DIALOG(dialog),
-	                       _("Cancel"), GTK_RESPONSE_CANCEL,
-	                       button_text, GTK_RESPONSE_OK,
-	                       NULL);
+	if (restart_required) {
+		const gchar * restart_req;
+		if (allowed) {
+			restart_req = restart_updates;
+		} else {
+			restart_req = restart_auth;
+		}
+
+		g_object_set(dialog, "secondary-text", _(body_logout_update), NULL);
+
+		gtk_dialog_add_buttons(GTK_DIALOG(dialog),
+		                       _(restart_req), GTK_RESPONSE_HELP,
+		                       _("Cancel"), GTK_RESPONSE_CANCEL,
+		                       button_text, GTK_RESPONSE_OK,
+		                       NULL);
+	} else {
+		gtk_dialog_add_buttons(GTK_DIALOG(dialog),
+		                       _("Cancel"), GTK_RESPONSE_CANCEL,
+		                       button_text, GTK_RESPONSE_OK,
+		                       NULL);
+	}
 
 	return dialog;
 }

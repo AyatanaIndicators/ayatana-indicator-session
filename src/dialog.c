@@ -202,5 +202,7 @@ logout_dialog_new (LogoutDialogType type)
 		                       NULL);
 	}
 
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+
 	return dialog;
 }

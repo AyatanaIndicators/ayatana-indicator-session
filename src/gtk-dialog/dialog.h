@@ -27,11 +27,11 @@ typedef struct _LogoutDialog      LogoutDialog;
 typedef struct _LogoutDialogClass LogoutDialogClass;
 
 struct _LogoutDialogClass {
-	GtkDialogClass parent_class;
+	GtkMessageDialogClass parent_class;
 };
 
 struct _LogoutDialog {
-	GtkDialog parent;
+	GtkMessageDialog parent;
 };
 
 GType logout_dialog_get_type (void);

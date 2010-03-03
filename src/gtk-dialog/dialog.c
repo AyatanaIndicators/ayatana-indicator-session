@@ -26,9 +26,11 @@ static const gchar * button_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button", "Switch Off")
 };
 
+/*
 static const gchar * restart_updates = N_("Restart Instead");
 static const gchar * restart_auth = N_("Restart...");
 static const gchar * body_logout_update = N_("Some software updates won't apply until the computer next restarts.");
+*/
 
 static const gchar * icon_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	"system-log-out",
@@ -51,7 +53,7 @@ static void logout_dialog_init       (LogoutDialog *self);
 static void logout_dialog_dispose    (GObject *object);
 static void logout_dialog_finalize   (GObject *object);
 
-G_DEFINE_TYPE (LogoutDialog, logout_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE (LogoutDialog, logout_dialog, GTK_TYPE_MESSAGE_DIALOG);
 
 static void
 logout_dialog_class_init (LogoutDialogClass *klass)
@@ -94,6 +96,25 @@ logout_dialog_finalize (GObject *object)
 LogoutDialog *
 logout_dialog_new (LogoutDialogType type)
 {
+	LogoutDialog * dialog = LOGOUT_DIALOG(g_object_new(LOGOUT_DIALOG_TYPE,
+	                                      /* Window */
+	                                      "icon-name", icon_strings[type],
+	                                      "modal", TRUE,
+	                                      "resizable", FALSE,
+	                                      "title", _(title_strings[type]),
+	                                      "window-position", GTK_WIN_POS_CENTER_ALWAYS,
+	                                      /* Dialog */
+	                                      "has-separator", FALSE,
+	                                      /* Message Dialog */
+	                                      "message-type", GTK_MESSAGE_OTHER,
+	                                      "buttons", GTK_BUTTONS_NONE,
+	                                      "text", _(body_strings[type]),
+	                                      NULL));
 
-	return NULL;
+	gtk_dialog_add_buttons(GTK_DIALOG(dialog),
+	                       _(button_strings[type]), GTK_RESPONSE_OK,
+	                       _("Cancel"), GTK_RESPONSE_CANCEL,
+	                       NULL);
+
+	return dialog;
 }

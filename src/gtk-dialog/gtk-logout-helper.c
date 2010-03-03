@@ -29,7 +29,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "gconf-helper.h"
 
 static void
-consolekit_fallback (LogoutDialogAction action)
+consolekit_fallback (LogoutDialogType action)
 {
 	DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
 	g_return_if_fail(sbus != NULL); /* worst case */
@@ -45,16 +45,16 @@ consolekit_fallback (LogoutDialogAction action)
 	GError * error = NULL;
 
 	switch (action) {
-		case LOGOUT_DIALOG_LOGOUT:
+		case LOGOUT_DIALOG_TYPE_LOG_OUT:
 			g_warning("Unable to fallback to ConsoleKit for logout as it's a session issue.  We need some sort of session handler.");
 			break;
-		case LOGOUT_DIALOG_SHUTDOWN:
+		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
 			dbus_g_proxy_call(proxy,
 			                  "Stop",
 			                  &error,
 			                  G_TYPE_INVALID);
 			break;
-		case LOGOUT_DIALOG_RESTART:
+		case LOGOUT_DIALOG_TYPE_RESTART:
 			dbus_g_proxy_call(proxy,
 			                  "Restart",
 			                  &error,

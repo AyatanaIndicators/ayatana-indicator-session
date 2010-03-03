@@ -4,6 +4,7 @@
 
 #include <glib/gi18n.h>
 
+#include "consolekit-manager-client.h"
 #include "dialog.h"
 
 /* Strings */
@@ -106,10 +107,30 @@ check_restart_required (void)
 static gboolean
 ck_check_allowed (LogoutDialogType type)
 {
+	DBusGConnection * system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
+	g_return_val_if_fail(system_bus != NULL, TRUE);
 
+	DBusGProxy * ck_proxy = dbus_g_proxy_new_for_name (system_bus,
+	                                                   "org.freedesktop.ConsoleKit",
+	                                                   "/org/freedesktop/ConsoleKit/Manager",
+	                                                   "org.freedesktop.ConsoleKit.Manager");
+	g_return_val_if_fail(ck_proxy != NULL, TRUE);
 
+	gboolean retval = TRUE;
+	switch (type) {
+	case LOGOUT_DIALOG_TYPE_RESTART:
+		org_freedesktop_ConsoleKit_Manager_can_restart(ck_proxy, &retval, NULL);
+		break;
+	case LOGOUT_DIALOG_TYPE_SHUTDOWN:
+		org_freedesktop_ConsoleKit_Manager_can_stop(ck_proxy, &retval, NULL);
+		break;
+	default:
+		break;
+	}
 
-	return TRUE;
+	g_object_unref(ck_proxy);
+
+	return retval;
 }
 
 LogoutDialog *

@@ -19,7 +19,8 @@ typedef enum _LogoutDialogType LogoutDialogType;
 enum _LogoutDialogType {
 	LOGOUT_DIALOG_TYPE_LOG_OUT,
 	LOGOUT_DIALOG_TYPE_RESTART,
-	LOGOUT_DIALOG_TYPE_SHUTDOWN
+	LOGOUT_DIALOG_TYPE_SHUTDOWN,
+	LOGOUT_DIALOG_TYPE_CNT
 };
 
 typedef struct _LogoutDialog      LogoutDialog;

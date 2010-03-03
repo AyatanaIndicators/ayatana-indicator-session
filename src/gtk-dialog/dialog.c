@@ -2,7 +2,41 @@
 #include "config.h"
 #endif
 
+#include <glib/gi18n.h>
+
 #include "dialog.h"
+
+/* Strings */
+
+static const gchar * title_strings[LOGOUT_DIALOG_TYPE_CNT] = {
+	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("title", "Log Out"),
+	/* LOGOUT_DIALOG_RESTART, */	NC_("title", "Restart"),
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("title", "Switch Off")
+};
+
+static const gchar * body_strings[LOGOUT_DIALOG_TYPE_CNT] = {
+	/* LOGOUT_DIALOG_LOGOUT, */ 	N_("Are you sure you want to close all programs and log out?"),
+	/* LOGOUT_DIALOG_RESTART, */	N_("Are you sure you want to close all programs and restart the computer?"),
+	/* LOGOUT_DIALOG_SHUTDOWN, */	N_("Are you sure you want to close all programs and shut down the computer?")
+};
+
+static const gchar * button_strings[LOGOUT_DIALOG_TYPE_CNT] = {
+	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("button", "Log Out"),
+	/* LOGOUT_DIALOG_RESTART, */	NC_("button", "Restart"),
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button", "Switch Off")
+};
+
+static const gchar * restart_updates = N_("Restart Instead");
+static const gchar * restart_auth = N_("Restart...");
+static const gchar * body_logout_update = N_("Some software updates won't apply until the computer next restarts.");
+
+static const gchar * icon_strings[LOGOUT_DIALOG_TYPE_CNT] = {
+	/* LOGOUT_DIALOG_LOGOUT, */ 	"system-log-out",
+	/* LOGOUT_DIALOG_RESTART, */	"system-restart",
+	/* LOGOUT_DIALOG_SHUTDOWN, */	"system-shutdown"
+};
+
+
 
 typedef struct _LogoutDialogPrivate LogoutDialogPrivate;
 struct _LogoutDialogPrivate {

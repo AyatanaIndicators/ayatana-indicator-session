@@ -114,8 +114,8 @@ logout_dialog_new (LogoutDialogType type)
 	                                      NULL));
 
 	gtk_dialog_add_buttons(GTK_DIALOG(dialog),
-	                       _(button_strings[type]), GTK_RESPONSE_OK,
 	                       _("Cancel"), GTK_RESPONSE_CANCEL,
+	                       _(button_strings[type]), GTK_RESPONSE_OK,
 	                       NULL);
 
 	return dialog;

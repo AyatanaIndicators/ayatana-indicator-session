@@ -16,7 +16,7 @@ static const gchar * title_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 };
 
 static const gchar * body_strings[LOGOUT_DIALOG_TYPE_CNT] = {
-	/* LOGOUT_DIALOG_LOGOUT, */ 	N_("Are you sure you want to close all programs and log out?"),
+	/* LOGOUT_DIALOG_LOGOUT, */ 	N_("Are you sure you want to close all programs and log out of the computer?"),
 	/* LOGOUT_DIALOG_RESTART, */	N_("Are you sure you want to close all programs and restart the computer?"),
 	/* LOGOUT_DIALOG_SHUTDOWN, */	N_("Are you sure you want to close all programs and shut down the computer?")
 };

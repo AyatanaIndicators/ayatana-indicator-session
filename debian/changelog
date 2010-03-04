@@ -1,6 +1,8 @@
-indicator-session (0.2.4-0ubuntu3~ppa1) lucid; urgency=low
+indicator-session (0.2.5-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * Upstream Release 0.2.5
+    * Restart required menu item when it's required for updates
+    * New logout dialogs.
     * Fix naming to "Switch off" and "Sleep"
     * Blocking the current user from the user list
     * Change sorting to be based on real names and handle conflicts
@@ -9,7 +11,7 @@ indicator-session (0.2.4-0ubuntu3~ppa1) lucid; urgency=low
     * Don't set GTK decorations
     * ConsoleKit fallback if gnome-session not available
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 03 Mar 2010 21:08:13 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Mar 2010 12:17:57 -0600
 
 indicator-session (0.2.4-0ubuntu2) lucid; urgency=low
 

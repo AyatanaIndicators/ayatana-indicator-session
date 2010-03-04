@@ -1,6 +1,7 @@
-SUBDIRS = gtk-dialog
 
-libexec_PROGRAMS = indicator-session-service
+libexec_PROGRAMS = \
+	indicator-session-service \
+	gtk-logout-helper
 
 ###################
 # Indicator Stuff
@@ -50,12 +51,36 @@ indicator_session_service_SOURCES = \
 	lock-helper.h \
 	session-service.c \
 	dbusmenu-shared.h \
-	gtk-dialog/gconf-helper.c \
+	gconf-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \
 	users-service-marshal.c
 indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) $(GCONF_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror
 indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
+
+#################
+# GTK Logout Stuff
+#################
+
+gtk_logout_helper_SOURCES = \
+	gtk-logout-helper.c \
+	gconf-helper.c \
+	gconf-helper.h \
+	dialog.c \
+	dialog.h
+
+gtk_logout_helper_CFLAGS = \
+	$(SESSIONSERVICE_CFLAGS) \
+	$(GTKLOGOUTHELPER_CFLAGS) \
+	$(GCONF_CFLAGS) \
+	-Wall -Werror \
+	-DINDICATOR_ICONS_DIR="\"$(INDICATORICONSDIR)\""
+
+gtk_logout_helper_LDADD = \
+	$(SESSIONSERVICE_LIBS) \
+	$(GTKLOGOUTHELPER_LIBS) \
+	$(GCONF_LIBS)
+
 
 ###############
 # Other Stuff

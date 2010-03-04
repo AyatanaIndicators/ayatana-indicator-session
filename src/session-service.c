@@ -27,6 +27,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <unistd.h>
 
 #include <glib/gi18n.h>
+#include <gio/gio.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -40,7 +41,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
 
-#include "gtk-dialog/gconf-helper.h"
+#include "gconf-helper.h"
 
 #include "users-service-dbus.h"
 #include "lock-helper.h"
@@ -605,6 +606,47 @@ service_shutdown (IndicatorService * service, gpointer user_data)
 	return;
 }
 
+/* When the directory changes we need to figure out how our menu
+   item should look. */
+static void
+restart_dir_changed (void)
+{
+	gboolean restart_required = g_file_test("/var/run/reboot-required", G_FILE_TEST_EXISTS);
+
+	if (restart_required) {
+		if (supress_confirmations()) {
+			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart Required"));
+		} else {
+			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart Required..."));
+		}
+		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_ICON_NAME, "emblem-important");
+	} else {	
+		if (supress_confirmations()) {
+			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart"));
+		} else {
+			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart..."));
+		}
+		dbusmenu_menuitem_property_remove(restart_mi, DBUSMENU_MENUITEM_PROP_ICON_NAME);
+	}
+
+	return;
+}
+
+/* Buids a file watcher for the directory so that when it
+   changes we can check to see if our reboot-required is
+   there. */
+static void
+setup_restart_watch (void)
+{
+	GFile * filedir = g_file_new_for_path("/var/run");
+	GFileMonitor * filemon = g_file_monitor_directory(filedir, G_FILE_MONITOR_NONE, NULL, NULL);
+	if (filemon != NULL) {
+		g_signal_connect(G_OBJECT(filemon), "changed", G_CALLBACK(restart_dir_changed), NULL);
+	}
+	restart_dir_changed();
+	return;
+}
+
 /* Main, is well, main.  It brings everything up and throws
    us into the mainloop of no return. */
 int
@@ -641,6 +683,8 @@ main (int argc, char ** argv)
                       "user-removed",
                       G_CALLBACK (user_change),
                       root_menuitem);
+
+	setup_restart_watch();
 
 	setup_up();
 

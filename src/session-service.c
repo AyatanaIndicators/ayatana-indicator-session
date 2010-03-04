@@ -406,7 +406,15 @@ compare_users_by_username (const gchar *a,
   UserData *user1 = (UserData *)a;
   UserData *user2 = (UserData *)b;
 
-  return g_strcmp0 (user1->user_name, user2->user_name);
+  gint retval = g_strcmp0 (user1->real_name, user2->real_name);
+
+  /* If they're the same, they're both in conflict. */
+  if (retval == 0) {
+    user1->real_name_conflict = TRUE;
+    user2->real_name_conflict = TRUE;
+  }
+
+  return retval;
 }
 
 /* Builds up the menu for us */
@@ -498,7 +506,13 @@ rebuild_items (DbusmenuMenuitem *root,
 
               mi = dbusmenu_menuitem_new ();
               dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+			  if (user->real_name_conflict) {
+				gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
+				dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
+				g_free(conflictedname);
+			  } else {
               dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
+			  }
 			  dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
               dbusmenu_menuitem_child_append (root, mi);
               g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);

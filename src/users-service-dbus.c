@@ -34,6 +34,7 @@
 #include "users-service-dbus.h"
 #include "users-service-client.h"
 #include "users-service-marshal.h"
+#include "consolekit-manager-client.h"
 
 static void     users_service_dbus_class_init         (UsersServiceDbusClass *klass);
 static void     users_service_dbus_init               (UsersServiceDbus  *self);
@@ -509,14 +510,7 @@ add_sessions_for_user (UsersServiceDbus *self,
   int              i;
 
   error = NULL;
-  if (!dbus_g_proxy_call (priv->ck_proxy,
-                          "GetSessionsForUnixUser",
-                          &error,
-                          G_TYPE_UINT, user->uid,
-                          G_TYPE_INVALID,
-                          dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH),
-                          &sessions,
-                          G_TYPE_INVALID))
+  if (!org_freedesktop_ConsoleKit_Manager_get_sessions_for_unix_user(priv->ck_proxy, user->uid, &sessions, &error))
     {
       g_debug ("Failed to call GetSessionsForUnixUser: %s", error->message);
       g_error_free (error);
@@ -662,6 +656,7 @@ sync_users (UsersServiceDbus *self)
           user->shell       = g_strdup (g_value_get_string (g_value_array_get_nth (values, 3)));
           user->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
           user->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
+          user->real_name_conflict = FALSE;
 
           g_hash_table_insert (priv->users,
                                g_strdup (user->user_name),

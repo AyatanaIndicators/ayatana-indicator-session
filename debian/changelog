@@ -1,3 +1,16 @@
+indicator-session (0.2.4-0ubuntu3~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Fix naming to "Switch off" and "Sleep"
+    * Blocking the current user from the user list
+    * Change sorting to be based on real names and handle conflicts
+    * Removing some ConsoleKit errors
+    * Memory leak on PangoLayout allocation
+    * Don't set GTK decorations
+    * ConsoleKit fallback if gnome-session not available
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 03 Mar 2010 21:03:18 -0600
+
 indicator-session (0.2.4-0ubuntu2) lucid; urgency=low
 
   * Backport upstream change to fix decoration rendering issues

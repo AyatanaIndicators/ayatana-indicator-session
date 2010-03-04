@@ -47,6 +47,8 @@ struct _UserData
 
   GList   *sessions;
 
+  gboolean real_name_conflict;
+
   UsersServiceDbus *service;
 };
 

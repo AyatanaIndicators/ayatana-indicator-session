@@ -1,4 +1,10 @@
-indicator-session (0.2.4-0ubuntu1~ppa1) lucid; urgency=low
+indicator-session (0.2.4-0ubuntu2) lucid; urgency=low
+
+  * Backport upstream change to fix decoration rendering issues
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 02 Mar 2010 16:03:20 +0100
+
+indicator-session (0.2.4-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.4
     * When we can't shutdown with gnome-session fallback to using
@@ -7,7 +13,19 @@ indicator-session (0.2.4-0ubuntu1~ppa1) lucid; urgency=low
     * Change suspend and hibernate detection property names for
       adjustment to upower.
 
+  [Ken VanDine]
+  * debian/patches/fix-session-menu-without-gdm.patch
+    - dropped patch, merged upstream
+
  -- Ted Gould <ted@ubuntu.com>  Thu, 25 Feb 2010 11:57:41 -0600
+
+indicator-session (0.2.3-0ubuntu2) lucid; urgency=low
+
+  * debian/patches/fix-session-menu-without-gdm.patch
+    - Don't fail with a g_error when we fail to get a list of user sessions 
+      from gdm (LP: #506683)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 09:43:14 -0500
 
 indicator-session (0.2.3-0ubuntu1) lucid; urgency=low
 
@@ -344,3 +362,4 @@ indicator-sus (0.1~ppa1) intrepid; urgency=low
   * Initial release
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 04 Dec 2008 23:51:41 -0800
+

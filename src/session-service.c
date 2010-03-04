@@ -606,6 +606,8 @@ service_shutdown (IndicatorService * service, gpointer user_data)
 	return;
 }
 
+/* When the directory changes we need to figure out how our menu
+   item should look. */
 static void
 restart_dir_changed (void)
 {
@@ -630,6 +632,9 @@ restart_dir_changed (void)
 	return;
 }
 
+/* Buids a file watcher for the directory so that when it
+   changes we can check to see if our reboot-required is
+   there. */
 static void
 setup_restart_watch (void)
 {

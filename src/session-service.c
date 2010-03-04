@@ -68,9 +68,6 @@ static UsersServiceDbus  *dbus_interface = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
-static gint   count;
-static GList *users;
-
 static DbusmenuMenuitem * root_menuitem = NULL;
 static GMainLoop * mainloop = NULL;
 static DBusGProxy * up_main_proxy = NULL;
@@ -423,6 +420,7 @@ rebuild_items (DbusmenuMenuitem *root,
                UsersServiceDbus *service)
 {
   DbusmenuMenuitem *mi = NULL;
+  DbusmenuMenuitem * guest_mi = NULL;
   GList *u;
   UserData *user;
   gboolean can_activate;
@@ -452,12 +450,12 @@ rebuild_items (DbusmenuMenuitem *root,
 
       if (check_guest_session ())
         {
-          mi = dbusmenu_menuitem_new ();
-		  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-          dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, _("Guest Session"));
-          dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
-          dbusmenu_menuitem_child_append (root, mi);
-          g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
+          guest_mi = dbusmenu_menuitem_new ();
+		  dbusmenu_menuitem_property_set (guest_mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+          dbusmenu_menuitem_property_set (guest_mi, USER_ITEM_PROP_NAME, _("Guest Session"));
+          dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
+          dbusmenu_menuitem_child_append (root, guest_mi);
+          g_signal_connect (G_OBJECT (guest_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
         }
 
       if (check_new_session ())
@@ -480,45 +478,55 @@ rebuild_items (DbusmenuMenuitem *root,
             }
         }
 
-      if (count > MINIMUM_USERS && count < MAXIMUM_USERS)
-        {
-          if (users != NULL)
-            {
-              GList *l = NULL;
+		GList * users = NULL;
+		users = users_service_dbus_get_user_list (service);
+		guint user_count = g_list_length(users);
 
-              for (l = users; l != NULL; l = l->next)
-                {
-                  users = g_list_delete_link (users, l);
-                }
+		if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+			users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+		}
 
-              users = NULL;
-            }
+		for (u = users; u != NULL; u = g_list_next (u)) {
+			user = u->data;
+			user->service = service;
 
-          users = users_service_dbus_get_user_list (service);
+			if (user->uid == getuid()) {
+				/* Hide me from the list */
+				continue;
+			}
 
-          users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+			if (g_strcmp0(user->user_name, "guest") == 0) {
+				/* Check to see if the guest has sessions and so therefore should
+				   get a check mark. */
+				if (user->sessions != NULL) {
+					dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, TRUE);
+				}
+				/* If we're showing user accounts, keep going through the list */
+				if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+					continue;
+				}
+				/* If not, we can stop here */
+				break;
+			}
 
-          for (u = users; u != NULL; u = g_list_next (u))
-            {
-              user = u->data;
+			if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+				mi = dbusmenu_menuitem_new ();
+				dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+				if (user->real_name_conflict) {
+					gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
+					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
+					g_free(conflictedname);
+				} else {
+					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
+				}
+				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
+				dbusmenu_menuitem_child_append (root, mi);
+				g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+			}
+		}
 
-              user->service = service;
-
-              mi = dbusmenu_menuitem_new ();
-              dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-			  if (user->real_name_conflict) {
-				gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
-				dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
-				g_free(conflictedname);
-			  } else {
-              dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
-			  }
-			  dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
-              dbusmenu_menuitem_child_append (root, mi);
-              g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
-            }
-        }
-    }
+		g_list_free(users);
+	}
 
 	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
@@ -576,42 +584,13 @@ rebuild_items (DbusmenuMenuitem *root,
 /* Signal called when a user is added.  It updates the count and
    rebuilds the menu */
 static void
-user_added (UsersServiceDbus *service,
-            UserData         *user,
-            gpointer          user_data)
+user_change (UsersServiceDbus *service,
+             UserData         *user,
+             gpointer          user_data)
 {
-  DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
-
-  count++;
-
-  rebuild_items (root, service);
-}
-
-/* Signal called when a user is deleted.  It updates the count and
-   rebuilds the menu */
-static void
-user_removed (UsersServiceDbus *service,
-              UserData         *user,
-              gpointer          user_data)
-{
-  DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
-
-  count--;
-
-  rebuild_items (root, service);
-}
-
-/* Wrapper around rebuild_items that is used on the first call
-   so that we can initialize the count variable. */
-static void
-create_items (DbusmenuMenuitem *root,
-              UsersServiceDbus *service)
-{
-  g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
-
-  count = users_service_dbus_get_user_count (service);
-
-  rebuild_items (root, service);
+	DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
+	rebuild_items (root, service);
+	return;
 }
 
 /* When the service interface starts to shutdown, we
@@ -652,15 +631,15 @@ main (int argc, char ** argv)
 
     dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
 
-    create_items (root_menuitem, dbus_interface);
+    rebuild_items (root_menuitem, dbus_interface);
 
     g_signal_connect (G_OBJECT (dbus_interface),
                       "user-added",
-                      G_CALLBACK (user_added),
+                      G_CALLBACK (user_change),
                       root_menuitem);
     g_signal_connect (G_OBJECT (dbus_interface),
                       "user-removed",
-                      G_CALLBACK (user_removed),
+                      G_CALLBACK (user_change),
                       root_menuitem);
 
 	setup_up();

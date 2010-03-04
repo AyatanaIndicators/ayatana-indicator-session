@@ -543,7 +543,7 @@ rebuild_items (DbusmenuMenuitem *root,
 
 	suspend_mi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set_bool(suspend_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-	dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Suspend"));
+	dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Sleep"));
 	dbusmenu_menuitem_child_append(root, suspend_mi);
 	g_signal_connect(G_OBJECT(suspend_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Suspend");
 
@@ -564,9 +564,9 @@ rebuild_items (DbusmenuMenuitem *root,
 
 	shutdown_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down"));
+		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off"));
 	} else {
-		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down..."));
+		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off..."));
 	}
 	dbusmenu_menuitem_child_append(root, shutdown_mi);
 	g_signal_connect(G_OBJECT(shutdown_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "shutdown");

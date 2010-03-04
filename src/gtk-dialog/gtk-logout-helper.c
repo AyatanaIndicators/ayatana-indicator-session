@@ -159,7 +159,7 @@ option_restart (const gchar * arg, const gchar * value, gpointer data, GError * 
 
 static GOptionEntry options[] = {
 	{"logout",     'l',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_logout,   "Log out of the current session",   NULL},
-	{"shutdown",   's',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_shutdown, "Shutdown the entire system",       NULL},
+	{"shutdown",   's',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_shutdown, "Switch off the entire system",     NULL},
 	{"restart",    'r',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_restart,  "Restart the system",               NULL},
 
 	{NULL}

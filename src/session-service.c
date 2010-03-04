@@ -40,7 +40,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
 
-#include "gtk-dialog/gconf-helper.h"
+#include "gconf-helper.h"
 
 #include "users-service-dbus.h"
 #include "lock-helper.h"

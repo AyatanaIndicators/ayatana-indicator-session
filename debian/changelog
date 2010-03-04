@@ -1,4 +1,4 @@
-indicator-session (0.2.4-0ubuntu3~ppa1) UNRELEASED; urgency=low
+indicator-session (0.2.4-0ubuntu3~ppa1) lucid; urgency=low
 
   * Upstream Merge
     * Fix naming to "Switch off" and "Sleep"
@@ -9,7 +9,7 @@ indicator-session (0.2.4-0ubuntu3~ppa1) UNRELEASED; urgency=low
     * Don't set GTK decorations
     * ConsoleKit fallback if gnome-session not available
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 03 Mar 2010 21:03:18 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 03 Mar 2010 21:08:13 -0600
 
 indicator-session (0.2.4-0ubuntu2) lucid; urgency=low
 

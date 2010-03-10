@@ -4,7 +4,7 @@ AC_INIT(src/indicator-session.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 0.2.4)
+AM_INIT_AUTOMAKE(indicator-session, 0.2.5)
 
 AM_MAINTAINER_MODE
 
@@ -127,7 +127,6 @@ AM_GLIB_GNU_GETTEXT
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/gtk-dialog/Makefile
 data/Makefile
 data/icons/Makefile
 data/icons/16x16/Makefile

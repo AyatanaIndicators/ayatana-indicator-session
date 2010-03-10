@@ -1,6 +1,7 @@
-SUBDIRS = gtk-dialog
 
-libexec_PROGRAMS = indicator-session-service
+libexec_PROGRAMS = \
+	indicator-session-service \
+	gtk-logout-helper
 
 ###################
 # Indicator Stuff
@@ -17,6 +18,12 @@ libsession_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
 libsession_la_LIBADD = $(APPLET_LIBS)
 libsession_la_LDFLAGS = -module -avoid-version
 
+consolekit-manager-client.h: $(srcdir)/consolekit-manager.xml
+	dbus-binding-tool \
+		--prefix=_consolekit_manager_client \
+		--mode=glib-client \
+		--output=consolekit-manager-client.h \
+		$(srcdir)/consolekit-manager.xml
 
 users-service-client.h: $(srcdir)/users-service.xml
 	dbus-binding-tool \
@@ -44,23 +51,49 @@ indicator_session_service_SOURCES = \
 	lock-helper.h \
 	session-service.c \
 	dbusmenu-shared.h \
-	gtk-dialog/gconf-helper.c \
+	gconf-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \
 	users-service-marshal.c
 indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) $(GCONF_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror
 indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
 
+#################
+# GTK Logout Stuff
+#################
+
+gtk_logout_helper_SOURCES = \
+	gtk-logout-helper.c \
+	gconf-helper.c \
+	gconf-helper.h \
+	dialog.c \
+	dialog.h
+
+gtk_logout_helper_CFLAGS = \
+	$(SESSIONSERVICE_CFLAGS) \
+	$(GTKLOGOUTHELPER_CFLAGS) \
+	$(GCONF_CFLAGS) \
+	-Wall -Werror \
+	-DINDICATOR_ICONS_DIR="\"$(INDICATORICONSDIR)\""
+
+gtk_logout_helper_LDADD = \
+	$(SESSIONSERVICE_LIBS) \
+	$(GTKLOGOUTHELPER_LIBS) \
+	$(GCONF_LIBS)
+
+
 ###############
 # Other Stuff
 ###############
 
 BUILT_SOURCES = \
+	consolekit-manager-client.h \
 	users-service-client.h \
 	users-service-marshal.h \
 	users-service-marshal.c
 
 EXTRA_DIST = \
+	consolekit-manager.xml \
 	users-service.xml \
 	users-service.list
 

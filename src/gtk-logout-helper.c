@@ -25,12 +25,11 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <dbus/dbus-glib.h>
-#include "logout-dialog.h"
-#include "ck-pk-helper.h"
+#include "dialog.h"
 #include "gconf-helper.h"
 
 static void
-consolekit_fallback (LogoutDialogAction action)
+consolekit_fallback (LogoutDialogType action)
 {
 	DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
 	g_return_if_fail(sbus != NULL); /* worst case */
@@ -43,19 +42,23 @@ consolekit_fallback (LogoutDialogAction action)
 		return;
 	}
 
+	GError * error = NULL;
+
 	switch (action) {
-		case LOGOUT_DIALOG_LOGOUT:
+		case LOGOUT_DIALOG_TYPE_LOG_OUT:
 			g_warning("Unable to fallback to ConsoleKit for logout as it's a session issue.  We need some sort of session handler.");
 			break;
-		case LOGOUT_DIALOG_SHUTDOWN:
-			dbus_g_proxy_call_no_reply(proxy,
-			                           "Stop",
-			                           G_TYPE_INVALID);
+		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
+			dbus_g_proxy_call(proxy,
+			                  "Stop",
+			                  &error,
+			                  G_TYPE_INVALID);
 			break;
-		case LOGOUT_DIALOG_RESTART:
-			dbus_g_proxy_call_no_reply(proxy,
-			                           "Restart",
-			                           G_TYPE_INVALID);
+		case LOGOUT_DIALOG_TYPE_RESTART:
+			dbus_g_proxy_call(proxy,
+			                  "Restart",
+			                  &error,
+			                  G_TYPE_INVALID);
 			break;
 		default:
 			g_warning("Unknown action");
@@ -64,11 +67,16 @@ consolekit_fallback (LogoutDialogAction action)
 
 	g_object_unref(proxy);
 
+	if (error != NULL) {
+		g_error("Unable to signal ConsoleKit: %s", error->message);
+		g_error_free(error);
+	}
+
 	return;
 }
 
 static void
-session_action (LogoutDialogAction action)
+session_action (LogoutDialogType action)
 {
 	DBusGConnection * sbus;
 	DBusGProxy * sm_proxy;
@@ -95,13 +103,13 @@ session_action (LogoutDialogAction action)
 	
 	g_clear_error (&error);
 	
-	if (action == LOGOUT_DIALOG_LOGOUT) {
+	if (action == LOGOUT_DIALOG_TYPE_LOG_OUT) {
 		res = dbus_g_proxy_call_with_timeout (sm_proxy, "Logout", INT_MAX, &error, 
 											  G_TYPE_UINT, 1, G_TYPE_INVALID, G_TYPE_INVALID);
-	} else if (action == LOGOUT_DIALOG_SHUTDOWN) {
+	} else if (action == LOGOUT_DIALOG_TYPE_SHUTDOWN) {
 		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestShutdown", INT_MAX, &error, 
 											  G_TYPE_INVALID, G_TYPE_INVALID);
-	} else if (action == LOGOUT_DIALOG_RESTART) {
+	} else if (action == LOGOUT_DIALOG_TYPE_RESTART) {
 		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestReboot", INT_MAX, &error, 
 											  G_TYPE_INVALID, G_TYPE_INVALID);
 	} else {
@@ -125,32 +133,32 @@ session_action (LogoutDialogAction action)
 	return;
 }	
 
-static LogoutDialogAction type = LOGOUT_DIALOG_LOGOUT;
+static LogoutDialogType type = LOGOUT_DIALOG_TYPE_LOG_OUT;
 
 static gboolean
 option_logout (const gchar * arg, const gchar * value, gpointer data, GError * error)
 {
-	type = LOGOUT_DIALOG_LOGOUT;
+	type = LOGOUT_DIALOG_TYPE_LOG_OUT;
 	return TRUE;
 }
 
 static gboolean
 option_shutdown (const gchar * arg, const gchar * value, gpointer data, GError * error)
 {
-	type = LOGOUT_DIALOG_SHUTDOWN;
+	type = LOGOUT_DIALOG_TYPE_SHUTDOWN;
 	return TRUE;
 }
 
 static gboolean
 option_restart (const gchar * arg, const gchar * value, gpointer data, GError * error)
 {
-	type = LOGOUT_DIALOG_RESTART;
+	type = LOGOUT_DIALOG_TYPE_RESTART;
 	return TRUE;
 }
 
 static GOptionEntry options[] = {
 	{"logout",     'l',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_logout,   "Log out of the current session",   NULL},
-	{"shutdown",   's',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_shutdown, "Shutdown the entire system",       NULL},
+	{"shutdown",   's',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_shutdown, "Switch off the entire system",     NULL},
 	{"restart",    'r',  G_OPTION_FLAG_NO_ARG,  G_OPTION_ARG_CALLBACK,  option_restart,  "Restart the system",               NULL},
 
 	{NULL}
@@ -184,13 +192,8 @@ main (int argc, char * argv[])
 	                                  INDICATOR_ICONS_DIR);
 
 	GtkWidget * dialog = NULL;
-	/* TODO: We're disabling PolicyKit checking here because there
-	   is a bug in ConsoleKit where the dialog doesn't come up until
-	   the session is entirely closed.  Stupid, but it's better than
-	   not getting a dialog at all. */
-	/* if (!pk_require_auth(type) && !supress_confirmations()) { */
 	if (!supress_confirmations()) {
-		dialog = logout_dialog_new(type);
+		dialog = GTK_WIDGET(logout_dialog_new(type));
 	}
 
 	if (dialog != NULL) {
@@ -198,7 +201,7 @@ main (int argc, char * argv[])
 		gtk_widget_hide(dialog);
 
 		if (response == GTK_RESPONSE_HELP) {
-			type = LOGOUT_DIALOG_RESTART;
+			type = LOGOUT_DIALOG_TYPE_RESTART;
 			response = GTK_RESPONSE_OK;
 		}
 

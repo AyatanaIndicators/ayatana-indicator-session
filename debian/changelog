@@ -1,3 +1,18 @@
+indicator-session (0.2.5-0ubuntu1) lucid; urgency=low
+
+  * Upstream Release 0.2.5
+    * Restart required menu item when it's required for updates
+    * New logout dialogs.
+    * Fix naming to "Switch off" and "Sleep"
+    * Blocking the current user from the user list
+    * Change sorting to be based on real names and handle conflicts
+    * Removing some ConsoleKit errors (lp: #529830)
+    * Memory leak on PangoLayout allocation
+    * Don't set GTK decorations
+    * ConsoleKit fallback if gnome-session not available
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Mar 2010 12:33:08 -0600
+
 indicator-session (0.2.4-0ubuntu2) lucid; urgency=low
 
   * Backport upstream change to fix decoration rendering issues

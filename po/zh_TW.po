@@ -1,0 +1,209 @@
+# Chinese translations for PACKAGE package.
+# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Canonical OEM, 2010.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: indicator-session\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-10 17:38-0500\n"
+"PO-Revision-Date: 2010-03-03 10:21-0500\n"
+"Last-Translator: Canonical OEM\n"
+"Language-Team: Chinese (traditional)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ../data/indicator-session.schemas.in.h:1
+msgid "Suppress the dialog to confirm logout, restart and shutdown action"
+msgstr "停用確認登出、重新啟動和關機操作的對話出現"
+
+#: ../data/indicator-session.schemas.in.h:2
+msgid ""
+"Whether or not to show confirmation dialogs for logout, restart and shutdown "
+"actions."
+msgstr "是否顯示確認登出、重新啟動和關機操作的對話。"
+
+#: ../src/gconf-helper.c:52 ../src/session-service.c:538
+#, fuzzy
+msgid "Log Out"
+msgstr "登出"
+
+#: ../src/gconf-helper.c:53 ../src/session-service.c:559
+#: ../src/session-service.c:625
+#, fuzzy
+msgid "Restart"
+msgstr "重新啟動"
+
+#: ../src/gconf-helper.c:54 ../src/session-service.c:568
+msgid "Switch Off"
+msgstr "關閉"
+
+#: ../src/gconf-helper.c:56 ../src/session-service.c:540
+#, fuzzy
+msgid "Log Out..."
+msgstr "登出"
+
+#: ../src/gconf-helper.c:57 ../src/session-service.c:561
+#: ../src/session-service.c:627
+msgid "Restart..."
+msgstr "重新啟動..."
+
+#: ../src/gconf-helper.c:58 ../src/session-service.c:570
+msgid "Switch Off..."
+msgstr "關閉..."
+
+#. LOGOUT_DIALOG_LOGOUT,
+#: ../src/dialog.c:35
+msgctxt "title"
+msgid "Log Out"
+msgstr "登出"
+
+#. LOGOUT_DIALOG_RESTART,
+#: ../src/dialog.c:36
+msgctxt "title"
+msgid "Restart"
+msgstr "重新啟動"
+
+#. LOGOUT_DIALOG_SHUTDOWN,
+#: ../src/dialog.c:37
+msgctxt "title"
+msgid "Switch Off"
+msgstr "關閉"
+
+#. LOGOUT_DIALOG_LOGOUT,
+#: ../src/dialog.c:41
+msgid ""
+"Are you sure you want to close all programs and log out of the computer?"
+msgstr ""
+
+#. LOGOUT_DIALOG_RESTART,
+#: ../src/dialog.c:42
+msgid "Are you sure you want to close all programs and restart the computer?"
+msgstr ""
+
+#. LOGOUT_DIALOG_SHUTDOWN,
+#: ../src/dialog.c:43
+msgid "Are you sure you want to close all programs and shut down the computer?"
+msgstr ""
+
+#. LOGOUT_DIALOG_LOGOUT,
+#: ../src/dialog.c:47
+msgctxt "button"
+msgid "Log Out"
+msgstr "登出"
+
+#. LOGOUT_DIALOG_RESTART,
+#: ../src/dialog.c:48
+msgctxt "button"
+msgid "Restart"
+msgstr "重新啟動"
+
+#. LOGOUT_DIALOG_SHUTDOWN,
+#: ../src/dialog.c:49
+msgctxt "button"
+msgid "Switch Off"
+msgstr "關閉"
+
+#. LOGOUT_DIALOG_LOGOUT,
+#: ../src/dialog.c:55
+#, fuzzy
+msgctxt "button auth"
+msgid "Log Out"
+msgstr "登出"
+
+#. LOGOUT_DIALOG_RESTART,
+#: ../src/dialog.c:56
+#, fuzzy
+msgctxt "button auth"
+msgid "Restart..."
+msgstr "重新啟動..."
+
+#. LOGOUT_DIALOG_SHUTDOWN,
+#: ../src/dialog.c:57
+#, fuzzy
+msgctxt "button auth"
+msgid "Switch Off..."
+msgstr "關閉..."
+
+#. TRANSLATORS: This button appears on the logout dialog when
+#. there are updates that require restart.  It will do a restart
+#. in place of a log out.
+#: ../src/dialog.c:63
+#, fuzzy
+msgid "Restart Instead"
+msgstr "重新啟動"
+
+#: ../src/dialog.c:64
+#, fuzzy
+msgid "Restart Instead..."
+msgstr "重新啟動..."
+
+#: ../src/dialog.c:65
+msgid "Some software updates won't apply until the computer next restarts."
+msgstr ""
+
+#: ../src/dialog.c:217 ../src/dialog.c:222
+msgid "Cancel"
+msgstr ""
+
+#: ../src/indicator-session.c:203
+msgid "Switch User..."
+msgstr "切換使用者..."
+
+#. TODO: We need some way to remove the elipsis from appearing
+#. twice in the label.  Not sure how to do that yet.
+#: ../src/indicator-session.c:232
+#, c-format
+msgid "Switch from %s..."
+msgstr "從 %s 切換..."
+
+#: ../src/session-service.c:437
+msgid "Lock Screen"
+msgstr ""
+
+#: ../src/session-service.c:456
+msgid "Guest Session"
+msgstr ""
+
+#: ../src/session-service.c:547
+msgid "Sleep"
+msgstr "休眠"
+
+#: ../src/session-service.c:553
+msgid "Hibernate"
+msgstr ""
+
+#: ../src/session-service.c:618
+#, fuzzy
+msgid "Restart Required"
+msgstr "重新啟動"
+
+#: ../src/session-service.c:620
+#, fuzzy
+msgid "Restart Required..."
+msgstr "重新啟動..."
+
+#~ msgid ""
+#~ "You recently installed updates which will only take effect after a "
+#~ "restart.  Restart to apply software updates."
+#~ msgstr ""
+#~ "您最近安裝了更新，這些更新只有在重新啟動後才能生效。 重新啟動以應用軟體更"
+#~ "新。"
+
+#~ msgid "You will be logged out in %d second."
+#~ msgid_plural "You will be logged out in %d seconds."
+#~ msgstr[0] "您將在 %d 秒內登出。"
+#~ msgstr[1] "您將在 %d 秒內登出。"
+
+#~ msgid "The computer will restart in %d second."
+#~ msgid_plural "The computer will restart in %d seconds."
+#~ msgstr[0] "電腦將在 %d 秒內重新啟動。"
+#~ msgstr[1] "電腦將在 %d 秒內重新啟動。"
+
+#~ msgid "The computer will switch off in %d second."
+#~ msgid_plural "The computer will switch off in %d seconds."
+#~ msgstr[0] "電腦將在 %d 秒內關閉。"
+#~ msgstr[1] "電腦將在 %d 秒內關閉。"

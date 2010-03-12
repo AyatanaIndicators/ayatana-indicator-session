@@ -555,10 +555,11 @@ rebuild_items (DbusmenuMenuitem *root,
 	g_signal_connect(G_OBJECT(hibernate_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Hibernate");
 
 	restart_mi = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_TYPE, RESTART_ITEM_TYPE);
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart"));
+		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart"));
 	} else {
-		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart..."));
+		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
 	}
 	dbusmenu_menuitem_child_append(root, restart_mi);
 	g_signal_connect(G_OBJECT(restart_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "restart");
@@ -615,18 +616,18 @@ restart_dir_changed (void)
 
 	if (restart_required) {
 		if (supress_confirmations()) {
-			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart Required"));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart Required"));
 		} else {
-			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart Required..."));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart Required..."));
 		}
-		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_ICON_NAME, "emblem-important");
+		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_ICON, "emblem-important");
 	} else {	
 		if (supress_confirmations()) {
-			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart"));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart"));
 		} else {
-			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart..."));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
 		}
-		dbusmenu_menuitem_property_remove(restart_mi, DBUSMENU_MENUITEM_PROP_ICON_NAME);
+		dbusmenu_menuitem_property_remove(restart_mi, RESTART_ITEM_ICON);
 	}
 
 	return;

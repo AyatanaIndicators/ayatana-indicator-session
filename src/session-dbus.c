@@ -3,6 +3,7 @@
 #endif
 
 #include "session-dbus.h"
+#include "dbus-shared-names.h"
 
 static gboolean _session_dbus_server_get_icon (SessionDbus * service, gchar ** icon, GError ** error);
 
@@ -58,7 +59,7 @@ static void
 session_dbus_init (SessionDbus *self)
 {
 	DBusGConnection * session = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	dbus_g_connection_register_g_object(session, "/bob", G_OBJECT(self));
+	dbus_g_connection_register_g_object(session, INDICATOR_SESSION_SERVICE_DBUS_OBJECT, G_OBJECT(self));
 
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(self);
 

@@ -69,6 +69,7 @@ static GtkImage * get_icon (IndicatorObject * io);
 static GtkMenu * get_menu (IndicatorObject * io);
 static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static gboolean build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 
 static void indicator_session_class_init (IndicatorSessionClass *klass);
 static void indicator_session_init       (IndicatorSession *self);
@@ -108,6 +109,7 @@ indicator_session_init (IndicatorSession *self)
 	DbusmenuClient * client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(self->menu));
 	dbusmenu_client_add_type_handler(client, MENU_SWITCH_TYPE, build_menu_switch);
 	dbusmenu_client_add_type_handler(client, USER_ITEM_TYPE, new_user_item);
+	dbusmenu_client_add_type_handler(client, RESTART_ITEM_TYPE, build_restart_item);
 
 	return;
 }
@@ -253,6 +255,60 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 
 static const gchar * dbusmenu_item_data = "dbusmenu-item";
 
+/* IF the label or icon changes we need to grab that and update
+   the menu item */
+static void
+restart_property_change (DbusmenuMenuitem * item, const gchar * property, const GValue * value, gpointer user_data)
+{
+	DbusmenuGtkClient * client = DBUSMENU_GTKCLIENT(user_data);
+	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(client, item);
+
+	if (g_strcmp0(property, RESTART_ITEM_LABEL) == 0) {
+		gtk_menu_item_set_label(gmi, g_value_get_string(value));
+	} else if (g_strcmp0(property, RESTART_ITEM_ICON) == 0) {
+		GtkWidget * image = gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(gmi));
+
+		if (image == NULL) {
+			image = gtk_image_new_from_icon_name(g_value_get_string(value), GTK_ICON_SIZE_MENU);
+			gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(gmi), image);
+		} else {
+			gtk_image_set_from_icon_name(GTK_IMAGE(image), g_value_get_string(value), GTK_ICON_SIZE_MENU);
+		}
+	}
+
+	return;
+}
+
+/* Builds the restart item which is a more traditional GTK image
+   menu item that puts the graphic into the gutter. */
+static gboolean
+build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+{
+	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_image_menu_item_new());
+	if (gmi == NULL) {
+		return FALSE;
+	}
+
+	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+
+	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(restart_property_change), client);
+
+	/* Grab the inital values and put them into the item */
+	const GValue * value;
+	value = dbusmenu_menuitem_property_get_value(newitem, RESTART_ITEM_LABEL);
+	if (value != NULL) {
+		restart_property_change(newitem, RESTART_ITEM_LABEL, value, client);
+	}
+
+	value = dbusmenu_menuitem_property_get_value(newitem, RESTART_ITEM_ICON);
+	if (value != NULL) {
+		restart_property_change(newitem, RESTART_ITEM_ICON, value, client);
+	}
+
+	return TRUE;
+}
+
+
 /* Callback for when the style changes so we can reevaluate the
    size of the user name with the potentially new font. */
 static void
@@ -264,7 +320,6 @@ switch_style_set (GtkWidget * widget, GtkStyle * prev_style, gpointer user_data)
 	switch_property_change(mi, MENU_SWITCH_USER, dbusmenu_menuitem_property_get_value(mi, MENU_SWITCH_USER), client);
 	return;
 }
-
 
 /* This function checks to see if the user name is short enough
    to not need ellipsing itself, or if, it will get ellipsed by

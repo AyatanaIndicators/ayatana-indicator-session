@@ -10,7 +10,7 @@ static gboolean _session_dbus_server_get_icon (SessionDbus * service, gchar ** i
 
 typedef struct _SessionDbusPrivate SessionDbusPrivate;
 struct _SessionDbusPrivate {
-	gint dummy;
+	gchar * name;
 };
 
 #define SESSION_DBUS_GET_PRIVATE(o) \
@@ -41,6 +41,14 @@ session_dbus_class_init (SessionDbusClass *klass)
 static void
 session_dbus_init (SessionDbus *self)
 {
+	DBusGConnection * session = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	dbus_g_connection_register_g_object(session, "/bob", G_OBJECT(self));
+
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(self);
+
+	priv->name = g_strdup("icon");
+
+	return;
 }
 
 static void
@@ -54,6 +62,12 @@ session_dbus_dispose (GObject *object)
 static void
 session_dbus_finalize (GObject *object)
 {
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(object);
+
+	if (priv->name != NULL) {
+		g_free(priv->name);
+		priv->name = NULL;
+	}
 
 	G_OBJECT_CLASS (session_dbus_parent_class)->finalize (object);
 	return;
@@ -62,6 +76,7 @@ session_dbus_finalize (GObject *object)
 static gboolean
 _session_dbus_server_get_icon (SessionDbus * service, gchar ** icon, GError ** error)
 {
-
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(service);
+	*icon = g_strdup(priv->name);
 	return TRUE;
 }

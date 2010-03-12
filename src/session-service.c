@@ -43,6 +43,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gconf-helper.h"
 
+#include "session-dbus.h"
 #include "users-service-dbus.h"
 #include "lock-helper.h"
 
@@ -65,6 +66,7 @@ struct _ActivateData
 static DBusGConnection   *system_bus = NULL;
 static DBusGProxy        *gdm_proxy = NULL;
 static UsersServiceDbus  *dbus_interface = NULL;
+static SessionDbus       *session_dbus = NULL;
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
@@ -690,6 +692,8 @@ main (int argc, char ** argv)
 
     DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
     dbusmenu_server_set_root(server, root_menuitem);
+
+	session_dbus = session_dbus_new();
 
     mainloop = g_main_loop_new(NULL, FALSE);
     g_main_loop_run(mainloop);

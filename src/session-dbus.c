@@ -97,6 +97,12 @@ _session_dbus_server_get_icon (SessionDbus * service, gchar ** icon, GError ** e
 	return TRUE;
 }
 
+SessionDbus *
+session_dbus_new (void)
+{
+	return SESSION_DBUS(g_object_new(SESSION_DBUS_TYPE, NULL));
+}
+
 void
 session_dbus_set_name (SessionDbus * session, const gchar * name)
 {

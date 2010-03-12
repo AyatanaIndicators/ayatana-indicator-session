@@ -26,6 +26,7 @@ struct _SessionDbus {
 };
 
 GType session_dbus_get_type (void);
+SessionDbus * session_dbus_new (void);
 void  session_dbus_set_name (SessionDbus * session, const gchar * name);
 
 G_END_DECLS

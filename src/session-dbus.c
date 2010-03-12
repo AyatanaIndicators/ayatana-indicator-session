@@ -13,6 +13,14 @@ struct _SessionDbusPrivate {
 	gchar * name;
 };
 
+/* Signals */
+enum {
+	ICON_UPDATED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
 #define SESSION_DBUS_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), SESSION_DBUS_TYPE, SessionDbusPrivate))
 
@@ -32,6 +40,14 @@ session_dbus_class_init (SessionDbusClass *klass)
 
 	object_class->dispose = session_dbus_dispose;
 	object_class->finalize = session_dbus_finalize;
+
+	signals[ICON_UPDATED] = g_signal_new ("icon-updated",
+	                                      G_TYPE_FROM_CLASS (klass),
+	                                      G_SIGNAL_RUN_LAST,
+	                                      G_STRUCT_OFFSET (SessionDbusClass, icon_updated),
+	                                      NULL, NULL,
+	                                      g_cclosure_marshal_VOID__STRING,
+	                                      G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	dbus_g_object_type_install_info(SESSION_DBUS_TYPE, &dbus_glib__session_dbus_server_object_info);
 
@@ -90,5 +106,6 @@ session_dbus_set_name (SessionDbus * session, const gchar * name)
 		priv->name = NULL;
 	}
 	priv->name = g_strdup(name);
+	g_signal_emit(G_OBJECT(session), signals[ICON_UPDATED], 0, priv->name, TRUE);
 	return;
 }

@@ -18,6 +18,7 @@ typedef struct _SessionDbusClass SessionDbusClass;
 
 struct _SessionDbusClass {
 	GObjectClass parent_class;
+	void (*icon_updated) (SessionDbus * session, gchar * icon, gpointer user_data);
 };
 
 struct _SessionDbus {

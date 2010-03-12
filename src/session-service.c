@@ -622,6 +622,7 @@ restart_dir_changed (void)
 			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart Required..."));
 		}
 		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_ICON_NAME, "emblem-important");
+		session_dbus_set_name(session_dbus, ICON_RESTART);
 	} else {	
 		if (supress_confirmations()) {
 			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart"));
@@ -629,6 +630,7 @@ restart_dir_changed (void)
 			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart..."));
 		}
 		dbusmenu_menuitem_property_remove(restart_mi, DBUSMENU_MENUITEM_PROP_ICON_NAME);
+		session_dbus_set_name(session_dbus, ICON_DEFAULT);
 	}
 
 	return;

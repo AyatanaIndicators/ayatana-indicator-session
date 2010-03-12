@@ -55,6 +55,7 @@ struct _IndicatorSession {
 	IndicatorServiceManager * service;
 	GtkImage * status_image;
 	DbusmenuGtkMenu * menu;
+	DBusGProxy * service_proxy;
 };
 
 GType indicator_session_get_type (void);
@@ -109,6 +110,12 @@ indicator_session_init (IndicatorSession *self)
 	dbusmenu_client_add_type_handler(client, MENU_SWITCH_TYPE, build_menu_switch);
 	dbusmenu_client_add_type_handler(client, USER_ITEM_TYPE, new_user_item);
 
+	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	self->service_proxy = dbus_g_proxy_new_for_name(session_bus,
+	                                                INDICATOR_SESSION_DBUS_NAME,
+	                                                INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+	                                                INDICATOR_SESSION_SERVICE_DBUS_IFACE);
+
 	return;
 }
 
@@ -120,6 +127,11 @@ indicator_session_dispose (GObject *object)
 	if (self->service != NULL) {
 		g_object_unref(G_OBJECT(self->service));
 		self->service = NULL;
+	}
+
+	if (self->service_proxy != NULL) {
+		g_object_unref(self->service_proxy);
+		self->service_proxy = NULL;
 	}
 
 	G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);

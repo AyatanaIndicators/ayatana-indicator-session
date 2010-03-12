@@ -70,6 +70,7 @@ static GtkImage * get_icon (IndicatorObject * io);
 static GtkMenu * get_menu (IndicatorObject * io);
 static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static void icon_changed (DBusGProxy * proxy, gchar * icon_name, gpointer user_data);
 
 static void indicator_session_class_init (IndicatorSessionClass *klass);
 static void indicator_session_init       (IndicatorSession *self);
@@ -116,6 +117,14 @@ indicator_session_init (IndicatorSession *self)
 	                                                INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
 	                                                INDICATOR_SESSION_SERVICE_DBUS_IFACE);
 
+	dbus_g_proxy_add_signal(self->service_proxy, "IconUpdated",
+	                        G_TYPE_STRING, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(self->service_proxy,
+	                            "IconUpdated",
+	                            G_CALLBACK(icon_changed),
+	                            self,
+	                            NULL);
+
 	return;
 }
 
@@ -150,6 +159,14 @@ static GtkLabel *
 get_label (IndicatorObject * io)
 {
 	return NULL;
+}
+
+static void
+icon_changed (DBusGProxy * proxy, gchar * icon_name, gpointer user_data)
+{
+	IndicatorSession * session = INDICATOR_SESSION(user_data);
+	gtk_image_set_from_icon_name(session->status_image, icon_name, GTK_ICON_SIZE_MENU);
+	return;
 }
 
 static GtkImage *

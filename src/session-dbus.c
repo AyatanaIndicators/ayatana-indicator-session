@@ -80,3 +80,15 @@ _session_dbus_server_get_icon (SessionDbus * service, gchar ** icon, GError ** e
 	*icon = g_strdup(priv->name);
 	return TRUE;
 }
+
+void
+session_dbus_set_name (SessionDbus * session, const gchar * name)
+{
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
+	if (priv->name != NULL) {
+		g_free(priv->name);
+		priv->name = NULL;
+	}
+	priv->name = g_strdup(name);
+	return;
+}

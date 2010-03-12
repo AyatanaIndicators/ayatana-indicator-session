@@ -50,6 +50,8 @@ indicator_session_service_SOURCES = \
 	lock-helper.c \
 	lock-helper.h \
 	session-service.c \
+	session-dbus.c \
+	session-dbus.h \
 	dbusmenu-shared.h \
 	gconf-helper.c \
 	users-service-dbus.h \

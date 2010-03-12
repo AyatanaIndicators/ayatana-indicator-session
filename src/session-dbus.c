@@ -63,7 +63,7 @@ session_dbus_init (SessionDbus *self)
 
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(self);
 
-	priv->name = g_strdup("icon");
+	priv->name = g_strdup("system-shutdown-panel");
 
 	return;
 }

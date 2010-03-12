@@ -46,6 +46,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USER_ITEM_PROP_LOGGED_IN  "user-item-logged-in"
 
 #define ICON_DEFAULT              "system-shutdown-panel"
-#define ICON_RESTART              "system-shutdown-restart-panel"
+#define ICON_RESTART              "system-shutdown-panel"
 
 #endif /* __DBUS_SHARED_NAMES_H__ */

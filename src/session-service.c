@@ -674,6 +674,8 @@ main (int argc, char ** argv)
 	                 INDICATOR_SERVICE_SIGNAL_SHUTDOWN,
 	                 G_CALLBACK(service_shutdown), NULL);
 
+	session_dbus = session_dbus_new();
+
 	g_idle_add(lock_screen_setup, NULL);
 
     root_menuitem = dbusmenu_menuitem_new();
@@ -698,8 +700,6 @@ main (int argc, char ** argv)
 
     DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
     dbusmenu_server_set_root(server, root_menuitem);
-
-	session_dbus = session_dbus_new();
 
     mainloop = g_main_loop_new(NULL, FALSE);
     g_main_loop_run(mainloop);

@@ -4,6 +4,10 @@
 
 #include "session-dbus.h"
 
+static gboolean _session_dbus_server_get_icon (SessionDbus * service, gchar ** icon, GError ** error);
+
+#include "session-dbus-server.h"
+
 typedef struct _SessionDbusPrivate SessionDbusPrivate;
 struct _SessionDbusPrivate {
 	gint dummy;
@@ -29,6 +33,8 @@ session_dbus_class_init (SessionDbusClass *klass)
 	object_class->dispose = session_dbus_dispose;
 	object_class->finalize = session_dbus_finalize;
 
+	dbus_g_object_type_install_info(SESSION_DBUS_TYPE, &dbus_glib__session_dbus_server_object_info);
+
 	return;
 }
 
@@ -51,4 +57,11 @@ session_dbus_finalize (GObject *object)
 
 	G_OBJECT_CLASS (session_dbus_parent_class)->finalize (object);
 	return;
+}
+
+static gboolean
+_session_dbus_server_get_icon (SessionDbus * service, gchar ** icon, GError ** error)
+{
+
+	return TRUE;
 }

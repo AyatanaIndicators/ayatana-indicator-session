@@ -35,6 +35,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
+#include "session-dbus-client.h"
 
 #define INDICATOR_SESSION_TYPE            (indicator_session_get_type ())
 #define INDICATOR_SESSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_SESSION_TYPE, IndicatorSession))
@@ -55,6 +56,7 @@ struct _IndicatorSession {
 	IndicatorServiceManager * service;
 	GtkImage * status_image;
 	DbusmenuGtkMenu * menu;
+	DBusGProxy * service_proxy;
 };
 
 GType indicator_session_get_type (void);
@@ -69,6 +71,8 @@ static GtkImage * get_icon (IndicatorObject * io);
 static GtkMenu * get_menu (IndicatorObject * io);
 static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
 static gboolean new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static void icon_changed (DBusGProxy * proxy, gchar * icon_name, gpointer user_data);
+static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
 
 static void indicator_session_class_init (IndicatorSessionClass *klass);
 static void indicator_session_init       (IndicatorSession *self);
@@ -101,13 +105,28 @@ indicator_session_init (IndicatorSession *self)
 
 	/* Now let's fire these guys up. */
 	self->service = indicator_service_manager_new_version(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_VERSION);
+	g_signal_connect(G_OBJECT(self->service), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(service_connection_cb), self);
 
-	self->status_image = GTK_IMAGE(gtk_image_new_from_icon_name("system-shutdown-panel", GTK_ICON_SIZE_MENU));
+	self->status_image = GTK_IMAGE(gtk_image_new_from_icon_name(ICON_DEFAULT, GTK_ICON_SIZE_MENU));
 	self->menu = dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
 
 	DbusmenuClient * client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(self->menu));
 	dbusmenu_client_add_type_handler(client, MENU_SWITCH_TYPE, build_menu_switch);
 	dbusmenu_client_add_type_handler(client, USER_ITEM_TYPE, new_user_item);
+
+	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	self->service_proxy = dbus_g_proxy_new_for_name(session_bus,
+	                                                INDICATOR_SESSION_DBUS_NAME,
+	                                                INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+	                                                INDICATOR_SESSION_SERVICE_DBUS_IFACE);
+
+	dbus_g_proxy_add_signal(self->service_proxy, "IconUpdated",
+	                        G_TYPE_STRING, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(self->service_proxy,
+	                            "IconUpdated",
+	                            G_CALLBACK(icon_changed),
+	                            self,
+	                            NULL);
 
 	return;
 }
@@ -122,6 +141,11 @@ indicator_session_dispose (GObject *object)
 		self->service = NULL;
 	}
 
+	if (self->service_proxy != NULL) {
+		g_object_unref(self->service_proxy);
+		self->service_proxy = NULL;
+	}
+
 	G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);
 	return;
 }
@@ -134,10 +158,40 @@ indicator_session_finalize (GObject *object)
 	return;
 }
 
+static void
+icon_name_get_cb (DBusGProxy *proxy, char * OUT_name, GError *error, gpointer userdata)
+{
+	IndicatorSession * self = INDICATOR_SESSION(userdata);
+	gtk_image_set_from_icon_name(self->status_image, OUT_name, GTK_ICON_SIZE_MENU);
+	return;
+}
+
+static void
+service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data)
+{
+	IndicatorSession * self = INDICATOR_SESSION(user_data);
+
+	if (connected) {
+		org_ayatana_indicator_session_service_get_icon_async(self->service_proxy, icon_name_get_cb, user_data);
+	} else {
+		gtk_image_set_from_icon_name(self->status_image, ICON_DEFAULT, GTK_ICON_SIZE_MENU);
+	}
+
+	return;
+}
+
 static GtkLabel *
 get_label (IndicatorObject * io)
 {
 	return NULL;
+}
+
+static void
+icon_changed (DBusGProxy * proxy, gchar * icon_name, gpointer user_data)
+{
+	IndicatorSession * session = INDICATOR_SESSION(user_data);
+	gtk_image_set_from_icon_name(session->status_image, icon_name, GTK_ICON_SIZE_MENU);
+	return;
 }
 
 static GtkImage *

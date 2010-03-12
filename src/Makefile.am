@@ -11,6 +11,7 @@ sessionlibdir = $(INDICATORDIR)
 sessionlib_LTLIBRARIES = libsession.la
 libsession_la_SOURCES = \
 	indicator-session.c \
+	session-dbus-client.h \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
 	users-service-client.h
@@ -32,6 +33,20 @@ users-service-client.h: $(srcdir)/users-service.xml
 		--output=users-service-client.h \
 		$(srcdir)/users-service.xml
 
+session-dbus-client.h: $(srcdir)/session-dbus.xml
+	dbus-binding-tool \
+		--prefix=_session_dbus_client \
+		--mode=glib-client \
+		--output=session-dbus-client.h \
+		$(srcdir)/session-dbus.xml
+
+session-dbus-server.h: $(srcdir)/session-dbus.xml
+	dbus-binding-tool \
+		--prefix=_session_dbus_server \
+		--mode=glib-server \
+		--output=session-dbus-server.h \
+		$(srcdir)/session-dbus.xml
+
 users-service-marshal.h: $(srcdir)/users-service.list
 	glib-genmarshal --header \
 		--prefix=_users_service_marshal $(srcdir)/users-service.list \
@@ -52,6 +67,7 @@ indicator_session_service_SOURCES = \
 	session-service.c \
 	session-dbus.c \
 	session-dbus.h \
+	session-dbus-server.h \
 	dbusmenu-shared.h \
 	gconf-helper.c \
 	users-service-dbus.h \
@@ -90,12 +106,15 @@ gtk_logout_helper_LDADD = \
 
 BUILT_SOURCES = \
 	consolekit-manager-client.h \
+	session-dbus-client.h \
+	session-dbus-server.h \
 	users-service-client.h \
 	users-service-marshal.h \
 	users-service-marshal.c
 
 EXTRA_DIST = \
 	consolekit-manager.xml \
+	session-dbus.xml \
 	users-service.xml \
 	users-service.list
 

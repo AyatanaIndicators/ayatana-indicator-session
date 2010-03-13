@@ -167,6 +167,14 @@ indicator_session_finalize (GObject *object)
 static void
 icon_name_get_cb (DBusGProxy *proxy, char * OUT_name, GError *error, gpointer userdata)
 {
+	if (error != NULL) {
+		return;
+	}
+
+	if (OUT_name == NULL || OUT_name[0] == '\0') {
+		return;
+	}
+
 	IndicatorSession * self = INDICATOR_SESSION(userdata);
 	gtk_image_set_from_icon_name(self->status_image, OUT_name, GTK_ICON_SIZE_MENU);
 	return;

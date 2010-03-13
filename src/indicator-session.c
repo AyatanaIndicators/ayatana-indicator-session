@@ -36,6 +36,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator.h>
 #include <libindicator/indicator-object.h>
 #include <libindicator/indicator-service-manager.h>
+#include <libindicator/indicator-image-helper.h>
 
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
@@ -112,7 +113,7 @@ indicator_session_init (IndicatorSession *self)
 	self->service = indicator_service_manager_new_version(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_VERSION);
 	g_signal_connect(G_OBJECT(self->service), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(service_connection_cb), self);
 
-	self->status_image = GTK_IMAGE(gtk_image_new_from_icon_name(ICON_DEFAULT, GTK_ICON_SIZE_MENU));
+	self->status_image = indicator_image_helper(ICON_DEFAULT);
 	self->menu = dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME, INDICATOR_SESSION_DBUS_OBJECT);
 
 	DbusmenuClient * client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(self->menu));
@@ -168,7 +169,7 @@ static void
 icon_name_get_cb (DBusGProxy *proxy, char * OUT_name, GError *error, gpointer userdata)
 {
 	IndicatorSession * self = INDICATOR_SESSION(userdata);
-	gtk_image_set_from_icon_name(self->status_image, OUT_name, GTK_ICON_SIZE_MENU);
+	indicator_image_helper_update(self->status_image, OUT_name);
 	return;
 }
 
@@ -180,7 +181,7 @@ service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointe
 	if (connected) {
 		org_ayatana_indicator_session_service_get_icon_async(self->service_proxy, icon_name_get_cb, user_data);
 	} else {
-		gtk_image_set_from_icon_name(self->status_image, ICON_DEFAULT, GTK_ICON_SIZE_MENU);
+		indicator_image_helper_update(self->status_image, ICON_DEFAULT);
 	}
 
 	return;
@@ -196,7 +197,7 @@ static void
 icon_changed (DBusGProxy * proxy, gchar * icon_name, gpointer user_data)
 {
 	IndicatorSession * session = INDICATOR_SESSION(user_data);
-	gtk_image_set_from_icon_name(session->status_image, icon_name, GTK_ICON_SIZE_MENU);
+	indicator_image_helper_update(session->status_image, icon_name);
 	return;
 }
 

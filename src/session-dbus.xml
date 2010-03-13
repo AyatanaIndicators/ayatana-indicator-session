@@ -1,0 +1,15 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/org/ayatana/indicator/session/service">
+  <interface name="org.ayatana.indicator.session.service">
+
+    <!-- Icon -->
+    <method name="GetIcon">
+      <arg name="name" direction="out" type="s"/>
+    </method>
+
+    <signal name="IconUpdated">
+      <arg name="name" type="s"/>
+    </signal>
+
+  </interface>
+</node>

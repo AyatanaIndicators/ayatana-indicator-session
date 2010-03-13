@@ -43,6 +43,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gconf-helper.h"
 
+#include "session-dbus.h"
 #include "users-service-dbus.h"
 #include "lock-helper.h"
 
@@ -65,6 +66,7 @@ struct _ActivateData
 static DBusGConnection   *system_bus = NULL;
 static DBusGProxy        *gdm_proxy = NULL;
 static UsersServiceDbus  *dbus_interface = NULL;
+static SessionDbus       *session_dbus = NULL;
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
@@ -621,6 +623,9 @@ restart_dir_changed (void)
 			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart Required..."));
 		}
 		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_ICON, "emblem-important");
+		if (session_dbus != NULL) {
+			session_dbus_set_name(session_dbus, ICON_RESTART);
+		}
 	} else {	
 		if (supress_confirmations()) {
 			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart"));
@@ -628,6 +633,9 @@ restart_dir_changed (void)
 			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
 		}
 		dbusmenu_menuitem_property_remove(restart_mi, RESTART_ITEM_ICON);
+		if (session_dbus != NULL) {
+			session_dbus_set_name(session_dbus, ICON_DEFAULT);
+		}
 	}
 
 	return;
@@ -666,6 +674,8 @@ main (int argc, char ** argv)
 	g_signal_connect(G_OBJECT(service),
 	                 INDICATOR_SERVICE_SIGNAL_SHUTDOWN,
 	                 G_CALLBACK(service_shutdown), NULL);
+
+	session_dbus = session_dbus_new();
 
 	g_idle_add(lock_screen_setup, NULL);
 

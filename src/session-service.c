@@ -28,6 +28,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <gio/gdesktopappinfo.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -49,6 +50,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
 #define UP_INTERFACE  "org.freedesktop.UPower"
+
+#define DESKTOP_FILE  "/usr/share/applications/indicator-session-extra.desktop"
 
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
 
@@ -415,6 +418,16 @@ compare_users_by_username (const gchar *a,
   return retval;
 }
 
+/* Take a desktop file and execute it */
+static void
+desktop_activate_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
+{
+	GAppInfo * appinfo = G_APP_INFO(data);
+	g_return_if_fail(appinfo != NULL);
+	g_app_info_launch(appinfo, NULL, NULL, NULL);
+	return;
+}
+
 /* Builds up the menu for us */
 static void
 rebuild_items (DbusmenuMenuitem *root,
@@ -579,6 +592,21 @@ rebuild_items (DbusmenuMenuitem *root,
 	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
 
 	update_menu_entries(restart_shutdown_logout_mi);
+
+	if (g_file_test(DESKTOP_FILE, G_FILE_TEST_EXISTS)) {
+		GAppInfo * appinfo = G_APP_INFO(g_desktop_app_info_new_from_filename(DESKTOP_FILE));
+
+		if (appinfo != NULL) {
+			DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
+			dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+			dbusmenu_menuitem_child_append(root, separator);
+
+			DbusmenuMenuitem * desktop_mi = dbusmenu_menuitem_new();
+			dbusmenu_menuitem_property_set(desktop_mi, DBUSMENU_MENUITEM_PROP_LABEL, g_app_info_get_name(appinfo));
+			g_signal_connect(G_OBJECT(desktop_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(desktop_activate_cb), appinfo);
+			dbusmenu_menuitem_child_append(root, desktop_mi);
+		}
+	}
 
 	return;
 }

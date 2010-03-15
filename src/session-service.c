@@ -261,6 +261,11 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 static void
 allowed_cb (DBusGProxy *proxy, gboolean OUT_allowed, GError *error, gpointer userdata)
 {
+	if (error != NULL) {
+		g_warning("Unable to get information on what is allowed from UPower: %s", error->message);
+		return;
+	}
+
 	gboolean * can_do = (gboolean *)userdata;
 
 	if (OUT_allowed != *can_do) {

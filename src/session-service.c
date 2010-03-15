@@ -58,6 +58,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define LOCKDOWN_DIR              "/desktop/gnome/lockdown"
 #define LOCKDOWN_KEY_USER         LOCKDOWN_DIR "/disable_user_switching"
+#define LOCKDOWN_KEY_SCREENSAVER  LOCKDOWN_DIR "/disable_lock_screen"
 
 typedef struct _ActivateData ActivateData;
 struct _ActivateData
@@ -97,26 +98,32 @@ lockdown_changed (GConfClient *client,
                   GConfEntry  *entry,
                   gpointer     user_data)
 {
-  GConfValue  *value = gconf_entry_get_value (entry);
-  const gchar *key   = gconf_entry_get_key (entry);
+	GConfValue  *value = gconf_entry_get_value (entry);
+	const gchar *key   = gconf_entry_get_key (entry);
 
-  if (!value || !key)
-    return;
+	if (value == NULL || key == NULL) {
+		return;
+	}
 
-  if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0)
-    {
-      if (switch_menuitem)
-        {
-          if (gconf_value_get_bool (value))
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-            }
-          else
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
-            }
-        }
-    }
+	if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0) {
+		if (switch_menuitem != NULL) {
+			if (gconf_value_get_bool (value)) {
+				dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
+			} else {
+				dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
+			}
+		}
+	} if (g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
+		if (lock_menuitem != NULL) {
+			if (gconf_value_get_bool (value)) {
+				dbusmenu_menuitem_property_set_bool (lock_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
+			} else {
+				dbusmenu_menuitem_property_set_bool (lock_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
+			}
+		}
+	}
+
+	return;
 }
 
 static void

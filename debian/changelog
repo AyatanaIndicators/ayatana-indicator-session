@@ -1,3 +1,9 @@
+indicator-session (0.2.5-0ubuntu3) lucid; urgency=low
+
+  * Backported an upstream change to fix translations use 
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 15 Mar 2010 11:47:13 +0100
+
 indicator-session (0.2.5-0ubuntu2) lucid; urgency=low
 
   * Backported an upstream change to fix a signal prototype issue (lp: #507776)

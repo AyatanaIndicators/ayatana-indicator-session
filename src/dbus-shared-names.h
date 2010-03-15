@@ -50,6 +50,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RESTART_ITEM_ICON         "restart-icon"
 
 #define ICON_DEFAULT              "system-shutdown-panel"
-#define ICON_RESTART              "system-shutdown-panel"
+#define ICON_RESTART              "system-shutdown-panel-restart"
 
 #endif /* __DBUS_SHARED_NAMES_H__ */

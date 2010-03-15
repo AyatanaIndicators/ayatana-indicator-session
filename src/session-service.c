@@ -650,7 +650,7 @@ restart_dir_changed (void)
 		} else {
 			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart Required..."));
 		}
-		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_ICON, "emblem-important");
+		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_ICON, "system-restart-panel");
 		if (session_dbus != NULL) {
 			session_dbus_set_name(session_dbus, ICON_RESTART);
 		}

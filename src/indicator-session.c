@@ -168,6 +168,14 @@ indicator_session_finalize (GObject *object)
 static void
 icon_name_get_cb (DBusGProxy *proxy, char * OUT_name, GError *error, gpointer userdata)
 {
+	if (error != NULL) {
+		return;
+	}
+
+	if (OUT_name == NULL || OUT_name[0] == '\0') {
+		return;
+	}
+
 	IndicatorSession * self = INDICATOR_SESSION(userdata);
 	indicator_image_helper_update(self->status_image, OUT_name);
 	return;
@@ -327,12 +335,14 @@ restart_property_change (DbusmenuMenuitem * item, const gchar * property, const 
 	} else if (g_strcmp0(property, RESTART_ITEM_ICON) == 0) {
 		GtkWidget * image = gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(gmi));
 
+		GIcon * gicon = g_themed_icon_new_with_default_fallbacks(g_value_get_string(value));
 		if (image == NULL) {
-			image = gtk_image_new_from_icon_name(g_value_get_string(value), GTK_ICON_SIZE_MENU);
+			image = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
 			gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(gmi), image);
 		} else {
-			gtk_image_set_from_icon_name(GTK_IMAGE(image), g_value_get_string(value), GTK_ICON_SIZE_MENU);
+			gtk_image_set_from_gicon(GTK_IMAGE(image), gicon, GTK_ICON_SIZE_MENU);
 		}
+		g_object_unref(G_OBJECT(gicon));
 	}
 
 	return;

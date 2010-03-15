@@ -434,7 +434,10 @@ rebuild_items (DbusmenuMenuitem *root,
   gboolean can_activate;
   GList *children;
 
-  can_activate = users_service_dbus_can_activate_session (service);
+  ensure_gconf_client ();
+
+  can_activate = users_service_dbus_can_activate_session (service) &&
+      !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
 
   children = dbusmenu_menuitem_take_children (root);
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
@@ -470,22 +473,12 @@ rebuild_items (DbusmenuMenuitem *root,
 
       if (check_new_session ())
         {
-          ensure_gconf_client ();
 
           switch_menuitem = dbusmenu_menuitem_new ();
 		  dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_TYPE, MENU_SWITCH_TYPE);
 		  dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
           dbusmenu_menuitem_child_append (root, switch_menuitem);
           g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
-
-          if (gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL))
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-            }
-          else
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
-            }
         }
 
 		GList * users = NULL;

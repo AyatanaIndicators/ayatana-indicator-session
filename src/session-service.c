@@ -73,7 +73,6 @@ static UsersServiceDbus  *dbus_interface = NULL;
 static SessionDbus       *session_dbus = NULL;
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
-static DbusmenuMenuitem  *lock_separator = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
 static DbusmenuMenuitem * root_menuitem = NULL;
@@ -452,14 +451,12 @@ rebuild_items (DbusmenuMenuitem *root,
   } else {
     dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, TRUE);
   }
-  lock_separator = NULL;
 
   if (can_activate == TRUE)
     {
 	  DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
 	  dbusmenu_menuitem_property_set(separator1, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
 	  dbusmenu_menuitem_child_append(root, separator1);
-	  lock_separator = separator1;
 
       if (check_guest_session ())
         {
@@ -534,9 +531,6 @@ rebuild_items (DbusmenuMenuitem *root,
 	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
 	dbusmenu_menuitem_child_append(root, separator);
-	if (lock_separator == NULL) {
-		lock_separator = separator;
-	}
 
 	logout_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {

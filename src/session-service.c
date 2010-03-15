@@ -92,6 +92,8 @@ static DbusmenuMenuitem * shutdown_mi = NULL;
 
 static GConfClient * gconf_client = NULL;
 
+static void rebuild_items (DbusmenuMenuitem *root, UsersServiceDbus *service);
+
 static void
 lockdown_changed (GConfClient *client,
                   guint        cnxd_id,
@@ -105,24 +107,8 @@ lockdown_changed (GConfClient *client,
 		return;
 	}
 
-	if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0) {
-		if (switch_menuitem != NULL) {
-			if (gconf_value_get_bool (value)) {
-				dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-			} else {
-				dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
-			}
-		}
-	} else if (g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
-		if (lock_menuitem != NULL) {
-			if (gconf_value_get_bool (value)) {
-				dbusmenu_menuitem_property_set_bool (lock_menuitem,  DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-				dbusmenu_menuitem_property_set_bool (lock_separator, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-			} else {
-				dbusmenu_menuitem_property_set_bool (lock_menuitem,  DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
-				dbusmenu_menuitem_property_set_bool (lock_separator, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
-			}
-		}
+	if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0 || g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
+		rebuild_items(root_menuitem, dbus_interface);
 	}
 
 	return;

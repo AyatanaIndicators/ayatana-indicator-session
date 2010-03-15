@@ -56,8 +56,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
 
-#define LOCKDOWN_DIR  "/desktop/gnome/lockdown"
-#define LOCKDOWN_KEY  LOCKDOWN_DIR "/disable_user_switching"
+#define LOCKDOWN_DIR              "/desktop/gnome/lockdown"
+#define LOCKDOWN_KEY_USER         LOCKDOWN_DIR "/disable_user_switching"
 
 typedef struct _ActivateData ActivateData;
 struct _ActivateData
@@ -103,7 +103,7 @@ lockdown_changed (GConfClient *client,
   if (!value || !key)
     return;
 
-  if (g_strcmp0 (key, LOCKDOWN_KEY) == 0)
+  if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0)
     {
       if (switch_menuitem)
         {
@@ -127,7 +127,7 @@ ensure_gconf_client (void)
       gconf_client = gconf_client_get_default ();
 
       notify_lockdown_id = gconf_client_notify_add (gconf_client,
-                                                    LOCKDOWN_KEY,
+                                                    LOCKDOWN_KEY_USER,
                                                     lockdown_changed,
                                                     NULL,
                                                     NULL,
@@ -484,7 +484,7 @@ rebuild_items (DbusmenuMenuitem *root,
           dbusmenu_menuitem_child_append (root, switch_menuitem);
           g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
 
-          if (gconf_client_get_bool (gconf_client, LOCKDOWN_KEY, NULL))
+          if (gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL))
             {
               dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
             }

@@ -47,6 +47,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "session-dbus.h"
 #include "users-service-dbus.h"
 #include "lock-helper.h"
+#include "upower-client.h"
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
@@ -254,6 +255,20 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 	return;
 }
 
+/* Handle the callback from the allow functions to check and
+   see if we're changing the value, and if so, rebuilding the
+   menus based on that info. */
+static void
+allowed_cb (DBusGProxy *proxy, gboolean OUT_allowed, GError *error, gpointer userdata)
+{
+	gboolean * can_do = (gboolean *)userdata;
+
+	if (OUT_allowed != *can_do) {
+		*can_do = OUT_allowed;
+		rebuild_items (root_menuitem, dbus_interface);
+	}
+}
+
 /* This function goes through and sets up what we need for
    DKp checking.  We're even setting up the calls for the props
    we need */
@@ -291,6 +306,14 @@ setup_up (void) {
 
 	/* Force an original "changed" event */
 	up_changed_cb(up_main_proxy, NULL);
+
+	/* Check to see if these are getting blocked by PolicyKit */
+	org_freedesktop_UPower_suspend_allowed_async(up_main_proxy,
+	                                             allowed_cb,
+	                                             &allow_suspend);
+	org_freedesktop_UPower_hibernate_allowed_async(up_main_proxy,
+	                                               allowed_cb,
+	                                               &allow_hibernate);
 
 	return;
 }

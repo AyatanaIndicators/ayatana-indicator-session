@@ -91,6 +91,8 @@ static DbusmenuMenuitem * shutdown_mi = NULL;
 
 static gboolean can_hibernate = TRUE;
 static gboolean can_suspend = TRUE;
+static gboolean allow_hibernate = TRUE;
+static gboolean allow_suspend = TRUE;
 
 static GConfClient * gconf_client = NULL;
 
@@ -566,14 +568,14 @@ rebuild_items (DbusmenuMenuitem *root,
 	dbusmenu_menuitem_child_append(root, logout_mi);
 	g_signal_connect(G_OBJECT(logout_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
 
-	if (can_suspend) {
+	if (can_suspend && allow_suspend) {
 		suspend_mi = dbusmenu_menuitem_new();
 		dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Sleep"));
 		dbusmenu_menuitem_child_append(root, suspend_mi);
 		g_signal_connect(G_OBJECT(suspend_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Suspend");
 	}
 
-	if (can_hibernate) {
+	if (can_hibernate && allow_hibernate) {
 		hibernate_mi = dbusmenu_menuitem_new();
 		dbusmenu_menuitem_property_set(hibernate_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Hibernate"));
 		dbusmenu_menuitem_child_append(root, hibernate_mi);

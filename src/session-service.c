@@ -113,7 +113,7 @@ lockdown_changed (GConfClient *client,
 				dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
 			}
 		}
-	} if (g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
+	} else if (g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
 		if (lock_menuitem != NULL) {
 			if (gconf_value_get_bool (value)) {
 				dbusmenu_menuitem_property_set_bool (lock_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);

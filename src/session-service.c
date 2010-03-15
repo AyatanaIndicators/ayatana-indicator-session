@@ -431,32 +431,38 @@ rebuild_items (DbusmenuMenuitem *root,
   GList *u;
   UserData *user;
   gboolean can_activate;
+  gboolean can_lockscreen;
   GList *children;
 
   ensure_gconf_client ();
 
   can_activate = users_service_dbus_can_activate_session (service) &&
       !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
+  can_lockscreen = !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL);
 
   children = dbusmenu_menuitem_take_children (root);
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
 
-  lock_menuitem = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
-  g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
-  dbusmenu_menuitem_child_append(root, lock_menuitem);
-  if (!will_lock_screen()) {
-    dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, FALSE);
-  } else {
-    dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, TRUE);
+  if (can_lockscreen) {
+	lock_menuitem = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+	g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
+	dbusmenu_menuitem_child_append(root, lock_menuitem);
+	if (!will_lock_screen()) {
+		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, FALSE);
+	} else {
+		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, TRUE);
+	}
   }
 
   if (can_activate == TRUE)
     {
-	  DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
-	  dbusmenu_menuitem_property_set(separator1, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-	  dbusmenu_menuitem_child_append(root, separator1);
+		if (can_lockscreen) {
+			DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
+			dbusmenu_menuitem_property_set(separator1, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+			dbusmenu_menuitem_child_append(root, separator1);
+		}
 
       if (check_guest_session ())
         {
@@ -528,9 +534,11 @@ rebuild_items (DbusmenuMenuitem *root,
 		g_list_free(users);
 	}
 
-	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-	dbusmenu_menuitem_child_append(root, separator);
+	if (can_lockscreen || can_activate) {
+		DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+		dbusmenu_menuitem_child_append(root, separator);
+	}
 
 	logout_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {

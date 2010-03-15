@@ -91,7 +91,6 @@ static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
 
 static GConfClient * gconf_client = NULL;
-static guint notify_lockdown_id = 0;
 
 static void
 lockdown_changed (GConfClient *client,
@@ -129,20 +128,17 @@ lockdown_changed (GConfClient *client,
 	return;
 }
 
+/* Ensures that we have a GConf client and if we build one
+   set up the signal handler. */
 static void
 ensure_gconf_client (void)
 {
-  if (!gconf_client)
-    {
-      gconf_client = gconf_client_get_default ();
-
-      notify_lockdown_id = gconf_client_notify_add (gconf_client,
-                                                    LOCKDOWN_KEY_USER,
-                                                    lockdown_changed,
-                                                    NULL,
-                                                    NULL,
-                                                    NULL);
-    }
+	if (!gconf_client) {
+		gconf_client = gconf_client_get_default ();
+		gconf_client_add_dir(gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_notify_add(gconf_client, LOCKDOWN_DIR, lockdown_changed, NULL, NULL, NULL);
+	}
+	return;
 }
 
 /* A return from the command to sleep the system.  Make sure

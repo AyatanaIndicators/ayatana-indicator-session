@@ -30,6 +30,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 
+#include "dbus-shared-names.h"
 #include "gconf-helper.h"
 
 static GConfClient * gconf_client = NULL;
@@ -50,12 +51,12 @@ static void update_menu_entries_callback (GConfClient *client, guint cnxn_id, GC
 	if(g_strcmp0 (key, SUPPRESS_KEY) == 0) {
 		if (gconf_value_get_bool (value)) {
 			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out"));
-			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart"));
-			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shutdown"));
+			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->restart_mi, RESTART_ITEM_LABEL, _("Restart"));
+			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off"));
 		} else {
 			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out..."));
-			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart..."));
-			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shutdown..."));
+			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
+			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off..."));
 		}
 	}
 }

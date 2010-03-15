@@ -1,3 +1,4 @@
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*- */
 /*
  * Copyright 2009 Canonical Ltd.
  *
@@ -33,6 +34,7 @@
 #include "users-service-dbus.h"
 #include "users-service-client.h"
 #include "users-service-marshal.h"
+#include "consolekit-manager-client.h"
 
 static void     users_service_dbus_class_init         (UsersServiceDbusClass *klass);
 static void     users_service_dbus_init               (UsersServiceDbus  *self);
@@ -183,7 +185,8 @@ users_service_dbus_init (UsersServiceDbus *self)
   create_ck_proxy (self);
   create_seat_proxy (self);
 
-  users_loaded (priv->gdm_proxy, self);
+  if (priv->gdm_proxy)
+    users_loaded (priv->gdm_proxy, self);
 }
 
 static void
@@ -214,7 +217,7 @@ create_gdm_proxy (UsersServiceDbus *self)
     {
       if (error != NULL)
         {
-          g_error ("Unable to get DisplayManager proxy on system bus: %s", error->message);
+          g_warning ("Unable to get DisplayManager proxy on system bus: %s", error->message);
           g_error_free (error);
         }
 
@@ -443,37 +446,6 @@ get_unix_user (UsersServiceDbus *service,
   return TRUE;
 }
 
-static gchar *
-get_session_for_user (UsersServiceDbus *service,
-                      UserData         *user)
-{
-  GList *l;
-
-  if (!users_service_dbus_can_activate_session (service))
-    {
-      return NULL;
-    }
-
-  if (!user->sessions || g_list_length (user->sessions) == 0)
-    {
-      return NULL;
-    }
-
-  for (l = user->sessions; l != NULL; l = l->next)
-    {
-      const char *ssid;
-
-      ssid = l->data;
-
-      if (ssid)
-        {
-          return g_strdup (ssid);
-        }
-    }
-
-  return NULL;
-}
-
 static gboolean
 do_add_session (UsersServiceDbus *service,
                 UserData         *user,
@@ -538,14 +510,7 @@ add_sessions_for_user (UsersServiceDbus *self,
   int              i;
 
   error = NULL;
-  if (!dbus_g_proxy_call (priv->ck_proxy,
-                          "GetSessionsForUnixUser",
-                          &error,
-                          G_TYPE_UINT, user->uid,
-                          G_TYPE_INVALID,
-                          dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH),
-                          &sessions,
-                          G_TYPE_INVALID))
+  if (!org_freedesktop_ConsoleKit_Manager_get_sessions_for_unix_user(priv->ck_proxy, user->uid, &sessions, &error))
     {
       g_debug ("Failed to call GetSessionsForUnixUser: %s", error->message);
       g_error_free (error);
@@ -691,6 +656,7 @@ sync_users (UsersServiceDbus *self)
           user->shell       = g_strdup (g_value_get_string (g_value_array_get_nth (values, 3)));
           user->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
           user->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
+          user->real_name_conflict = FALSE;
 
           g_hash_table_insert (priv->users,
                                g_strdup (user->user_name),
@@ -709,6 +675,8 @@ users_loaded (DBusGProxy *proxy,
   UsersServiceDbusPrivate *priv;
   GError                  *error = NULL;
   gint                     count;
+
+  g_return_if_fail (proxy != NULL);
 
   service = (UsersServiceDbus *)user_data;
   priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
@@ -890,6 +858,8 @@ gboolean
 start_new_user_session (UsersServiceDbus *self,
                         UserData         *user)
 {
+  g_return_val_if_fail (IS_USERS_SERVICE_DBUS (self), FALSE);
+
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   GError   *error = NULL;
   char     *ssid;
@@ -1035,17 +1005,6 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
   return g_hash_table_get_values (priv->users);
 }
 
-/*
- * XXX - TODO: Right now we switch to a session that another user
- *             already has open, but if there are no open sessions
- *             for this user we go to the login screen and the
- *             user at the seat must select a user and enter a
- *             password.  This kind of defeats the purpose of
- *             actually selecting a username, since selecting any
- *             user will do the same thing here.  We need to change
- *             it so you only need to enter a password for the
- *             specified user.
- */
 gboolean
 users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                           UserData         *user)
@@ -1054,32 +1013,20 @@ users_service_dbus_activate_user_session (UsersServiceDbus *self,
   DBusMessage *message = NULL;
   DBusMessage *reply = NULL;
   DBusError error;
-  gchar *ssid;
 
   dbus_error_init (&error);
 
-  if (!priv->seat)
-    priv->seat = get_seat (self);
-
-  ssid = get_session_for_user (self, user);
-
-  if (!ssid)
-    {
-      return start_new_user_session (self, user);
-    }
-
-  if (!(message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
-                                                priv->seat,
-                                                "org.freedesktop.ConsoleKit.Seat",
-                                                "ActivateSession")))
+  if (!(message = dbus_message_new_method_call ("org.gnome.DisplayManager",
+                                                "/org/gnome/DisplayManager/LocalDisplayFactory",
+                                                "org.gnome.DisplayManager.LocalDisplayFactory",
+                                                "SwitchToUser")))
     {
       g_warning ("failed to create new message");
       return FALSE;
     }
 
   if (!dbus_message_append_args (message,
-                                 DBUS_TYPE_OBJECT_PATH,
-                                 &ssid,
+                                 DBUS_TYPE_STRING, &user->user_name,
                                  DBUS_TYPE_INVALID))
     {
       g_warning ("failed to append args");
@@ -1109,6 +1056,8 @@ users_service_dbus_activate_user_session (UsersServiceDbus *self,
     {
       dbus_message_unref (reply);
     }
+
+  dbus_error_free (&error);
 
   return TRUE;
 }

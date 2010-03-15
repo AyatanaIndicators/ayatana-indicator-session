@@ -4,7 +4,7 @@ AC_INIT(src/indicator-session.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 0.2.1)
+AM_INIT_AUTOMAKE(indicator-session, 0.2.5)
 
 AM_MAINTAINER_MODE
 
@@ -26,7 +26,7 @@ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 ###########################
 
 GTK_REQUIRED_VERSION=2.12
-INDICATOR_REQUIRED_VERSION=0.3.0
+INDICATOR_REQUIRED_VERSION=0.3.5
 DBUSMENUGTK_REQUIRED_VERSION=0.2.2
 POLKIT_REQUIRED_VERSION=0.92
 
@@ -39,6 +39,7 @@ AC_SUBST(APPLET_LIBS)
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
 
 PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION)
 
 AC_SUBST(SESSIONERVICE_CFLAGS)
@@ -127,19 +128,23 @@ AM_GLIB_GNU_GETTEXT
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/gtk-dialog/Makefile
 data/Makefile
 data/icons/Makefile
 data/icons/16x16/Makefile
 data/icons/16x16/actions/Makefile
+data/icons/16x16/status/Makefile
 data/icons/22x22/Makefile
 data/icons/22x22/actions/Makefile
+data/icons/22x22/status/Makefile
 data/icons/24x24/Makefile
 data/icons/24x24/actions/Makefile
+data/icons/24x24/status/Makefile
 data/icons/32x32/Makefile
 data/icons/32x32/actions/Makefile
+data/icons/32x32/status/Makefile
 data/icons/scalable/Makefile
 data/icons/scalable/actions/Makefile
+data/icons/scalable/status/Makefile
 po/Makefile.in
 ])
 

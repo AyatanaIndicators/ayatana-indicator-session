@@ -54,3 +54,6 @@ indicator-session-[0-9].[0-9].[0-9].tar.gz
 indicator-session-[0-9].[0-9].tar.gz
 indicator-session-[0-9].[0-9].[0-9].tar.gz.asc
 indicator-session-[0-9].[0-9].tar.gz.asc
+src/consolekit-manager-client.h
+src/session-dbus-client.h
+src/session-dbus-server.h

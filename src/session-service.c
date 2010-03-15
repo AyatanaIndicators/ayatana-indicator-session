@@ -434,16 +434,21 @@ rebuild_items (DbusmenuMenuitem *root,
   gboolean can_lockscreen;
   GList *children;
 
+  /* Make sure we have a valid GConf client, and build one
+     if needed */
   ensure_gconf_client ();
 
+  /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (service) &&
       !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
   can_lockscreen = !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL);
 
+  /* Remove the old menu items if that makes sense */
   children = dbusmenu_menuitem_take_children (root);
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
 
+  /* Lock screen item */
   if (can_lockscreen) {
 	lock_menuitem = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
@@ -456,6 +461,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	}
   }
 
+  /* Build all of the user switching items */
   if (can_activate == TRUE)
     {
 		if (can_lockscreen) {
@@ -534,11 +540,15 @@ rebuild_items (DbusmenuMenuitem *root,
 		g_list_free(users);
 	}
 
+	/* If there were a bunch of items before us, we need a
+	   separator. */
 	if (can_lockscreen || can_activate) {
 		DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
 		dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
 		dbusmenu_menuitem_child_append(root, separator);
 	}
+
+	/* Start going through the session based items. */
 
 	logout_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {

@@ -266,19 +266,19 @@ setup_up (void) {
 		                                           UP_ADDRESS,
 		                                           UP_OBJECT,
 		                                           DBUS_INTERFACE_PROPERTIES);
+		/* Connect to changed signal */
+		dbus_g_proxy_add_signal(up_main_proxy,
+		                        "Changed",
+		                        G_TYPE_INVALID);
+
+		dbus_g_proxy_connect_signal(up_main_proxy,
+		                            "Changed",
+		                            G_CALLBACK(up_changed_cb),
+		                            NULL,
+		                            NULL);
 	}
 	g_return_if_fail(up_prop_proxy != NULL);
 
-	/* Connect to changed signal */
-	dbus_g_proxy_add_signal(up_main_proxy,
-	                        "Changed",
-	                        G_TYPE_INVALID);
-
-	dbus_g_proxy_connect_signal(up_main_proxy,
-	                            "Changed",
-	                            G_CALLBACK(up_changed_cb),
-	                            NULL,
-	                            NULL);
 
 	/* Force an original "changed" event */
 	up_changed_cb(up_main_proxy, NULL);

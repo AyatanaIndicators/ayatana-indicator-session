@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <glib/gi18n.h>
 #include <gconf/gconf-client.h>
 #include <dbus/dbus-glib.h>
 #include "lock-helper.h"
@@ -231,6 +232,28 @@ lock_screen_setup (gpointer data)
 	return FALSE;
 }
 
+/* When the GConf key changes we need to adjust the text on
+   what we're going to do with the menu item */
+static void
+lockscreen_update (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {
+	DbusmenuMenuitem * mi = (DbusmenuMenuitem*) data;
+	const gchar * key = gconf_entry_get_key (entry);
+
+	if(g_strcmp0 (key, GCONF_KEY) == 0) {
+		if (will_lock_screen()) {
+			dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+		} else {
+			dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Start Screensaver"));
+		}
+	}
+}
+
+/* Notification handler for lock menuitems. */
+guint lock_notify = 0;
+
+/* Sets the menu item to be updating.  There can
+   only be one.  So we clear and reset if we get
+   another. */
 void
 lock_screen_update_item (DbusmenuMenuitem * mi)
 {
@@ -238,7 +261,19 @@ lock_screen_update_item (DbusmenuMenuitem * mi)
 		gconf_client = gconf_client_get_default();
 	}
 
+	if (lock_notify == 0) {
+		gconf_client_add_dir (gconf_client,
+		                      GCONF_DIR,
+		                      GCONF_CLIENT_PRELOAD_ONELEVEL,
+		                      NULL);
+	}
 
+	if (lock_notify != 0) {
+		gconf_client_notify_remove(gconf_client, lock_notify);
+		lock_notify = 0;
+	}
 
+	lock_notify = gconf_client_notify_add(gconf_client, GCONF_KEY, lockscreen_update, mi, NULL, NULL);
 
+	return;
 }

@@ -342,6 +342,9 @@ static void
 activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
 	GError * error = NULL;
+
+	lock_screen(mi, timestamp, user_data);
+
 	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER, &error)) {
 		g_warning("Unable to start guest session: %s", error->message);
 		g_error_free(error);
@@ -382,6 +385,9 @@ static void
 activate_new_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
 	GError * error = NULL;
+
+	lock_screen(mi, timestamp, user_data);
+
 	if (!g_spawn_command_line_async("gdmflexiserver --startnew", &error)) {
 		g_warning("Unable to start new session: %s", error->message);
 		g_error_free(error);
@@ -396,6 +402,8 @@ activate_user_session (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data
 {
   UserData *user = (UserData *)user_data;
   UsersServiceDbus *service = user->service;
+
+  lock_screen(mi, timestamp, user_data);
 
   users_service_dbus_activate_user_session (service, user);
 }

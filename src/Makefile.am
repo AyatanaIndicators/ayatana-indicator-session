@@ -33,6 +33,13 @@ users-service-client.h: $(srcdir)/users-service.xml
 		--output=users-service-client.h \
 		$(srcdir)/users-service.xml
 
+upower-client.h: $(srcdir)/upower.xml
+	dbus-binding-tool \
+		--prefix=_upower_client \
+		--mode=glib-client \
+		--output=upower-client.h \
+		$(srcdir)/upower.xml
+
 session-dbus-client.h: $(srcdir)/session-dbus.xml
 	dbus-binding-tool \
 		--prefix=_session_dbus_client \
@@ -108,6 +115,7 @@ BUILT_SOURCES = \
 	consolekit-manager-client.h \
 	session-dbus-client.h \
 	session-dbus-server.h \
+	upower-client.h \
 	users-service-client.h \
 	users-service-marshal.h \
 	users-service-marshal.c
@@ -115,6 +123,7 @@ BUILT_SOURCES = \
 EXTRA_DIST = \
 	consolekit-manager.xml \
 	session-dbus.xml \
+	upower.xml \
 	users-service.xml \
 	users-service.list
 

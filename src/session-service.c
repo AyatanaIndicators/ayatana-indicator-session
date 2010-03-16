@@ -47,6 +47,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "session-dbus.h"
 #include "users-service-dbus.h"
 #include "lock-helper.h"
+#include "upower-client.h"
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
@@ -91,6 +92,8 @@ static DbusmenuMenuitem * shutdown_mi = NULL;
 
 static gboolean can_hibernate = TRUE;
 static gboolean can_suspend = TRUE;
+static gboolean allow_hibernate = TRUE;
+static gboolean allow_suspend = TRUE;
 
 static GConfClient * gconf_client = NULL;
 
@@ -252,6 +255,25 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 	return;
 }
 
+/* Handle the callback from the allow functions to check and
+   see if we're changing the value, and if so, rebuilding the
+   menus based on that info. */
+static void
+allowed_cb (DBusGProxy *proxy, gboolean OUT_allowed, GError *error, gpointer userdata)
+{
+	if (error != NULL) {
+		g_warning("Unable to get information on what is allowed from UPower: %s", error->message);
+		return;
+	}
+
+	gboolean * can_do = (gboolean *)userdata;
+
+	if (OUT_allowed != *can_do) {
+		*can_do = OUT_allowed;
+		rebuild_items (root_menuitem, dbus_interface);
+	}
+}
+
 /* This function goes through and sets up what we need for
    DKp checking.  We're even setting up the calls for the props
    we need */
@@ -289,6 +311,14 @@ setup_up (void) {
 
 	/* Force an original "changed" event */
 	up_changed_cb(up_main_proxy, NULL);
+
+	/* Check to see if these are getting blocked by PolicyKit */
+	org_freedesktop_UPower_suspend_allowed_async(up_main_proxy,
+	                                             allowed_cb,
+	                                             &allow_suspend);
+	org_freedesktop_UPower_hibernate_allowed_async(up_main_proxy,
+	                                               allowed_cb,
+	                                               &allow_hibernate);
 
 	return;
 }
@@ -567,14 +597,14 @@ rebuild_items (DbusmenuMenuitem *root,
 	dbusmenu_menuitem_child_append(root, logout_mi);
 	g_signal_connect(G_OBJECT(logout_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
 
-	if (can_suspend) {
+	if (can_suspend && allow_suspend) {
 		suspend_mi = dbusmenu_menuitem_new();
 		dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Sleep"));
 		dbusmenu_menuitem_child_append(root, suspend_mi);
 		g_signal_connect(G_OBJECT(suspend_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Suspend");
 	}
 
-	if (can_hibernate) {
+	if (can_hibernate && allow_hibernate) {
 		hibernate_mi = dbusmenu_menuitem_new();
 		dbusmenu_menuitem_property_set(hibernate_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Hibernate"));
 		dbusmenu_menuitem_child_append(root, hibernate_mi);

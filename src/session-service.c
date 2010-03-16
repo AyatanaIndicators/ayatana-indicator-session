@@ -516,6 +516,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	}
 	g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
 	dbusmenu_menuitem_child_append(root, lock_menuitem);
+	lock_screen_update_item(lock_menuitem);
   }
 
   /* Build all of the user switching items */

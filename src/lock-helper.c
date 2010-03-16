@@ -249,7 +249,7 @@ lockscreen_update (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpoin
 }
 
 /* Notification handler for lock menuitems. */
-guint lock_notify = 0;
+static guint lock_notify = 0;
 
 /* Sets the menu item to be updating.  There can
    only be one.  So we clear and reset if we get

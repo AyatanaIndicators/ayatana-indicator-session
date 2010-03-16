@@ -231,3 +231,14 @@ lock_screen_setup (gpointer data)
 	return FALSE;
 }
 
+void
+lock_screen_update_item (DbusmenuMenuitem * mi)
+{
+	if (gconf_client == NULL) {
+		gconf_client = gconf_client_get_default();
+	}
+
+
+
+
+}

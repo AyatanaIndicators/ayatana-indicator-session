@@ -34,6 +34,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "gconf-helper.h"
 
 static GConfClient * gconf_client = NULL;
+static guint confirmation_notify = 0;
+static guint logout_notify = 0;
 
 gboolean
 supress_confirmations (void) {
@@ -82,14 +84,31 @@ update_logout_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry, 
 
 void
 update_menu_entries(RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi, DbusmenuMenuitem * logoutitem) {
+	/* If we don't have a client, build one. */
 	if(!gconf_client) {
 		gconf_client = gconf_client_get_default ();
 	}
-	gconf_client_add_dir (gconf_client, GLOBAL_DIR,
-				GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-	gconf_client_notify_add (gconf_client, SUPPRESS_KEY,
+
+	/* If we've not gotten any notifications, then we need
+	   to add the directory for notifications to come from. */
+	if (confirmation_notify == 0 || logout_notify == 0) {
+		gconf_client_add_dir (gconf_client, GLOBAL_DIR,
+		                      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+	}
+
+	if (confirmation_notify != 0) {
+		gconf_client_notify_remove (gconf_client, confirmation_notify);
+		confirmation_notify = 0;
+	}
+
+	if (logout_notify != 0) {
+		gconf_client_notify_remove (gconf_client, logout_notify);
+		logout_notify = 0;
+	}
+
+	confirmation_notify = gconf_client_notify_add (gconf_client, SUPPRESS_KEY,
 				update_menu_entries_callback, restart_shutdown_logout_mi, NULL, NULL);
-	gconf_client_notify_add (gconf_client, LOGOUT_KEY,
+	logout_notify = gconf_client_notify_add (gconf_client, LOGOUT_KEY,
 				update_logout_callback, logoutitem, NULL, NULL);
 }
 

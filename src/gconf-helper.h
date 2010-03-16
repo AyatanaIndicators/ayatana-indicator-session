@@ -33,8 +33,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 
-#define SUPPRESS_KEY	"/apps/indicator-session/suppress_logout_restart_shutdown"
-#define GLOBAL_DIR	"/apps/indicator-session"
+#define GLOBAL_DIR      "/apps/indicator-session"
+#define SUPPRESS_KEY    GLOBAL_DIR "/suppress_logout_restart_shutdown"
+#define LOGOUT_KEY      GLOBAL_DIR "/suppress_logout_menuitem"
 
 typedef struct _RestartShutdownLogoutMenuItems
 {
@@ -44,7 +45,8 @@ typedef struct _RestartShutdownLogoutMenuItems
 }
 RestartShutdownLogoutMenuItems;
 
-void update_menu_entries(RestartShutdownLogoutMenuItems*);
+void update_menu_entries(RestartShutdownLogoutMenuItems*, DbusmenuMenuitem * logoutitem);
 gboolean supress_confirmations (void);
+gboolean show_logout (void);
 
 #endif /* __GCONF_HELPER__ */

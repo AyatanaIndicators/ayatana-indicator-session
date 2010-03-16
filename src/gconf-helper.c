@@ -43,6 +43,14 @@ supress_confirmations (void) {
 	return gconf_client_get_bool (gconf_client, SUPPRESS_KEY, NULL) ;
 }
 
+gboolean
+show_logout (void) {
+	if(!gconf_client) {
+		gconf_client = gconf_client_get_default ();
+	}
+	return !gconf_client_get_bool (gconf_client, LOGOUT_KEY, NULL) ;
+}
+
 static void update_menu_entries_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {
 	RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi = (RestartShutdownLogoutMenuItems*) data;
 	GConfValue * value = gconf_entry_get_value (entry);
@@ -61,8 +69,19 @@ static void update_menu_entries_callback (GConfClient *client, guint cnxn_id, GC
 	}
 }
 
+static void
+update_logout_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {
+	DbusmenuMenuitem * mi = (DbusmenuMenuitem*) data;
+	GConfValue * value = gconf_entry_get_value (entry);
+	const gchar * key = gconf_entry_get_key (entry);
+
+	if(g_strcmp0 (key, LOGOUT_KEY) == 0) {
+		dbusmenu_menuitem_property_set_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE, !gconf_value_get_bool(value));
+	}
+}
+
 void
-update_menu_entries(RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi) {
+update_menu_entries(RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi, DbusmenuMenuitem * logoutitem) {
 	if(!gconf_client) {
 		gconf_client = gconf_client_get_default ();
 	}
@@ -70,5 +89,7 @@ update_menu_entries(RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi)
 				GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 	gconf_client_notify_add (gconf_client, SUPPRESS_KEY,
 				update_menu_entries_callback, restart_shutdown_logout_mi, NULL, NULL);
+	gconf_client_notify_add (gconf_client, LOGOUT_KEY,
+				update_logout_callback, logoutitem, NULL, NULL);
 }
 

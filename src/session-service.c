@@ -563,6 +563,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	} else {
 		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out..."));
 	}
+	dbusmenu_menuitem_property_set_bool(logout_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_logout());
 	dbusmenu_menuitem_child_append(root, logout_mi);
 	g_signal_connect(G_OBJECT(logout_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
 
@@ -604,7 +605,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	restart_shutdown_logout_mi->restart_mi = restart_mi;
 	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
 
-	update_menu_entries(restart_shutdown_logout_mi);
+	update_menu_entries(restart_shutdown_logout_mi, logout_mi);
 
 	if (g_file_test(DESKTOP_FILE, G_FILE_TEST_EXISTS)) {
 		GAppInfo * appinfo = G_APP_INFO(g_desktop_app_info_new_from_filename(DESKTOP_FILE));

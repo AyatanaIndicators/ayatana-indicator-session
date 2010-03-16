@@ -134,7 +134,7 @@ will_lock_screen (void)
 		gconf_client = gconf_client_get_default();
 	}
 
-	return !gconf_client_get_bool (gconf_client, GCONF_KEY, NULL);
+	return gconf_client_get_bool (gconf_client, GCONF_KEY, NULL);
 }
 
 /* When the screensave go active, if we've got a mainloop

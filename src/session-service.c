@@ -509,14 +509,13 @@ rebuild_items (DbusmenuMenuitem *root,
   /* Lock screen item */
   if (can_lockscreen) {
 	lock_menuitem = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+	if (will_lock_screen()) {
+		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+	} else {
+		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Start Screensaver"));
+	}
 	g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
 	dbusmenu_menuitem_child_append(root, lock_menuitem);
-	if (!will_lock_screen()) {
-		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, FALSE);
-	} else {
-		dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, TRUE);
-	}
   }
 
   /* Build all of the user switching items */

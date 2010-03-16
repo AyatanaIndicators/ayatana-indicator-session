@@ -132,6 +132,19 @@ ensure_gconf_client (void)
 	return;
 }
 
+/* Check to see if the lockdown key is protecting from
+   locking the screen.  If not, lock it. */
+static void
+lock_if_possible (void) {
+	ensure_gconf_client ();
+
+	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
+		lock_screen(NULL, 0, NULL);
+	}
+
+	return;
+}
+
 /* A return from the command to sleep the system.  Make sure
    that we unthrottle the screensaver. */
 static void
@@ -153,7 +166,7 @@ machine_sleep (DbusmenuMenuitem * mi, guint timestamp, gpointer userdata)
 	}
 
 	screensaver_throttle(type);
-	lock_screen(NULL, 0, NULL);
+	lock_if_possible();
 
 	dbus_g_proxy_begin_call(up_main_proxy,
 	                        type,
@@ -370,6 +383,9 @@ static void
 activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
 	GError * error = NULL;
+
+	lock_if_possible();
+
 	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER, &error)) {
 		g_warning("Unable to start guest session: %s", error->message);
 		g_error_free(error);
@@ -410,6 +426,9 @@ static void
 activate_new_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
 	GError * error = NULL;
+
+	lock_if_possible();
+
 	if (!g_spawn_command_line_async("gdmflexiserver --startnew", &error)) {
 		g_warning("Unable to start new session: %s", error->message);
 		g_error_free(error);
@@ -424,6 +443,8 @@ activate_user_session (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data
 {
   UserData *user = (UserData *)user_data;
   UsersServiceDbus *service = user->service;
+
+  lock_if_possible();
 
   users_service_dbus_activate_user_session (service, user);
 }

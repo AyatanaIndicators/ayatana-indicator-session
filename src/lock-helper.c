@@ -182,7 +182,7 @@ lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 {
 	g_debug("Lock Screen");
 	if (!will_lock_screen()) {
-		g_debug("\tGDM set to autologin, blocking lock");
+		g_debug("\tUser is guest, blocking lock");
 		return;
 	}
 

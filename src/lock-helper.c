@@ -19,8 +19,12 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <gconf/gconf-client.h>
 #include <dbus/dbus-glib.h>
 #include "lock-helper.h"
+
+#define GCONF_DIR  "/apps/gnome-screensaver"
+#define GCONF_KEY  GCONF_DIR "/lock_enabled"
 
 static DBusGProxy * gss_proxy = NULL;
 static GMainLoop * gss_mainloop = NULL;
@@ -28,6 +32,8 @@ static guint cookie = 0;
 static DBusGProxyCall * cookie_call = NULL;
 
 static gboolean is_guest = FALSE;
+
+static GConfClient * gconf_client = NULL;
 
 void build_gss_proxy (void);
 
@@ -124,7 +130,11 @@ will_lock_screen (void)
 		return FALSE;
 	}
 
-	return TRUE;
+	if (gconf_client == NULL) {
+		gconf_client = gconf_client_get_default();
+	}
+
+	return !gconf_client_get_bool (gconf_client, GCONF_KEY, NULL);
 }
 
 /* When the screensave go active, if we've got a mainloop

@@ -273,7 +273,12 @@ lock_screen_update_item (DbusmenuMenuitem * mi)
 		lock_notify = 0;
 	}
 
-	lock_notify = gconf_client_notify_add(gconf_client, GCONF_KEY, lockscreen_update, mi, NULL, NULL);
+	lock_notify = gconf_client_notify_add(gconf_client,
+	                                      GCONF_KEY,
+	                                      lockscreen_update,
+	                                      mi,
+	                                      NULL,
+	                                      NULL);
 
 	return;
 }

@@ -28,6 +28,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
+#include <gio/gio.h>
 #include <libdbusmenu-gtk/menu.h>
 
 #include <dbus/dbus-glib.h>
@@ -222,6 +223,23 @@ new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCl
 {
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
 	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+
+	GtkWidget * usericon = NULL;
+	const gchar * icon_name = dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_ICON);
+	if (icon_name != NULL && icon_name[0] != '\0') {
+		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) == 0) {
+			GIcon * gicon = g_themed_icon_new_with_default_fallbacks("stock-user-panel");
+			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
+			g_object_unref(gicon);
+		} else {
+			usericon = gtk_image_new_from_file(icon_name);
+		}
+	}
+	if (usericon != NULL) {
+		gtk_misc_set_alignment(GTK_MISC(usericon), 0.0, 0.5);
+		gtk_box_pack_start(GTK_BOX(hbox), usericon, FALSE, FALSE, 0);
+		gtk_widget_show(usericon);
+	}
 
 	GtkWidget * label = gtk_label_new(dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME));
 	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);

@@ -88,6 +88,8 @@ struct _UsersServiceDbusPrivate
 
   GHashTable *exclusions;
   GHashTable *sessions;
+
+  DbusmenuMenuitem * guest_item;
 };
 
 #define USERS_SERVICE_DBUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbusPrivate))
@@ -157,6 +159,7 @@ users_service_dbus_init (UsersServiceDbus *self)
 
   priv->users = NULL;
   priv->count = 0;
+  priv->guest_item = NULL;
 
   /* Get the system bus */
   priv->system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
@@ -1068,4 +1071,13 @@ users_service_dbus_can_activate_session (UsersServiceDbus *self)
     }
 
   return can_activate;
+}
+
+/* Sets the menu item that represents the guest account */
+void
+users_service_dbus_set_guest_item (UsersServiceDbus * self, DbusmenuMenuitem * mi)
+{
+	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+	priv->guest_item = mi;
+	return;
 }

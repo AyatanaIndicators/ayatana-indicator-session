@@ -590,6 +590,11 @@ rebuild_items (DbusmenuMenuitem *root,
 					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
 				}
 				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
+				if (user->icon_url != NULL && user->icon_url[0] != '\0') {
+					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_url);
+				} else {
+					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
+				}
 				dbusmenu_menuitem_child_append (root, mi);
 				g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
 			}

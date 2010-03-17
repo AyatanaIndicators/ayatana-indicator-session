@@ -36,6 +36,7 @@
 #include "users-service-client.h"
 #include "users-service-marshal.h"
 #include "consolekit-manager-client.h"
+#include "consolekit-session-client.h"
 
 static void     users_service_dbus_class_init         (UsersServiceDbusClass *klass);
 static void     users_service_dbus_init               (UsersServiceDbus  *self);
@@ -413,12 +414,7 @@ get_seat_internal (DBusGProxy *proxy)
   GError *error = NULL;
   gchar *seat = NULL;
 
-  if (!dbus_g_proxy_call (proxy,
-                          "GetSeatId",
-                          &error,
-                          G_TYPE_INVALID,
-                          DBUS_TYPE_G_OBJECT_PATH, &seat,
-                          G_TYPE_INVALID))
+  if (!org_freedesktop_ConsoleKit_Session_get_seat_id (proxy, &seat, &error))
     {
       if (error)
         {
@@ -446,12 +442,7 @@ get_unix_user (UsersServiceDbus *service,
                                             session_id,
                                             "org.freedesktop.ConsoleKit.Session");
 
-  if (dbus_g_proxy_call (session_proxy,
-                         "GetUnixUser",
-                         &error,
-                         G_TYPE_INVALID,
-                         G_TYPE_UINT, &uid,
-                         G_TYPE_INVALID))
+  if (org_freedesktop_ConsoleKit_Session_get_unix_user(session_proxy, &uid, &error))
     {
       if (error)
         {
@@ -496,12 +487,7 @@ do_add_session (UsersServiceDbus *service,
     return FALSE;
   }
 
-   if (!dbus_g_proxy_call (session_proxy,
-                          "GetX11Display",
-                          &error,
-                          G_TYPE_INVALID,
-                          G_TYPE_STRING, &xdisplay,
-                          G_TYPE_INVALID))
+   if (!org_freedesktop_ConsoleKit_Session_get_x11_display (session_proxy, &xdisplay, &error))
     {
       if (error)
         {
@@ -776,12 +762,7 @@ session_is_login_window (UsersServiceDbus *self,
       return FALSE;
     }
 
-  if (!dbus_g_proxy_call (proxy,
-                          "GetSessionType",
-                          &error,
-                          G_TYPE_INVALID,
-                          G_TYPE_STRING, &type,
-                          G_TYPE_INVALID))
+  if (!org_freedesktop_ConsoleKit_Session_get_session_type (proxy, &type, &error))
     {
       g_warning ("Can't call GetSessionType: %s", error->message);
       g_error_free (error);

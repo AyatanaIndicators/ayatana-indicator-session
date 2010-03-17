@@ -38,6 +38,10 @@
 #include "consolekit-manager-client.h"
 #include "consolekit-session-client.h"
 
+#define CK_ADDR             "org.freedesktop.ConsoleKit"
+#define CK_SESSION_IFACE    "org.freedesktop.ConsoleKit.Session"
+
+
 static void     users_service_dbus_class_init         (UsersServiceDbusClass *klass);
 static void     users_service_dbus_init               (UsersServiceDbus  *self);
 static void     users_service_dbus_dispose            (GObject           *object);
@@ -361,9 +365,9 @@ create_cksession_proxy (UsersServiceDbus *service)
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
 
   priv->session_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
-                                                   "org.freedesktop.ConsoleKit",
+                                                   CK_ADDR,
                                                    priv->ssid,
-                                                   "org.freedesktop.ConsoleKit.Session");
+                                                   CK_SESSION_IFACE);
 
   if (!priv->session_proxy)
     {
@@ -437,10 +441,11 @@ get_unix_user (UsersServiceDbus *service,
   guint       uid;
   DBusGProxy *session_proxy;
 
+  g_debug("Building session proxy for: %s", session_id);
   session_proxy = dbus_g_proxy_new_for_name_owner(priv->system_bus,
-                                                  "org.freedesktop.ConsoleKit",
+                                                  CK_ADDR,
                                                   session_id,
-                                                  "org.freedesktop.ConsoleKit.Session",
+                                                  CK_SESSION_IFACE,
                                                   &error);
 
   if (error != NULL) {
@@ -483,9 +488,9 @@ do_add_session (UsersServiceDbus *service,
   GList *l;
 
   session_proxy = dbus_g_proxy_new_for_name_owner(priv->system_bus,
-                                                  "org.freedesktop.ConsoleKit",
+                                                  CK_ADDR,
                                                   ssid,
-                                                  "org.freedesktop.ConsoleKit.Session",
+                                                  CK_SESSION_IFACE,
                                                   &error);
 
   if (error != NULL) {
@@ -767,9 +772,9 @@ session_is_login_window (UsersServiceDbus *self,
   char       *type = NULL;
 
   if (!(proxy = dbus_g_proxy_new_for_name (priv->system_bus,
-                                           "org.freedesktop.ConsoleKit",
+                                           CK_ADDR,
                                            ssid,
-                                           "org.freedesktop.ConsoleKit.Session")))
+                                           CK_SESSION_IFACE)))
     {
       g_warning ("Failed to get ConsoleKit proxy");
 

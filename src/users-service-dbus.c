@@ -454,7 +454,7 @@ get_unix_user (UsersServiceDbus *service,
     return FALSE;
   }
 
-  if (org_freedesktop_ConsoleKit_Session_get_unix_user(session_proxy, &uid, &error))
+  if (!org_freedesktop_ConsoleKit_Session_get_unix_user(session_proxy, &uid, &error))
     {
       if (error)
         {

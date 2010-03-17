@@ -90,6 +90,7 @@ struct _UsersServiceDbusPrivate
   GHashTable *sessions;
 
   DbusmenuMenuitem * guest_item;
+  gchar * guest_session_id;
 };
 
 #define USERS_SERVICE_DBUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbusPrivate))
@@ -160,6 +161,7 @@ users_service_dbus_init (UsersServiceDbus *self)
   priv->users = NULL;
   priv->count = 0;
   priv->guest_item = NULL;
+  priv->guest_session_id = NULL;
 
   /* Get the system bus */
   priv->system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
@@ -203,6 +205,13 @@ users_service_dbus_dispose (GObject *object)
 static void
 users_service_dbus_finalize (GObject *object)
 {
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (object);
+
+  if (priv->guest_session_id != NULL) {
+    g_free(priv->guest_session_id);
+    priv->guest_session_id = NULL;
+  }
+  
   G_OBJECT_CLASS (users_service_dbus_parent_class)->finalize (object);
 }
 
@@ -570,6 +579,16 @@ seat_proxy_session_added (DBusGProxy       *seat_proxy,
       return;
     }
 
+  /* We need to special case guest here because it doesn't
+     show up in the GDM user tables. */
+  if (g_strcmp0("guest", pwent->pw_name) == 0) {
+    if (priv->guest_item != NULL) {
+      dbusmenu_menuitem_property_set_bool(priv->guest_item, USER_ITEM_PROP_LOGGED_IN, TRUE);
+    }
+	priv->guest_session_id = g_strdup(session_id);
+    return;
+  }
+
   user = g_hash_table_lookup (priv->users, pwent->pw_name);
   if (!user)
     {
@@ -590,8 +609,14 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
   GList    *l;
 
   username = g_hash_table_lookup (priv->sessions, session_id);
-  if (!username)
+  if (!username) {
+    if (g_strcmp0(session_id, priv->guest_session_id) == 0) {
+      dbusmenu_menuitem_property_set_bool(priv->guest_item, USER_ITEM_PROP_LOGGED_IN, FALSE);
+      g_free(priv->guest_session_id);
+      priv->guest_session_id = NULL;
+    }
     return;
+  }
 
   user = g_hash_table_lookup (priv->users, username);
   if (!user)
@@ -1079,5 +1104,10 @@ users_service_dbus_set_guest_item (UsersServiceDbus * self, DbusmenuMenuitem * m
 {
 	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 	priv->guest_item = mi;
+
+	if (priv->guest_session_id != NULL) {
+      dbusmenu_menuitem_property_set_bool(priv->guest_item, USER_ITEM_PROP_LOGGED_IN, TRUE);
+    }
+
 	return;
 }

@@ -590,8 +590,8 @@ rebuild_items (DbusmenuMenuitem *root,
 					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
 				}
 				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
-				if (user->icon_url != NULL && user->icon_url[0] != '\0') {
-					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_url);
+				if (user->icon_url != NULL && user->icon_url[0] != '\0' && g_str_has_prefix(user->icon_url, "file://")) {
+					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_url + strlen("file://"));
 				} else {
 					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
 				}

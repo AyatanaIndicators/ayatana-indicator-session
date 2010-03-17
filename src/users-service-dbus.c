@@ -1016,65 +1016,17 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
 gboolean
 users_service_dbus_activate_guest_session (UsersServiceDbus *self)
 {
-
-	return FALSE;
+	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+	return org_gnome_DisplayManager_LocalDisplayFactory_switch_to_user(priv->gdm_local_proxy, "guest", NULL, NULL);
 }
 
+/* Activates a specific user */
 gboolean
 users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                           UserData         *user)
 {
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-  DBusMessage *message = NULL;
-  DBusMessage *reply = NULL;
-  DBusError error;
-
-  dbus_error_init (&error);
-
-  if (!(message = dbus_message_new_method_call ("org.gnome.DisplayManager",
-                                                "/org/gnome/DisplayManager/LocalDisplayFactory",
-                                                "org.gnome.DisplayManager.LocalDisplayFactory",
-                                                "SwitchToUser")))
-    {
-      g_warning ("failed to create new message");
-      return FALSE;
-    }
-
-  if (!dbus_message_append_args (message,
-                                 DBUS_TYPE_STRING, &user->user_name,
-                                 DBUS_TYPE_INVALID))
-    {
-      g_warning ("failed to append args");
-      return FALSE;
-    }
-
-  if (!(reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (priv->system_bus),
-                                                           message,
-                                                           -1,
-                                                           &error)))
-    {
-      if (dbus_error_is_set (&error))
-        {
-          g_warning ("Failed to send message: %s", error.message);
-          dbus_error_free (&error);
-
-          return FALSE;
-        }
-    }
-
-  if (message)
-    {
-      dbus_message_unref (message);
-    }
-
-  if (reply)
-    {
-      dbus_message_unref (reply);
-    }
-
-  dbus_error_free (&error);
-
-  return TRUE;
+	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+	return org_gnome_DisplayManager_LocalDisplayFactory_switch_to_user(priv->gdm_local_proxy, user->user_name, NULL, NULL);
 }
 
 gboolean

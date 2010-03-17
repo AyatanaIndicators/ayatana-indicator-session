@@ -227,7 +227,7 @@ new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCl
 	GtkWidget * usericon = NULL;
 	const gchar * icon_name = dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_ICON);
 	if (icon_name != NULL && icon_name[0] != '\0') {
-		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) == 0) {
+		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) == 0 || !g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
 			GIcon * gicon = g_themed_icon_new_with_default_fallbacks("stock_person-panel");
 			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
 			g_object_unref(gicon);

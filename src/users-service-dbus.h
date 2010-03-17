@@ -22,6 +22,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <libdbusmenu-glib/menuitem.h>
 
 G_BEGIN_DECLS
 
@@ -47,7 +48,10 @@ struct _UserData
 
   GList   *sessions;
 
+  /* Whether the real name here conflicts with another in the system */
   gboolean real_name_conflict;
+  /* The menuitem representing this user if there is one. */
+  DbusmenuMenuitem * menuitem;
 
   UsersServiceDbus *service;
 };

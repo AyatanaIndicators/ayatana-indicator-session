@@ -228,7 +228,7 @@ new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCl
 	const gchar * icon_name = dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_ICON);
 	if (icon_name != NULL && icon_name[0] != '\0') {
 		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) == 0) {
-			GIcon * gicon = g_themed_icon_new_with_default_fallbacks("stock-user-panel");
+			GIcon * gicon = g_themed_icon_new_with_default_fallbacks("stock_person-panel");
 			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
 			g_object_unref(gicon);
 		} else {

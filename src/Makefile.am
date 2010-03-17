@@ -26,6 +26,13 @@ consolekit-manager-client.h: $(srcdir)/consolekit-manager.xml
 		--output=consolekit-manager-client.h \
 		$(srcdir)/consolekit-manager.xml
 
+consolekit-session-client.h: $(srcdir)/consolekit-session.xml
+	dbus-binding-tool \
+		--prefix=_consolekit_session_client \
+		--mode=glib-client \
+		--output=consolekit-session-client.h \
+		$(srcdir)/consolekit-session.xml
+
 gdm-local-display-factory-client.h: $(srcdir)/gdm-local-display-factory.xml
 	dbus-binding-tool \
 		--prefix=_gdm_local_display_factory_client \
@@ -120,6 +127,7 @@ gtk_logout_helper_LDADD = \
 
 BUILT_SOURCES = \
 	consolekit-manager-client.h \
+	consolekit-session-client.h \
 	gdm-local-display-factory-client.h \
 	session-dbus-client.h \
 	session-dbus-server.h \
@@ -130,6 +138,7 @@ BUILT_SOURCES = \
 
 EXTRA_DIST = \
 	consolekit-manager.xml \
+	consolekit-session.xml \
 	gdm-local-display-factory.xml \
 	session-dbus.xml \
 	upower.xml \

@@ -498,6 +498,10 @@ do_add_session (UsersServiceDbus *service,
       g_debug ("Adding session %s", ssid);
 
       user->sessions = g_list_prepend (user->sessions, g_strdup (ssid));
+
+      if (user->menuitem != NULL) {
+        dbusmenu_menuitem_property_set_bool(user->menuitem, USER_ITEM_PROP_LOGGED_IN, TRUE);
+      }
     }
   else
     {
@@ -599,6 +603,9 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
 
       g_free (l->data);
       user->sessions = g_list_delete_link (user->sessions, l);
+      if (user->menuitem != NULL && user->sessions == NULL) {
+        dbusmenu_menuitem_property_set_bool(user->menuitem, USER_ITEM_PROP_LOGGED_IN, FALSE);
+      }
     }
   else
     {

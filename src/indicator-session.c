@@ -222,7 +222,9 @@ static gboolean
 new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
 {
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
-	GtkWidget * hbox = gtk_hbox_new(FALSE, 0);
+	gint padding = 0;
+	gtk_widget_style_get(GTK_WIDGET(gmi), "horizontal-padding", &padding, NULL);
+	GtkWidget * hbox = gtk_hbox_new(FALSE, padding);
 
 	GtkWidget * usericon = NULL;
 	const gchar * icon_name = dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_ICON);

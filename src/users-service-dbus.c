@@ -31,6 +31,7 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "dbus-shared-names.h"
+#include "gdm-local-display-factory-client.h"
 #include "users-service-dbus.h"
 #include "users-service-client.h"
 #include "users-service-marshal.h"
@@ -80,6 +81,7 @@ struct _UsersServiceDbusPrivate
   DBusGConnection *system_bus;
 
   DBusGProxy *gdm_proxy;
+  DBusGProxy *gdm_local_proxy;
   DBusGProxy *ck_proxy;
   DBusGProxy *seat_proxy;
   DBusGProxy *session_proxy;
@@ -266,6 +268,11 @@ create_gdm_proxy (UsersServiceDbus *self)
                                G_CALLBACK (user_updated),
                                self,
                                NULL);
+
+  priv->gdm_local_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
+                                                     "org.gnome.DisplayManager",
+                                                     "/org/gnome/DisplayManager/LocalDisplayFactory",
+                                                     "org.gnome.DisplayManager.LocalDisplayFactory");
 }
 
 static void

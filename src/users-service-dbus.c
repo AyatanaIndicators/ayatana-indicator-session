@@ -66,7 +66,7 @@ static void     seat_proxy_session_removed             (DBusGProxy        *seat_
 static gboolean do_add_session                         (UsersServiceDbus  *service,
                                                         UserData          *user,
                                                         const gchar       *ssid);
-static gchar *  get_seat_internal                      (UsersServiceDbus  *self);
+static gchar *  get_seat_internal                      (DBusGProxy        *proxy);
 
 /* Private */
 typedef struct _UsersServiceDbusPrivate UsersServiceDbusPrivate;
@@ -402,19 +402,18 @@ get_seat (UsersServiceDbus *service)
   priv->ssid = ssid;
   create_cksession_proxy (service);
 
-  seat = get_seat_internal (service);
+  seat = get_seat_internal (priv->session_proxy);
 
   return seat;
 }
 
 static gchar *
-get_seat_internal (UsersServiceDbus *self)
+get_seat_internal (DBusGProxy *proxy)
 {
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   GError *error = NULL;
   gchar *seat = NULL;
 
-  if (!dbus_g_proxy_call (priv->session_proxy,
+  if (!dbus_g_proxy_call (proxy,
                           "GetSeatId",
                           &error,
                           G_TYPE_INVALID,
@@ -440,8 +439,14 @@ get_unix_user (UsersServiceDbus *service,
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
   GError     *error = NULL;
   guint       uid;
+  DBusGProxy *session_proxy;
 
-  if (dbus_g_proxy_call (priv->session_proxy,
+  session_proxy = dbus_g_proxy_new_for_name(priv->system_bus,
+                                            "org.freedesktop.ConsoleKit",
+                                            session_id,
+                                            "org.freedesktop.ConsoleKit.Session");
+
+  if (dbus_g_proxy_call (session_proxy,
                          "GetUnixUser",
                          &error,
                          G_TYPE_INVALID,
@@ -454,6 +459,7 @@ get_unix_user (UsersServiceDbus *service,
           g_error_free (error);
         }
 
+      g_object_unref(session_proxy);
       return FALSE;
     }
 
@@ -462,6 +468,7 @@ get_unix_user (UsersServiceDbus *service,
       *uidp = (uid_t)uid;
     }
 
+  g_object_unref(session_proxy);
   return TRUE;
 }
 
@@ -474,14 +481,22 @@ do_add_session (UsersServiceDbus *service,
   GError *error = NULL;
   gchar *seat = NULL;
   gchar *xdisplay = NULL;
+  DBusGProxy * session_proxy;
   GList *l;
 
-  seat = get_seat_internal (service);
+  session_proxy = dbus_g_proxy_new_for_name(priv->system_bus,
+                                            "org.freedesktop.ConsoleKit",
+                                            ssid,
+                                            "org.freedesktop.ConsoleKit.Session");
 
-  if (!seat || !priv->seat || strcmp (seat, priv->seat) != 0)
+  seat = get_seat_internal (session_proxy);
+
+  if (!seat || !priv->seat || strcmp (seat, priv->seat) != 0) {
+    g_object_unref(session_proxy);
     return FALSE;
+  }
 
-   if (!dbus_g_proxy_call (priv->session_proxy,
+   if (!dbus_g_proxy_call (session_proxy,
                           "GetX11Display",
                           &error,
                           G_TYPE_INVALID,
@@ -494,8 +509,11 @@ do_add_session (UsersServiceDbus *service,
           g_error_free (error);
         }
 
+      g_object_unref(session_proxy);
       return FALSE;
     }
+
+  g_object_unref(session_proxy);
 
   if (!xdisplay || xdisplay[0] == '\0')
     return FALSE;

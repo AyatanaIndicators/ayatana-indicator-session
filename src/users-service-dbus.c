@@ -609,6 +609,7 @@ seat_proxy_session_added (DBusGProxy       *seat_proxy,
       dbusmenu_menuitem_property_set_bool(priv->guest_item, USER_ITEM_PROP_LOGGED_IN, TRUE);
     }
 	priv->guest_session_id = g_strdup(session_id);
+	g_debug("Found guest session: %s", priv->guest_session_id);
     return;
   }
 
@@ -634,7 +635,10 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
   username = g_hash_table_lookup (priv->sessions, session_id);
   if (!username) {
     if (g_strcmp0(session_id, priv->guest_session_id) == 0) {
-      dbusmenu_menuitem_property_set_bool(priv->guest_item, USER_ITEM_PROP_LOGGED_IN, FALSE);
+      g_debug("Removing guest session: %s", priv->guest_session_id); 
+      if (priv->guest_item != NULL) {
+        dbusmenu_menuitem_property_set_bool(priv->guest_item, USER_ITEM_PROP_LOGGED_IN, FALSE);
+      }
       g_free(priv->guest_session_id);
       priv->guest_session_id = NULL;
     }

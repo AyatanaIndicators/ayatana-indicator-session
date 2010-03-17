@@ -1005,6 +1005,14 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
   return g_hash_table_get_values (priv->users);
 }
 
+/* Activates the guest account if it can. */
+gboolean
+users_service_dbus_activate_guest_session (UsersServiceDbus *self)
+{
+
+	return FALSE;
+}
+
 gboolean
 users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                           UserData         *user)

@@ -232,6 +232,7 @@ new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCl
 			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
 			g_object_unref(gicon);
 		} else {
+			g_debug("Using user icon for '%s' from file: %s", dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME), icon_name);
 			usericon = gtk_image_new_from_file(icon_name);
 		}
 	}

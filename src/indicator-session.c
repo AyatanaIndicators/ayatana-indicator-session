@@ -216,6 +216,19 @@ get_icon (IndicatorObject * io)
 	return INDICATOR_SESSION(io)->status_image;
 }
 
+static void
+user_property_change (DbusmenuMenuitem * item, const gchar * property, const GValue * value, gpointer user_data)
+{
+	if (g_strcmp0(property, USER_ITEM_PROP_LOGGED_IN) == 0) {
+		if (g_value_get_boolean(value)) {
+			gtk_widget_show(GTK_WIDGET(user_data));
+		} else {
+			gtk_widget_hide(GTK_WIDGET(user_data));
+		}
+	}
+	return;
+}
+
 /* Builds an item with a hip little logged in icon. */
 static gboolean
 new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
@@ -241,6 +254,8 @@ new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCl
 	gtk_widget_show(hbox);
 
 	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+
+	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(user_property_change), icon);
 
 	return TRUE;
 }

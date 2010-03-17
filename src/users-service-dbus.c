@@ -437,10 +437,17 @@ get_unix_user (UsersServiceDbus *service,
   guint       uid;
   DBusGProxy *session_proxy;
 
-  session_proxy = dbus_g_proxy_new_for_name(priv->system_bus,
-                                            "org.freedesktop.ConsoleKit",
-                                            session_id,
-                                            "org.freedesktop.ConsoleKit.Session");
+  session_proxy = dbus_g_proxy_new_for_name_owner(priv->system_bus,
+                                                  "org.freedesktop.ConsoleKit",
+                                                  session_id,
+                                                  "org.freedesktop.ConsoleKit.Session",
+                                                  &error);
+
+  if (error != NULL) {
+    g_warning("Unable to get CK Session proxy: %s", error->message);
+    g_error_free(error);
+    return FALSE;
+  }
 
   if (org_freedesktop_ConsoleKit_Session_get_unix_user(session_proxy, &uid, &error))
     {
@@ -475,10 +482,17 @@ do_add_session (UsersServiceDbus *service,
   DBusGProxy * session_proxy;
   GList *l;
 
-  session_proxy = dbus_g_proxy_new_for_name(priv->system_bus,
-                                            "org.freedesktop.ConsoleKit",
-                                            ssid,
-                                            "org.freedesktop.ConsoleKit.Session");
+  session_proxy = dbus_g_proxy_new_for_name_owner(priv->system_bus,
+                                                  "org.freedesktop.ConsoleKit",
+                                                  ssid,
+                                                  "org.freedesktop.ConsoleKit.Session",
+                                                  &error);
+
+  if (error != NULL) {
+    g_warning("Unable to get CK Session proxy: %s", error->message);
+    g_error_free(error);
+    return FALSE;
+  }
 
   seat = get_seat_internal (session_proxy);
 

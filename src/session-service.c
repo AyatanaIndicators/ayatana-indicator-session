@@ -599,6 +599,7 @@ rebuild_items (DbusmenuMenuitem *root,
 				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
 				dbusmenu_menuitem_child_append (root, mi);
 				g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+				user->menuitem = mi;
 			}
 		}
 

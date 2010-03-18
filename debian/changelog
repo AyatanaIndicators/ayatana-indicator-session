@@ -1,4 +1,4 @@
-indicator-session (0.2.6-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-session (0.2.6-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.2.6
     ∘ Updating sessions to make guest account marked when being
@@ -21,7 +21,7 @@ indicator-session (0.2.6-0ubuntu1~ppa1) UNRELEASED; urgency=low
     ∘ Translation update
   * debian/control: Require libindicator 0.3.5
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 18 Mar 2010 14:18:15 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Mar 2010 14:22:41 -0500
 
 indicator-session (0.2.5-0ubuntu3) lucid; urgency=low
 

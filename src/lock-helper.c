@@ -19,8 +19,13 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <glib/gi18n.h>
+#include <gconf/gconf-client.h>
 #include <dbus/dbus-glib.h>
 #include "lock-helper.h"
+
+#define GCONF_DIR  "/apps/gnome-screensaver"
+#define GCONF_KEY  GCONF_DIR "/lock_enabled"
 
 static DBusGProxy * gss_proxy = NULL;
 static GMainLoop * gss_mainloop = NULL;
@@ -28,6 +33,8 @@ static guint cookie = 0;
 static DBusGProxyCall * cookie_call = NULL;
 
 static gboolean is_guest = FALSE;
+
+static GConfClient * gconf_client = NULL;
 
 void build_gss_proxy (void);
 
@@ -124,7 +131,11 @@ will_lock_screen (void)
 		return FALSE;
 	}
 
-	return TRUE;
+	if (gconf_client == NULL) {
+		gconf_client = gconf_client_get_default();
+	}
+
+	return gconf_client_get_bool (gconf_client, GCONF_KEY, NULL);
 }
 
 /* When the screensave go active, if we've got a mainloop
@@ -175,24 +186,45 @@ activate_timeout (gpointer data)
 	return FALSE;
 }
 
+/* Handle errors from activating the screensaver */
+static void
+active_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer user_data)
+{
+	GError * error = NULL;
+
+	dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_INVALID);
+
+	if (error != NULL) {
+		g_warning("Unable to activate screensaver: %s", error->message);
+		g_error_free(error);
+	}
+
+	return;
+}
+
 /* A fun little function to actually lock the screen.  If,
    that's what you want, let's do it! */
 void
 lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 {
 	g_debug("Lock Screen");
-	if (!will_lock_screen()) {
-		g_debug("\tGDM set to autologin, blocking lock");
-		return;
-	}
 
 	build_gss_proxy();
 	g_return_if_fail(gss_proxy != NULL);
 
-	dbus_g_proxy_call_no_reply(gss_proxy,
-	                           "Lock",
-	                           G_TYPE_INVALID,
-	                           G_TYPE_INVALID);
+	if (will_lock_screen()) {
+		dbus_g_proxy_call_no_reply(gss_proxy,
+		                           "Lock",
+		                           G_TYPE_INVALID,
+		                           G_TYPE_INVALID);
+	} else {
+		dbus_g_proxy_begin_call(gss_proxy,
+		                        "SetActive",
+		                        active_cb, NULL,
+		                        NULL,
+		                        G_TYPE_BOOLEAN, TRUE,
+		                        G_TYPE_INVALID);
+	}
 
 	if (gss_mainloop == NULL) {
 		gss_mainloop = g_main_loop_new(NULL, FALSE);
@@ -221,3 +253,53 @@ lock_screen_setup (gpointer data)
 	return FALSE;
 }
 
+/* When the GConf key changes we need to adjust the text on
+   what we're going to do with the menu item */
+static void
+lockscreen_update (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {
+	DbusmenuMenuitem * mi = (DbusmenuMenuitem*) data;
+	const gchar * key = gconf_entry_get_key (entry);
+
+	if(g_strcmp0 (key, GCONF_KEY) == 0) {
+		if (will_lock_screen()) {
+			dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+		} else {
+			dbusmenu_menuitem_property_set(mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Start Screensaver"));
+		}
+	}
+}
+
+/* Notification handler for lock menuitems. */
+static guint lock_notify = 0;
+
+/* Sets the menu item to be updating.  There can
+   only be one.  So we clear and reset if we get
+   another. */
+void
+lock_screen_update_item (DbusmenuMenuitem * mi)
+{
+	if (gconf_client == NULL) {
+		gconf_client = gconf_client_get_default();
+	}
+
+	if (lock_notify == 0) {
+		gconf_client_add_dir (gconf_client,
+		                      GCONF_DIR,
+		                      GCONF_CLIENT_PRELOAD_ONELEVEL,
+		                      NULL);
+	}
+
+	if (lock_notify != 0) {
+		gconf_client_notify_remove(gconf_client, lock_notify);
+		lock_notify = 0;
+	}
+
+	lock_notify = gconf_client_notify_add(gconf_client,
+	                                      GCONF_KEY,
+	                                      lockscreen_update,
+	                                      mi,
+	                                      NULL,
+	                                      NULL);
+
+	return;
+}

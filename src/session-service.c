@@ -28,6 +28,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <gio/gdesktopappinfo.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -43,17 +44,22 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gconf-helper.h"
 
+#include "session-dbus.h"
 #include "users-service-dbus.h"
 #include "lock-helper.h"
+#include "upower-client.h"
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
 #define UP_INTERFACE  "org.freedesktop.UPower"
 
+#define DESKTOP_FILE  "/usr/share/applications/indicator-session-extra.desktop"
+
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
 
-#define LOCKDOWN_DIR  "/desktop/gnome/lockdown"
-#define LOCKDOWN_KEY  LOCKDOWN_DIR "/disable_user_switching"
+#define LOCKDOWN_DIR              "/desktop/gnome/lockdown"
+#define LOCKDOWN_KEY_USER         LOCKDOWN_DIR "/disable_user_switching"
+#define LOCKDOWN_KEY_SCREENSAVER  LOCKDOWN_DIR "/disable_lock_screen"
 
 typedef struct _ActivateData ActivateData;
 struct _ActivateData
@@ -65,6 +71,7 @@ struct _ActivateData
 static DBusGConnection   *system_bus = NULL;
 static DBusGProxy        *gdm_proxy = NULL;
 static UsersServiceDbus  *dbus_interface = NULL;
+static SessionDbus       *session_dbus = NULL;
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
@@ -83,8 +90,14 @@ static DbusmenuMenuitem * logout_mi = NULL;
 static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
 
+static gboolean can_hibernate = TRUE;
+static gboolean can_suspend = TRUE;
+static gboolean allow_hibernate = TRUE;
+static gboolean allow_suspend = TRUE;
+
 static GConfClient * gconf_client = NULL;
-static guint notify_lockdown_id = 0;
+
+static void rebuild_items (DbusmenuMenuitem *root, UsersServiceDbus *service);
 
 static void
 lockdown_changed (GConfClient *client,
@@ -92,42 +105,44 @@ lockdown_changed (GConfClient *client,
                   GConfEntry  *entry,
                   gpointer     user_data)
 {
-  GConfValue  *value = gconf_entry_get_value (entry);
-  const gchar *key   = gconf_entry_get_key (entry);
+	GConfValue  *value = gconf_entry_get_value (entry);
+	const gchar *key   = gconf_entry_get_key (entry);
 
-  if (!value || !key)
-    return;
+	if (value == NULL || key == NULL) {
+		return;
+	}
 
-  if (g_strcmp0 (key, LOCKDOWN_KEY) == 0)
-    {
-      if (switch_menuitem)
-        {
-          if (gconf_value_get_bool (value))
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-            }
-          else
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
-            }
-        }
-    }
+	if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0 || g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
+		rebuild_items(root_menuitem, dbus_interface);
+	}
+
+	return;
 }
 
+/* Ensures that we have a GConf client and if we build one
+   set up the signal handler. */
 static void
 ensure_gconf_client (void)
 {
-  if (!gconf_client)
-    {
-      gconf_client = gconf_client_get_default ();
+	if (!gconf_client) {
+		gconf_client = gconf_client_get_default ();
+		gconf_client_add_dir(gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_notify_add(gconf_client, LOCKDOWN_DIR, lockdown_changed, NULL, NULL, NULL);
+	}
+	return;
+}
 
-      notify_lockdown_id = gconf_client_notify_add (gconf_client,
-                                                    LOCKDOWN_KEY,
-                                                    lockdown_changed,
-                                                    NULL,
-                                                    NULL,
-                                                    NULL);
-    }
+/* Check to see if the lockdown key is protecting from
+   locking the screen.  If not, lock it. */
+static void
+lock_if_possible (void) {
+	ensure_gconf_client ();
+
+	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
+		lock_screen(NULL, 0, NULL);
+	}
+
+	return;
 }
 
 /* A return from the command to sleep the system.  Make sure
@@ -151,7 +166,7 @@ machine_sleep (DbusmenuMenuitem * mi, guint timestamp, gpointer userdata)
 	}
 
 	screensaver_throttle(type);
-	lock_screen(NULL, 0, NULL);
+	lock_if_possible();
 
 	dbus_g_proxy_begin_call(up_main_proxy,
 	                        type,
@@ -179,8 +194,10 @@ suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	}
 	g_debug("Got Suspend: %s", g_value_get_boolean(&candoit) ? "true" : "false");
 
-	if (suspend_mi != NULL) {
-		dbusmenu_menuitem_property_set_value(suspend_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, &candoit);
+	gboolean local_can_suspend = g_value_get_boolean(&candoit);
+	if (local_can_suspend != can_suspend) {
+		can_suspend = local_can_suspend;
+		rebuild_items(root_menuitem, dbus_interface);
 	}
 
 	return;
@@ -202,8 +219,10 @@ hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	}
 	g_debug("Got Hibernate: %s", g_value_get_boolean(&candoit) ? "true" : "false");
 
-	if (suspend_mi != NULL) {
-		dbusmenu_menuitem_property_set_value(hibernate_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, &candoit);
+	gboolean local_can_hibernate = g_value_get_boolean(&candoit);
+	if (local_can_hibernate != can_hibernate) {
+		can_hibernate = local_can_hibernate;
+		rebuild_items(root_menuitem, dbus_interface);
 	}
 
 	return;
@@ -249,6 +268,25 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 	return;
 }
 
+/* Handle the callback from the allow functions to check and
+   see if we're changing the value, and if so, rebuilding the
+   menus based on that info. */
+static void
+allowed_cb (DBusGProxy *proxy, gboolean OUT_allowed, GError *error, gpointer userdata)
+{
+	if (error != NULL) {
+		g_warning("Unable to get information on what is allowed from UPower: %s", error->message);
+		return;
+	}
+
+	gboolean * can_do = (gboolean *)userdata;
+
+	if (OUT_allowed != *can_do) {
+		*can_do = OUT_allowed;
+		rebuild_items (root_menuitem, dbus_interface);
+	}
+}
+
 /* This function goes through and sets up what we need for
    DKp checking.  We're even setting up the calls for the props
    we need */
@@ -270,22 +308,30 @@ setup_up (void) {
 		                                           UP_ADDRESS,
 		                                           UP_OBJECT,
 		                                           DBUS_INTERFACE_PROPERTIES);
+		/* Connect to changed signal */
+		dbus_g_proxy_add_signal(up_main_proxy,
+		                        "Changed",
+		                        G_TYPE_INVALID);
+
+		dbus_g_proxy_connect_signal(up_main_proxy,
+		                            "Changed",
+		                            G_CALLBACK(up_changed_cb),
+		                            NULL,
+		                            NULL);
 	}
 	g_return_if_fail(up_prop_proxy != NULL);
 
-	/* Connect to changed signal */
-	dbus_g_proxy_add_signal(up_main_proxy,
-	                        "Changed",
-	                        G_TYPE_INVALID);
-
-	dbus_g_proxy_connect_signal(up_main_proxy,
-	                            "Changed",
-	                            G_CALLBACK(up_changed_cb),
-	                            NULL,
-	                            NULL);
 
 	/* Force an original "changed" event */
 	up_changed_cb(up_main_proxy, NULL);
+
+	/* Check to see if these are getting blocked by PolicyKit */
+	org_freedesktop_UPower_suspend_allowed_async(up_main_proxy,
+	                                             allowed_cb,
+	                                             &allow_suspend);
+	org_freedesktop_UPower_hibernate_allowed_async(up_main_proxy,
+	                                               allowed_cb,
+	                                               &allow_hibernate);
 
 	return;
 }
@@ -337,6 +383,16 @@ static void
 activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
 	GError * error = NULL;
+
+	lock_if_possible();
+
+	if (dbusmenu_menuitem_property_get_bool(mi, USER_ITEM_PROP_LOGGED_IN)) {
+		if (users_service_dbus_activate_guest_session(USERS_SERVICE_DBUS(user_data))) {
+			return;
+		}
+		g_warning("Unable to activate guest session, falling back to command line activation.");
+	}
+
 	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER, &error)) {
 		g_warning("Unable to start guest session: %s", error->message);
 		g_error_free(error);
@@ -377,6 +433,9 @@ static void
 activate_new_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
 	GError * error = NULL;
+
+	lock_if_possible();
+
 	if (!g_spawn_command_line_async("gdmflexiserver --startnew", &error)) {
 		g_warning("Unable to start new session: %s", error->message);
 		g_error_free(error);
@@ -391,6 +450,8 @@ activate_user_session (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data
 {
   UserData *user = (UserData *)user_data;
   UsersServiceDbus *service = user->service;
+
+  lock_if_possible();
 
   users_service_dbus_activate_user_session (service, user);
 }
@@ -415,6 +476,16 @@ compare_users_by_username (const gchar *a,
   return retval;
 }
 
+/* Take a desktop file and execute it */
+static void
+desktop_activate_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
+{
+	GAppInfo * appinfo = G_APP_INFO(data);
+	g_return_if_fail(appinfo != NULL);
+	g_app_info_launch(appinfo, NULL, NULL, NULL);
+	return;
+}
+
 /* Builds up the menu for us */
 static void
 rebuild_items (DbusmenuMenuitem *root,
@@ -425,29 +496,47 @@ rebuild_items (DbusmenuMenuitem *root,
   GList *u;
   UserData *user;
   gboolean can_activate;
+  gboolean can_lockscreen;
   GList *children;
 
-  can_activate = users_service_dbus_can_activate_session (service);
+  /* Make sure we have a valid GConf client, and build one
+     if needed */
+  ensure_gconf_client ();
 
+  /* Check to see which menu items we're allowed to have */
+  can_activate = users_service_dbus_can_activate_session (service) &&
+      !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
+  can_lockscreen = !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL);
+
+  /* Remove the old menu items if that makes sense */
   children = dbusmenu_menuitem_take_children (root);
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
 
-  lock_menuitem = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
-  g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
-  dbusmenu_menuitem_child_append(root, lock_menuitem);
-  if (!will_lock_screen()) {
-    dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, FALSE);
-  } else {
-    dbusmenu_menuitem_property_set_bool(lock_menuitem, DBUSMENU_MENUITEM_PROP_ENABLED, TRUE);
+  /* Lock screen item */
+  if (can_lockscreen) {
+	lock_menuitem = dbusmenu_menuitem_new();
+	if (will_lock_screen()) {
+		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+	} else {
+		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Start Screensaver"));
+	}
+	g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
+	dbusmenu_menuitem_child_append(root, lock_menuitem);
+	lock_screen_update_item(lock_menuitem);
   }
 
+  /* Set to NULL just incase we don't end up building one */
+  users_service_dbus_set_guest_item(service, NULL);
+
+  /* Build all of the user switching items */
   if (can_activate == TRUE)
     {
-	  DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
-	  dbusmenu_menuitem_property_set(separator1, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-	  dbusmenu_menuitem_child_append(root, separator1);
+		if (can_lockscreen) {
+			DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
+			dbusmenu_menuitem_property_set(separator1, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+			dbusmenu_menuitem_child_append(root, separator1);
+		}
 
       if (check_guest_session ())
         {
@@ -457,26 +546,17 @@ rebuild_items (DbusmenuMenuitem *root,
           dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
           dbusmenu_menuitem_child_append (root, guest_mi);
           g_signal_connect (G_OBJECT (guest_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
+          users_service_dbus_set_guest_item(service, guest_mi);
         }
 
       if (check_new_session ())
         {
-          ensure_gconf_client ();
 
           switch_menuitem = dbusmenu_menuitem_new ();
 		  dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_TYPE, MENU_SWITCH_TYPE);
 		  dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
           dbusmenu_menuitem_child_append (root, switch_menuitem);
           g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
-
-          if (gconf_client_get_bool (gconf_client, LOCKDOWN_KEY, NULL))
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-            }
-          else
-            {
-              dbusmenu_menuitem_property_set_bool (switch_menuitem, DBUSMENU_MENUITEM_PROP_VISIBLE, TRUE);
-            }
         }
 
 		GList * users = NULL;
@@ -521,17 +601,29 @@ rebuild_items (DbusmenuMenuitem *root,
 					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
 				}
 				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
+				if (user->icon_url != NULL && user->icon_url[0] != '\0' && g_str_has_prefix(user->icon_url, "file://")) {
+					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_url + strlen("file://"));
+				} else {
+					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
+				}
 				dbusmenu_menuitem_child_append (root, mi);
 				g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+				user->menuitem = mi;
 			}
 		}
 
 		g_list_free(users);
 	}
 
-	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-	dbusmenu_menuitem_child_append(root, separator);
+	/* If there were a bunch of items before us, we need a
+	   separator. */
+	if (can_lockscreen || can_activate) {
+		DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+		dbusmenu_menuitem_child_append(root, separator);
+	}
+
+	/* Start going through the session based items. */
 
 	logout_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
@@ -539,35 +631,39 @@ rebuild_items (DbusmenuMenuitem *root,
 	} else {
 		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out..."));
 	}
+	dbusmenu_menuitem_property_set_bool(logout_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_logout());
 	dbusmenu_menuitem_child_append(root, logout_mi);
 	g_signal_connect(G_OBJECT(logout_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
 
-	suspend_mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set_bool(suspend_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-	dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Sleep"));
-	dbusmenu_menuitem_child_append(root, suspend_mi);
-	g_signal_connect(G_OBJECT(suspend_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Suspend");
+	if (can_suspend && allow_suspend) {
+		suspend_mi = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Sleep"));
+		dbusmenu_menuitem_child_append(root, suspend_mi);
+		g_signal_connect(G_OBJECT(suspend_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Suspend");
+	}
 
-	hibernate_mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set_bool(hibernate_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, FALSE);
-	dbusmenu_menuitem_property_set(hibernate_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Hibernate"));
-	dbusmenu_menuitem_child_append(root, hibernate_mi);
-	g_signal_connect(G_OBJECT(hibernate_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Hibernate");
+	if (can_hibernate && allow_hibernate) {
+		hibernate_mi = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set(hibernate_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Hibernate"));
+		dbusmenu_menuitem_child_append(root, hibernate_mi);
+		g_signal_connect(G_OBJECT(hibernate_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Hibernate");
+	}
 
 	restart_mi = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_TYPE, RESTART_ITEM_TYPE);
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart"));
+		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart"));
 	} else {
-		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart..."));
+		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
 	}
 	dbusmenu_menuitem_child_append(root, restart_mi);
 	g_signal_connect(G_OBJECT(restart_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "restart");
 
 	shutdown_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off"));
+		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down"));
 	} else {
-		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off..."));
+		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down..."));
 	}
 	dbusmenu_menuitem_child_append(root, shutdown_mi);
 	g_signal_connect(G_OBJECT(shutdown_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "shutdown");
@@ -577,7 +673,22 @@ rebuild_items (DbusmenuMenuitem *root,
 	restart_shutdown_logout_mi->restart_mi = restart_mi;
 	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
 
-	update_menu_entries(restart_shutdown_logout_mi);
+	update_menu_entries(restart_shutdown_logout_mi, logout_mi);
+
+	if (g_file_test(DESKTOP_FILE, G_FILE_TEST_EXISTS)) {
+		GAppInfo * appinfo = G_APP_INFO(g_desktop_app_info_new_from_filename(DESKTOP_FILE));
+
+		if (appinfo != NULL) {
+			DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
+			dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+			dbusmenu_menuitem_child_append(root, separator);
+
+			DbusmenuMenuitem * desktop_mi = dbusmenu_menuitem_new();
+			dbusmenu_menuitem_property_set(desktop_mi, DBUSMENU_MENUITEM_PROP_LABEL, g_app_info_get_name(appinfo));
+			g_signal_connect(G_OBJECT(desktop_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(desktop_activate_cb), appinfo);
+			dbusmenu_menuitem_child_append(root, desktop_mi);
+		}
+	}
 
 	return;
 }
@@ -615,18 +726,24 @@ restart_dir_changed (void)
 
 	if (restart_required) {
 		if (supress_confirmations()) {
-			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart Required"));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart Required"));
 		} else {
-			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart Required..."));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart Required..."));
 		}
-		dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_ICON_NAME, "emblem-important");
+		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_ICON, "system-restart-panel");
+		if (session_dbus != NULL) {
+			session_dbus_set_name(session_dbus, ICON_RESTART);
+		}
 	} else {	
 		if (supress_confirmations()) {
-			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart"));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart"));
 		} else {
-			dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Restart..."));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
 		}
-		dbusmenu_menuitem_property_remove(restart_mi, DBUSMENU_MENUITEM_PROP_ICON_NAME);
+		dbusmenu_menuitem_property_remove(restart_mi, RESTART_ITEM_ICON);
+		if (session_dbus != NULL) {
+			session_dbus_set_name(session_dbus, ICON_DEFAULT);
+		}
 	}
 
 	return;
@@ -665,6 +782,8 @@ main (int argc, char ** argv)
 	g_signal_connect(G_OBJECT(service),
 	                 INDICATOR_SERVICE_SIGNAL_SHUTDOWN,
 	                 G_CALLBACK(service_shutdown), NULL);
+
+	session_dbus = session_dbus_new();
 
 	g_idle_add(lock_screen_setup, NULL);
 

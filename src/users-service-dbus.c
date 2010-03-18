@@ -31,10 +31,16 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "dbus-shared-names.h"
+#include "gdm-local-display-factory-client.h"
 #include "users-service-dbus.h"
 #include "users-service-client.h"
 #include "users-service-marshal.h"
 #include "consolekit-manager-client.h"
+#include "consolekit-session-client.h"
+
+#define CK_ADDR             "org.freedesktop.ConsoleKit"
+#define CK_SESSION_IFACE    "org.freedesktop.ConsoleKit.Session"
+
 
 static void     users_service_dbus_class_init         (UsersServiceDbusClass *klass);
 static void     users_service_dbus_init               (UsersServiceDbus  *self);
@@ -65,7 +71,7 @@ static void     seat_proxy_session_removed             (DBusGProxy        *seat_
 static gboolean do_add_session                         (UsersServiceDbus  *service,
                                                         UserData          *user,
                                                         const gchar       *ssid);
-static gchar *  get_seat_internal                      (UsersServiceDbus  *self);
+static gchar *  get_seat_internal                      (DBusGProxy        *proxy);
 
 /* Private */
 typedef struct _UsersServiceDbusPrivate UsersServiceDbusPrivate;
@@ -80,12 +86,16 @@ struct _UsersServiceDbusPrivate
   DBusGConnection *system_bus;
 
   DBusGProxy *gdm_proxy;
+  DBusGProxy *gdm_local_proxy;
   DBusGProxy *ck_proxy;
   DBusGProxy *seat_proxy;
   DBusGProxy *session_proxy;
 
   GHashTable *exclusions;
   GHashTable *sessions;
+
+  DbusmenuMenuitem * guest_item;
+  gchar * guest_session_id;
 };
 
 #define USERS_SERVICE_DBUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbusPrivate))
@@ -155,6 +165,8 @@ users_service_dbus_init (UsersServiceDbus *self)
 
   priv->users = NULL;
   priv->count = 0;
+  priv->guest_item = NULL;
+  priv->guest_session_id = NULL;
 
   /* Get the system bus */
   priv->system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
@@ -198,6 +210,13 @@ users_service_dbus_dispose (GObject *object)
 static void
 users_service_dbus_finalize (GObject *object)
 {
+  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (object);
+
+  if (priv->guest_session_id != NULL) {
+    g_free(priv->guest_session_id);
+    priv->guest_session_id = NULL;
+  }
+  
   G_OBJECT_CLASS (users_service_dbus_parent_class)->finalize (object);
 }
 
@@ -266,6 +285,11 @@ create_gdm_proxy (UsersServiceDbus *self)
                                G_CALLBACK (user_updated),
                                self,
                                NULL);
+
+  priv->gdm_local_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
+                                                     "org.gnome.DisplayManager",
+                                                     "/org/gnome/DisplayManager/LocalDisplayFactory",
+                                                     "org.gnome.DisplayManager.LocalDisplayFactory");
 }
 
 static void
@@ -341,9 +365,9 @@ create_cksession_proxy (UsersServiceDbus *service)
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
 
   priv->session_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
-                                                   "org.freedesktop.ConsoleKit",
+                                                   CK_ADDR,
                                                    priv->ssid,
-                                                   "org.freedesktop.ConsoleKit.Session");
+                                                   CK_SESSION_IFACE);
 
   if (!priv->session_proxy)
     {
@@ -383,24 +407,18 @@ get_seat (UsersServiceDbus *service)
   priv->ssid = ssid;
   create_cksession_proxy (service);
 
-  seat = get_seat_internal (service);
+  seat = get_seat_internal (priv->session_proxy);
 
   return seat;
 }
 
 static gchar *
-get_seat_internal (UsersServiceDbus *self)
+get_seat_internal (DBusGProxy *proxy)
 {
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   GError *error = NULL;
   gchar *seat = NULL;
 
-  if (!dbus_g_proxy_call (priv->session_proxy,
-                          "GetSeatId",
-                          &error,
-                          G_TYPE_INVALID,
-                          DBUS_TYPE_G_OBJECT_PATH, &seat,
-                          G_TYPE_INVALID))
+  if (!org_freedesktop_ConsoleKit_Session_get_seat_id (proxy, &seat, &error))
     {
       if (error)
         {
@@ -421,13 +439,22 @@ get_unix_user (UsersServiceDbus *service,
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
   GError     *error = NULL;
   guint       uid;
+  DBusGProxy *session_proxy;
 
-  if (dbus_g_proxy_call (priv->session_proxy,
-                         "GetUnixUser",
-                         &error,
-                         G_TYPE_INVALID,
-                         G_TYPE_UINT, &uid,
-                         G_TYPE_INVALID))
+  g_debug("Building session proxy for: %s", session_id);
+  session_proxy = dbus_g_proxy_new_for_name_owner(priv->system_bus,
+                                                  CK_ADDR,
+                                                  session_id,
+                                                  CK_SESSION_IFACE,
+                                                  &error);
+
+  if (error != NULL) {
+    g_warning("Unable to get CK Session proxy: %s", error->message);
+    g_error_free(error);
+    return FALSE;
+  }
+
+  if (!org_freedesktop_ConsoleKit_Session_get_unix_user(session_proxy, &uid, &error))
     {
       if (error)
         {
@@ -435,6 +462,7 @@ get_unix_user (UsersServiceDbus *service,
           g_error_free (error);
         }
 
+      g_object_unref(session_proxy);
       return FALSE;
     }
 
@@ -443,6 +471,7 @@ get_unix_user (UsersServiceDbus *service,
       *uidp = (uid_t)uid;
     }
 
+  g_object_unref(session_proxy);
   return TRUE;
 }
 
@@ -455,19 +484,29 @@ do_add_session (UsersServiceDbus *service,
   GError *error = NULL;
   gchar *seat = NULL;
   gchar *xdisplay = NULL;
+  DBusGProxy * session_proxy;
   GList *l;
 
-  seat = get_seat_internal (service);
+  session_proxy = dbus_g_proxy_new_for_name_owner(priv->system_bus,
+                                                  CK_ADDR,
+                                                  ssid,
+                                                  CK_SESSION_IFACE,
+                                                  &error);
 
-  if (!seat || !priv->seat || strcmp (seat, priv->seat) != 0)
+  if (error != NULL) {
+    g_warning("Unable to get CK Session proxy: %s", error->message);
+    g_error_free(error);
     return FALSE;
+  }
 
-   if (!dbus_g_proxy_call (priv->session_proxy,
-                          "GetX11Display",
-                          &error,
-                          G_TYPE_INVALID,
-                          G_TYPE_STRING, &xdisplay,
-                          G_TYPE_INVALID))
+  seat = get_seat_internal (session_proxy);
+
+  if (!seat || !priv->seat || strcmp (seat, priv->seat) != 0) {
+    g_object_unref(session_proxy);
+    return FALSE;
+  }
+
+   if (!org_freedesktop_ConsoleKit_Session_get_x11_display (session_proxy, &xdisplay, &error))
     {
       if (error)
         {
@@ -475,8 +514,11 @@ do_add_session (UsersServiceDbus *service,
           g_error_free (error);
         }
 
+      g_object_unref(session_proxy);
       return FALSE;
     }
+
+  g_object_unref(session_proxy);
 
   if (!xdisplay || xdisplay[0] == '\0')
     return FALSE;
@@ -491,6 +533,10 @@ do_add_session (UsersServiceDbus *service,
       g_debug ("Adding session %s", ssid);
 
       user->sessions = g_list_prepend (user->sessions, g_strdup (ssid));
+
+      if (user->menuitem != NULL) {
+        dbusmenu_menuitem_property_set_bool(user->menuitem, USER_ITEM_PROP_LOGGED_IN, TRUE);
+      }
     }
   else
     {
@@ -556,6 +602,17 @@ seat_proxy_session_added (DBusGProxy       *seat_proxy,
       return;
     }
 
+  /* We need to special case guest here because it doesn't
+     show up in the GDM user tables. */
+  if (g_strcmp0("guest", pwent->pw_name) == 0) {
+    if (priv->guest_item != NULL) {
+      dbusmenu_menuitem_property_set_bool(priv->guest_item, USER_ITEM_PROP_LOGGED_IN, TRUE);
+    }
+	priv->guest_session_id = g_strdup(session_id);
+	g_debug("Found guest session: %s", priv->guest_session_id);
+    return;
+  }
+
   user = g_hash_table_lookup (priv->users, pwent->pw_name);
   if (!user)
     {
@@ -576,8 +633,17 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
   GList    *l;
 
   username = g_hash_table_lookup (priv->sessions, session_id);
-  if (!username)
+  if (!username) {
+    if (g_strcmp0(session_id, priv->guest_session_id) == 0) {
+      g_debug("Removing guest session: %s", priv->guest_session_id); 
+      if (priv->guest_item != NULL) {
+        dbusmenu_menuitem_property_set_bool(priv->guest_item, USER_ITEM_PROP_LOGGED_IN, FALSE);
+      }
+      g_free(priv->guest_session_id);
+      priv->guest_session_id = NULL;
+    }
     return;
+  }
 
   user = g_hash_table_lookup (priv->users, username);
   if (!user)
@@ -592,6 +658,9 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
 
       g_free (l->data);
       user->sessions = g_list_delete_link (user->sessions, l);
+      if (user->menuitem != NULL && user->sessions == NULL) {
+        dbusmenu_menuitem_property_set_bool(user->menuitem, USER_ITEM_PROP_LOGGED_IN, FALSE);
+      }
     }
   else
     {
@@ -657,6 +726,7 @@ sync_users (UsersServiceDbus *self)
           user->login_count = g_value_get_int    (g_value_array_get_nth (values, 4));
           user->icon_url    = g_strdup (g_value_get_string (g_value_array_get_nth (values, 5)));
           user->real_name_conflict = FALSE;
+		  user->menuitem    = NULL;
 
           g_hash_table_insert (priv->users,
                                g_strdup (user->user_name),
@@ -706,21 +776,16 @@ session_is_login_window (UsersServiceDbus *self,
   char       *type = NULL;
 
   if (!(proxy = dbus_g_proxy_new_for_name (priv->system_bus,
-                                           "org.freedesktop.ConsoleKit",
+                                           CK_ADDR,
                                            ssid,
-                                           "org.freedesktop.ConsoleKit.Session")))
+                                           CK_SESSION_IFACE)))
     {
       g_warning ("Failed to get ConsoleKit proxy");
 
       return FALSE;
     }
 
-  if (!dbus_g_proxy_call (proxy,
-                          "GetSessionType",
-                          &error,
-                          G_TYPE_INVALID,
-                          G_TYPE_STRING, &type,
-                          G_TYPE_INVALID))
+  if (!org_freedesktop_ConsoleKit_Session_get_session_type (proxy, &type, &error))
     {
       g_warning ("Can't call GetSessionType: %s", error->message);
       g_error_free (error);
@@ -1005,61 +1070,21 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
   return g_hash_table_get_values (priv->users);
 }
 
+/* Activates the guest account if it can. */
+gboolean
+users_service_dbus_activate_guest_session (UsersServiceDbus *self)
+{
+	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+	return org_gnome_DisplayManager_LocalDisplayFactory_switch_to_user(priv->gdm_local_proxy, "guest", NULL, NULL);
+}
+
+/* Activates a specific user */
 gboolean
 users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                           UserData         *user)
 {
-  UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-  DBusMessage *message = NULL;
-  DBusMessage *reply = NULL;
-  DBusError error;
-
-  dbus_error_init (&error);
-
-  if (!(message = dbus_message_new_method_call ("org.gnome.DisplayManager",
-                                                "/org/gnome/DisplayManager/LocalDisplayFactory",
-                                                "org.gnome.DisplayManager.LocalDisplayFactory",
-                                                "SwitchToUser")))
-    {
-      g_warning ("failed to create new message");
-      return FALSE;
-    }
-
-  if (!dbus_message_append_args (message,
-                                 DBUS_TYPE_STRING, &user->user_name,
-                                 DBUS_TYPE_INVALID))
-    {
-      g_warning ("failed to append args");
-      return FALSE;
-    }
-
-  if (!(reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (priv->system_bus),
-                                                           message,
-                                                           -1,
-                                                           &error)))
-    {
-      if (dbus_error_is_set (&error))
-        {
-          g_warning ("Failed to send message: %s", error.message);
-          dbus_error_free (&error);
-
-          return FALSE;
-        }
-    }
-
-  if (message)
-    {
-      dbus_message_unref (message);
-    }
-
-  if (reply)
-    {
-      dbus_message_unref (reply);
-    }
-
-  dbus_error_free (&error);
-
-  return TRUE;
+	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+	return org_gnome_DisplayManager_LocalDisplayFactory_switch_to_user(priv->gdm_local_proxy, user->user_name, NULL, NULL);
 }
 
 gboolean
@@ -1093,4 +1118,18 @@ users_service_dbus_can_activate_session (UsersServiceDbus *self)
     }
 
   return can_activate;
+}
+
+/* Sets the menu item that represents the guest account */
+void
+users_service_dbus_set_guest_item (UsersServiceDbus * self, DbusmenuMenuitem * mi)
+{
+	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+	priv->guest_item = mi;
+
+	if (priv->guest_session_id != NULL) {
+      dbusmenu_menuitem_property_set_bool(priv->guest_item, USER_ITEM_PROP_LOGGED_IN, TRUE);
+    }
+
+	return;
 }

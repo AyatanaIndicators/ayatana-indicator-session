@@ -13,5 +13,16 @@
         restart and shutdown actions.</long>
       </locale>
     </schema>
+	<schema>
+		<key>/schemas/apps/indicator-session/suppress_logout_menuitem</key>
+		<applyto>/apps/indicator-session/suppress_logout_menuitem</applyto>
+		<owner>indicator-session</owner>
+		<type>bool</type>
+		<default>FALSE</default>
+		<locale name="C">
+			<short>Remove the Log Out item from the session menu</short>
+			<long>Makes it so that the logout button doesn't show in the session menu.</long>
+		</locale>
+	</schema>
   </schemalist>
 </gconfschemafile>

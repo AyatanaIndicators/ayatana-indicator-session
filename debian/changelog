@@ -1,3 +1,27 @@
+indicator-session (0.2.6-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Upstream release 0.2.6
+    ∘ Updating sessions to make guest account marked when being
+      used (LP: #436030)
+    ∘ String "Switch From" is miscapitalized (LP: #540265)
+    ∘ Follow user switching lockdown key (LP: #504360)
+    ∘ Use user avatar images in session menu (LP: #436028)
+    ∘ Don't show suspend/hibernate if disabled in Policy Kit (LP: #432598)
+    ∘ Lock screen when switching users (LP: #536801)
+    ∘ Fix callback prototype (LP: #536990)
+    ∘ Revert back to "Shut Down" instead of "Switch Off" (LP: #540056)
+    ∘ Fix leaked GConf notifications
+    ∘ Add GConf key for showing the "Log Out" item
+    ∘ Adding the ability to specify a desktop file to have at the end
+      of the menu.
+    ∘ Setting up restart required notification by changing panel icon
+      and icon in menus.
+    ∘ Use the libindicator image helpers
+    ∘ Set proper translation domain for loadable indicator
+    ∘ Translation update
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Mar 2010 14:18:15 -0500
+
 indicator-session (0.2.5-0ubuntu3) lucid; urgency=low
 
   * Backported an upstream change to fix translations use 

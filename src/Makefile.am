@@ -11,6 +11,7 @@ sessionlibdir = $(INDICATORDIR)
 sessionlib_LTLIBRARIES = libsession.la
 libsession_la_SOURCES = \
 	indicator-session.c \
+	session-dbus-client.h \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
 	users-service-client.h
@@ -25,12 +26,47 @@ consolekit-manager-client.h: $(srcdir)/consolekit-manager.xml
 		--output=consolekit-manager-client.h \
 		$(srcdir)/consolekit-manager.xml
 
+consolekit-session-client.h: $(srcdir)/consolekit-session.xml
+	dbus-binding-tool \
+		--prefix=_consolekit_session_client \
+		--mode=glib-client \
+		--output=consolekit-session-client.h \
+		$(srcdir)/consolekit-session.xml
+
+gdm-local-display-factory-client.h: $(srcdir)/gdm-local-display-factory.xml
+	dbus-binding-tool \
+		--prefix=_gdm_local_display_factory_client \
+		--mode=glib-client \
+		--output=gdm-local-display-factory-client.h \
+		$(srcdir)/gdm-local-display-factory.xml
+
 users-service-client.h: $(srcdir)/users-service.xml
 	dbus-binding-tool \
 		--prefix=_users_service_client \
 		--mode=glib-client \
 		--output=users-service-client.h \
 		$(srcdir)/users-service.xml
+
+upower-client.h: $(srcdir)/upower.xml
+	dbus-binding-tool \
+		--prefix=_upower_client \
+		--mode=glib-client \
+		--output=upower-client.h \
+		$(srcdir)/upower.xml
+
+session-dbus-client.h: $(srcdir)/session-dbus.xml
+	dbus-binding-tool \
+		--prefix=_session_dbus_client \
+		--mode=glib-client \
+		--output=session-dbus-client.h \
+		$(srcdir)/session-dbus.xml
+
+session-dbus-server.h: $(srcdir)/session-dbus.xml
+	dbus-binding-tool \
+		--prefix=_session_dbus_server \
+		--mode=glib-server \
+		--output=session-dbus-server.h \
+		$(srcdir)/session-dbus.xml
 
 users-service-marshal.h: $(srcdir)/users-service.list
 	glib-genmarshal --header \
@@ -50,6 +86,9 @@ indicator_session_service_SOURCES = \
 	lock-helper.c \
 	lock-helper.h \
 	session-service.c \
+	session-dbus.c \
+	session-dbus.h \
+	session-dbus-server.h \
 	dbusmenu-shared.h \
 	gconf-helper.c \
 	users-service-dbus.h \
@@ -88,12 +127,21 @@ gtk_logout_helper_LDADD = \
 
 BUILT_SOURCES = \
 	consolekit-manager-client.h \
+	consolekit-session-client.h \
+	gdm-local-display-factory-client.h \
+	session-dbus-client.h \
+	session-dbus-server.h \
+	upower-client.h \
 	users-service-client.h \
 	users-service-marshal.h \
 	users-service-marshal.c
 
 EXTRA_DIST = \
 	consolekit-manager.xml \
+	consolekit-session.xml \
+	gdm-local-display-factory.xml \
+	session-dbus.xml \
+	upower.xml \
 	users-service.xml \
 	users-service.list
 

@@ -58,3 +58,5 @@ src/consolekit-manager-client.h
 src/session-dbus-client.h
 src/session-dbus-server.h
 src/upower-client.h
+src/gdm-local-display-factory-client.h
+src/consolekit-session-client.h

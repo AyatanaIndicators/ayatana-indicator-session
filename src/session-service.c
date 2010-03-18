@@ -386,6 +386,13 @@ activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_da
 
 	lock_if_possible();
 
+	if (dbusmenu_menuitem_property_get_bool(mi, USER_ITEM_PROP_LOGGED_IN)) {
+		if (users_service_dbus_activate_guest_session(USERS_SERVICE_DBUS(user_data))) {
+			return;
+		}
+		g_warning("Unable to activate guest session, falling back to command line activation.");
+	}
+
 	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER, &error)) {
 		g_warning("Unable to start guest session: %s", error->message);
 		g_error_free(error);
@@ -519,6 +526,9 @@ rebuild_items (DbusmenuMenuitem *root,
 	lock_screen_update_item(lock_menuitem);
   }
 
+  /* Set to NULL just incase we don't end up building one */
+  users_service_dbus_set_guest_item(service, NULL);
+
   /* Build all of the user switching items */
   if (can_activate == TRUE)
     {
@@ -536,6 +546,7 @@ rebuild_items (DbusmenuMenuitem *root,
           dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
           dbusmenu_menuitem_child_append (root, guest_mi);
           g_signal_connect (G_OBJECT (guest_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
+          users_service_dbus_set_guest_item(service, guest_mi);
         }
 
       if (check_new_session ())
@@ -597,6 +608,7 @@ rebuild_items (DbusmenuMenuitem *root,
 				}
 				dbusmenu_menuitem_child_append (root, mi);
 				g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+				user->menuitem = mi;
 			}
 		}
 

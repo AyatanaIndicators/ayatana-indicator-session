@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-15 11:24+0000\n"
+"POT-Creation-Date: 2010-03-17 10:48-0500\n"
 "PO-Revision-Date: 2010-03-16 00:19+0000\n"
 "Last-Translator: Alex Eftimie <alexeftimie@gmail.com>\n"
 "Language-Team: Romanian\n"
@@ -20,12 +20,20 @@ msgstr ""
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../data/indicator-session.schemas.in.h:1
+msgid "Makes it so that the logout button doesn't show in the session menu."
+msgstr ""
+
+#: ../data/indicator-session.schemas.in.h:2
+msgid "Remove the Log Out item from the session menu"
+msgstr ""
+
+#: ../data/indicator-session.schemas.in.h:3
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Interzice dialogul pentru confirmarea acțiunii de deconectare, repornire și "
 "oprire."
 
-#: ../data/indicator-session.schemas.in.h:2
+#: ../data/indicator-session.schemas.in.h:4
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
@@ -33,29 +41,29 @@ msgstr ""
 "Arată sau nu dialogurile de confirmare pentru acțiunile de deconectare, "
 "repornire și oprire."
 
-#: ../src/gconf-helper.c:52 ../src/session-service.c:538
+#: ../src/gconf-helper.c:63 ../src/session-service.c:613
 msgid "Log Out"
 msgstr "Ieșire"
 
-#: ../src/gconf-helper.c:53 ../src/session-service.c:559
-#: ../src/session-service.c:625
+#: ../src/gconf-helper.c:64 ../src/session-service.c:638
+#: ../src/session-service.c:722
 msgid "Restart"
 msgstr "Repornire"
 
-#: ../src/gconf-helper.c:54 ../src/session-service.c:568
+#: ../src/gconf-helper.c:65 ../src/session-service.c:647
 msgid "Switch Off"
 msgstr "Închidere"
 
-#: ../src/gconf-helper.c:56 ../src/session-service.c:540
+#: ../src/gconf-helper.c:67 ../src/session-service.c:615
 msgid "Log Out..."
 msgstr "Ieșire..."
 
-#: ../src/gconf-helper.c:57 ../src/session-service.c:561
-#: ../src/session-service.c:627
+#: ../src/gconf-helper.c:68 ../src/session-service.c:640
+#: ../src/session-service.c:724
 msgid "Restart..."
 msgstr "Repornire..."
 
-#: ../src/gconf-helper.c:58 ../src/session-service.c:570
+#: ../src/gconf-helper.c:69 ../src/session-service.c:649
 msgid "Switch Off..."
 msgstr "Închidere..."
 
@@ -90,8 +98,7 @@ msgstr ""
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:43
-msgid ""
-"Are you sure you want to close all programs and shut down the computer?"
+msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
 
 #. LOGOUT_DIALOG_LOGOUT,
@@ -151,56 +158,54 @@ msgstr ""
 msgid "Cancel"
 msgstr "Renunță"
 
-#: ../src/indicator-session.c:207
+#: ../src/indicator-session.c:272
 msgid "Switch User..."
 msgstr "Schimbare utilizator..."
 
 #. TODO: We need some way to remove the elipsis from appearing
 #. twice in the label.  Not sure how to do that yet.
-#: ../src/indicator-session.c:236
+#: ../src/indicator-session.c:301
 #, c-format
-msgid "Switch from %s..."
+msgid "Switch From %s..."
 msgstr "Schimbare de la %s..."
 
-#: ../src/session-service.c:437
+#: ../src/session-service.c:512
 msgid "Lock Screen"
 msgstr "Blocare ecran"
 
-#: ../src/session-service.c:456
+#: ../src/session-service.c:535
 msgid "Guest Session"
 msgstr "Sesiune oaspete"
 
-#: ../src/session-service.c:547
+#: ../src/session-service.c:623
 msgid "Sleep"
 msgstr "Adormire"
 
-#: ../src/session-service.c:553
+#: ../src/session-service.c:630
 msgid "Hibernate"
 msgstr "Hibernează"
 
-#: ../src/session-service.c:618
+#: ../src/session-service.c:712
 msgid "Restart Required"
 msgstr "Este necesară o repornire"
 
-#: ../src/session-service.c:620
+#: ../src/session-service.c:714
 msgid "Restart Required..."
 msgstr "Este necesară o repornire..."
 
 #~ msgid ""
-#~ "You recently installed updates which will only take effect after a restart.  "
-#~ "Restart to apply software updates."
+#~ "You recently installed updates which will only take effect after a "
+#~ "restart.  Restart to apply software updates."
 #~ msgstr ""
-#~ "Ați instalat recent actualizări care vor avea efect numai după o repornire.  "
-#~ "Repornire pentru a activa actualizările software."
+#~ "Ați instalat recent actualizări care vor avea efect numai după o "
+#~ "repornire.  Repornire pentru a activa actualizările software."
 
-#, c-format
 #~ msgid "You will be logged out in %d second."
 #~ msgid_plural "You will be logged out in %d seconds."
 #~ msgstr[0] "Veți fi deconectat în %d secundă."
 #~ msgstr[1] "Veți fi deconectat în %d secunde."
 #~ msgstr[2] "Veți fi deconectat în %d secunde."
 
-#, c-format
 #~ msgid "The computer will restart in %d second."
 #~ msgid_plural "The computer will restart in %d seconds."
 #~ msgstr[0] "Calculatorul va reporni în %d secundă."

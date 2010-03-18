@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-03-15 11:24+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-17 10:48-0500\n"
 "PO-Revision-Date: 2010-03-10 23:30+0000\n"
 "Last-Translator: Iñigo Varela <malditoastur@gmail.com>\n"
 "Language-Team: Asturian <ast@li.org>\n"
@@ -19,11 +19,19 @@ msgstr ""
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../data/indicator-session.schemas.in.h:1
+msgid "Makes it so that the logout button doesn't show in the session menu."
+msgstr ""
+
+#: ../data/indicator-session.schemas.in.h:2
+msgid "Remove the Log Out item from the session menu"
+msgstr ""
+
+#: ../data/indicator-session.schemas.in.h:3
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Suprimir la ventana de confirmación al zarrar sesión, reaniciar y apagar."
 
-#: ../data/indicator-session.schemas.in.h:2
+#: ../data/indicator-session.schemas.in.h:4
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
@@ -31,29 +39,29 @@ msgstr ""
 "Si amosar o non los diálogos de confirmación pa zarrar sesión, reaniciar y "
 "apagar."
 
-#: ../src/gconf-helper.c:52 ../src/session-service.c:538
+#: ../src/gconf-helper.c:63 ../src/session-service.c:613
 msgid "Log Out"
 msgstr "Zarrar sesión"
 
-#: ../src/gconf-helper.c:53 ../src/session-service.c:559
-#: ../src/session-service.c:625
+#: ../src/gconf-helper.c:64 ../src/session-service.c:638
+#: ../src/session-service.c:722
 msgid "Restart"
 msgstr "Reaniciar"
 
-#: ../src/gconf-helper.c:54 ../src/session-service.c:568
+#: ../src/gconf-helper.c:65 ../src/session-service.c:647
 msgid "Switch Off"
 msgstr "Apagar"
 
-#: ../src/gconf-helper.c:56 ../src/session-service.c:540
+#: ../src/gconf-helper.c:67 ../src/session-service.c:615
 msgid "Log Out..."
 msgstr "Zarrar sesión..."
 
-#: ../src/gconf-helper.c:57 ../src/session-service.c:561
-#: ../src/session-service.c:627
+#: ../src/gconf-helper.c:68 ../src/session-service.c:640
+#: ../src/session-service.c:724
 msgid "Restart..."
 msgstr "Reaniciar..."
 
-#: ../src/gconf-helper.c:58 ../src/session-service.c:570
+#: ../src/gconf-helper.c:69 ../src/session-service.c:649
 msgid "Switch Off..."
 msgstr "Apagar..."
 
@@ -89,8 +97,7 @@ msgstr "¿Daveres que quies zarrar tolos programes y reaniciar l'equipu?"
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:43
-msgid ""
-"Are you sure you want to close all programs and shut down the computer?"
+msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr "¿Daveres que quies zarrar tolos programes y apagar l'equipu?"
 
 #. LOGOUT_DIALOG_LOGOUT,
@@ -150,37 +157,37 @@ msgstr ""
 msgid "Cancel"
 msgstr "Encaboxar"
 
-#: ../src/indicator-session.c:207
+#: ../src/indicator-session.c:272
 msgid "Switch User..."
 msgstr "Camudar d'usuariu..."
 
 #. TODO: We need some way to remove the elipsis from appearing
 #. twice in the label.  Not sure how to do that yet.
-#: ../src/indicator-session.c:236
+#: ../src/indicator-session.c:301
 #, c-format
-msgid "Switch from %s..."
+msgid "Switch From %s..."
 msgstr "Camudar de %s..."
 
-#: ../src/session-service.c:437
+#: ../src/session-service.c:512
 msgid "Lock Screen"
 msgstr "Candar pantalla"
 
-#: ../src/session-service.c:456
+#: ../src/session-service.c:535
 msgid "Guest Session"
 msgstr "Sesión d'invitáu"
 
-#: ../src/session-service.c:547
+#: ../src/session-service.c:623
 msgid "Sleep"
 msgstr "Suspender"
 
-#: ../src/session-service.c:553
+#: ../src/session-service.c:630
 msgid "Hibernate"
 msgstr "Ivernar"
 
-#: ../src/session-service.c:618
+#: ../src/session-service.c:712
 msgid "Restart Required"
 msgstr "Requierse reaniciar"
 
-#: ../src/session-service.c:620
+#: ../src/session-service.c:714
 msgid "Restart Required..."
 msgstr "Requierse reaniciar..."

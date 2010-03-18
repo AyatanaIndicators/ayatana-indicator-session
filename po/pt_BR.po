@@ -2,42 +2,42 @@
 # Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Canonical OEM, 2010.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-10 17:38-0500\n"
-"PO-Revision-Date: 2010-03-03 10:21-0500\n"
-"Last-Translator: Canonical OEM\n"
+"POT-Creation-Date: 2010-03-15 11:24+0000\n"
+"PO-Revision-Date: 2010-03-12 11:25+0000\n"
+"Last-Translator: Tiago Hillebrandt <tiagoscd@yahoo.com.br>\n"
 "Language-Team: Brazilian Portuguese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Launchpad-Export-Date: 2010-03-17 19:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../data/indicator-session.schemas.in.h:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
-"Suprimir a caixa de diálogo para confirmar ação de logoff, reinicialização e "
-"desligamento"
+"Eliminar a janela de confirmação para encerrar sessão, reiniciar ou desligar "
+"o computador"
 
 #: ../data/indicator-session.schemas.in.h:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"Mostrar ou não caixas de confirmação para ações de logoff, reinicialização e "
-"desligamento ."
+"Mostrar ou não as janelas de confirmação para as ações de encerrar sessão, "
+"reiniciar ou desligar."
 
 #: ../src/gconf-helper.c:52 ../src/session-service.c:538
-#, fuzzy
 msgid "Log Out"
-msgstr "Desconectar"
+msgstr "Encerrar sessão"
 
 #: ../src/gconf-helper.c:53 ../src/session-service.c:559
 #: ../src/session-service.c:625
-#, fuzzy
 msgid "Restart"
 msgstr "Reiniciar"
 
@@ -46,9 +46,8 @@ msgid "Switch Off"
 msgstr "Desligar"
 
 #: ../src/gconf-helper.c:56 ../src/session-service.c:540
-#, fuzzy
 msgid "Log Out..."
-msgstr "Desconectar"
+msgstr "Encerrar sessão..."
 
 #: ../src/gconf-helper.c:57 ../src/session-service.c:561
 #: ../src/session-service.c:627
@@ -63,7 +62,7 @@ msgstr "Desligar..."
 #: ../src/dialog.c:35
 msgctxt "title"
 msgid "Log Out"
-msgstr "Desconectar"
+msgstr "Encerrar sessão"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:36
@@ -82,22 +81,29 @@ msgstr "Desligar"
 msgid ""
 "Are you sure you want to close all programs and log out of the computer?"
 msgstr ""
+"Você tem certeza de que deseja fechar todos os programas e sair do "
+"computador?"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:42
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr ""
+"Você tem certeza de que deseja fechar todos os programas e reiniciar o "
+"computador?"
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:43
-msgid "Are you sure you want to close all programs and shut down the computer?"
+msgid ""
+"Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
+"Você tem certeza de que deseja fechar todos os programas e desligar o "
+"computador?"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:47
 msgctxt "button"
 msgid "Log Out"
-msgstr "Desconectar"
+msgstr "Encerrar sessão"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:48
@@ -113,21 +119,18 @@ msgstr "Desligar"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:55
-#, fuzzy
 msgctxt "button auth"
 msgid "Log Out"
-msgstr "Desconectar"
+msgstr "Encerrar sessão"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:56
-#, fuzzy
 msgctxt "button auth"
 msgid "Restart..."
 msgstr "Reiniciar..."
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:57
-#, fuzzy
 msgctxt "button auth"
 msgid "Switch Off..."
 msgstr "Desligar..."
@@ -136,72 +139,72 @@ msgstr "Desligar..."
 #. there are updates that require restart.  It will do a restart
 #. in place of a log out.
 #: ../src/dialog.c:63
-#, fuzzy
 msgid "Restart Instead"
-msgstr "Reiniciar"
+msgstr "Reiniciar ao invés de sair"
 
 #: ../src/dialog.c:64
-#, fuzzy
 msgid "Restart Instead..."
-msgstr "Reiniciar..."
+msgstr "Reiniciar ao invés de sair..."
 
 #: ../src/dialog.c:65
 msgid "Some software updates won't apply until the computer next restarts."
 msgstr ""
+"Algumas atualizações de software não serão aplicadas até que o computador "
+"seja reiniciado."
 
 #: ../src/dialog.c:217 ../src/dialog.c:222
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
-#: ../src/indicator-session.c:203
+#: ../src/indicator-session.c:207
 msgid "Switch User..."
-msgstr "Trocar usuário..."
+msgstr "Alternar usuário..."
 
 #. TODO: We need some way to remove the elipsis from appearing
 #. twice in the label.  Not sure how to do that yet.
-#: ../src/indicator-session.c:232
+#: ../src/indicator-session.c:236
 #, c-format
 msgid "Switch from %s..."
-msgstr "Trocar de %s..."
+msgstr "Alternar de %s..."
 
 #: ../src/session-service.c:437
 msgid "Lock Screen"
-msgstr ""
+msgstr "Bloquear tela"
 
 #: ../src/session-service.c:456
 msgid "Guest Session"
-msgstr ""
+msgstr "Sessão convidado"
 
 #: ../src/session-service.c:547
 msgid "Sleep"
-msgstr "Hibernar"
+msgstr "Dormir"
 
 #: ../src/session-service.c:553
 msgid "Hibernate"
-msgstr ""
+msgstr "Hibernar"
 
 #: ../src/session-service.c:618
-#, fuzzy
 msgid "Restart Required"
-msgstr "Reiniciar"
+msgstr "Reinicialização necessária"
 
 #: ../src/session-service.c:620
-#, fuzzy
 msgid "Restart Required..."
-msgstr "Reiniciar..."
+msgstr "Reinicialização necessária..."
 
 #~ msgid ""
-#~ "You recently installed updates which will only take effect after a "
-#~ "restart.  Restart to apply software updates."
+#~ "You recently installed updates which will only take effect after a restart.  "
+#~ "Restart to apply software updates."
 #~ msgstr ""
 #~ "Recentemente você instalou atualizações que serão efetivadas somente após "
 #~ "uma reinicialização.  Reinicie para aplicar as atualizações do software."
 
+#, c-format
 #~ msgid "You will be logged out in %d second."
 #~ msgid_plural "You will be logged out in %d seconds."
 #~ msgstr[0] "Você será desconectado em %d segundo."
 #~ msgstr[1] "Você será desconectado em %d segundos."
 
+#, c-format
 #~ msgid "The computer will restart in %d second."
 #~ msgid_plural "The computer will restart in %d seconds."
 #~ msgstr[0] "O computador será reiniciado em %d segundo."

@@ -2,20 +2,22 @@
 # Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Canonical OEM, 2010.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-10 17:38-0500\n"
-"PO-Revision-Date: 2010-03-03 10:21-0500\n"
-"Last-Translator: Canonical OEM\n"
+"POT-Creation-Date: 2010-03-15 11:24+0000\n"
+"PO-Revision-Date: 2010-03-17 07:42+0000\n"
+"Last-Translator: Sergey Sedov <Unknown>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2010-03-17 19:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../data/indicator-session.schemas.in.h:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -31,45 +33,42 @@ msgstr ""
 "завершения работы"
 
 #: ../src/gconf-helper.c:52 ../src/session-service.c:538
-#, fuzzy
 msgid "Log Out"
-msgstr "Выход из системы"
+msgstr "Завершить сеанс"
 
 #: ../src/gconf-helper.c:53 ../src/session-service.c:559
 #: ../src/session-service.c:625
-#, fuzzy
 msgid "Restart"
-msgstr "Перезапуск"
+msgstr "Перезагрузить"
 
 #: ../src/gconf-helper.c:54 ../src/session-service.c:568
 msgid "Switch Off"
-msgstr "Выключение"
+msgstr "Выключение компьютера"
 
 #: ../src/gconf-helper.c:56 ../src/session-service.c:540
-#, fuzzy
 msgid "Log Out..."
-msgstr "Выход из системы"
+msgstr "Завершить сеанс..."
 
 #: ../src/gconf-helper.c:57 ../src/session-service.c:561
 #: ../src/session-service.c:627
 msgid "Restart..."
-msgstr "Перезапуск..."
+msgstr "Перезагрузить..."
 
 #: ../src/gconf-helper.c:58 ../src/session-service.c:570
 msgid "Switch Off..."
-msgstr "Выключение..."
+msgstr "Выключить компьютер..."
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:35
 msgctxt "title"
 msgid "Log Out"
-msgstr "Выход из системы"
+msgstr "Завершение сеанса"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:36
 msgctxt "title"
 msgid "Restart"
-msgstr "Перезапуск"
+msgstr "Перезагрузить"
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:37
@@ -82,28 +81,32 @@ msgstr "Выключение"
 msgid ""
 "Are you sure you want to close all programs and log out of the computer?"
 msgstr ""
+"Вы действительно хотите закрыть все приложения и завершить текущий сеанс?"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:42
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr ""
+"Вы действительно хотите закрыть все приложения и перезагрузить компьютер?"
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:43
-msgid "Are you sure you want to close all programs and shut down the computer?"
+msgid ""
+"Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
+"Вы действительно хотите закрыть все приложения и выключить компьютер?"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:47
 msgctxt "button"
 msgid "Log Out"
-msgstr "Выход из системы"
+msgstr "Завершение сеанса"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:48
 msgctxt "button"
 msgid "Restart"
-msgstr "Перезапуск"
+msgstr "Перезагрузить"
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:49
@@ -113,97 +116,93 @@ msgstr "Выключение"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:55
-#, fuzzy
 msgctxt "button auth"
 msgid "Log Out"
-msgstr "Выход из системы"
+msgstr "Завершить сеанс"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:56
-#, fuzzy
 msgctxt "button auth"
 msgid "Restart..."
-msgstr "Перезапуск..."
+msgstr "Перезагрузить..."
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:57
-#, fuzzy
 msgctxt "button auth"
 msgid "Switch Off..."
-msgstr "Выключение..."
+msgstr "Выключить компьютер..."
 
 #. TRANSLATORS: This button appears on the logout dialog when
 #. there are updates that require restart.  It will do a restart
 #. in place of a log out.
 #: ../src/dialog.c:63
-#, fuzzy
 msgid "Restart Instead"
-msgstr "Перезапуск"
+msgstr "Перезагрузить"
 
 #: ../src/dialog.c:64
-#, fuzzy
 msgid "Restart Instead..."
-msgstr "Перезапуск..."
+msgstr "Перезагрузить..."
 
 #: ../src/dialog.c:65
 msgid "Some software updates won't apply until the computer next restarts."
 msgstr ""
+"Некоторые обновления будут установлены только после перезагрузки компьютера."
 
 #: ../src/dialog.c:217 ../src/dialog.c:222
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
-#: ../src/indicator-session.c:203
+#: ../src/indicator-session.c:207
 msgid "Switch User..."
 msgstr "Смена пользователя..."
 
 #. TODO: We need some way to remove the elipsis from appearing
 #. twice in the label.  Not sure how to do that yet.
-#: ../src/indicator-session.c:232
+#: ../src/indicator-session.c:236
 #, c-format
 msgid "Switch from %s..."
 msgstr "Смена %s..."
 
 #: ../src/session-service.c:437
 msgid "Lock Screen"
-msgstr ""
+msgstr "Заблокировать экран"
 
 #: ../src/session-service.c:456
 msgid "Guest Session"
-msgstr ""
+msgstr "Гостевой сеанс"
 
 #: ../src/session-service.c:547
 msgid "Sleep"
-msgstr "Сон"
+msgstr "Ждущий режим"
 
 #: ../src/session-service.c:553
 msgid "Hibernate"
-msgstr ""
+msgstr "Спящий режим"
 
 #: ../src/session-service.c:618
-#, fuzzy
 msgid "Restart Required"
-msgstr "Перезапуск"
+msgstr "Требуется перезагрузка"
 
 #: ../src/session-service.c:620
-#, fuzzy
 msgid "Restart Required..."
-msgstr "Перезапуск..."
+msgstr "Требуется перезагрузка..."
 
 #~ msgid ""
-#~ "You recently installed updates which will only take effect after a "
-#~ "restart.  Restart to apply software updates."
+#~ "You recently installed updates which will only take effect after a restart.  "
+#~ "Restart to apply software updates."
 #~ msgstr ""
 #~ "Недавно вы установили обновления, которые вступят в силу только после "
 #~ "перезапуска.  Выполните перезапуск, чтобы ввести программные обновления в "
 #~ "действие."
 
+#, c-format
 #~ msgid "You will be logged out in %d second."
 #~ msgid_plural "You will be logged out in %d seconds."
 #~ msgstr[0] "Вы выйдите из системы через %d секунду."
 #~ msgstr[1] "Вы выйдите из системы через %d секунды."
 #~ msgstr[2] "Вы выйдите из системы через %d секунд."
 
+#, c-format
 #~ msgid "The computer will restart in %d second."
 #~ msgid_plural "The computer will restart in %d seconds."
 #~ msgstr[0] "Компьютер будет перезапущен через %d секунду."

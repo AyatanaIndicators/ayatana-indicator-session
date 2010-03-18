@@ -44,6 +44,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USER_ITEM_TYPE            "x-canonical-user-item"
 #define USER_ITEM_PROP_NAME       "user-item-name"
 #define USER_ITEM_PROP_LOGGED_IN  "user-item-logged-in"
+#define USER_ITEM_PROP_ICON       "user-item-icon-path"
+#define USER_ITEM_ICON_DEFAULT    "default-icon"
 
 #define RESTART_ITEM_TYPE         "x-canonical-restart-item"
 #define RESTART_ITEM_LABEL        "restart-label"

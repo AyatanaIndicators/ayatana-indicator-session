@@ -1,4 +1,16 @@
-indicator-session (0.2.5-0ubuntu1~ppa1) lucid; urgency=low
+indicator-session (0.2.5-0ubuntu3) lucid; urgency=low
+
+  * Backported an upstream change to fix translations use 
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 15 Mar 2010 11:47:13 +0100
+
+indicator-session (0.2.5-0ubuntu2) lucid; urgency=low
+
+  * Backported an upstream change to fix a signal prototype issue (lp: #507776)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 12 Mar 2010 00:25:52 +0100
+
+indicator-session (0.2.5-0ubuntu1) lucid; urgency=low
 
   * Upstream Release 0.2.5
     * Restart required menu item when it's required for updates
@@ -6,7 +18,7 @@ indicator-session (0.2.5-0ubuntu1~ppa1) lucid; urgency=low
     * Fix naming to "Switch off" and "Sleep"
     * Blocking the current user from the user list
     * Change sorting to be based on real names and handle conflicts
-    * Removing some ConsoleKit errors
+    * Removing some ConsoleKit errors (lp: #529830)
     * Memory leak on PangoLayout allocation
     * Don't set GTK decorations
     * ConsoleKit fallback if gnome-session not available

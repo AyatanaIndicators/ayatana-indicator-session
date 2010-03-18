@@ -586,7 +586,7 @@ rebuild_items (DbusmenuMenuitem *root,
    rebuilds the menu */
 static void
 user_change (UsersServiceDbus *service,
-             UserData         *user,
+             gint64            user,
              gpointer          user_data)
 {
 	DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;

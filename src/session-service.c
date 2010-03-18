@@ -661,9 +661,9 @@ rebuild_items (DbusmenuMenuitem *root,
 
 	shutdown_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off"));
+		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down"));
 	} else {
-		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off..."));
+		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down..."));
 	}
 	dbusmenu_menuitem_child_append(root, shutdown_mi);
 	g_signal_connect(G_OBJECT(shutdown_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "shutdown");

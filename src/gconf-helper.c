@@ -62,11 +62,11 @@ static void update_menu_entries_callback (GConfClient *client, guint cnxn_id, GC
 		if (gconf_value_get_bool (value)) {
 			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out"));
 			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->restart_mi, RESTART_ITEM_LABEL, _("Restart"));
-			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off"));
+			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down"));
 		} else {
 			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out..."));
 			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
-			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Switch Off..."));
+			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down..."));
 		}
 	}
 }

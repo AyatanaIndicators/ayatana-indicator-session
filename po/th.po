@@ -2,52 +2,52 @@
 # Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Canonical OEM, 2010.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-10 17:38-0500\n"
-"PO-Revision-Date: 2010-03-03 10:21-0500\n"
-"Last-Translator: Canonical OEM\n"
+"POT-Creation-Date: 2010-03-15 11:24+0000\n"
+"PO-Revision-Date: 2010-03-12 08:54+0000\n"
+"Last-Translator: SiraNokyoongtong <gumaraa@gmail.com>\n"
 "Language-Team: Thai\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Launchpad-Export-Date: 2010-03-17 19:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: ../data/indicator-session.schemas.in.h:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
-"ยกเลิกไดอะล็อกเพื่อยืนยันการดำเนินการออกจากระบบ เริ่มต้นการทำงานใหม่ และปิดการทำงาน"
+"ยกเลิกไดอะล็อกเพื่อยืนยันการดำเนินการออกจากระบบ เริ่มต้นการทำงานใหม่ "
+"และปิดการทำงาน"
 
 #: ../data/indicator-session.schemas.in.h:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"เลือกว่าจะแสดงไดอะล็อกการยืนยันเพื่อออกจากระบบ เริ่มต้นการทำงานใหม่ และปิดการทำงานหรือไม่ "
-"การดำเนินการ"
+"เลือกว่าจะแสดงไดอะล็อกการยืนยันเพื่อออกจากระบบ เริ่มต้นการทำงานใหม่ "
+"และปิดการทำงานหรือไม่ การดำเนินการ"
 
 #: ../src/gconf-helper.c:52 ../src/session-service.c:538
-#, fuzzy
 msgid "Log Out"
 msgstr "ออกจากระบบ"
 
 #: ../src/gconf-helper.c:53 ../src/session-service.c:559
 #: ../src/session-service.c:625
-#, fuzzy
 msgid "Restart"
-msgstr "เริ่มต้นการทำงานใหม่"
+msgstr "เริ่มเปิดเครื่องใหม่"
 
 #: ../src/gconf-helper.c:54 ../src/session-service.c:568
 msgid "Switch Off"
 msgstr "ปิดเครื่อง"
 
 #: ../src/gconf-helper.c:56 ../src/session-service.c:540
-#, fuzzy
 msgid "Log Out..."
-msgstr "ออกจากระบบ"
+msgstr "ออกจากระบบ..."
 
 #: ../src/gconf-helper.c:57 ../src/session-service.c:561
 #: ../src/session-service.c:627
@@ -80,17 +80,18 @@ msgstr "ปิดเครื่อง"
 #: ../src/dialog.c:41
 msgid ""
 "Are you sure you want to close all programs and log out of the computer?"
-msgstr ""
+msgstr "คุณแน่ใจหรือไม่ที่จะปิดโปรแกรมทั้งหมดและออกจากคอมพิวเตอร์?"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:42
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr ""
+msgstr "คุณแน่ใจหรือไม่ที่จะปิดโปรแกรมทั้งหมดและเริ่มคอมพิวเตอร์ใหม่?"
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:43
-msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr ""
+msgid ""
+"Are you sure you want to close all programs and shut down the computer?"
+msgstr "คุณแน่ใจหรือไม่ที่จะปิดโปรแกรมทั้งหมดและปิดเครื่องคอมพิวเตอร์?"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:47
@@ -112,21 +113,18 @@ msgstr "ปิดเครื่อง"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:55
-#, fuzzy
 msgctxt "button auth"
 msgid "Log Out"
 msgstr "ออกจากระบบ"
 
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:56
-#, fuzzy
 msgctxt "button auth"
 msgid "Restart..."
-msgstr "เริ่มต้นการทำงานใหม่..."
+msgstr "เริ่มใหม่..."
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:57
-#, fuzzy
 msgctxt "button auth"
 msgid "Switch Off..."
 msgstr "ปิดเครื่อง..."
@@ -135,41 +133,39 @@ msgstr "ปิดเครื่อง..."
 #. there are updates that require restart.  It will do a restart
 #. in place of a log out.
 #: ../src/dialog.c:63
-#, fuzzy
 msgid "Restart Instead"
-msgstr "เริ่มต้นการทำงานใหม่"
+msgstr "เริ่มใหม่"
 
 #: ../src/dialog.c:64
-#, fuzzy
 msgid "Restart Instead..."
-msgstr "เริ่มต้นการทำงานใหม่..."
+msgstr "เริ่มใหม่..."
 
 #: ../src/dialog.c:65
 msgid "Some software updates won't apply until the computer next restarts."
-msgstr ""
+msgstr "บางการอัปเดทจะปรับใช้หลังจากเริ่มคอมพิวเตอร์ใหม่"
 
 #: ../src/dialog.c:217 ../src/dialog.c:222
 msgid "Cancel"
-msgstr ""
+msgstr "ยกเลิก"
 
-#: ../src/indicator-session.c:203
+#: ../src/indicator-session.c:207
 msgid "Switch User..."
 msgstr "สลับผู้ใช้..."
 
 #. TODO: We need some way to remove the elipsis from appearing
 #. twice in the label.  Not sure how to do that yet.
-#: ../src/indicator-session.c:232
+#: ../src/indicator-session.c:236
 #, c-format
 msgid "Switch from %s..."
 msgstr "สลับจาก %s..."
 
 #: ../src/session-service.c:437
 msgid "Lock Screen"
-msgstr ""
+msgstr "ล็อคหน้าจอ"
 
 #: ../src/session-service.c:456
 msgid "Guest Session"
-msgstr ""
+msgstr "วาระผู้ใช้ชั่วคราว"
 
 #: ../src/session-service.c:547
 msgid "Sleep"
@@ -177,29 +173,30 @@ msgstr "พัก"
 
 #: ../src/session-service.c:553
 msgid "Hibernate"
-msgstr ""
+msgstr "จำศีล"
 
 #: ../src/session-service.c:618
-#, fuzzy
 msgid "Restart Required"
-msgstr "เริ่มต้นการทำงานใหม่"
+msgstr "ต้องเริ่มเครื่องใหม่"
 
 #: ../src/session-service.c:620
-#, fuzzy
 msgid "Restart Required..."
-msgstr "เริ่มต้นการทำงานใหม่..."
+msgstr "ต้องเริ่มเครื่องใหม่..."
 
 #~ msgid ""
-#~ "You recently installed updates which will only take effect after a "
-#~ "restart.  Restart to apply software updates."
+#~ "You recently installed updates which will only take effect after a restart.  "
+#~ "Restart to apply software updates."
 #~ msgstr ""
-#~ "คุณติดตั้งการอัพเดตไปเมื่อเร็วๆ นี้ ซึ่งจะมีผลใช้งานหลังจากเริ่มต้นการทำงานใหม่  "
+#~ "คุณติดตั้งการอัพเดตไปเมื่อเร็วๆ นี้ "
+#~ "ซึ่งจะมีผลใช้งานหลังจากเริ่มต้นการทำงานใหม่  "
 #~ "เริ่มต้นการทำงานใหม่เพื่อนำการอัพเดตซอฟต์แวร์ไปใช้"
 
+#, c-format
 #~ msgid "You will be logged out in %d second."
 #~ msgid_plural "You will be logged out in %d seconds."
 #~ msgstr[0] "คุณจะถูกนำออกจากระบบใน %d วินาที"
 
+#, c-format
 #~ msgid "The computer will restart in %d second."
 #~ msgid_plural "The computer will restart in %d seconds."
 #~ msgstr[0] "คอมพิวเตอร์จะเริ่มต้นการทำงานใหม่ใน %d วินาที"

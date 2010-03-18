@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-15 11:24+0000\n"
+"POT-Creation-Date: 2010-03-17 10:48-0500\n"
 "PO-Revision-Date: 2010-03-17 13:45+0000\n"
 "Last-Translator: Kjetil Birkeland Moe <kjetilbi@stud.ntnu.no>\n"
 "Language-Team: Norwegian Bokmal\n"
@@ -19,12 +19,20 @@ msgstr ""
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../data/indicator-session.schemas.in.h:1
+msgid "Makes it so that the logout button doesn't show in the session menu."
+msgstr ""
+
+#: ../data/indicator-session.schemas.in.h:2
+msgid "Remove the Log Out item from the session menu"
+msgstr ""
+
+#: ../data/indicator-session.schemas.in.h:3
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Overstyr dialogboksen for å bekrefte handlingene logg av, start på nytt og "
 "slå av."
 
-#: ../data/indicator-session.schemas.in.h:2
+#: ../data/indicator-session.schemas.in.h:4
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
@@ -32,29 +40,29 @@ msgstr ""
 "Om bekreftelsesdialogbokser for handlingene logg av, start på nytt og slå "
 "av, skal vises ."
 
-#: ../src/gconf-helper.c:52 ../src/session-service.c:538
+#: ../src/gconf-helper.c:63 ../src/session-service.c:613
 msgid "Log Out"
 msgstr "Logg av"
 
-#: ../src/gconf-helper.c:53 ../src/session-service.c:559
-#: ../src/session-service.c:625
+#: ../src/gconf-helper.c:64 ../src/session-service.c:638
+#: ../src/session-service.c:722
 msgid "Restart"
 msgstr "Start på nytt"
 
-#: ../src/gconf-helper.c:54 ../src/session-service.c:568
+#: ../src/gconf-helper.c:65 ../src/session-service.c:647
 msgid "Switch Off"
 msgstr "Slå av"
 
-#: ../src/gconf-helper.c:56 ../src/session-service.c:540
+#: ../src/gconf-helper.c:67 ../src/session-service.c:615
 msgid "Log Out..."
 msgstr "Logg av..."
 
-#: ../src/gconf-helper.c:57 ../src/session-service.c:561
-#: ../src/session-service.c:627
+#: ../src/gconf-helper.c:68 ../src/session-service.c:640
+#: ../src/session-service.c:724
 msgid "Restart..."
 msgstr "Start på nytt..."
 
-#: ../src/gconf-helper.c:58 ../src/session-service.c:570
+#: ../src/gconf-helper.c:69 ../src/session-service.c:649
 msgid "Switch Off..."
 msgstr "Slå av..."
 
@@ -89,8 +97,7 @@ msgstr "Ønsker du å lukke alle programmer og starte datamaskinen på nytt?"
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:43
-msgid ""
-"Are you sure you want to close all programs and shut down the computer?"
+msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr "Ønsker du å lukke alle programmer og slå av datamaskinen?"
 
 #. LOGOUT_DIALOG_LOGOUT,
@@ -142,62 +149,59 @@ msgstr "Start på nytt i stedet ..."
 
 #: ../src/dialog.c:65
 msgid "Some software updates won't apply until the computer next restarts."
-msgstr ""
-"Noen programvareoppdateringer trer ikke i kraft før etter en omstart."
+msgstr "Noen programvareoppdateringer trer ikke i kraft før etter en omstart."
 
 #: ../src/dialog.c:217 ../src/dialog.c:222
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: ../src/indicator-session.c:207
+#: ../src/indicator-session.c:272
 msgid "Switch User..."
 msgstr "Bytt bruker..."
 
 #. TODO: We need some way to remove the elipsis from appearing
 #. twice in the label.  Not sure how to do that yet.
-#: ../src/indicator-session.c:236
+#: ../src/indicator-session.c:301
 #, c-format
-msgid "Switch from %s..."
+msgid "Switch From %s..."
 msgstr "Bytt fra %s..."
 
-#: ../src/session-service.c:437
+#: ../src/session-service.c:512
 msgid "Lock Screen"
 msgstr "Lås skjerm"
 
-#: ../src/session-service.c:456
+#: ../src/session-service.c:535
 msgid "Guest Session"
 msgstr "Gjesteøkt"
 
-#: ../src/session-service.c:547
+#: ../src/session-service.c:623
 msgid "Sleep"
 msgstr "Hvilemodus"
 
-#: ../src/session-service.c:553
+#: ../src/session-service.c:630
 msgid "Hibernate"
 msgstr "Dvalemodus"
 
-#: ../src/session-service.c:618
+#: ../src/session-service.c:712
 msgid "Restart Required"
 msgstr "Omstart kreves"
 
-#: ../src/session-service.c:620
+#: ../src/session-service.c:714
 msgid "Restart Required..."
 msgstr "Omstart kreves..."
 
 #~ msgid ""
-#~ "You recently installed updates which will only take effect after a restart.  "
-#~ "Restart to apply software updates."
+#~ "You recently installed updates which will only take effect after a "
+#~ "restart.  Restart to apply software updates."
 #~ msgstr ""
 #~ "Du installerte nylig oppdateringer som bare gjøres gjeldende etter en "
 #~ "omstart.  Start på nytt for å ta i bruk programvareoppdateringer."
 
-#, c-format
 #~ msgid "You will be logged out in %d second."
 #~ msgid_plural "You will be logged out in %d seconds."
 #~ msgstr[0] "Du blir logget av om %d sekund."
 #~ msgstr[1] "Du blir logget av om %d sekunder."
 
-#, c-format
 #~ msgid "The computer will restart in %d second."
 #~ msgid_plural "The computer will restart in %d seconds."
 #~ msgstr[0] "Datamaskinen starter på nytt om %d sekund."

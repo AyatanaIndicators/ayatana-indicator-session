@@ -298,7 +298,7 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 
 		/* TODO: We need some way to remove the elipsis from appearing
 		         twice in the label.  Not sure how to do that yet. */
-		finalstring = g_strdup_printf(_("Switch from %s..."), username);
+		finalstring = g_strdup_printf(_("Switch From %s..."), username);
 		if (ems >= 20.0f) {
 			set_ellipsize = TRUE;
 		} else {

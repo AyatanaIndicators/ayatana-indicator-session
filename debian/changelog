@@ -1,3 +1,15 @@
+indicator-session (0.2.6-0ubuntu2) lucid; urgency=low
+
+  * debian/control: 
+    - change the gdm Depends to a Suggests since it's not really needed
+  * debian/patches/restore_lock_screen.patch:
+    - don't change "lock screen" in "start screensaver" for users who don't
+      use lock on screensaver action by default, the behaviour change was
+      breaking freeze and letting some users without a way to lock their 
+      computer screen (lp: #542585)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 23 Mar 2010 18:50:35 +0100
+
 indicator-session (0.2.6-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.2.6

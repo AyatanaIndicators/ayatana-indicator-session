@@ -20,7 +20,8 @@ Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubunt
 
 Package: indicator-session
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet (>= 0.2), upower, gdm
+Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet (>= 0.2), upower
+Suggests: gdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
 Replaces: indicator-sus
 Description: An indicator showing session management, status and user switching.

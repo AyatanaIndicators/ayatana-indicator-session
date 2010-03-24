@@ -1,10 +1,10 @@
-indicator-session (0.2.6-0ubuntu3~ppa1) UNRELEASED; urgency=low
+indicator-session (0.2.6-0ubuntu3~ppa1) lucid; urgency=low
 
   * Upstream Merge
     * Fix strings to have all be "Shut Down" (LP: #545578)
   * Remove debian/patches/restore_lock_screen.patch
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 24 Mar 2010 10:24:00 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 24 Mar 2010 10:28:28 -0500
 
 indicator-session (0.2.6-0ubuntu2) lucid; urgency=low
 

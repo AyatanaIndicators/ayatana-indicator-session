@@ -1,3 +1,10 @@
+indicator-session (0.2.6-0ubuntu3~ppa2) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Scale avatar icons to menu size (LP: #542505)
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 24 Mar 2010 16:57:33 -0500
+
 indicator-session (0.2.6-0ubuntu3~ppa1) lucid; urgency=low
 
   * Upstream Merge

@@ -300,11 +300,20 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(DBUSMENU_GTKCLIENT(user_data), item);
 	gchar * finalstring = NULL;
 	gboolean set_ellipsize = FALSE;
+	gboolean no_name_in_lang = FALSE;
+
+	/* TRANSLATORS: Translate the '1' below into anything other than
+	   '1' if "Switch From %s..." doesn't make sense in your language.
+	   Instead, the string "Switch User..." will be used. */
+	const gchar * translate = C_("session_menu:switchfrom", "1");
+	if (g_strcmp0(translate, "1") != 0) {
+		no_name_in_lang = TRUE;
+	}
 
 	/* If there's a NULL string of some type, then we want to
 	   go back to our old 'Switch User' which isn't great but
 	   eh, this error condition should never happen. */
-	if (value == NULL || g_value_get_string(value) == NULL || g_value_get_string(value)[0] == '\0') {
+	if (value == NULL || g_value_get_string(value) == NULL || g_value_get_string(value)[0] == '\0' || no_name_in_lang) {
 		finalstring = _("Switch User...");
 		set_ellipsize = FALSE;
 	}

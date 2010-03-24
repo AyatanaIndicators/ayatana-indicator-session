@@ -248,7 +248,17 @@ new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCl
 			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
 			g_object_unref(gicon);
 		} else {
-			usericon = gtk_image_new_from_file(icon_name);
+			gint width, height;
+			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
+
+			GError * error = NULL;
+			GdkPixbuf * pixbuf = gdk_pixbuf_new_from_file_at_size(icon_name, width, height, &error);
+
+			if (error == NULL) {
+				usericon = gtk_image_new_from_pixbuf(pixbuf);
+			} else {
+				g_error_free(error);
+			}
 		}
 	}
 	if (usericon != NULL) {

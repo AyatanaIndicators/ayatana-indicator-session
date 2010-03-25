@@ -1,25 +1,14 @@
-indicator-session (0.2.6-0ubuntu3~ppa3) lucid; urgency=low
+indicator-session (0.2.7-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * Upstream release 0.2.7
     * Adding a switch for translators if the "Switch From"
       translation doesn't make sense (LP: #545893)
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 25 Mar 2010 09:28:23 -0500
-
-indicator-session (0.2.6-0ubuntu3~ppa2) lucid; urgency=low
-
-  * Upstream Merge
     * Scale avatar icons to menu size (LP: #542505)
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 24 Mar 2010 17:00:22 -0500
-
-indicator-session (0.2.6-0ubuntu3~ppa1) lucid; urgency=low
-
-  * Upstream Merge
     * Fix strings to have all be "Shut Down" (LP: #545578)
-  * Remove debian/patches/restore_lock_screen.patch
+  * Remove debian/patches/restore_lock_screen.patch added by
+    downstream.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 24 Mar 2010 10:28:28 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Mar 2010 09:36:48 -0500
 
 indicator-session (0.2.6-0ubuntu2) lucid; urgency=low
 

@@ -1,3 +1,11 @@
+indicator-session (0.2.6-0ubuntu3~ppa3) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Adding a switch for translators if the "Switch From"
+      translation doesn't make sense (LP: #545893)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Mar 2010 09:24:15 -0500
+
 indicator-session (0.2.6-0ubuntu3~ppa2) lucid; urgency=low
 
   * Upstream Merge

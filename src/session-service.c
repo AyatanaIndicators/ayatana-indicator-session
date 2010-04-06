@@ -656,6 +656,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	} else {
 		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
 	}
+	dbusmenu_menuitem_property_set_bool(restart_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_restart());
 	dbusmenu_menuitem_child_append(root, restart_mi);
 	g_signal_connect(G_OBJECT(restart_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "restart");
 
@@ -665,6 +666,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	} else {
 		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down..."));
 	}
+	dbusmenu_menuitem_property_set_bool(shutdown_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_shutdown());
 	dbusmenu_menuitem_child_append(root, shutdown_mi);
 	g_signal_connect(G_OBJECT(shutdown_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "shutdown");
 

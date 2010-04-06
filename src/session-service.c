@@ -673,7 +673,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	restart_shutdown_logout_mi->restart_mi = restart_mi;
 	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
 
-	update_menu_entries(restart_shutdown_logout_mi, logout_mi);
+	update_menu_entries(restart_shutdown_logout_mi);
 
 	if (g_file_test(DESKTOP_FILE, G_FILE_TEST_EXISTS)) {
 		GAppInfo * appinfo = G_APP_INFO(g_desktop_app_info_new_from_filename(DESKTOP_FILE));

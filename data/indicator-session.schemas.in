@@ -2,16 +2,16 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <key>/schemas/apps/indicator-session/suppress_logout_restart_shutdown</key>
-      <applyto>/apps/indicator-session/suppress_logout_restart_shutdown</applyto>
-      <owner>indicator-session</owner>
-      <type>bool</type>
-      <default>FALSE</default>
-      <locale name="C">
-	<short>Suppress the dialog to confirm logout, restart and shutdown action</short>
-	<long>Whether or not to show confirmation dialogs for logout,
-        restart and shutdown actions.</long>
-      </locale>
+		<key>/schemas/apps/indicator-session/suppress_logout_restart_shutdown</key>
+		<applyto>/apps/indicator-session/suppress_logout_restart_shutdown</applyto>
+		<owner>indicator-session</owner>
+		<type>bool</type>
+		<default>FALSE</default>
+		<locale name="C">
+			<short>Suppress the dialog to confirm logout, restart and shutdown action</short>
+			<long>Whether or not to show confirmation dialogs for logout,
+			      restart and shutdown actions.</long>
+		</locale>
     </schema>
 	<schema>
 		<key>/schemas/apps/indicator-session/suppress_logout_menuitem</key>

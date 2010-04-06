@@ -36,6 +36,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define GLOBAL_DIR      "/apps/indicator-session"
 #define SUPPRESS_KEY    GLOBAL_DIR "/suppress_logout_restart_shutdown"
 #define LOGOUT_KEY      GLOBAL_DIR "/suppress_logout_menuitem"
+#define RESTART_KEY     GLOBAL_DIR "/suppress_restart_menuitem"
+#define SHUTDOWN_KEY    GLOBAL_DIR "/suppress_shutdown_menuitem"
 
 typedef struct _RestartShutdownLogoutMenuItems
 {
@@ -45,8 +47,10 @@ typedef struct _RestartShutdownLogoutMenuItems
 }
 RestartShutdownLogoutMenuItems;
 
-void update_menu_entries(RestartShutdownLogoutMenuItems*, DbusmenuMenuitem * logoutitem);
+void update_menu_entries(RestartShutdownLogoutMenuItems*);
 gboolean supress_confirmations (void);
 gboolean show_logout (void);
+gboolean show_restart (void);
+gboolean show_shutdown (void);
 
 #endif /* __GCONF_HELPER__ */

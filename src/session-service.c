@@ -545,7 +545,7 @@ rebuild_items (DbusmenuMenuitem *root,
           dbusmenu_menuitem_property_set (guest_mi, USER_ITEM_PROP_NAME, _("Guest Session"));
           dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
           dbusmenu_menuitem_child_append (root, guest_mi);
-          g_signal_connect (G_OBJECT (guest_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), NULL);
+          g_signal_connect (G_OBJECT (guest_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), service);
           users_service_dbus_set_guest_item(service, guest_mi);
         }
 
@@ -637,7 +637,7 @@ rebuild_items (DbusmenuMenuitem *root,
 
 	if (can_suspend && allow_suspend) {
 		suspend_mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Sleep"));
+		dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Suspend"));
 		dbusmenu_menuitem_child_append(root, suspend_mi);
 		g_signal_connect(G_OBJECT(suspend_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Suspend");
 	}

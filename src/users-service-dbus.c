@@ -550,6 +550,7 @@ static void
 add_sessions_for_user (UsersServiceDbus *self,
                        UserData         *user)
 {
+  g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   GError          *error;
   GPtrArray       *sessions;
@@ -582,6 +583,7 @@ seat_proxy_session_added (DBusGProxy       *seat_proxy,
                           const gchar      *session_id,
                           UsersServiceDbus *service)
 {
+  g_return_if_fail(IS_USERS_SERVICE_DBUS(service));
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
   uid_t          uid;
   gboolean       res;
@@ -627,6 +629,7 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
                             const gchar      *session_id,
                             UsersServiceDbus *service)
 {
+  g_return_if_fail(IS_USERS_SERVICE_DBUS(service));
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
   UserData *user;
   gchar    *username;
@@ -671,6 +674,7 @@ seat_proxy_session_removed (DBusGProxy       *seat_proxy,
 static void
 sync_users (UsersServiceDbus *self)
 {
+  g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
   if (g_hash_table_size (priv->users) > 0)
@@ -770,6 +774,7 @@ static gboolean
 session_is_login_window (UsersServiceDbus *self,
                          const char       *ssid)
 {
+  g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), FALSE);
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   DBusGProxy *proxy = NULL;
   GError     *error = NULL;
@@ -805,6 +810,7 @@ session_is_login_window (UsersServiceDbus *self,
 static char *
 get_login_session (UsersServiceDbus *self)
 {
+  g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), NULL);
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   gboolean    can_activate;
   GError     *error = NULL;
@@ -871,6 +877,7 @@ activate_user_session (UsersServiceDbus *self,
                        const char       *seat,
                        const char       *ssid)
 {
+  g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), FALSE);
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   DBusMessage *message = NULL;
   DBusMessage *reply   = NULL;
@@ -1057,6 +1064,8 @@ user_updated (DBusGProxy *proxy,
 gint
 users_service_dbus_get_user_count (UsersServiceDbus *self)
 {
+  g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), 0);
+
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
   return priv->count;
@@ -1065,6 +1074,8 @@ users_service_dbus_get_user_count (UsersServiceDbus *self)
 GList *
 users_service_dbus_get_user_list (UsersServiceDbus *self)
 {
+  g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), NULL);
+
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
   return g_hash_table_get_values (priv->users);
@@ -1074,6 +1085,7 @@ users_service_dbus_get_user_list (UsersServiceDbus *self)
 gboolean
 users_service_dbus_activate_guest_session (UsersServiceDbus *self)
 {
+	g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), FALSE);
 	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 	return org_gnome_DisplayManager_LocalDisplayFactory_switch_to_user(priv->gdm_local_proxy, "guest", NULL, NULL);
 }
@@ -1083,6 +1095,7 @@ gboolean
 users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                           UserData         *user)
 {
+	g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), FALSE);
 	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 	return org_gnome_DisplayManager_LocalDisplayFactory_switch_to_user(priv->gdm_local_proxy, user->user_name, NULL, NULL);
 }
@@ -1090,6 +1103,7 @@ users_service_dbus_activate_user_session (UsersServiceDbus *self,
 gboolean
 users_service_dbus_can_activate_session (UsersServiceDbus *self)
 {
+  g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), FALSE);
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   gboolean can_activate = FALSE;
   GError *error = NULL;
@@ -1124,6 +1138,7 @@ users_service_dbus_can_activate_session (UsersServiceDbus *self)
 void
 users_service_dbus_set_guest_item (UsersServiceDbus * self, DbusmenuMenuitem * mi)
 {
+	g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
 	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 	priv->guest_item = mi;
 

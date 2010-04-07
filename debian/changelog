@@ -1,4 +1,4 @@
-indicator-session (0.2.7-0ubuntu1~ppa2) UNRELEASED; urgency=low
+indicator-session (0.2.7-0ubuntu1~ppa2) lucid; urgency=low
 
   * Upstream Merge
     * Changing 'Sleep' to 'Suspend' (LP: #547102)
@@ -6,7 +6,7 @@ indicator-session (0.2.7-0ubuntu1~ppa2) UNRELEASED; urgency=low
     * Passing correct object to callback (LP: #543393)
     * Ignoring malformed message (LP: #548620)
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 06 Apr 2010 22:24:06 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 06 Apr 2010 22:33:15 -0500
 
 indicator-session (0.2.7-0ubuntu1~ppa1) lucid; urgency=low
 

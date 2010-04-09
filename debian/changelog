@@ -1,19 +1,13 @@
-indicator-session (0.2.7-0ubuntu1~ppa3) lucid; urgency=low
+indicator-session (0.2.8-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * New upstream release.
     * Making restart and shutdown items configurable (LP: #548810)
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 07 Apr 2010 13:48:01 -0500
-
-indicator-session (0.2.7-0ubuntu1~ppa2) lucid; urgency=low
-
-  * Upstream Merge
     * Changing 'Sleep' to 'Suspend' (LP: #547102)
     * Fixing translations helper text (LP: #547131)
     * Passing correct object to callback (LP: #543393)
     * Ignoring malformed message (LP: #548620)
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 06 Apr 2010 22:33:15 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 09 Apr 2010 11:05:59 -0500
 
 indicator-session (0.2.7-0ubuntu1~ppa1) lucid; urgency=low
 

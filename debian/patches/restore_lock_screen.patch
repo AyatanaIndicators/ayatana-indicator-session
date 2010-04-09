@@ -1,0 +1,19 @@
+=== modified file 'src/lock-helper.c'
+--- src/lock-helper.c	2010-03-18 19:19:39 +0000
++++ src/lock-helper.c	2010-03-23 17:47:37 +0000
+@@ -131,11 +131,12 @@
+ 		return FALSE;
+ 	}
+ 
+-	if (gconf_client == NULL) {
++	/* if (gconf_client == NULL) {
+ 		gconf_client = gconf_client_get_default();
+ 	}
+ 
+-	return gconf_client_get_bool (gconf_client, GCONF_KEY, NULL);
++	return gconf_client_get_bool (gconf_client, GCONF_KEY, NULL); */
++	return TRUE;
+ }
+ 
+ /* When the screensave go active, if we've got a mainloop
+

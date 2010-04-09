@@ -1,4 +1,10 @@
-indicator-session (0.2.8-0ubuntu1~ppa1) lucid; urgency=low
+indicator-session (0.2.8-0ubuntu2) lucid; urgency=low
+
+  * Restore debian directory changes dropped by error
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Apr 2010 19:29:00 +0200
+
+indicator-session (0.2.8-0ubuntu1) lucid; urgency=low
 
   * New upstream release.
     * Making restart and shutdown items configurable (LP: #548810)
@@ -9,8 +15,28 @@ indicator-session (0.2.8-0ubuntu1~ppa1) lucid; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Fri, 09 Apr 2010 11:08:47 -0500
 
-indicator-session (0.2.7-0ubuntu1~ppa1) lucid; urgency=low
+indicator-session (0.2.7-0ubuntu3) lucid; urgency=low
 
+  * debian/control
+    - Changed depends on indicator-applet to recommends 
+  * debian/patches/suspend_string.patch
+    - Change the string back to "Suspend"
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 26 Mar 2010 11:39:35 -0400
+
+indicator-session (0.2.7-0ubuntu2) lucid; urgency=low
+
+  * debian/patches/restore_lock_screen.patch
+    - re-added patch that got dropped in the merge 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Mar 2010 17:12:14 -0400
+
+indicator-session (0.2.7-0ubuntu1) lucid; urgency=low
+
+  * debian/control
+    - Dropped Vcs-Bzr and Vcs-Browser
+
+  [Ted Gould]
   * Upstream release 0.2.7
     * Adding a switch for translators if the "Switch From"
       translation doesn't make sense (LP: #545893)
@@ -19,7 +45,7 @@ indicator-session (0.2.7-0ubuntu1~ppa1) lucid; urgency=low
   * Remove debian/patches/restore_lock_screen.patch added by
     downstream.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 25 Mar 2010 09:40:31 -0500
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Mar 2010 11:23:13 -0400
 
 indicator-session (0.2.6-0ubuntu2) lucid; urgency=low
 

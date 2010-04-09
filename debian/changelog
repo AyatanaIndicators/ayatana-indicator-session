@@ -1,4 +1,4 @@
-indicator-session (0.2.8-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-session (0.2.8-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Making restart and shutdown items configurable (LP: #548810)
@@ -7,7 +7,7 @@ indicator-session (0.2.8-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Passing correct object to callback (LP: #543393)
     * Ignoring malformed message (LP: #548620)
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 09 Apr 2010 11:05:59 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 09 Apr 2010 11:08:47 -0500
 
 indicator-session (0.2.7-0ubuntu1~ppa1) lucid; urgency=low
 

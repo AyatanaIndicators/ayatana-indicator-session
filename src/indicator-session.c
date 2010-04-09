@@ -243,12 +243,26 @@ new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCl
 	const gchar * icon_name = dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_ICON);
 	g_debug("Using user icon for '%s' from file: %s", dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME), icon_name);
 	if (icon_name != NULL && icon_name[0] != '\0') {
-		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) == 0 || !g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
+		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) != 0 && g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
+			gint width, height;
+			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
+
+			GError * error = NULL;
+			GdkPixbuf * pixbuf = gdk_pixbuf_new_from_file_at_size(icon_name, width, height, &error);
+
+			if (error == NULL) {
+				usericon = gtk_image_new_from_pixbuf(pixbuf);
+				g_object_unref(pixbuf);
+			} else {
+				g_warning("Unable to load user icon '%s': %s", icon_name, error->message);
+				g_error_free(error);
+			}
+		}
+
+		if (usericon == NULL) {
 			GIcon * gicon = g_themed_icon_new_with_default_fallbacks("stock_person-panel");
 			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
 			g_object_unref(gicon);
-		} else {
-			usericon = gtk_image_new_from_file(icon_name);
 		}
 	}
 	if (usericon != NULL) {
@@ -300,11 +314,20 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, const G
 	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(DBUSMENU_GTKCLIENT(user_data), item);
 	gchar * finalstring = NULL;
 	gboolean set_ellipsize = FALSE;
+	gboolean no_name_in_lang = FALSE;
+
+	/* TRANSLATORS: Translate the '1' below into anything other than
+	   '1' if "Switch From %s..." doesn't make sense in your language.
+	   Instead, the string "Switch User..." will be used. */
+	const gchar * translate = C_("session_menu:switchfrom", "1");
+	if (g_strcmp0(translate, "1") != 0) {
+		no_name_in_lang = TRUE;
+	}
 
 	/* If there's a NULL string of some type, then we want to
 	   go back to our old 'Switch User' which isn't great but
 	   eh, this error condition should never happen. */
-	if (value == NULL || g_value_get_string(value) == NULL || g_value_get_string(value)[0] == '\0') {
+	if (value == NULL || g_value_get_string(value) == NULL || g_value_get_string(value)[0] == '\0' || no_name_in_lang) {
 		finalstring = _("Switch User...");
 		set_ellipsize = FALSE;
 	}

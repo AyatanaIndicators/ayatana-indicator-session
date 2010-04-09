@@ -2,16 +2,16 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <key>/schemas/apps/indicator-session/suppress_logout_restart_shutdown</key>
-      <applyto>/apps/indicator-session/suppress_logout_restart_shutdown</applyto>
-      <owner>indicator-session</owner>
-      <type>bool</type>
-      <default>FALSE</default>
-      <locale name="C">
-	<short>Suppress the dialog to confirm logout, restart and shutdown action</short>
-	<long>Whether or not to show confirmation dialogs for logout,
-        restart and shutdown actions.</long>
-      </locale>
+		<key>/schemas/apps/indicator-session/suppress_logout_restart_shutdown</key>
+		<applyto>/apps/indicator-session/suppress_logout_restart_shutdown</applyto>
+		<owner>indicator-session</owner>
+		<type>bool</type>
+		<default>FALSE</default>
+		<locale name="C">
+			<short>Suppress the dialog to confirm logout, restart and shutdown action</short>
+			<long>Whether or not to show confirmation dialogs for logout,
+			      restart and shutdown actions.</long>
+		</locale>
     </schema>
 	<schema>
 		<key>/schemas/apps/indicator-session/suppress_logout_menuitem</key>
@@ -22,6 +22,28 @@
 		<locale name="C">
 			<short>Remove the Log Out item from the session menu</short>
 			<long>Makes it so that the logout button doesn't show in the session menu.</long>
+		</locale>
+	</schema>
+	<schema>
+		<key>/schemas/apps/indicator-session/suppress_restart_menuitem</key>
+		<applyto>/apps/indicator-session/suppress_restart_menuitem</applyto>
+		<owner>indicator-session</owner>
+		<type>bool</type>
+		<default>FALSE</default>
+		<locale name="C">
+			<short>Remove the Restart item from the session menu</short>
+			<long>Makes it so that the restart button doesn't show in the session menu.</long>
+		</locale>
+	</schema>
+	<schema>
+		<key>/schemas/apps/indicator-session/suppress_shutdown_menuitem</key>
+		<applyto>/apps/indicator-session/suppress_shutdown_menuitem</applyto>
+		<owner>indicator-session</owner>
+		<type>bool</type>
+		<default>FALSE</default>
+		<locale name="C">
+			<short>Remove the shutdown item from the session menu</short>
+			<long>Makes it so that the shutdown button doesn't show in the session menu.</long>
 		</locale>
 	</schema>
   </schemalist>

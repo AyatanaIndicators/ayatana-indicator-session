@@ -68,7 +68,7 @@ consolekit_fallback (LogoutDialogType action)
 	g_object_unref(proxy);
 
 	if (error != NULL) {
-		g_error("Unable to signal ConsoleKit: %s", error->message);
+		g_error("Unable to signal ConsoleKit");
 		g_error_free(error);
 	}
 

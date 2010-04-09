@@ -1,3 +1,26 @@
+indicator-session (0.2.8-0ubuntu1~ppa1) lucid; urgency=low
+
+  * New upstream release.
+    * Making restart and shutdown items configurable (LP: #548810)
+    * Changing 'Sleep' to 'Suspend' (LP: #547102)
+    * Fixing translations helper text (LP: #547131)
+    * Passing correct object to callback (LP: #543393)
+    * Ignoring malformed message (LP: #548620)
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 09 Apr 2010 11:08:47 -0500
+
+indicator-session (0.2.7-0ubuntu1~ppa1) lucid; urgency=low
+
+  * Upstream release 0.2.7
+    * Adding a switch for translators if the "Switch From"
+      translation doesn't make sense (LP: #545893)
+    * Scale avatar icons to menu size (LP: #542505)
+    * Fix strings to have all be "Shut Down" (LP: #545578)
+  * Remove debian/patches/restore_lock_screen.patch added by
+    downstream.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Mar 2010 09:40:31 -0500
+
 indicator-session (0.2.6-0ubuntu2) lucid; urgency=low
 
   * debian/control: 

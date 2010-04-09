@@ -174,7 +174,7 @@ logout_dialog_new (LogoutDialogType type)
 	                                      "icon-name", icon_strings[type],
 	                                      "modal", TRUE,
 	                                      "resizable", FALSE,
-	                                      "title", _(title_strings[type]),
+	                                      "title", g_dpgettext2 (NULL, "title", title_strings[type]),
 	                                      "window-position", GTK_WIN_POS_CENTER_ALWAYS,
 	                                      /* Message Dialog */
 	                                      "buttons", GTK_BUTTONS_NONE,
@@ -197,9 +197,9 @@ logout_dialog_new (LogoutDialogType type)
 
 	const gchar * button_text;
 	if (allowed) {
-		button_text = _(button_strings[type]);
+		button_text = g_dpgettext2 (NULL, "button", button_strings[type]);
 	} else {
-		button_text = _(button_auth_strings[type]);
+		button_text = g_dpgettext2 (NULL, "button auth", button_auth_strings[type]);
 	}
 
 	if (restart_required) {

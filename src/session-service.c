@@ -629,7 +629,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	if (supress_confirmations()) {
 		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out"));
 	} else {
-		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out..."));
+		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out\342\200\246"));
 	}
 	dbusmenu_menuitem_property_set_bool(logout_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_logout());
 	dbusmenu_menuitem_child_append(root, logout_mi);
@@ -654,7 +654,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	if (supress_confirmations()) {
 		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart"));
 	} else {
-		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
+		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart\342\200\246"));
 	}
 	dbusmenu_menuitem_property_set_bool(restart_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_restart());
 	dbusmenu_menuitem_child_append(root, restart_mi);
@@ -664,7 +664,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	if (supress_confirmations()) {
 		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down"));
 	} else {
-		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down..."));
+		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down\342\200\246"));
 	}
 	dbusmenu_menuitem_property_set_bool(shutdown_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_shutdown());
 	dbusmenu_menuitem_child_append(root, shutdown_mi);
@@ -728,9 +728,9 @@ restart_dir_changed (void)
 
 	if (restart_required) {
 		if (supress_confirmations()) {
-			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart Required"));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart To Complete Update"));
 		} else {
-			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart Required..."));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart To Complete Update\342\200\246"));
 		}
 		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_ICON, "system-restart-panel");
 		if (session_dbus != NULL) {
@@ -740,7 +740,7 @@ restart_dir_changed (void)
 		if (supress_confirmations()) {
 			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart"));
 		} else {
-			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart..."));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart\342\200\246"));
 		}
 		dbusmenu_menuitem_property_remove(restart_mi, RESTART_ITEM_ICON);
 		if (session_dbus != NULL) {

@@ -516,14 +516,9 @@ rebuild_items (DbusmenuMenuitem *root,
   /* Lock screen item */
   if (can_lockscreen) {
 	lock_menuitem = dbusmenu_menuitem_new();
-	if (will_lock_screen()) {
-		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
-	} else {
-		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Start Screensaver"));
-	}
+	dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
 	g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
 	dbusmenu_menuitem_child_append(root, lock_menuitem);
-	lock_screen_update_item(lock_menuitem);
   }
 
   /* Set to NULL just incase we don't end up building one */

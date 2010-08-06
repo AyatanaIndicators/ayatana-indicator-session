@@ -122,6 +122,26 @@ lockdown_changed (GConfClient *client,
 	return;
 }
 
+static void
+keybinding_changed (GConfClient *client,
+                    guint        cnxd_id,
+                    GConfEntry  *entry,
+                    gpointer     user_data)
+{
+	GConfValue  *value = gconf_entry_get_value (entry);
+	const gchar *key   = gconf_entry_get_key (entry);
+
+	if (value == NULL || key == NULL) {
+		return;
+	}
+
+	if (g_strcmp0 (key, KEY_LOCK_SCREEN) == 0) {
+		// TODO: set value
+	}
+
+	return;
+}
+
 /* Ensures that we have a GConf client and if we build one
    set up the signal handler. */
 static void
@@ -129,8 +149,12 @@ ensure_gconf_client (void)
 {
 	if (!gconf_client) {
 		gconf_client = gconf_client_get_default ();
+
 		gconf_client_add_dir(gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 		gconf_client_notify_add(gconf_client, LOCKDOWN_DIR, lockdown_changed, NULL, NULL, NULL);
+
+		gconf_client_add_dir(gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_notify_add(gconf_client, KEYBINDING_DIR, keybinding_changed, NULL, NULL, NULL);
 	}
 	return;
 }

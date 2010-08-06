@@ -61,6 +61,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LOCKDOWN_KEY_USER         LOCKDOWN_DIR "/disable_user_switching"
 #define LOCKDOWN_KEY_SCREENSAVER  LOCKDOWN_DIR "/disable_lock_screen"
 
+#define KEYBINDING_DIR            "/apps/gnome_settings_daemon/keybindings"
+#define KEY_LOCK_SCREEN           KEYBINDING_DIR "/screensaver"
+
 typedef struct _ActivateData ActivateData;
 struct _ActivateData
 {

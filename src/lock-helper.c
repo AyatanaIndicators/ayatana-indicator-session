@@ -176,30 +176,16 @@ build_gss_proxy (void)
 static gboolean
 activate_timeout (gpointer data)
 {
+	/* Clear the ID for the timeout */
 	guint * address = (guint *)data;
 	*address = 0;
 
+	/* Quit the mainloop */
 	if (gss_mainloop != NULL) {
 		g_main_loop_quit(gss_mainloop);
 	}
 	
 	return FALSE;
-}
-
-/* Handle errors from activating the screensaver */
-static void
-active_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer user_data)
-{
-	GError * error = NULL;
-
-	dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_INVALID);
-
-	if (error != NULL) {
-		g_warning("Unable to activate screensaver: %s", error->message);
-		g_error_free(error);
-	}
-
-	return;
 }
 
 /* A fun little function to actually lock the screen.  If,
@@ -212,19 +198,10 @@ lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 	build_gss_proxy();
 	g_return_if_fail(gss_proxy != NULL);
 
-	if (will_lock_screen()) {
-		dbus_g_proxy_call_no_reply(gss_proxy,
-		                           "Lock",
-		                           G_TYPE_INVALID,
-		                           G_TYPE_INVALID);
-	} else {
-		dbus_g_proxy_begin_call(gss_proxy,
-		                        "SetActive",
-		                        active_cb, NULL,
-		                        NULL,
-		                        G_TYPE_BOOLEAN, TRUE,
-		                        G_TYPE_INVALID);
-	}
+	dbus_g_proxy_call_no_reply(gss_proxy,
+	                           "Lock",
+	                           G_TYPE_INVALID,
+	                           G_TYPE_INVALID);
 
 	if (gss_mainloop == NULL) {
 		gss_mainloop = g_main_loop_new(NULL, FALSE);

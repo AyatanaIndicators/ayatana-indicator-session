@@ -36,6 +36,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/client.h>
+#include <libdbusmenu-gtk/menuitem.h>
 
 #include <libindicator/indicator-service.h>
 
@@ -136,7 +137,10 @@ keybinding_changed (GConfClient *client,
 	}
 
 	if (g_strcmp0 (key, KEY_LOCK_SCREEN) == 0) {
-		// TODO: set value
+		g_debug("Keybinding changed to: %s", gconf_value_get_string(value));
+		if (lock_menuitem != NULL) {
+			dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, gconf_value_get_string(value));
+		}
 	}
 
 	return;
@@ -544,6 +548,16 @@ rebuild_items (DbusmenuMenuitem *root,
   if (can_lockscreen) {
 	lock_menuitem = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+
+	gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
+	if (shortcut != NULL) {
+		g_debug("Lock screen shortcut: %s", shortcut);
+		dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
+		g_free(shortcut);
+	} else {
+		g_debug("Unable to get lock screen shortcut.");
+	}
+
 	g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
 	dbusmenu_menuitem_child_append(root, lock_menuitem);
   }

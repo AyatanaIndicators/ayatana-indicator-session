@@ -31,6 +31,4 @@ gboolean will_lock_screen (void);
 void lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data);
 gboolean lock_screen_setup (gpointer data);
 
-void lock_screen_update_item (DbusmenuMenuitem * mi);
-
 #endif /* LOCK_HELPER_H__ */

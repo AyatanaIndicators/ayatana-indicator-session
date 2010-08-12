@@ -39,6 +39,7 @@ AC_SUBST(APPLET_LIBS)
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
 
 PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+						          dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION
                                   gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION)
 

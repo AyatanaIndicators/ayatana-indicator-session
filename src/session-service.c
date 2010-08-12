@@ -36,6 +36,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/client.h>
+#include <libdbusmenu-gtk/menuitem.h>
 
 #include <libindicator/indicator-service.h>
 
@@ -60,6 +61,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LOCKDOWN_DIR              "/desktop/gnome/lockdown"
 #define LOCKDOWN_KEY_USER         LOCKDOWN_DIR "/disable_user_switching"
 #define LOCKDOWN_KEY_SCREENSAVER  LOCKDOWN_DIR "/disable_lock_screen"
+
+#define KEYBINDING_DIR            "/apps/gnome_settings_daemon/keybindings"
+#define KEY_LOCK_SCREEN           KEYBINDING_DIR "/screensaver"
 
 typedef struct _ActivateData ActivateData;
 struct _ActivateData
@@ -119,6 +123,29 @@ lockdown_changed (GConfClient *client,
 	return;
 }
 
+static void
+keybinding_changed (GConfClient *client,
+                    guint        cnxd_id,
+                    GConfEntry  *entry,
+                    gpointer     user_data)
+{
+	GConfValue  *value = gconf_entry_get_value (entry);
+	const gchar *key   = gconf_entry_get_key (entry);
+
+	if (value == NULL || key == NULL) {
+		return;
+	}
+
+	if (g_strcmp0 (key, KEY_LOCK_SCREEN) == 0) {
+		g_debug("Keybinding changed to: %s", gconf_value_get_string(value));
+		if (lock_menuitem != NULL) {
+			dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, gconf_value_get_string(value));
+		}
+	}
+
+	return;
+}
+
 /* Ensures that we have a GConf client and if we build one
    set up the signal handler. */
 static void
@@ -126,8 +153,12 @@ ensure_gconf_client (void)
 {
 	if (!gconf_client) {
 		gconf_client = gconf_client_get_default ();
+
 		gconf_client_add_dir(gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 		gconf_client_notify_add(gconf_client, LOCKDOWN_DIR, lockdown_changed, NULL, NULL, NULL);
+
+		gconf_client_add_dir(gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_notify_add(gconf_client, KEYBINDING_DIR, keybinding_changed, NULL, NULL, NULL);
 	}
 	return;
 }
@@ -516,14 +547,19 @@ rebuild_items (DbusmenuMenuitem *root,
   /* Lock screen item */
   if (can_lockscreen) {
 	lock_menuitem = dbusmenu_menuitem_new();
-	if (will_lock_screen()) {
-		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+	dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+
+	gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
+	if (shortcut != NULL) {
+		g_debug("Lock screen shortcut: %s", shortcut);
+		dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
+		g_free(shortcut);
 	} else {
-		dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Start Screensaver"));
+		g_debug("Unable to get lock screen shortcut.");
 	}
+
 	g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
 	dbusmenu_menuitem_child_append(root, lock_menuitem);
-	lock_screen_update_item(lock_menuitem);
   }
 
   /* Set to NULL just incase we don't end up building one */

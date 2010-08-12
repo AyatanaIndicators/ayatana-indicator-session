@@ -728,9 +728,9 @@ restart_dir_changed (void)
 
 	if (restart_required) {
 		if (supress_confirmations()) {
-			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart To Complete Update"));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart to Complete Update"));
 		} else {
-			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart To Complete Update\342\200\246"));
+			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart to Complete Update\342\200\246"));
 		}
 		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_ICON, "system-restart-panel");
 		if (session_dbus != NULL) {

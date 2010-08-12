@@ -20,7 +20,8 @@ Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubunt
 
 Package: indicator-session
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, indicator-applet (>= 0.2), upower
+Depends: ${shlibs:Depends}, ${misc:Depends}, upower
+Recommends: indicator-applet (>= 0.2) | indicator-renderer
 Suggests: gdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
 Replaces: indicator-sus

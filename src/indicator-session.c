@@ -122,6 +122,9 @@ indicator_session_init (IndicatorSession *self)
 	dbusmenu_client_add_type_handler(client, USER_ITEM_TYPE, new_user_item);
 	dbusmenu_client_add_type_handler(client, RESTART_ITEM_TYPE, build_restart_item);
 
+	GtkAccelGroup * agroup = gtk_accel_group_new();
+	dbusmenu_gtkclient_set_accel_group(DBUSMENU_GTKCLIENT(client), agroup);
+
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	self->service_proxy = dbus_g_proxy_new_for_name(session_bus,
 	                                                INDICATOR_SESSION_DBUS_NAME,

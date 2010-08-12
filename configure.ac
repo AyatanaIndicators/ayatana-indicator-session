@@ -4,7 +4,7 @@ AC_INIT(src/indicator-session.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 0.2.9)
+AM_INIT_AUTOMAKE(indicator-session, 0.2.10)
 
 AM_MAINTAINER_MODE
 
@@ -39,6 +39,7 @@ AC_SUBST(APPLET_LIBS)
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
 
 PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
+						          dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION
                                   gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION)
 

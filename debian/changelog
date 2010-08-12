@@ -1,3 +1,12 @@
+indicator-session (0.2.10-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Fix to lock screen so that the menu item is always to lock
+      the screen. (LP: #599848)
+    * Fix capitalization of complete update message.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 11:41:45 -0500
+
 indicator-session (0.2.9-0ubuntu1) maverick; urgency=low
 
   * New upstream release:

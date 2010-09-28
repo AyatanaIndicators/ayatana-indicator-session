@@ -1,3 +1,19 @@
+indicator-session (0.2.10-0ubuntu2) maverick; urgency=low
+
+  * Rebuild for libindicator ABI change (LP: #637692)
+  * debian/control: depends on latest libindicator-dev 
+
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 22 Sep 2010 18:42:59 +0200
+
+indicator-session (0.2.10-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Fix to lock screen so that the menu item is always to lock
+      the screen. (LP: #599848)
+    * Fix capitalization of complete update message.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 11:41:45 -0500
+
 indicator-session (0.2.10-0ubuntu1~ppa2) maverick; urgency=low
 
   * Upstream Merge
@@ -216,6 +232,24 @@ indicator-session (0.2.0-0ubuntu1) lucid; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 09:33:15 -0600
 
+indicator-session (0.2.0~dev-0ubuntu1~ppa2) karmic; urgency=low
+
+  * debian/rules
+    - removed the extra disable-scrollkeeper arg to configure (LP: #418772)
+  * debian/control
+    - removed the build dep for scrollkeeper
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 06 Nov 2009 10:24:06 -0500
+
+indicator-session (0.2.0~dev-0ubuntu1~ppa1) karmic; urgency=low
+
+  * Updating to the libindicate 0.3.0 API
+  * debian/control: Upping the libindicator-dev version to >= 0.3.0~dev
+  * debian/patches/01_locking_on_autologin.patch as it doesn't
+    apply.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 05 Nov 2009 09:26:56 -0600
+
 indicator-session (0.1.7+r58-0ubuntu1) lucid; urgency=low
 
   * New snapshot for libindicator 0.3.0
@@ -246,23 +280,13 @@ indicator-session (0.1.7-0ubuntu4) lucid; urgency=low
 
  -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Dec 2009 08:58:06 -0500
 
-indicator-session (0.2.0~dev-0ubuntu1~ppa2) karmic; urgency=low
+indicator-session (0.1.7-0ubuntu3) karmic; urgency=low
 
-  * debian/rules
-    - removed the extra disable-scrollkeeper arg to configure (LP: #418772)
-  * debian/control
-    - removed the build dep for scrollkeeper
+  * debian/patches/01_locking_on_autologin.patch:
+    - don't stop users to lock their screen on autologin configs, 
+      thank David Barth (lp: #438936)
 
- -- Ken VanDine <ken.vandine@canonical.com>  Fri, 06 Nov 2009 10:24:06 -0500
-
-indicator-session (0.2.0~dev-0ubuntu1~ppa1) karmic; urgency=low
-
-  * Updating to the libindicate 0.3.0 API
-  * debian/control: Upping the libindicator-dev version to >= 0.3.0~dev
-  * debian/patches/01_locking_on_autologin.patch as it doesn't
-    apply.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 05 Nov 2009 09:26:56 -0600
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 14 Oct 2009 19:16:24 +0200
 
 indicator-session (0.1.7-0ubuntu3~ppa1) karmic; urgency=low
 
@@ -271,14 +295,6 @@ indicator-session (0.1.7-0ubuntu3~ppa1) karmic; urgency=low
   * Remove debian/patches/mc5-fixes.patch
 
  -- Ted Gould <ted@ubuntu.com>  Sat, 10 Oct 2009 08:44:16 -0400
-
-indicator-session (0.1.7-0ubuntu3) karmic; urgency=low
-
-  * debian/patches/01_locking_on_autologin.patch:
-    - don't stop users to lock their screen on autologin configs, 
-      thank David Barth (lp: #438936)
-
- -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 14 Oct 2009 19:16:24 +0200
 
 indicator-session (0.1.7-0ubuntu2) karmic; urgency=low
 
@@ -415,41 +431,6 @@ indicator-session (0.1.1-0ubuntu1) karmic; urgency=low
 
  -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 04 Sep 2009 11:46:25 +0200
 
-indicator-session (0.1-0ubuntu1) karmic; urgency=low
-
-  [ Ted Gould ]
-  * Upstream version 0.1 (LP: #420108)
-  * debian/control: Looking for libdbusmenu* >= 0.1.0
-  * debian/control: Shortening the short description and lengthening
-    the long one.  Fixes a bug (LP: #412024)
-  * debian/watch:
-    - fixed url
-
-  [ Martin Pitt ]
-  * Re-add dropped debian/compat.
-
-  Re-add fixes which got lost in branch renaming:
-  * debian/control: Fix Vcs-* links.
-  * debian/rules: debian/rules: Update *.a/*.la cleanup for -sus → -session
-    renaming.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Aug 2009 21:30:27 +0200
-
-indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
-
-  * New snapshot (LP: #417035)
-  * Package rename from 'indicator-sus' to 'indicator-session'
-  * Merging in the branch that adds in the status icons to
-    the panel.
-  * debian/control:
-    - Switching to indicator-session and conflicting
-    - Changed Vcs-Bzr to point to ~ubuntu-desktop
-    - Changed the project homepage
-    and replacing indicator-sus
-  * debian/watch: Switching to indicator-session*
-
- -- Ken VanDine <ken.vandine@canonical.com>  Fri, 21 Aug 2009 12:28:13 -0400
-
 indicator-sus (0.1-0ubuntu2) UNRELEASE; urgency=low
 
   * Fixed Vcs-Bzr location, part of the  indicator-applet project
@@ -500,4 +481,19 @@ indicator-sus (0.1~ppa1) intrepid; urgency=low
   * Initial release
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 04 Dec 2008 23:51:41 -0800
+
+indicator-session (0.1~bzr17-0ubuntu1) karmic; urgency=low
+
+  * New snapshot (LP: #417035)
+  * Package rename from 'indicator-sus' to 'indicator-session'
+  * Merging in the branch that adds in the status icons to
+    the panel.
+  * debian/control:
+    - Switching to indicator-session and conflicting
+    - Changed Vcs-Bzr to point to ~ubuntu-desktop
+    - Changed the project homepage
+    and replacing indicator-sus
+  * debian/watch: Switching to indicator-session*
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 21 Aug 2009 12:28:13 -0400
 

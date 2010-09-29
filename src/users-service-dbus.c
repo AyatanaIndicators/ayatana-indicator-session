@@ -172,7 +172,7 @@ users_service_dbus_init (UsersServiceDbus *self)
   priv->system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
   if (error != NULL)
     {
-      g_error ("Unable to get system bus: %s", error->message);
+      g_error ("Unable to get system bus");
       g_error_free(error);
 
       return;

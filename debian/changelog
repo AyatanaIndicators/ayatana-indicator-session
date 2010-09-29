@@ -1,3 +1,9 @@
+indicator-session (0.2.10-0ubuntu3) maverick; urgency=low
+
+  * Backport upstream revision 129 to fix a crasher (lp: #611257)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 29 Sep 2010 15:16:28 +0200
+
 indicator-session (0.2.10-0ubuntu2) maverick; urgency=low
 
   * Rebuild for libindicator ABI change (LP: #637692)

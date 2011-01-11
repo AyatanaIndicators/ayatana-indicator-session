@@ -32,14 +32,15 @@ POLKIT_REQUIRED_VERSION=0.92
 
 PKG_CHECK_MODULES(APPLET, gtk+-2.0 >= $GTK_REQUIRED_VERSION
                           indicator >= $INDICATOR_REQUIRED_VERSION
-						  dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION)
+                          dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
 AC_SUBST(APPLET_CFLAGS)
 AC_SUBST(APPLET_LIBS)
 
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
 
-PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-						          dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION
+PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                  dbus-glib-1
                                   gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION)
 

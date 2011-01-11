@@ -184,14 +184,15 @@ indicator_session_dispose (GObject *object)
 		self->service = NULL;
 	}
 
-	if (self->service_proxy_cancel != NULL) {
-		g_object_unref(self->service_proxy_cancel);
-		self->service_proxy_cancel = NULL;
-	}
-
 	if (self->service_proxy != NULL) {
 		g_object_unref(self->service_proxy);
 		self->service_proxy = NULL;
+	}
+
+	if (self->service_proxy_cancel != NULL) {
+		g_cancellable_cancel(self->service_proxy_cancel);
+		g_object_unref(self->service_proxy_cancel);
+		self->service_proxy_cancel = NULL;
 	}
 
 	G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);

@@ -23,25 +23,33 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "config.h"
 #endif
 
+#include <gio/gio.h>
+
 #include "session-dbus.h"
 #include "dbus-shared-names.h"
 
-static gboolean _session_dbus_server_get_icon (SessionDbus * service, gchar ** icon, GError ** error);
+static GVariant * get_icon (SessionDbus * service);
+static void bus_get_cb (GObject * object, GAsyncResult * res, gpointer user_data);
+static void bus_method_call (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * method, GVariant * params, GDBusMethodInvocation * invocation, gpointer user_data);
 
-#include "session-dbus-server.h"
+#include "gen-session-dbus.xml.h"
 
 typedef struct _SessionDbusPrivate SessionDbusPrivate;
 struct _SessionDbusPrivate {
 	gchar * name;
+	GDBusConnection * bus;
+	GCancellable * bus_cancel;
+	guint dbus_registration;
 };
 
-/* Signals */
-enum {
-	ICON_UPDATED,
-	LAST_SIGNAL
+/* GDBus Stuff */
+static GDBusNodeInfo *      node_info = NULL;
+static GDBusInterfaceInfo * interface_info = NULL;
+static GDBusInterfaceVTable interface_table = {
+       method_call:    bus_method_call,
+       get_property:   NULL, /* No properties */
+       set_property:   NULL  /* No properties */
 };
-
-static guint signals[LAST_SIGNAL] = { 0 };
 
 #define SESSION_DBUS_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), SESSION_DBUS_TYPE, SessionDbusPrivate))
@@ -63,15 +71,24 @@ session_dbus_class_init (SessionDbusClass *klass)
 	object_class->dispose = session_dbus_dispose;
 	object_class->finalize = session_dbus_finalize;
 
-	signals[ICON_UPDATED] = g_signal_new ("icon-updated",
-	                                      G_TYPE_FROM_CLASS (klass),
-	                                      G_SIGNAL_RUN_LAST,
-	                                      G_STRUCT_OFFSET (SessionDbusClass, icon_updated),
-	                                      NULL, NULL,
-	                                      g_cclosure_marshal_VOID__STRING,
-	                                      G_TYPE_NONE, 1, G_TYPE_STRING);
+	/* Setting up the DBus interfaces */
+	if (node_info == NULL) {
+		GError * error = NULL;
 
-	dbus_g_object_type_install_info(SESSION_DBUS_TYPE, &dbus_glib__session_dbus_server_object_info);
+		node_info = g_dbus_node_info_new_for_xml(_session_dbus, &error);
+		if (error != NULL) {
+			g_error("Unable to parse Session Service Interface description: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (interface_info == NULL) {
+		interface_info = g_dbus_node_info_lookup_interface(node_info, INDICATOR_SESSION_SERVICE_DBUS_IFACE);
+
+		if (interface_info == NULL) {
+			g_error("Unable to find interface '" INDICATOR_SESSION_SERVICE_DBUS_IFACE "'");
+		}
+	}
 
 	return;
 }
@@ -79,19 +96,104 @@ session_dbus_class_init (SessionDbusClass *klass)
 static void
 session_dbus_init (SessionDbus *self)
 {
-	DBusGConnection * session = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	dbus_g_connection_register_g_object(session, INDICATOR_SESSION_SERVICE_DBUS_OBJECT, G_OBJECT(self));
-
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(self);
 
 	priv->name = g_strdup(ICON_DEFAULT);
+	priv->bus = NULL;
+	priv->bus_cancel = NULL;
+	priv->dbus_registration = 0;
 
+	priv->bus_cancel = g_cancellable_new();
+	g_bus_get(G_BUS_TYPE_SESSION,
+	          priv->bus_cancel,
+	          bus_get_cb,
+	          self);
+
+	return;
+}
+
+static void
+bus_get_cb (GObject * object, GAsyncResult * res, gpointer user_data)
+{
+	GError * error = NULL;
+	GDBusConnection * connection = g_bus_get_finish(res, &error);
+
+	if (error != NULL) {
+		g_error("OMG! Unable to get a connection to DBus: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(user_data);
+
+	g_warn_if_fail(priv->bus == NULL);
+	priv->bus = connection;
+
+	if (priv->bus_cancel != NULL) {
+		g_object_unref(priv->bus_cancel);
+		priv->bus_cancel = NULL;
+	}
+
+	/* Now register our object on our new connection */
+	priv->dbus_registration = g_dbus_connection_register_object(priv->bus,
+	                                                            INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+	                                                            interface_info,
+	                                                            &interface_table,
+	                                                            user_data,
+	                                                            NULL,
+	                                                            &error);
+
+	if (error != NULL) {
+		g_error("Unable to register the object to DBus: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	return;	
+}
+
+/* A method has been called from our dbus inteface.  Figure out what it
+   is and dispatch it. */
+static void
+bus_method_call (GDBusConnection * connection, const gchar * sender,
+                 const gchar * path, const gchar * interface,
+                 const gchar * method, GVariant * params,
+                 GDBusMethodInvocation * invocation, gpointer user_data)
+{
+	SessionDbus * service = SESSION_DBUS(user_data);
+	GVariant * retval = NULL;
+
+	if (g_strcmp0(method, "GetIcon") == 0) {
+		retval = get_icon(service);
+	} else {
+		g_warning("Calling method '%s' on the indicator service and it's unknown", method);
+	}
+
+	g_dbus_method_invocation_return_value(invocation, retval);
 	return;
 }
 
 static void
 session_dbus_dispose (GObject *object)
 {
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(object);
+
+	if (priv->dbus_registration != 0) {
+		g_dbus_connection_unregister_object(priv->bus, priv->dbus_registration);
+		/* Don't care if it fails, there's nothing we can do */
+		priv->dbus_registration = 0;
+	}
+
+	if (priv->bus != NULL) {
+		g_object_unref(priv->bus);
+		priv->bus = NULL;
+	}
+
+	if (priv->bus_cancel != NULL) {
+		g_cancellable_cancel(priv->bus_cancel);
+		g_object_unref(priv->bus_cancel);
+		priv->bus_cancel = NULL;
+	}
 
 	G_OBJECT_CLASS (session_dbus_parent_class)->dispose (object);
 	return;
@@ -111,12 +213,11 @@ session_dbus_finalize (GObject *object)
 	return;
 }
 
-static gboolean
-_session_dbus_server_get_icon (SessionDbus * service, gchar ** icon, GError ** error)
+static GVariant *
+get_icon (SessionDbus * service)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(service);
-	*icon = g_strdup(priv->name);
-	return TRUE;
+	return g_variant_new("(s)", priv->name);
 }
 
 SessionDbus *
@@ -129,11 +230,28 @@ void
 session_dbus_set_name (SessionDbus * session, const gchar * name)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
+	GError * error = NULL;
 	if (priv->name != NULL) {
 		g_free(priv->name);
 		priv->name = NULL;
 	}
 	priv->name = g_strdup(name);
-	g_signal_emit(G_OBJECT(session), signals[ICON_UPDATED], 0, priv->name, TRUE);
+
+	if (priv->bus != NULL) {
+		g_dbus_connection_emit_signal (priv->bus,
+			                       NULL,
+			                       INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+			                       INDICATOR_SESSION_SERVICE_DBUS_IFACE,
+			                       "IconUpdated",
+			                       g_variant_new ("(s)", priv->name, NULL),
+			                       &error);
+
+		if (error != NULL) {
+			g_error("Unable to send IconUpdated signal: %s", error->message);
+			g_error_free(error);
+			return;
+		}
+	}
+
 	return;
 }

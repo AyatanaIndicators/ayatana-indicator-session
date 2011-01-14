@@ -11,7 +11,7 @@ sessionlibdir = $(INDICATORDIR)
 sessionlib_LTLIBRARIES = libsession.la
 libsession_la_SOURCES = \
 	indicator-session.c \
-	session-dbus-client.h \
+	gen-session-dbus.xml.h \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
 	users-service-client.h
@@ -54,20 +54,6 @@ upower-client.h: $(srcdir)/upower.xml
 		--output=upower-client.h \
 		$(srcdir)/upower.xml
 
-session-dbus-client.h: $(srcdir)/session-dbus.xml
-	dbus-binding-tool \
-		--prefix=_session_dbus_client \
-		--mode=glib-client \
-		--output=session-dbus-client.h \
-		$(srcdir)/session-dbus.xml
-
-session-dbus-server.h: $(srcdir)/session-dbus.xml
-	dbus-binding-tool \
-		--prefix=_session_dbus_server \
-		--mode=glib-server \
-		--output=session-dbus-server.h \
-		$(srcdir)/session-dbus.xml
-
 users-service-marshal.h: $(srcdir)/users-service.list
 	glib-genmarshal --header \
 		--prefix=_users_service_marshal $(srcdir)/users-service.list \
@@ -77,6 +63,16 @@ users-service-marshal.c: $(srcdir)/users-service.list
 	glib-genmarshal --body \
 		--prefix=_users_service_marshal $(srcdir)/users-service.list \
 		> users-service-marshal.c
+
+gen-%.xml.c: %.xml
+	@echo "Building $@ from $<"
+	@echo "const char * _$(subst -,_,$(subst .,_,$(basename $<))) = " > $@
+	@sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
+	@echo ";" >> $@
+
+gen-%.xml.h: %.xml
+	@echo "Building $@ from $<"
+	@echo "extern const char * _$(subst -,_,$(subst .,_,$(basename $<)));" > $@
 
 #################
 # Session Stuff
@@ -88,7 +84,7 @@ indicator_session_service_SOURCES = \
 	session-service.c \
 	session-dbus.c \
 	session-dbus.h \
-	session-dbus-server.h \
+	gen-session-dbus.xml.c \
 	dbusmenu-shared.h \
 	gconf-helper.c \
 	users-service-dbus.h \
@@ -129,8 +125,8 @@ BUILT_SOURCES = \
 	consolekit-manager-client.h \
 	consolekit-session-client.h \
 	gdm-local-display-factory-client.h \
-	session-dbus-client.h \
-	session-dbus-server.h \
+	gen-session-dbus.xml.c \
+	gen-session-dbus.xml.h \
 	upower-client.h \
 	users-service-client.h \
 	users-service-marshal.h \

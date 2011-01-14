@@ -1,3 +1,3 @@
 [D-BUS Service]
-Name=org.ayatana.indicator.users
+Name=com.canonical.indicator.users
 Exec=@libexecdir@/indicator-users-service

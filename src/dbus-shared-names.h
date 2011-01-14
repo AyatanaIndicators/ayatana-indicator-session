@@ -24,22 +24,22 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __DBUS_SHARED_NAMES_H__
 #define __DBUS_SHARED_NAMES_H__ 1
 
-#define INDICATOR_STATUS_DBUS_NAME  "org.ayatana.indicator.status"
-#define INDICATOR_STATUS_DBUS_OBJECT "/org/ayatana/indicator/status/menu"
-#define INDICATOR_STATUS_SERVICE_DBUS_OBJECT "/org/ayatana/indicator/status/service"
-#define INDICATOR_STATUS_SERVICE_DBUS_INTERFACE "org.ayatana.indicator.status.service"
+#define INDICATOR_STATUS_DBUS_NAME  "com.canonical.indicator.status"
+#define INDICATOR_STATUS_DBUS_OBJECT "/com/canonical/indicator/status/menu"
+#define INDICATOR_STATUS_SERVICE_DBUS_OBJECT "/com/canonical/indicator/status/service"
+#define INDICATOR_STATUS_SERVICE_DBUS_INTERFACE "com.canonical.indicator.status.service"
 
-#define INDICATOR_USERS_DBUS_NAME  "org.ayatana.indicator.users"
-#define INDICATOR_USERS_DBUS_OBJECT "/org/ayatana/indicator/users/menu"
+#define INDICATOR_USERS_DBUS_NAME  "com.canonical.indicator.users"
+#define INDICATOR_USERS_DBUS_OBJECT "/com/canonical/indicator/users/menu"
 #define INDICATOR_USERS_SERVICE_DBUS_OBJECT "/org/gnome/DisplayManager/UserManager"
 #define INDICATOR_USERS_SERVICE_DBUS_INTERFACE "org.gnome.DisplayManager.UserManager"
 
-#define INDICATOR_SESSION_DBUS_NAME  "org.ayatana.indicator.session"
-#define INDICATOR_SESSION_DBUS_OBJECT "/org/ayatana/indicator/session/menu"
+#define INDICATOR_SESSION_DBUS_NAME  "com.canonical.indicator.session"
+#define INDICATOR_SESSION_DBUS_OBJECT "/com/canonical/indicator/session/menu"
 #define INDICATOR_SESSION_DBUS_VERSION  0
 
-#define INDICATOR_SESSION_SERVICE_DBUS_OBJECT "/org/ayatana/indicator/session/service"
-#define INDICATOR_SESSION_SERVICE_DBUS_IFACE  "org.ayatana.indicator.session.service"
+#define INDICATOR_SESSION_SERVICE_DBUS_OBJECT "/com/canonical/indicator/session/service"
+#define INDICATOR_SESSION_SERVICE_DBUS_IFACE  "com.canonical.indicator.session.service"
 
 #define USER_ITEM_TYPE            "x-canonical-user-item"
 #define USER_ITEM_PROP_NAME       "user-item-name"

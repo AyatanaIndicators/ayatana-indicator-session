@@ -1,3 +1,15 @@
+indicator-session (0.2.11-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    - Ported to gdbus and dbusmenu 0.4
+    - indicator-session-service crashed with signal 5 in 
+      g_type_create_instance() (LP: #611257)
+  * debian/control
+    - Bumped build depends for dbusmenu to >= 0.3.91
+    - Bumped build depends libindicator-dev >= 0.3.16
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 14 Jan 2011 13:20:16 -0600
+
 indicator-session (0.2.10-0ubuntu4) natty; urgency=low
 
   * debian/control

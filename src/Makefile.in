@@ -40,7 +40,10 @@ libexec_PROGRAMS = indicator-session-service$(EXEEXT) \
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -97,6 +100,7 @@ am_indicator_session_service_OBJECTS =  \
 	indicator_session_service-lock-helper.$(OBJEXT) \
 	indicator_session_service-session-service.$(OBJEXT) \
 	indicator_session_service-session-dbus.$(OBJEXT) \
+	indicator_session_service-gen-session-dbus.xml.$(OBJEXT) \
 	indicator_session_service-gconf-helper.$(OBJEXT) \
 	indicator_session_service-users-service-dbus.$(OBJEXT) \
 	indicator_session_service-users-service-marshal.$(OBJEXT)
@@ -305,7 +309,7 @@ sessionlibdir = $(INDICATORDIR)
 sessionlib_LTLIBRARIES = libsession.la
 libsession_la_SOURCES = \
 	indicator-session.c \
-	session-dbus-client.h \
+	gen-session-dbus.xml.h \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
 	users-service-client.h
@@ -323,7 +327,7 @@ indicator_session_service_SOURCES = \
 	session-service.c \
 	session-dbus.c \
 	session-dbus.h \
-	session-dbus-server.h \
+	gen-session-dbus.xml.c \
 	dbusmenu-shared.h \
 	gconf-helper.c \
 	users-service-dbus.h \
@@ -363,8 +367,8 @@ BUILT_SOURCES = \
 	consolekit-manager-client.h \
 	consolekit-session-client.h \
 	gdm-local-display-factory-client.h \
-	session-dbus-client.h \
-	session-dbus-server.h \
+	gen-session-dbus.xml.c \
+	gen-session-dbus.xml.h \
 	upower-client.h \
 	users-service-client.h \
 	users-service-marshal.h \
@@ -510,6 +514,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gconf-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gconf-helper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-lock-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-service.Po@am__quote@
@@ -644,6 +649,22 @@ indicator_session_service-session-dbus.obj: session-dbus.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='session-dbus.c' object='indicator_session_service-session-dbus.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-session-dbus.obj `if test -f 'session-dbus.c'; then $(CYGPATH_W) 'session-dbus.c'; else $(CYGPATH_W) '$(srcdir)/session-dbus.c'; fi`
+
+indicator_session_service-gen-session-dbus.xml.o: gen-session-dbus.xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-gen-session-dbus.xml.o -MD -MP -MF $(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Tpo -c -o indicator_session_service-gen-session-dbus.xml.o `test -f 'gen-session-dbus.xml.c' || echo '$(srcdir)/'`gen-session-dbus.xml.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Tpo $(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gen-session-dbus.xml.c' object='indicator_session_service-gen-session-dbus.xml.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-gen-session-dbus.xml.o `test -f 'gen-session-dbus.xml.c' || echo '$(srcdir)/'`gen-session-dbus.xml.c
+
+indicator_session_service-gen-session-dbus.xml.obj: gen-session-dbus.xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-gen-session-dbus.xml.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Tpo -c -o indicator_session_service-gen-session-dbus.xml.obj `if test -f 'gen-session-dbus.xml.c'; then $(CYGPATH_W) 'gen-session-dbus.xml.c'; else $(CYGPATH_W) '$(srcdir)/gen-session-dbus.xml.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Tpo $(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gen-session-dbus.xml.c' object='indicator_session_service-gen-session-dbus.xml.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-gen-session-dbus.xml.obj `if test -f 'gen-session-dbus.xml.c'; then $(CYGPATH_W) 'gen-session-dbus.xml.c'; else $(CYGPATH_W) '$(srcdir)/gen-session-dbus.xml.c'; fi`
 
 indicator_session_service-gconf-helper.o: gconf-helper.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-gconf-helper.o -MD -MP -MF $(DEPDIR)/indicator_session_service-gconf-helper.Tpo -c -o indicator_session_service-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
@@ -943,20 +964,6 @@ upower-client.h: $(srcdir)/upower.xml
 		--output=upower-client.h \
 		$(srcdir)/upower.xml
 
-session-dbus-client.h: $(srcdir)/session-dbus.xml
-	dbus-binding-tool \
-		--prefix=_session_dbus_client \
-		--mode=glib-client \
-		--output=session-dbus-client.h \
-		$(srcdir)/session-dbus.xml
-
-session-dbus-server.h: $(srcdir)/session-dbus.xml
-	dbus-binding-tool \
-		--prefix=_session_dbus_server \
-		--mode=glib-server \
-		--output=session-dbus-server.h \
-		$(srcdir)/session-dbus.xml
-
 users-service-marshal.h: $(srcdir)/users-service.list
 	glib-genmarshal --header \
 		--prefix=_users_service_marshal $(srcdir)/users-service.list \
@@ -966,6 +973,16 @@ users-service-marshal.c: $(srcdir)/users-service.list
 	glib-genmarshal --body \
 		--prefix=_users_service_marshal $(srcdir)/users-service.list \
 		> users-service-marshal.c
+
+gen-%.xml.c: %.xml
+	@echo "Building $@ from $<"
+	@echo "const char * _$(subst -,_,$(subst .,_,$(basename $<))) = " > $@
+	@sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
+	@echo ";" >> $@
+
+gen-%.xml.h: %.xml
+	@echo "Building $@ from $<"
+	@echo "extern const char * _$(subst -,_,$(subst .,_,$(basename $<)));" > $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

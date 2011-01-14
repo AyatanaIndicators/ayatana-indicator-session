@@ -4,7 +4,7 @@ AC_INIT(src/indicator-session.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 0.2.10)
+AM_INIT_AUTOMAKE(indicator-session, 0.2.11)
 
 AM_MAINTAINER_MODE
 
@@ -27,19 +27,20 @@ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 GTK_REQUIRED_VERSION=2.12
 INDICATOR_REQUIRED_VERSION=0.3.5
-DBUSMENUGTK_REQUIRED_VERSION=0.2.2
+DBUSMENUGTK_REQUIRED_VERSION=0.3.91
 POLKIT_REQUIRED_VERSION=0.92
 
 PKG_CHECK_MODULES(APPLET, gtk+-2.0 >= $GTK_REQUIRED_VERSION
                           indicator >= $INDICATOR_REQUIRED_VERSION
-						  dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION)
+                          dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
 AC_SUBST(APPLET_CFLAGS)
 AC_SUBST(APPLET_LIBS)
 
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
 
-PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib >= $DBUSMENUGLIB_REQUIRED_VERSION
-						          dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION
+PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                  dbus-glib-1
                                   gio-unix-2.0
                                   indicator >= $INDICATOR_REQUIRED_VERSION)
 

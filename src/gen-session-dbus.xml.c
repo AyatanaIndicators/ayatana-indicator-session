@@ -1,0 +1,17 @@
+const char * _session_dbus = 
+"<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n"
+"<node name=\"/com/canonical/indicator/session/service\">\n"
+"  <interface name=\"com.canonical.indicator.session.service\">\n"
+"\n"
+"    <!-- Icon -->\n"
+"    <method name=\"GetIcon\">\n"
+"      <arg name=\"name\" direction=\"out\" type=\"s\"/>\n"
+"    </method>\n"
+"\n"
+"    <signal name=\"IconUpdated\">\n"
+"      <arg name=\"name\" type=\"s\"/>\n"
+"    </signal>\n"
+"\n"
+"  </interface>\n"
+"</node>\n"
+;

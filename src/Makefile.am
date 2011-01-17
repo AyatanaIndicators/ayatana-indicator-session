@@ -15,7 +15,10 @@ libsession_la_SOURCES = \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
 	users-service-client.h
-libsession_la_CFLAGS = $(APPLET_CFLAGS) -Wall -Werror
+libsession_la_CFLAGS = \
+	$(APPLET_CFLAGS) \
+	-Wall -Werror \
+	-DG_LOG_DOMAIN=\"Indicator-Session\"
 libsession_la_LIBADD = $(APPLET_LIBS)
 libsession_la_LDFLAGS = -module -avoid-version
 
@@ -90,8 +93,15 @@ indicator_session_service_SOURCES = \
 	users-service-dbus.h \
 	users-service-dbus.c \
 	users-service-marshal.c
-indicator_session_service_CFLAGS = $(SESSIONSERVICE_CFLAGS) $(GCONF_CFLAGS) -DLIBEXECDIR=\"$(libexecdir)\" -Wall -Werror
-indicator_session_service_LDADD = $(SESSIONSERVICE_LIBS) $(GCONF_LIBS)
+indicator_session_service_CFLAGS = \
+	$(SESSIONSERVICE_CFLAGS) \
+	$(GCONF_CFLAGS) \
+	-DLIBEXECDIR=\"$(libexecdir)\" \
+	-Wall -Werror \
+	-DG_LOG_DOMAIN=\"Indicator-Session\"
+indicator_session_service_LDADD = \
+	$(SESSIONSERVICE_LIBS) \
+	$(GCONF_LIBS)
 
 #################
 # GTK Logout Stuff

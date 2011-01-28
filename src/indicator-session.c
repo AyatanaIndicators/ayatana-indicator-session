@@ -72,11 +72,11 @@ INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
 static GtkLabel * get_label (IndicatorObject * io);
 static GtkImage * get_icon (IndicatorObject * io);
 static GtkMenu * get_menu (IndicatorObject * io);
-static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
-static gboolean new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+static gboolean new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 static void icon_changed (IndicatorSession * session, const gchar * icon_name);
 static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
-static gboolean build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client);
+static gboolean build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 static void receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name, GVariant * parameters, gpointer user_data);
 static void service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data);
 
@@ -298,7 +298,7 @@ user_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant 
 
 /* Builds an item with a hip little logged in icon. */
 static gboolean
-new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
 	gint padding = 0;
@@ -476,7 +476,7 @@ restart_property_change (DbusmenuMenuitem * item, const gchar * property, GVaria
 /* Builds the restart item which is a more traditional GTK image
    menu item that puts the graphic into the gutter. */
 static gboolean
-build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_image_menu_item_new());
 	if (gmi == NULL) {
@@ -519,7 +519,7 @@ switch_style_set (GtkWidget * widget, GtkStyle * prev_style, gpointer user_data)
    to not need ellipsing itself, or if, it will get ellipsed by
    the standard label processor. */
 static gboolean
-build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client)
+build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
 	if (gmi == NULL) {

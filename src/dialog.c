@@ -226,5 +226,20 @@ logout_dialog_new (LogoutDialogType type)
 
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
+        /* The following  is a workaround to fix an issue in GtkMessageDialog 
+           in which the user can tab through the text in addition to 
+           the buttons. */
+        GtkWidget *message_area = gtk_message_dialog_get_message_area(GTK_MESSAGE_DIALOG(dialog));
+        GList *children = gtk_container_get_children(GTK_CONTAINER(message_area));
+        GList *l;
+
+        for (l = children; l != NULL; l = g_list_next (l))
+        {
+                GtkWidget *child = l->data;
+                gtk_widget_set_can_focus(child, FALSE);
+        }
+
+        g_list_free (children);
+
 	return dialog;
 }

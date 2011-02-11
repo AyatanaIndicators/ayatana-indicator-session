@@ -1,3 +1,10 @@
+indicator-session (0.2.13-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Making text in logout dialog unselectable
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 11 Feb 2011 11:12:19 -0600
+
 indicator-session (0.2.12-0ubuntu1) natty; urgency=low
 
   * New upstream release.

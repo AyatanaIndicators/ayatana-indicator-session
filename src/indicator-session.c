@@ -258,7 +258,7 @@ get_label (IndicatorObject * io)
 static const gchar *
 get_accessible_desc (IndicatorObject * io)
 {
-	return "Session";
+	return _("Session");
 }
 
 static void

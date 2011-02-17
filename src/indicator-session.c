@@ -72,6 +72,7 @@ INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
 static GtkLabel * get_label (IndicatorObject * io);
 static GtkImage * get_icon (IndicatorObject * io);
 static GtkMenu * get_menu (IndicatorObject * io);
+static const gchar * get_accessible_desc (IndicatorObject * io);
 static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 static gboolean new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 static void icon_changed (IndicatorSession * session, const gchar * icon_name);
@@ -99,6 +100,7 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 	io_class->get_label = get_label;
 	io_class->get_image = get_icon;
 	io_class->get_menu = get_menu;
+	io_class->get_accessible_desc = get_accessible_desc;
 
 	return;
 }
@@ -251,6 +253,12 @@ static GtkLabel *
 get_label (IndicatorObject * io)
 {
 	return NULL;
+}
+
+static const gchar *
+get_accessible_desc (IndicatorObject * io)
+{
+	return _("Session");
 }
 
 static void

@@ -1,7 +1,7 @@
-indicator-session (0.2.13-0ubuntu1~ppa1) natty; urgency=low
+indicator-session (0.2.13-0ubuntu1) natty; urgency=low
 
   * New upstream release.
-    * Making text in logout dialog unselectable
+    * Making text in logout dialog unselectable (LP: #597317)
 
  -- Ted Gould <ted@ubuntu.com>  Fri, 11 Feb 2011 11:14:08 -0600
 

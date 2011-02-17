@@ -2,8 +2,9 @@ indicator-session (0.2.14-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
   * New upstream release.
     * Adding in accessible description
+  * debian/control: Bumping libindicator dep to 0.3.19
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Feb 2011 13:29:14 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Feb 2011 13:30:12 -0600
 
 indicator-session (0.2.13-0ubuntu1) natty; urgency=low
 

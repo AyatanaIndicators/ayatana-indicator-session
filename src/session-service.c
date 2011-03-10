@@ -746,6 +746,7 @@ rebuild_items (DbusmenuMenuitem *root,
 
 			launchers = g_list_prepend(launchers, appinfo);
 		}
+		g_dir_close(extra_launchers_dir);
 
 		GList * launcher = NULL;
 		for (launcher = launchers; launcher != NULL; launcher = g_list_next(launcher)) {

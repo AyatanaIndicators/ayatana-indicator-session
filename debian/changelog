@@ -1,4 +1,4 @@
-indicator-session (0.2.14-0ubuntu1~ppa1) natty; urgency=low
+indicator-session (0.2.14-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     * Adding in accessible description

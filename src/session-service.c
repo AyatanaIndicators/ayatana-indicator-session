@@ -731,6 +731,8 @@ rebuild_items (DbusmenuMenuitem *root,
 	/* now add extra launchers */
 	extra_launchers_dir = g_dir_open (EXTRA_LAUNCHER_DIR, 0, NULL);
 	if (extra_launchers_dir != NULL) {
+		GList * launchers = NULL;
+
 		for (;;) {
 			extra_launcher_file = g_dir_read_name (extra_launchers_dir);
 			if (extra_launcher_file == NULL)
@@ -742,12 +744,21 @@ rebuild_items (DbusmenuMenuitem *root,
 			GAppInfo * appinfo = G_APP_INFO(g_desktop_app_info_new_from_filename (full_path));
 			g_free (full_path);
 
+			launchers = g_list_prepend(launchers, appinfo);
+		}
+
+		GList * launcher = NULL;
+		for (launcher = launchers; launcher != NULL; launcher = g_list_next(launcher)) {
+			GAppInfo * appinfo = G_APP_INFO(launcher->data);
+
 			add_extra_separator_once (root);
 			DbusmenuMenuitem * desktop_mi = dbusmenu_menuitem_new();
 			dbusmenu_menuitem_property_set(desktop_mi, DBUSMENU_MENUITEM_PROP_LABEL, g_app_info_get_name(appinfo));
 			g_signal_connect(G_OBJECT(desktop_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(desktop_activate_cb), appinfo);
 			dbusmenu_menuitem_child_append(root, desktop_mi);
 		}
+
+		g_list_free(launchers);
 	}
 
 	return;

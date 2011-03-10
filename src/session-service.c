@@ -754,6 +754,7 @@ rebuild_items (DbusmenuMenuitem *root,
 	if (extra_launchers_dir != NULL) {
 		GList * launchers = NULL;
 
+		/* Find all the desktop files we want to use */
 		for (;;) {
 			const gchar *extra_launcher_file;
 
@@ -771,16 +772,24 @@ rebuild_items (DbusmenuMenuitem *root,
 		}
 		g_dir_close(extra_launchers_dir);
 
+		/* Sort the desktop files based on their names */
 		launchers = g_list_sort(launchers, sort_app_infos);
 
+		/* Turn each one into a separate menu item */
 		GList * launcher = NULL;
 		for (launcher = launchers; launcher != NULL; launcher = g_list_next(launcher)) {
 			GAppInfo * appinfo = G_APP_INFO(launcher->data);
 
+			/* Make sure we have a separator */
 			add_extra_separator_once (root);
+
+			/* Build the item */
 			DbusmenuMenuitem * desktop_mi = dbusmenu_menuitem_new();
 			dbusmenu_menuitem_property_set(desktop_mi, DBUSMENU_MENUITEM_PROP_LABEL, g_app_info_get_name(appinfo));
 			g_signal_connect(G_OBJECT(desktop_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(desktop_activate_cb), appinfo);
+			g_object_weak_ref(G_OBJECT(desktop_mi), (GWeakNotify)g_object_unref, appinfo);
+
+			/* Put into the menu */
 			dbusmenu_menuitem_child_append(root, desktop_mi);
 		}
 

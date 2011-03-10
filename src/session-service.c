@@ -539,19 +539,6 @@ sort_app_infos (gconstpointer a, gconstpointer b)
 	return g_strcmp0(namea, nameb);
 }
 
-static void
-add_extra_separator_once (DbusmenuMenuitem *menu)
-{
-  static gboolean added = FALSE;
-
-  if (!added) {
-	DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-	dbusmenu_menuitem_child_append(menu, separator);
-	added = TRUE;
-  }
-}
-
 /* Builds up the menu for us */
 static void
 rebuild_items (DbusmenuMenuitem *root,
@@ -777,11 +764,18 @@ rebuild_items (DbusmenuMenuitem *root,
 
 		/* Turn each one into a separate menu item */
 		GList * launcher = NULL;
+		gboolean sepadded = FALSE;
 		for (launcher = launchers; launcher != NULL; launcher = g_list_next(launcher)) {
 			GAppInfo * appinfo = G_APP_INFO(launcher->data);
 
 			/* Make sure we have a separator */
-			add_extra_separator_once (root);
+			if (!sepadded) {
+				DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
+				dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+				dbusmenu_menuitem_child_append(root, separator);
+				g_object_unref(separator);
+				sepadded = TRUE;
+			}
 
 			/* Build the item */
 			DbusmenuMenuitem * desktop_mi = dbusmenu_menuitem_new();

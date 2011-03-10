@@ -424,7 +424,7 @@ activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_da
 		g_warning("Unable to activate guest session, falling back to command line activation.");
 	}
 
-	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER, &error)) {
+	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER " --no-lock", &error)) {
 		g_warning("Unable to start guest session: %s", error->message);
 		g_error_free(error);
 	}

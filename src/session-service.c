@@ -54,7 +54,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UP_OBJECT     "/org/freedesktop/UPower"
 #define UP_INTERFACE  "org.freedesktop.UPower"
 
-#define DESKTOP_FILE  "/usr/share/applications/indicator-session-extra.desktop"
 #define EXTRA_LAUNCHER_DIR "/usr/share/indicators/session/applications"
 
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
@@ -730,19 +729,6 @@ rebuild_items (DbusmenuMenuitem *root,
 	update_menu_entries(restart_shutdown_logout_mi);
 
 	/* now add extra launchers */
-
-	if (g_file_test(DESKTOP_FILE, G_FILE_TEST_EXISTS)) {
-		GAppInfo * appinfo = G_APP_INFO(g_desktop_app_info_new_from_filename(DESKTOP_FILE));
-
-		if (appinfo != NULL) {
-			add_extra_separator_once (root);
-			DbusmenuMenuitem * desktop_mi = dbusmenu_menuitem_new();
-			dbusmenu_menuitem_property_set(desktop_mi, DBUSMENU_MENUITEM_PROP_LABEL, g_app_info_get_name(appinfo));
-			g_signal_connect(G_OBJECT(desktop_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(desktop_activate_cb), appinfo);
-			dbusmenu_menuitem_child_append(root, desktop_mi);
-		}
-	}
-
 	extra_launchers_dir = g_dir_open (EXTRA_LAUNCHER_DIR, 0, NULL);
 	if (extra_launchers_dir != NULL) {
 		for (;;) {

@@ -54,7 +54,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UP_OBJECT     "/org/freedesktop/UPower"
 #define UP_INTERFACE  "org.freedesktop.UPower"
 
-#define DESKTOP_FILE  "/usr/share/applications/indicator-session-extra.desktop"
+#define EXTRA_LAUNCHER_DIR "/usr/share/indicators/session/applications"
 
 #define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
 
@@ -424,7 +424,7 @@ activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_da
 		g_warning("Unable to activate guest session, falling back to command line activation.");
 	}
 
-	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER, &error)) {
+	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER " --no-lock", &error)) {
 		g_warning("Unable to start guest session: %s", error->message);
 		g_error_free(error);
 	}
@@ -515,6 +515,28 @@ desktop_activate_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 	g_return_if_fail(appinfo != NULL);
 	g_app_info_launch(appinfo, NULL, NULL, NULL);
 	return;
+}
+
+/* Look at the GAppInfo structures and sort based on
+   the application names */
+static gint
+sort_app_infos (gconstpointer a, gconstpointer b)
+{
+	GAppInfo * appa = G_APP_INFO(a);
+	GAppInfo * appb = G_APP_INFO(b);
+
+	const gchar * namea = NULL;
+	const gchar * nameb = NULL;
+
+	if (appa != NULL) {
+		namea = g_app_info_get_name(appa);
+	}
+
+	if (appb != NULL) {
+		nameb = g_app_info_get_name(appb);
+	}
+
+	return g_strcmp0(namea, nameb);
 }
 
 /* Builds up the menu for us */
@@ -713,19 +735,59 @@ rebuild_items (DbusmenuMenuitem *root,
 
 	update_menu_entries(restart_shutdown_logout_mi);
 
-	if (g_file_test(DESKTOP_FILE, G_FILE_TEST_EXISTS)) {
-		GAppInfo * appinfo = G_APP_INFO(g_desktop_app_info_new_from_filename(DESKTOP_FILE));
+	/* now add extra launchers */
+	GDir *extra_launchers_dir;
+	extra_launchers_dir = g_dir_open (EXTRA_LAUNCHER_DIR, 0, NULL);
+	if (extra_launchers_dir != NULL) {
+		GList * launchers = NULL;
 
-		if (appinfo != NULL) {
-			DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
-			dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-			dbusmenu_menuitem_child_append(root, separator);
+		/* Find all the desktop files we want to use */
+		for (;;) {
+			const gchar *extra_launcher_file;
 
+			extra_launcher_file = g_dir_read_name (extra_launchers_dir);
+			if (extra_launcher_file == NULL)
+				break;
+			if (!g_str_has_suffix (extra_launcher_file, ".desktop"))
+				continue;
+
+			gchar *full_path = g_build_filename (EXTRA_LAUNCHER_DIR, extra_launcher_file, NULL);
+			GAppInfo * appinfo = G_APP_INFO(g_desktop_app_info_new_from_filename (full_path));
+			g_free (full_path);
+
+			launchers = g_list_prepend(launchers, appinfo);
+		}
+		g_dir_close(extra_launchers_dir);
+
+		/* Sort the desktop files based on their names */
+		launchers = g_list_sort(launchers, sort_app_infos);
+
+		/* Turn each one into a separate menu item */
+		GList * launcher = NULL;
+		gboolean sepadded = FALSE;
+		for (launcher = launchers; launcher != NULL; launcher = g_list_next(launcher)) {
+			GAppInfo * appinfo = G_APP_INFO(launcher->data);
+
+			/* Make sure we have a separator */
+			if (!sepadded) {
+				DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
+				dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+				dbusmenu_menuitem_child_append(root, separator);
+				g_object_unref(separator);
+				sepadded = TRUE;
+			}
+
+			/* Build the item */
 			DbusmenuMenuitem * desktop_mi = dbusmenu_menuitem_new();
 			dbusmenu_menuitem_property_set(desktop_mi, DBUSMENU_MENUITEM_PROP_LABEL, g_app_info_get_name(appinfo));
 			g_signal_connect(G_OBJECT(desktop_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(desktop_activate_cb), appinfo);
+			g_object_weak_ref(G_OBJECT(desktop_mi), (GWeakNotify)g_object_unref, appinfo);
+
+			/* Put into the menu */
 			dbusmenu_menuitem_child_append(root, desktop_mi);
 		}
+
+		g_list_free(launchers);
 	}
 
 	return;

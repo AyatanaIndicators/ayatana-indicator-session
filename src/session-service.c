@@ -542,8 +542,6 @@ rebuild_items (DbusmenuMenuitem *root,
   gboolean can_activate;
   gboolean can_lockscreen;
   GList *children;
-  GDir *extra_launchers_dir;
-  const gchar *extra_launcher_file;
 
   /* Make sure we have a valid GConf client, and build one
      if needed */
@@ -729,11 +727,14 @@ rebuild_items (DbusmenuMenuitem *root,
 	update_menu_entries(restart_shutdown_logout_mi);
 
 	/* now add extra launchers */
+	GDir *extra_launchers_dir;
 	extra_launchers_dir = g_dir_open (EXTRA_LAUNCHER_DIR, 0, NULL);
 	if (extra_launchers_dir != NULL) {
 		GList * launchers = NULL;
 
 		for (;;) {
+			const gchar *extra_launcher_file;
+
 			extra_launcher_file = g_dir_read_name (extra_launchers_dir);
 			if (extra_launcher_file == NULL)
 				break;

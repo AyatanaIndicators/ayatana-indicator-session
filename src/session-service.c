@@ -517,6 +517,28 @@ desktop_activate_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 	return;
 }
 
+/* Look at the GAppInfo structures and sort based on
+   the application names */
+static gint
+sort_app_infos (gconstpointer a, gconstpointer b)
+{
+	GAppInfo * appa = G_APP_INFO(a);
+	GAppInfo * appb = G_APP_INFO(b);
+
+	const gchar * namea = NULL;
+	const gchar * nameb = NULL;
+
+	if (appa != NULL) {
+		namea = g_app_info_get_name(appa);
+	}
+
+	if (appb != NULL) {
+		nameb = g_app_info_get_name(appb);
+	}
+
+	return g_strcmp0(namea, nameb);
+}
+
 static void
 add_extra_separator_once (DbusmenuMenuitem *menu)
 {
@@ -748,6 +770,8 @@ rebuild_items (DbusmenuMenuitem *root,
 			launchers = g_list_prepend(launchers, appinfo);
 		}
 		g_dir_close(extra_launchers_dir);
+
+		launchers = g_list_sort(launchers, sort_app_infos);
 
 		GList * launcher = NULL;
 		for (launcher = launchers; launcher != NULL; launcher = g_list_next(launcher)) {

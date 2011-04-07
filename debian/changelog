@@ -1,9 +1,9 @@
-indicator-session (0.2.15-0ubuntu2~ppa1) natty; urgency=low
+indicator-session (0.2.16-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * New upstream release.
     * Don't error and crash Unity (LP: #745323)
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 05 Apr 2011 16:41:27 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Apr 2011 12:44:36 -0500
 
 indicator-session (0.2.15-0ubuntu1) natty; urgency=low
 

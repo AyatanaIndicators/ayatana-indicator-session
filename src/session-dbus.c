@@ -247,7 +247,7 @@ session_dbus_set_name (SessionDbus * session, const gchar * name)
 			                       &error);
 
 		if (error != NULL) {
-			g_error("Unable to send IconUpdated signal: %s", error->message);
+			g_warning("Unable to send IconUpdated signal: %s", error->message);
 			g_error_free(error);
 			return;
 		}

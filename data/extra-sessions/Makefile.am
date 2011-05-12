@@ -16,7 +16,8 @@ extra_guests_DATA = \
 	$(extra_guests_sh_files)
 
 EXTRA_DIST = \
-	$(extra_guests_desktop_in_files)
+	$(extra_guests_desktop_in_files) \
+	$(extra_guests_sh_files)
 
 CLEANFILES = \
 	$(extra_guests_desktop_files)

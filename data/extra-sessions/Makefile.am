@@ -1,14 +1,24 @@
 
-extra_guests_desktop_in_files = \
-	classic-desktop.desktop.in
+###################################
+# The files that are actually here
+###################################
+
+extra_guests_desktop_in_in_files = \
+	classic-desktop.desktop.in.in
 extra_guests_sh_files = \
 	classic-desktop.sh
 
+###################################
+# Rules to make things work
+###################################
+
 extra_guestsdir = $(datadir)/indicators/session/applications/
 extra_guests_desktop_files = \
-	$(extra_guests_desktop_in_files:.desktop.in=.desktop)
+	$(extra_guests_desktop_in_in_files:.desktop.in.in=.desktop)
 
-%.desktop: %.desktop.in
+@INTLTOOL_DESKTOP_RULE@
+
+%.desktop.in: %.desktop.in.in
 	sed -e "s|\@guestdir\@|$(extra_guestsdir)|" $< > $@
 
 extra_guests_DATA = \

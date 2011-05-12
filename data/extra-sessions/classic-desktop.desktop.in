@@ -1,4 +1,0 @@
-[Desktop Entry]
-Name=Classic Guest Session
-Exec=@guestdir@/test.sh
-Type=Application

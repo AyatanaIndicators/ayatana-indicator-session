@@ -69,13 +69,13 @@ users-service-marshal.c: $(srcdir)/users-service.list
 
 gen-%.xml.c: %.xml
 	@echo "Building $@ from $<"
-	@echo "const char * _$(subst -,_,$(subst .,_,$(basename $<))) = " > $@
+	@echo "const char * _$(subst -,_,$(subst .,_,$(basename $(notdir $<)))) = " > $@
 	@sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
 	@echo ";" >> $@
 
 gen-%.xml.h: %.xml
 	@echo "Building $@ from $<"
-	@echo "extern const char * _$(subst -,_,$(subst .,_,$(basename $<)));" > $@
+	@echo "extern const char * _$(subst -,_,$(subst .,_,$(basename $(notdir $<))));" > $@
 
 #################
 # Session Stuff

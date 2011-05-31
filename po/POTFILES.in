@@ -1,5 +1,6 @@
 [encoding: UTF-8]
 data/indicator-session.schemas.in
+data/extra-sessions/classic-desktop.desktop.in.in
 src/gconf-helper.c
 src/lock-helper.c
 src/gtk-logout-helper.c

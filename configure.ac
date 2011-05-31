@@ -147,6 +147,7 @@ data/icons/32x32/status/Makefile
 data/icons/scalable/Makefile
 data/icons/scalable/actions/Makefile
 data/icons/scalable/status/Makefile
+data/extra-sessions/Makefile
 po/Makefile.in
 ])
 

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Version=1.0
+_Name=Classic Guest Session
+_Comment=Start a guest session using the classic desktop
+Exec=@guestdir@/test.sh
+Type=Application

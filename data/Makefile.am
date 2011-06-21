@@ -1,4 +1,6 @@
-SUBDIRS = icons
+SUBDIRS = \
+	icons \
+	extra-sessions
 
 dbus_servicesdir = $(DBUSSERVICEDIR)
 service_in_files =  indicator-session.service.in

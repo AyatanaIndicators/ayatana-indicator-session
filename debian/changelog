@@ -1,9 +1,21 @@
-indicator-session (0.2.90-0ubuntu1~ppa1) oneiric; urgency=low
+indicator-session (0.2.90-0ubuntu1) oneiric; urgency=low
 
+  [ Ted Gould ]
   * New upstream release.
     * GTK3 support
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 21 Jun 2011 10:42:30 -0500
+  [ Ken VanDine ]
+  * debian/control
+    - Bumped standards version to 3.9.2
+    - Add new binary for indicator-session-gtk2 
+    - Make indicator-session recommend indicator-session-gtk2 (until unity 
+      can load gtk3 indicators)
+    - indicator-session-gtk2 replaces indicator-session << 0.2.90
+    - Added build depends for libdbusmenu-gtk3-dev and libindicator3-dev
+  * debian/rules
+    - build for both gtk2 and gtk3
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 22 Jun 2011 12:18:18 -0400
 
 indicator-session (0.2.17-0ubuntu1) natty; urgency=low
 

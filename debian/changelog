@@ -1,3 +1,10 @@
+indicator-session (0.2.90-0ubuntu2) oneiric; urgency=low
+
+  * debian/control
+    - Properly recommend indicator-session-gtk2
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 23 Jun 2011 10:05:25 -0400
+
 indicator-session (0.2.90-0ubuntu1) oneiric; urgency=low
 
   [ Ted Gould ]

@@ -14,7 +14,7 @@ libsession_la_SOURCES = \
 	gen-session-dbus.xml.h \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
-	users-service-client.h
+	users-service-client.h 
 libsession_la_CFLAGS = \
 	$(APPLET_CFLAGS) \
 	-Wall -Werror \
@@ -140,7 +140,7 @@ BUILT_SOURCES = \
 	upower-client.h \
 	users-service-client.h \
 	users-service-marshal.h \
-	users-service-marshal.c
+	users-service-marshal.c 
 
 EXTRA_DIST = \
 	consolekit-manager.xml \

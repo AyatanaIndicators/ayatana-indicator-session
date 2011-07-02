@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//TODO - remember to reinsert Ted's comments.
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -77,7 +78,6 @@ INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
 //static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 //static gboolean new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 //static gboolean build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
-static void icon_changed (IndicatorSession * session, const gchar * icon_name);
 static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
 static void receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name, GVariant * parameters, gpointer user_data);
 static void service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data);
@@ -118,16 +118,15 @@ indicator_session_init (IndicatorSession *self)
                    INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE,
                    G_CALLBACK(service_connection_cb), self);
 
-  self->users.menu =  dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
-                                           INDICATOR_SESSION_DBUS_OBJECT);
-  self->users.label = "Users";
+  self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
+                                                     INDICATOR_SESSION_DBUS_OBJECT));
+  self->users.label = GTK_LABEL (gtk_label_new ("Users"));  
+  self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
+                                                      INDICATOR_SESSION_DBUS_OBJECT));
+  self->devices.label = GTK_LABEL (gtk_label_new ("Devices"));
   
-  self->devices.menu = dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
-                                            INDICATOR_SESSION_DBUS_OBJECT);
-  self->devices.label = "Devices";
-  
-  g_object_ref (self->devices);
-  g_object_ref (self->users);
+  g_object_ref (self->users.menu);
+  g_object_ref (self->devices.menu);
   
 	/*DbusmenuClient * client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(self->menu));
 	dbusmenu_client_add_type_handler(client, MENU_SWITCH_TYPE, build_menu_switch);
@@ -135,8 +134,8 @@ indicator_session_init (IndicatorSession *self)
 	dbusmenu_client_add_type_handler(client, RESTART_ITEM_TYPE, build_restart_item);
   */
   
-	GtkAccelGroup * agroup = gtk_accel_group_new();
-	dbusmenu_gtkclient_set_accel_group(DBUSMENU_GTKCLIENT(client), agroup);
+	//GtkAccelGroup * agroup = gtk_accel_group_new();
+	//dbusmenu_gtkclient_set_accel_group(DBUSMENU_GTKCLIENT(client), agroup);
 
 	self->service_proxy_cancel = g_cancellable_new();
 
@@ -161,8 +160,8 @@ indicator_session_get_entries (IndicatorObject* obj)
   
 	GList * retval = NULL;
 
-  retval = g_list_prepend &(self.users);
-  retval = g_list_prepend &(self.devices);
+  retval = g_list_prepend (retval, &self->users);
+  retval = g_list_prepend (retval, &self->devices);
 
 	if (retval != NULL) {
 		retval = g_list_reverse(retval);
@@ -263,23 +262,16 @@ icon_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 static void
 service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data)
 {
-	IndicatorSession * self = INDICATOR_SESSION(user_data);
+	//IndicatorSession * self = INDICATOR_SESSION(user_data);
 
 	if (connected) {
-		g_dbus_proxy_call(self->service_proxy, "GetIcon", NULL,
+		/*g_dbus_proxy_call(self->service_proxy, "GetIcon", NULL,
 		                  G_DBUS_CALL_FLAGS_NONE, -1, NULL,
-		                  icon_name_get_cb, user_data);
+		                  icon_name_get_cb, user_data);*/
 	} else {
 		//indicator_image_helper_update(self->status_image, ICON_DEFAULT);
 	}
 
-	return;
-}
-
-static void
-icon_changed (IndicatorSession * session, const gchar * icon_name)
-{
-	indicator_image_helper_update(session->status_image, icon_name);
 	return;
 }
 
@@ -288,19 +280,12 @@ static void
 receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name,
                 GVariant * parameters, gpointer user_data)
 {
-	IndicatorSession * self = INDICATOR_SESSION(user_data);
+	//IndicatorSession * self = INDICATOR_SESSION(user_data);
 
 	return;
 }
 
-static GtkImage *
-get_icon (IndicatorObject * io)
-{
-	gtk_widget_show(GTK_WIDGET(INDICATOR_SESSION(io)->status_image));
-	return INDICATOR_SESSION(io)->status_image;
-}
-
-static void
+/*static void
 user_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer user_data)
 {
 	if (g_strcmp0(property, USER_ITEM_PROP_LOGGED_IN) == 0) {
@@ -313,7 +298,6 @@ user_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant 
 	return;
 }
 
-/* Builds an item with a hip little logged in icon. */
 static gboolean
 new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
@@ -376,12 +360,12 @@ new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuCl
 	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(user_property_change), icon);
 
 	return TRUE;
-}
+}*/
 
 /* Indicator based function to get the menu for the whole
    applet.  This starts up asking for the parts of the menu
    from the various services. */
-static GtkMenu *
+/*static GtkMenu *
 get_menu (IndicatorObject * io)
 {
 	return GTK_MENU(INDICATOR_SESSION(io)->menu);
@@ -399,17 +383,11 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, GVarian
 	gboolean set_ellipsize = FALSE;
 	gboolean no_name_in_lang = FALSE;
 
-	/* TRANSLATORS: Translate the '1' below into anything other than
-	   '1' if "Switch From %s..." doesn't make sense in your language.
-	   Instead, the string "Switch User..." will be used. */
 	const gchar * translate = C_("session_menu:switchfrom", "1");
 	if (g_strcmp0(translate, "1") != 0) {
 		no_name_in_lang = TRUE;
 	}
 
-	/* If there's a NULL string of some type, then we want to
-	   go back to our old 'Switch User' which isn't great but
-	   eh, this error condition should never happen. */
 	if (variant == NULL || g_variant_get_string(variant, NULL) == NULL || g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
 		finalstring = _("Switch User...");
 		set_ellipsize = FALSE;
@@ -438,8 +416,6 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, GVarian
 		gdouble ems = width / pixels_per_em;
 		g_debug("Username width %fem", ems);
 
-		/* TODO: We need some way to remove the elipsis from appearing
-		         twice in the label.  Not sure how to do that yet. */
 		finalstring = g_strdup_printf(_("Switch From %s..."), username);
 		if (ems >= 20.0f) {
 			set_ellipsize = TRUE;
@@ -462,10 +438,8 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, GVarian
 	return;
 }
 
-static const gchar * dbusmenu_item_data = "dbusmenu-item";
+//static const gchar * dbusmenu_item_data = "dbusmenu-item";
 
-/* IF the label or icon changes we need to grab that and update
-   the menu item */
 static void
 restart_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer user_data)
 {
@@ -486,13 +460,9 @@ restart_property_change (DbusmenuMenuitem * item, const gchar * property, GVaria
 		}
 		g_object_unref(G_OBJECT(gicon));
 	}
-
 	return;
 }
 
-/* Builds the restart item which is a more traditional GTK image
-   menu item that puts the graphic into the gutter. */
-   /*
 static gboolean
 build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
@@ -505,8 +475,7 @@ build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 
 	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(restart_property_change), client);
 
-	/* Grab the inital variants and put them into the item */
-	/*GVariant * variant;
+	GVariant * variant;
 	variant = dbusmenu_menuitem_property_get_variant(newitem, RESTART_ITEM_LABEL);
 	if (variant != NULL) {
 		restart_property_change(newitem, RESTART_ITEM_LABEL, variant, client);
@@ -521,9 +490,6 @@ build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 }
 
 
-/* Callback for when the style changes so we can reevaluate the
-   size of the user name with the potentially new font. */
-/*
 static void
 switch_style_set (GtkWidget * widget, GtkStyle * prev_style, gpointer user_data)
 {
@@ -534,10 +500,7 @@ switch_style_set (GtkWidget * widget, GtkStyle * prev_style, gpointer user_data)
 	return;
 }
 
-/* This function checks to see if the user name is short enough
-   to not need ellipsing itself, or if, it will get ellipsed by
-   the standard label processor. */
-/*static gboolean
+static gboolean
 build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
 {
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());

@@ -76,7 +76,15 @@ INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
 
 /* Prototypes */
 //static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
-//static gboolean new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+static gboolean new_user_item (DbusmenuMenuitem * newitem,
+                               DbusmenuMenuitem * parent,
+                               DbusmenuClient * client,
+                               gpointer user_data);
+static void user_property_change (DbusmenuMenuitem * item,
+                                  const gchar * property,
+                                  GVariant * variant,
+                                  gpointer user_data);
+                               
 //static gboolean build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
 static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
 static void receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name, GVariant * parameters, gpointer user_data);
@@ -106,7 +114,6 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 static void
 indicator_session_init (IndicatorSession *self)
 {
-	/* Set good defaults */
 	self->service = NULL;
 	self->service_proxy_cancel = NULL;
 	self->service_proxy = NULL;
@@ -117,22 +124,26 @@ indicator_session_init (IndicatorSession *self)
 	g_signal_connect(G_OBJECT(self->service),
                    INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE,
                    G_CALLBACK(service_connection_cb), self);
-
+  // users
   self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                      INDICATOR_SESSION_DBUS_OBJECT));
-  self->users.label = GTK_LABEL (gtk_label_new ("Users"));  
+  self->users.label = GTK_LABEL (gtk_label_new ("Users"));
+
+  // devices
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
   self->devices.label = GTK_LABEL (gtk_label_new ("Devices"));
   
+  gtk_widget_show (GTK_WIDGET(self->devices.menu));
+  gtk_widget_show (GTK_WIDGET(self->devices.label));
+  gtk_widget_show (GTK_WIDGET(self->users.label));
+  gtk_widget_show (GTK_WIDGET(self->users.menu));
+  
   g_object_ref (self->users.menu);
   g_object_ref (self->devices.menu);
   
-	/*DbusmenuClient * client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(self->menu));
-	dbusmenu_client_add_type_handler(client, MENU_SWITCH_TYPE, build_menu_switch);
+	DbusmenuClient * client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->users.menu)));
 	dbusmenu_client_add_type_handler(client, USER_ITEM_TYPE, new_user_item);
-	dbusmenu_client_add_type_handler(client, RESTART_ITEM_TYPE, build_restart_item);
-  */
   
 	//GtkAccelGroup * agroup = gtk_accel_group_new();
 	//dbusmenu_gtkclient_set_accel_group(DBUSMENU_GTKCLIENT(client), agroup);
@@ -152,24 +163,48 @@ indicator_session_init (IndicatorSession *self)
 	return;
 }
 
-static GList*
-indicator_session_get_entries (IndicatorObject* obj)
+static void
+indicator_session_dispose (GObject *object)
 {
-	g_return_val_if_fail(IS_INDICATOR_SESSION(obj), NULL);
-  IndicatorSession* self = INDICATOR_SESSION (obj);
-  
-	GList * retval = NULL;
+	IndicatorSession * self = INDICATOR_SESSION(object);
 
-  retval = g_list_prepend (retval, &self->users);
-  retval = g_list_prepend (retval, &self->devices);
-
-	if (retval != NULL) {
-		retval = g_list_reverse(retval);
+	if (self->service != NULL) {
+		g_object_unref(G_OBJECT(self->service));
+		self->service = NULL;
 	}
-	return retval;  
+
+	if (self->service_proxy != NULL) {
+		g_object_unref(self->service_proxy);
+		self->service_proxy = NULL;
+	}
+
+	if (self->service_proxy_cancel != NULL) {
+		g_cancellable_cancel(self->service_proxy_cancel);
+		g_object_unref(self->service_proxy_cancel);
+		self->service_proxy_cancel = NULL;
+	}
+  
+  if (self->users.menu != NULL) {
+    g_object_unref (self->users.menu);
+  }
+  
+  if (self->devices.menu != NULL) {
+    g_object_unref (self->devices.menu);
+  }
+
+	G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);
+	return;
 }
 
-/* Callback from trying to create the proxy for the serivce, this
+static void
+indicator_session_finalize (GObject *object)
+{
+
+	G_OBJECT_CLASS (indicator_session_parent_class)->finalize (object);
+	return;
+}
+
+/* Callback from trying to create the proxy for the service, this
    could include starting the service.  Sometime it'll fail and
    we'll try to start that dang service again! */
 static void
@@ -202,38 +237,110 @@ service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	return;
 }
 
-static void
-indicator_session_dispose (GObject *object)
+
+static GList*
+indicator_session_get_entries (IndicatorObject* obj)
 {
-	IndicatorSession * self = INDICATOR_SESSION(object);
+	g_return_val_if_fail(IS_INDICATOR_SESSION(obj), NULL);
+  IndicatorSession* self = INDICATOR_SESSION (obj);
+  
+	GList * retval = NULL;
 
-	if (self->service != NULL) {
-		g_object_unref(G_OBJECT(self->service));
-		self->service = NULL;
+  retval = g_list_prepend (retval, &self->users);
+  retval = g_list_prepend (retval, &self->devices);
+
+	if (retval != NULL) {
+		retval = g_list_reverse(retval);
+	}
+	return retval;  
+}
+
+/* Builds an item with a hip little logged in icon. */
+static gboolean
+new_user_item (DbusmenuMenuitem * newitem,
+               DbusmenuMenuitem * parent,
+               DbusmenuClient * client,
+               gpointer user_data)
+{
+	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
+	gint padding = 0;
+	gtk_widget_style_get(GTK_WIDGET(gmi), "horizontal-padding", &padding, NULL);
+	GtkWidget * hbox = gtk_hbox_new(FALSE, padding);
+
+	GtkWidget * usericon = NULL;
+	const gchar * icon_name = dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_ICON);
+	g_debug("Using user icon for '%s' from file: %s", dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME), icon_name);
+	if (icon_name != NULL && icon_name[0] != '\0') {
+		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) != 0 && g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
+			gint width, height;
+			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
+
+			GError * error = NULL;
+			GdkPixbuf * pixbuf = gdk_pixbuf_new_from_file_at_size(icon_name, width, height, &error);
+
+			if (error == NULL) {
+				usericon = gtk_image_new_from_pixbuf(pixbuf);
+				g_object_unref(pixbuf);
+			} else {
+				g_warning("Unable to load user icon '%s': %s", icon_name, error->message);
+				g_error_free(error);
+			}
+		}
+
+		if (usericon == NULL) {
+			GIcon * gicon = g_themed_icon_new_with_default_fallbacks("stock_person-panel");
+			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
+			g_object_unref(gicon);
+		}
+	}
+	if (usericon != NULL) {
+		gtk_misc_set_alignment(GTK_MISC(usericon), 0.0, 0.5);
+		gtk_box_pack_start(GTK_BOX(hbox), usericon, FALSE, FALSE, 0);
+		gtk_widget_show(usericon);
 	}
 
-	if (self->service_proxy != NULL) {
-		g_object_unref(self->service_proxy);
-		self->service_proxy = NULL;
+	GtkWidget * label = gtk_label_new(dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+	gtk_widget_show(label);
+
+	GtkWidget * icon = gtk_image_new_from_icon_name("account-logged-in", GTK_ICON_SIZE_MENU);
+	gtk_misc_set_alignment(GTK_MISC(icon), 1.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
+	if (dbusmenu_menuitem_property_get_bool(newitem, USER_ITEM_PROP_LOGGED_IN)) {
+		gtk_widget_show(icon);
+	} else {
+		gtk_widget_hide(icon);
 	}
 
-	if (self->service_proxy_cancel != NULL) {
-		g_cancellable_cancel(self->service_proxy_cancel);
-		g_object_unref(self->service_proxy_cancel);
-		self->service_proxy_cancel = NULL;
-	}
+	gtk_container_add(GTK_CONTAINER(gmi), hbox);
+	gtk_widget_show(hbox);
 
-	G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);
-	return;
+	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
+
+	g_signal_connect (G_OBJECT(newitem),
+                    DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
+                    G_CALLBACK(user_property_change), icon);
+
+	return TRUE;
 }
 
 static void
-indicator_session_finalize (GObject *object)
+user_property_change (DbusmenuMenuitem * item,
+                      const gchar * property,
+                      GVariant * variant,
+                      gpointer user_data)
 {
-
-	G_OBJECT_CLASS (indicator_session_parent_class)->finalize (object);
+	if (g_strcmp0(property, USER_ITEM_PROP_LOGGED_IN) == 0) {
+		if (g_variant_get_boolean(variant)) {
+			gtk_widget_show(GTK_WIDGET(user_data));
+		} else {
+			gtk_widget_hide(GTK_WIDGET(user_data));
+		}
+	}
 	return;
 }
+
 
 /*static void
 icon_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)

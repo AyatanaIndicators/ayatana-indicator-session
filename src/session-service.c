@@ -8,6 +8,7 @@ Authors:
     Ted Gould <ted@canonical.com>
     Christoph Korn <c_korn@gmx.de>
     Cody Russell <crussell@canonical.com>
+    Conor Curran <conor.curran@canonical.com>
 
 This program is free software: you can redistribute it and/or modify it 
 under the terms of the GNU General Public License version 3, as published 
@@ -80,7 +81,9 @@ static SessionDbus       *session_dbus = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
-static DbusmenuMenuitem * root_menuitem = NULL;
+static DbusmenuMenuitem * session_root_menuitem = NULL;
+static DbusmenuMenuitem * users_root_menuitem = NULL;
+
 static GMainLoop * mainloop = NULL;
 static DBusGProxy * up_main_proxy = NULL;
 static DBusGProxy * up_prop_proxy = NULL;
@@ -101,7 +104,8 @@ static gboolean allow_suspend = TRUE;
 
 static GConfClient * gconf_client = NULL;
 
-static void rebuild_items (DbusmenuMenuitem *root, UsersServiceDbus *service);
+static void rebuild_session_items (DbusmenuMenuitem *root, UsersServiceDbus *service);
+static void rebuild_user_items (DbusmenuMenuitem *root, UsersServiceDbus *service);
 
 static void
 lockdown_changed (GConfClient *client,
@@ -117,7 +121,7 @@ lockdown_changed (GConfClient *client,
 	}
 
 	if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0 || g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
-		rebuild_items(root_menuitem, dbus_interface);
+		rebuild_session_items(session_root_menuitem, dbus_interface);
 	}
 
 	return;
@@ -228,7 +232,7 @@ suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	gboolean local_can_suspend = g_value_get_boolean(&candoit);
 	if (local_can_suspend != can_suspend) {
 		can_suspend = local_can_suspend;
-		rebuild_items(root_menuitem, dbus_interface);
+		rebuild_session_items(session_root_menuitem, dbus_interface);
 	}
 
 	return;
@@ -253,7 +257,7 @@ hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	gboolean local_can_hibernate = g_value_get_boolean(&candoit);
 	if (local_can_hibernate != can_hibernate) {
 		can_hibernate = local_can_hibernate;
-		rebuild_items(root_menuitem, dbus_interface);
+		rebuild_session_items(session_root_menuitem, dbus_interface);
 	}
 
 	return;
@@ -314,7 +318,7 @@ allowed_cb (DBusGProxy *proxy, gboolean OUT_allowed, GError *error, gpointer use
 
 	if (OUT_allowed != *can_do) {
 		*can_do = OUT_allowed;
-		rebuild_items (root_menuitem, dbus_interface);
+		rebuild_session_items (session_root_menuitem, dbus_interface);
 	}
 }
 
@@ -508,18 +512,18 @@ compare_users_by_username (const gchar *a,
 }
 
 /* Take a desktop file and execute it */
-static void
+/*static void
 desktop_activate_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 {
 	GAppInfo * appinfo = G_APP_INFO(data);
 	g_return_if_fail(appinfo != NULL);
 	g_app_info_launch(appinfo, NULL, NULL, NULL);
 	return;
-}
+}*/
 
 /* Look at the GAppInfo structures and sort based on
    the application names */
-static gint
+/*static gint
 sort_app_infos (gconstpointer a, gconstpointer b)
 {
 	GAppInfo * appa = G_APP_INFO(a);
@@ -537,20 +541,20 @@ sort_app_infos (gconstpointer a, gconstpointer b)
 	}
 
 	return g_strcmp0(namea, nameb);
-}
+}*/
 
 /* Builds up the menu for us */
-static void
-rebuild_items (DbusmenuMenuitem *root,
-               UsersServiceDbus *service)
+
+static void 
+rebuild_user_items (DbusmenuMenuitem *root,
+                    UsersServiceDbus *service)
 {
+  DbusmenuMenuitem *guest_mi = NULL;
   DbusmenuMenuitem *mi = NULL;
-  DbusmenuMenuitem * guest_mi = NULL;
-  GList *u;
-  UserData *user;
-  gboolean can_activate;
-  gboolean can_lockscreen;
+
   GList *children;
+  gboolean can_activate;
+  
 
   /* Make sure we have a valid GConf client, and build one
      if needed */
@@ -559,13 +563,118 @@ rebuild_items (DbusmenuMenuitem *root,
   /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (service) &&
       !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
-  can_lockscreen = !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL);
 
   /* Remove the old menu items if that makes sense */
   children = dbusmenu_menuitem_take_children (root);
+
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
+  GList *u;
+  UserData *user;
+  
+  GList * users = NULL;
+  users = users_service_dbus_get_user_list (service);
+  guint user_count = g_list_length(users);
 
+  if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+    users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+  }
+
+  for (u = users; u != NULL; u = g_list_next (u)) {
+    user = u->data;
+    user->service = service;
+
+    if (user->uid == getuid()) {
+      /* Hide me from the list */
+      continue;
+    }
+
+    if (g_strcmp0(user->user_name, "guest") == 0) {
+      /* Check to see if the guest has sessions and so therefore should
+         get a check mark. */
+      if (user->sessions != NULL) {
+        dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, TRUE);
+      }
+      /* If we're showing user accounts, keep going through the list */
+      if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+        continue;
+      }
+      /* If not, we can stop here */
+      break;
+    }
+
+    if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+      mi = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+      if (user->real_name_conflict) {
+        gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
+        dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
+        g_free(conflictedname);
+      } else {
+        dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
+      }
+      dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
+      if (user->icon_url != NULL && user->icon_url[0] != '\0' && g_str_has_prefix(user->icon_url, "file://")) {
+        dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_url + strlen("file://"));
+      } else {
+        dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
+      }
+      dbusmenu_menuitem_child_append (root, mi);
+      g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+      user->menuitem = mi;
+    }
+  }
+
+  g_list_free(users);
+  
+  /* Set to NULL just incase we don't end up building one */
+  users_service_dbus_set_guest_item(service, NULL);
+
+  /* Build all of the user switching items */
+  if (can_activate == TRUE)
+  {
+    if (check_guest_session ())
+    {
+      guest_mi = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (guest_mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+      dbusmenu_menuitem_property_set (guest_mi, USER_ITEM_PROP_NAME, _("Guest Session"));
+      dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
+      dbusmenu_menuitem_child_append (root, guest_mi);
+      g_signal_connect (G_OBJECT (guest_mi),
+                                  DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                                  G_CALLBACK (activate_guest_session),
+                                  service);
+      users_service_dbus_set_guest_item(service, guest_mi);
+    }
+
+    if (check_new_session ())
+    {
+      switch_menuitem = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (switch_menuitem,
+                                      DBUSMENU_MENUITEM_PROP_TYPE,
+                                      MENU_SWITCH_TYPE);
+      dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
+      dbusmenu_menuitem_child_append (root, switch_menuitem);
+      g_signal_connect (G_OBJECT (switch_menuitem),
+                        DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                        G_CALLBACK (activate_new_session), NULL);
+    }
+  }
+}
+
+static void
+rebuild_session_items (DbusmenuMenuitem *root,
+                       UsersServiceDbus *service)
+{
+  gboolean can_lockscreen;
+
+  /* Make sure we have a valid GConf client, and build one
+     if needed */
+  ensure_gconf_client ();
+
+  can_lockscreen = !gconf_client_get_bool ( gconf_client,
+                                            LOCKDOWN_KEY_SCREENSAVER,
+                                            NULL);
   /* Lock screen item */
   if (can_lockscreen) {
 	lock_menuitem = dbusmenu_menuitem_new();
@@ -580,124 +689,42 @@ rebuild_items (DbusmenuMenuitem *root,
 		g_debug("Unable to get lock screen shortcut.");
 	}
 
-	g_signal_connect(G_OBJECT(lock_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(lock_screen), NULL);
+	g_signal_connect (G_OBJECT(lock_menuitem),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(lock_screen), NULL);
 	dbusmenu_menuitem_child_append(root, lock_menuitem);
   }
-
-  /* Set to NULL just incase we don't end up building one */
-  users_service_dbus_set_guest_item(service, NULL);
-
-  /* Build all of the user switching items */
-  if (can_activate == TRUE)
-    {
-		if (can_lockscreen) {
-			DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
-			dbusmenu_menuitem_property_set(separator1, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-			dbusmenu_menuitem_child_append(root, separator1);
-		}
-
-      if (check_guest_session ())
-        {
-          guest_mi = dbusmenu_menuitem_new ();
-		  dbusmenu_menuitem_property_set (guest_mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-          dbusmenu_menuitem_property_set (guest_mi, USER_ITEM_PROP_NAME, _("Guest Session"));
-          dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
-          dbusmenu_menuitem_child_append (root, guest_mi);
-          g_signal_connect (G_OBJECT (guest_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), service);
-          users_service_dbus_set_guest_item(service, guest_mi);
-        }
-
-      if (check_new_session ())
-        {
-
-          switch_menuitem = dbusmenu_menuitem_new ();
-		  dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_TYPE, MENU_SWITCH_TYPE);
-		  dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
-          dbusmenu_menuitem_child_append (root, switch_menuitem);
-          g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
-        }
-
-		GList * users = NULL;
-		users = users_service_dbus_get_user_list (service);
-		guint user_count = g_list_length(users);
-
-		if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
-			users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
-		}
-
-		for (u = users; u != NULL; u = g_list_next (u)) {
-			user = u->data;
-			user->service = service;
-
-			if (user->uid == getuid()) {
-				/* Hide me from the list */
-				continue;
-			}
-
-			if (g_strcmp0(user->user_name, "guest") == 0) {
-				/* Check to see if the guest has sessions and so therefore should
-				   get a check mark. */
-				if (user->sessions != NULL) {
-					dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, TRUE);
-				}
-				/* If we're showing user accounts, keep going through the list */
-				if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
-					continue;
-				}
-				/* If not, we can stop here */
-				break;
-			}
-
-			if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
-				mi = dbusmenu_menuitem_new ();
-				dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-				if (user->real_name_conflict) {
-					gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
-					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
-					g_free(conflictedname);
-				} else {
-					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
-				}
-				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
-				if (user->icon_url != NULL && user->icon_url[0] != '\0' && g_str_has_prefix(user->icon_url, "file://")) {
-					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_url + strlen("file://"));
-				} else {
-					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
-				}
-				dbusmenu_menuitem_child_append (root, mi);
-				g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
-				user->menuitem = mi;
-			}
-		}
-
-		g_list_free(users);
-	}
-
-	/* If there were a bunch of items before us, we need a
-	   separator. */
-	if (can_lockscreen || can_activate) {
-		DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-		dbusmenu_menuitem_child_append(root, separator);
-	}
 
 	/* Start going through the session based items. */
 
 	logout_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out"));
+		dbusmenu_menuitem_property_set (logout_mi,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Log Out"));
 	} else {
-		dbusmenu_menuitem_property_set(logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out\342\200\246"));
+		dbusmenu_menuitem_property_set (logout_mi,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Log Out\342\200\246"));
 	}
-	dbusmenu_menuitem_property_set_bool(logout_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_logout());
+	dbusmenu_menuitem_property_set_bool (logout_mi,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       show_logout());
 	dbusmenu_menuitem_child_append(root, logout_mi);
-	g_signal_connect(G_OBJECT(logout_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "logout");
+	g_signal_connect( G_OBJECT(logout_mi),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_dialog), "logout");
 
 	if (can_suspend && allow_suspend) {
 		suspend_mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(suspend_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Suspend"));
-		dbusmenu_menuitem_child_append(root, suspend_mi);
-		g_signal_connect(G_OBJECT(suspend_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Suspend");
+		dbusmenu_menuitem_property_set (suspend_mi,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Suspend"));
+		dbusmenu_menuitem_child_append (root, suspend_mi);
+		g_signal_connect( G_OBJECT(suspend_mi),
+                      DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                      G_CALLBACK(machine_sleep),
+                      "Suspend");
 	}
 
 	if (can_hibernate && allow_hibernate) {
@@ -735,61 +762,6 @@ rebuild_items (DbusmenuMenuitem *root,
 
 	update_menu_entries(restart_shutdown_logout_mi);
 
-	/* now add extra launchers */
-	GDir *extra_launchers_dir;
-	extra_launchers_dir = g_dir_open (EXTRA_LAUNCHER_DIR, 0, NULL);
-	if (extra_launchers_dir != NULL) {
-		GList * launchers = NULL;
-
-		/* Find all the desktop files we want to use */
-		for (;;) {
-			const gchar *extra_launcher_file;
-
-			extra_launcher_file = g_dir_read_name (extra_launchers_dir);
-			if (extra_launcher_file == NULL)
-				break;
-			if (!g_str_has_suffix (extra_launcher_file, ".desktop"))
-				continue;
-
-			gchar *full_path = g_build_filename (EXTRA_LAUNCHER_DIR, extra_launcher_file, NULL);
-			GAppInfo * appinfo = G_APP_INFO(g_desktop_app_info_new_from_filename (full_path));
-			g_free (full_path);
-
-			launchers = g_list_prepend(launchers, appinfo);
-		}
-		g_dir_close(extra_launchers_dir);
-
-		/* Sort the desktop files based on their names */
-		launchers = g_list_sort(launchers, sort_app_infos);
-
-		/* Turn each one into a separate menu item */
-		GList * launcher = NULL;
-		gboolean sepadded = FALSE;
-		for (launcher = launchers; launcher != NULL; launcher = g_list_next(launcher)) {
-			GAppInfo * appinfo = G_APP_INFO(launcher->data);
-
-			/* Make sure we have a separator */
-			if (!sepadded) {
-				DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
-				dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-				dbusmenu_menuitem_child_append(root, separator);
-				g_object_unref(separator);
-				sepadded = TRUE;
-			}
-
-			/* Build the item */
-			DbusmenuMenuitem * desktop_mi = dbusmenu_menuitem_new();
-			dbusmenu_menuitem_property_set(desktop_mi, DBUSMENU_MENUITEM_PROP_LABEL, g_app_info_get_name(appinfo));
-			g_signal_connect(G_OBJECT(desktop_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(desktop_activate_cb), appinfo);
-			g_object_weak_ref(G_OBJECT(desktop_mi), (GWeakNotify)g_object_unref, appinfo);
-
-			/* Put into the menu */
-			dbusmenu_menuitem_child_append(root, desktop_mi);
-		}
-
-		g_list_free(launchers);
-	}
-
 	return;
 }
 
@@ -801,7 +773,7 @@ user_change (UsersServiceDbus *service,
              gpointer          user_data)
 {
 	DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
-	rebuild_items (root, service);
+	rebuild_user_items (root, service);
 	return;
 }
 
@@ -869,7 +841,7 @@ setup_restart_watch (void)
 int
 main (int argc, char ** argv)
 {
-    g_type_init();
+  g_type_init();
 
 	/* Setting up i18n and gettext.  Apparently, we need
 	   all of these. */
@@ -887,32 +859,39 @@ main (int argc, char ** argv)
 
 	g_idle_add(lock_screen_setup, NULL);
 
-    root_menuitem = dbusmenu_menuitem_new();
-	g_debug("Root ID: %d", dbusmenu_menuitem_get_id(root_menuitem));
+  session_root_menuitem = dbusmenu_menuitem_new();
+	g_debug("Session Root ID: %d", dbusmenu_menuitem_get_id(session_root_menuitem));
 
-    dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
+  dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
 
-    rebuild_items (root_menuitem, dbus_interface);
+  rebuild_session_items (session_root_menuitem, dbus_interface);
 
-    g_signal_connect (G_OBJECT (dbus_interface),
-                      "user-added",
-                      G_CALLBACK (user_change),
-                      root_menuitem);
-    g_signal_connect (G_OBJECT (dbus_interface),
-                      "user-removed",
-                      G_CALLBACK (user_change),
-                      root_menuitem);
 
 	setup_restart_watch();
 
 	setup_up();
 
-    DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
-    dbusmenu_server_set_root(server, root_menuitem);
+  DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
+  dbusmenu_server_set_root(server, session_root_menuitem);
+    
+  users_root_menuitem = dbusmenu_menuitem_new();
+  g_signal_connect (G_OBJECT (dbus_interface),
+                    "user-added",
+                    G_CALLBACK (user_change),
+                    users_root_menuitem);
+  g_signal_connect (G_OBJECT (dbus_interface),
+                    "user-removed",
+                    G_CALLBACK (user_change),
+                    users_root_menuitem);
 
-    mainloop = g_main_loop_new(NULL, FALSE);
-    g_main_loop_run(mainloop);
+  rebuild_user_items (users_root_menuitem, dbus_interface);
+  
+  DbusmenuServer * users_server = dbusmenu_server_new(INDICATOR_USERS_DBUS_OBJECT);
+  dbusmenu_server_set_root (users_server, users_root_menuitem);
 
-    return 0;
+  mainloop = g_main_loop_new(NULL, FALSE);
+  g_main_loop_run(mainloop);
+
+  return 0;
 }
 

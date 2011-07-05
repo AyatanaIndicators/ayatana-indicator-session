@@ -125,8 +125,8 @@ indicator_session_init (IndicatorSession *self)
                    INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE,
                    G_CALLBACK(service_connection_cb), self);
   // users
-  self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
-                                                     INDICATOR_SESSION_DBUS_OBJECT));
+  self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new (INDICATOR_USERS_DBUS_NAME,
+                                                      INDICATOR_USERS_DBUS_OBJECT));
   self->users.label = GTK_LABEL (gtk_label_new ("Users"));
 
   // devices

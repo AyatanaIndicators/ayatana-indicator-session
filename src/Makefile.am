@@ -14,7 +14,8 @@ libsession_la_SOURCES = \
 	gen-session-dbus.xml.h \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
-	users-service-client.h
+	accounts-service-client.h \
+	accounts-service-user-client.h
 libsession_la_CFLAGS = \
 	$(APPLET_CFLAGS) \
 	-Wall -Werror \
@@ -36,19 +37,26 @@ consolekit-session-client.h: $(srcdir)/consolekit-session.xml
 		--output=consolekit-session-client.h \
 		$(srcdir)/consolekit-session.xml
 
-gdm-local-display-factory-client.h: $(srcdir)/gdm-local-display-factory.xml
+display-manager-client.h: $(srcdir)/display-manager.xml
 	dbus-binding-tool \
 		--prefix=_gdm_local_display_factory_client \
 		--mode=glib-client \
-		--output=gdm-local-display-factory-client.h \
-		$(srcdir)/gdm-local-display-factory.xml
+		--output=display-manager-client.h \
+		$(srcdir)/display-manager.xml
 
-users-service-client.h: $(srcdir)/users-service.xml
+accounts-service-client.h: $(srcdir)/accounts-service.xml
 	dbus-binding-tool \
-		--prefix=_users_service_client \
+		--prefix=_accounts_service_client \
 		--mode=glib-client \
-		--output=users-service-client.h \
-		$(srcdir)/users-service.xml
+		--output=accounts-service-client.h \
+		$(srcdir)/accounts-service.xml
+
+accounts-service-user-client.h: $(srcdir)/accounts-service-user.xml
+	dbus-binding-tool \
+		--prefix=_accounts_service_user_client \
+		--mode=glib-client \
+		--output=accounts-service-user-client.h \
+		$(srcdir)/accounts-service-user.xml
 
 upower-client.h: $(srcdir)/upower.xml
 	dbus-binding-tool \
@@ -56,16 +64,6 @@ upower-client.h: $(srcdir)/upower.xml
 		--mode=glib-client \
 		--output=upower-client.h \
 		$(srcdir)/upower.xml
-
-users-service-marshal.h: $(srcdir)/users-service.list
-	glib-genmarshal --header \
-		--prefix=_users_service_marshal $(srcdir)/users-service.list \
-		> users-service-marshal.h
-
-users-service-marshal.c: $(srcdir)/users-service.list
-	glib-genmarshal --body \
-		--prefix=_users_service_marshal $(srcdir)/users-service.list \
-		> users-service-marshal.c
 
 gen-%.xml.c: %.xml
 	@echo "Building $@ from $<"
@@ -91,8 +89,7 @@ indicator_session_service_SOURCES = \
 	dbusmenu-shared.h \
 	gconf-helper.c \
 	users-service-dbus.h \
-	users-service-dbus.c \
-	users-service-marshal.c
+	users-service-dbus.c
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
 	$(GCONF_CFLAGS) \
@@ -134,22 +131,20 @@ gtk_logout_helper_LDADD = \
 BUILT_SOURCES = \
 	consolekit-manager-client.h \
 	consolekit-session-client.h \
-	gdm-local-display-factory-client.h \
+	display-manager-client.h \
 	gen-session-dbus.xml.c \
 	gen-session-dbus.xml.h \
 	upower-client.h \
-	users-service-client.h \
-	users-service-marshal.h \
-	users-service-marshal.c
+	accounts-service-client.h \
+	accounts-service-user-client.h
 
 EXTRA_DIST = \
 	consolekit-manager.xml \
 	consolekit-session.xml \
-	gdm-local-display-factory.xml \
+	display-manager.xml \
 	session-dbus.xml \
 	upower.xml \
-	users-service.xml \
-	users-service.list
+	accounts-service.xml
 
 CLEANFILES = \
 	$(BUILT_SOURCES)

@@ -75,7 +75,10 @@ INDICATOR_SET_VERSION
 INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
 
 /* Prototypes */
-//static gboolean build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+static gboolean build_menu_switch (DbusmenuMenuitem * newitem,
+                                   DbusmenuMenuitem * parent,
+                                   DbusmenuClient * client,
+                                   gpointer user_data);
 static gboolean new_user_item (DbusmenuMenuitem * newitem,
                                DbusmenuMenuitem * parent,
                                DbusmenuClient * client,
@@ -85,7 +88,10 @@ static void user_property_change (DbusmenuMenuitem * item,
                                   GVariant * variant,
                                   gpointer user_data);
                                
-//static gboolean build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data);
+static gboolean build_restart_item (DbusmenuMenuitem * newitem,
+                                    DbusmenuMenuitem * parent,
+                                    DbusmenuClient * client,
+                                    gpointer user_data);
 static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
 static void receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name, GVariant * parameters, gpointer user_data);
 static void service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data);
@@ -142,11 +148,19 @@ indicator_session_init (IndicatorSession *self)
   g_object_ref (self->users.menu);
   g_object_ref (self->devices.menu);
   
-	DbusmenuClient * client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->users.menu)));
-	dbusmenu_client_add_type_handler(client, USER_ITEM_TYPE, new_user_item);
+  // Setup the handlers for users
+	DbusmenuClient * users_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->users.menu)));
+	dbusmenu_client_add_type_handler(users_client, USER_ITEM_TYPE, new_user_item);
+	dbusmenu_client_add_type_handler(users_client, MENU_SWITCH_TYPE, build_menu_switch);
   
-	//GtkAccelGroup * agroup = gtk_accel_group_new();
-	//dbusmenu_gtkclient_set_accel_group(DBUSMENU_GTKCLIENT(client), agroup);
+  // Setup the handlers for devices
+	DbusmenuClient * devices_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->devices.menu)));
+	dbusmenu_client_add_type_handler (devices_client,
+                                    RESTART_ITEM_TYPE,
+                                    build_restart_item);
+  
+	GtkAccelGroup * agroup = gtk_accel_group_new();
+	dbusmenu_gtkclient_set_accel_group(DBUSMENU_GTKCLIENT(devices_client), agroup);
 
 	self->service_proxy_cancel = g_cancellable_new();
 
@@ -392,94 +406,12 @@ receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name,
 	return;
 }
 
-/*static void
-user_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer user_data)
-{
-	if (g_strcmp0(property, USER_ITEM_PROP_LOGGED_IN) == 0) {
-		if (g_variant_get_boolean(variant)) {
-			gtk_widget_show(GTK_WIDGET(user_data));
-		} else {
-			gtk_widget_hide(GTK_WIDGET(user_data));
-		}
-	}
-	return;
-}
-
-static gboolean
-new_user_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
-{
-	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
-	gint padding = 0;
-	gtk_widget_style_get(GTK_WIDGET(gmi), "horizontal-padding", &padding, NULL);
-	GtkWidget * hbox = gtk_hbox_new(FALSE, padding);
-
-	GtkWidget * usericon = NULL;
-	const gchar * icon_name = dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_ICON);
-	g_debug("Using user icon for '%s' from file: %s", dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME), icon_name);
-	if (icon_name != NULL && icon_name[0] != '\0') {
-		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) != 0 && g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
-			gint width, height;
-			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
-
-			GError * error = NULL;
-			GdkPixbuf * pixbuf = gdk_pixbuf_new_from_file_at_size(icon_name, width, height, &error);
-
-			if (error == NULL) {
-				usericon = gtk_image_new_from_pixbuf(pixbuf);
-				g_object_unref(pixbuf);
-			} else {
-				g_warning("Unable to load user icon '%s': %s", icon_name, error->message);
-				g_error_free(error);
-			}
-		}
-
-		if (usericon == NULL) {
-			GIcon * gicon = g_themed_icon_new_with_default_fallbacks("stock_person-panel");
-			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
-			g_object_unref(gicon);
-		}
-	}
-	if (usericon != NULL) {
-		gtk_misc_set_alignment(GTK_MISC(usericon), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(hbox), usericon, FALSE, FALSE, 0);
-		gtk_widget_show(usericon);
-	}
-
-	GtkWidget * label = gtk_label_new(dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME));
-	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-	gtk_widget_show(label);
-
-	GtkWidget * icon = gtk_image_new_from_icon_name("account-logged-in", GTK_ICON_SIZE_MENU);
-	gtk_misc_set_alignment(GTK_MISC(icon), 1.0, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
-	if (dbusmenu_menuitem_property_get_bool(newitem, USER_ITEM_PROP_LOGGED_IN)) {
-		gtk_widget_show(icon);
-	} else {
-		gtk_widget_hide(icon);
-	}
-
-	gtk_container_add(GTK_CONTAINER(gmi), hbox);
-	gtk_widget_show(hbox);
-
-	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
-
-	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(user_property_change), icon);
-
-	return TRUE;
-}*/
-
-/* Indicator based function to get the menu for the whole
-   applet.  This starts up asking for the parts of the menu
-   from the various services. */
-/*static GtkMenu *
-get_menu (IndicatorObject * io)
-{
-	return GTK_MENU(INDICATOR_SESSION(io)->menu);
-}
 
 static void
-switch_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer user_data)
+switch_property_change (DbusmenuMenuitem * item,
+                        const gchar * property,
+                        GVariant * variant,
+                        gpointer user_data)
 {
 	if (g_strcmp0(property, MENU_SWITCH_USER) != 0) {
 		return;
@@ -545,10 +477,13 @@ switch_property_change (DbusmenuMenuitem * item, const gchar * property, GVarian
 	return;
 }
 
-//static const gchar * dbusmenu_item_data = "dbusmenu-item";
+static const gchar * dbusmenu_item_data = "dbusmenu-item";
 
 static void
-restart_property_change (DbusmenuMenuitem * item, const gchar * property, GVariant * variant, gpointer user_data)
+restart_property_change (DbusmenuMenuitem * item,
+                         const gchar * property,
+                         GVariant * variant,
+                         gpointer user_data)
 {
 	DbusmenuGtkClient * client = DBUSMENU_GTKCLIENT(user_data);
 	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(client, item);
@@ -571,7 +506,10 @@ restart_property_change (DbusmenuMenuitem * item, const gchar * property, GVaria
 }
 
 static gboolean
-build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
+build_restart_item (DbusmenuMenuitem * newitem,
+                    DbusmenuMenuitem * parent,
+                    DbusmenuClient * client,
+                    gpointer user_data)
 {
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_image_menu_item_new());
 	if (gmi == NULL) {
@@ -596,19 +534,27 @@ build_restart_item (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusm
 	return TRUE;
 }
 
-
 static void
-switch_style_set (GtkWidget * widget, GtkStyle * prev_style, gpointer user_data)
+switch_style_set (GtkWidget * widget,
+                  GtkStyle * prev_style,
+                  gpointer user_data)
 {
 	DbusmenuGtkClient * client = DBUSMENU_GTKCLIENT(user_data);
-	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget), dbusmenu_item_data));
+	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget),
+                                                              dbusmenu_item_data));
 
-	switch_property_change(mi, MENU_SWITCH_USER, dbusmenu_menuitem_property_get_variant(mi, MENU_SWITCH_USER), client);
+	switch_property_change (mi,
+                          MENU_SWITCH_USER,
+                          dbusmenu_menuitem_property_get_variant(mi, MENU_SWITCH_USER),
+                          client);
 	return;
 }
 
 static gboolean
-build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, DbusmenuClient * client, gpointer user_data)
+build_menu_switch (DbusmenuMenuitem * newitem,
+                   DbusmenuMenuitem * parent,
+                   DbusmenuClient * client,
+                   gpointer user_data)
 {
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
 	if (gmi == NULL) {
@@ -618,9 +564,17 @@ build_menu_switch (DbusmenuMenuitem * newitem, DbusmenuMenuitem * parent, Dbusme
 
 	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
 
-	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(switch_property_change), client);
-	g_signal_connect(G_OBJECT(gmi), "style-set", G_CALLBACK(switch_style_set), client);
-	switch_property_change(newitem, MENU_SWITCH_USER, dbusmenu_menuitem_property_get_variant(newitem, MENU_SWITCH_USER), client);
+	g_signal_connect (G_OBJECT(newitem),
+                    DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
+                    G_CALLBACK(switch_property_change),
+                    client);
+	g_signal_connect (G_OBJECT(gmi),
+                    "style-set",
+                    G_CALLBACK(switch_style_set),
+                    client);
+	switch_property_change (newitem,
+                          MENU_SWITCH_USER,
+                          dbusmenu_menuitem_property_get_variant(newitem, MENU_SWITCH_USER), client);
 
 	return TRUE;
-}*/
+}

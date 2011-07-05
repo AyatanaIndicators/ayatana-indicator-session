@@ -678,7 +678,9 @@ rebuild_session_items (DbusmenuMenuitem *root,
   /* Lock screen item */
   if (can_lockscreen) {
 	lock_menuitem = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(lock_menuitem, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+	dbusmenu_menuitem_property_set (lock_menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Lock Screen"));
 
 	gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
 	if (shortcut != NULL) {
@@ -729,31 +731,53 @@ rebuild_session_items (DbusmenuMenuitem *root,
 
 	if (can_hibernate && allow_hibernate) {
 		hibernate_mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(hibernate_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Hibernate"));
+		dbusmenu_menuitem_property_set (hibernate_mi,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Hibernate"));
 		dbusmenu_menuitem_child_append(root, hibernate_mi);
-		g_signal_connect(G_OBJECT(hibernate_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(machine_sleep), "Hibernate");
+		g_signal_connect (G_OBJECT(hibernate_mi),
+                      DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                      G_CALLBACK(machine_sleep), "Hibernate");
 	}
 
 	restart_mi = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(restart_mi, DBUSMENU_MENUITEM_PROP_TYPE, RESTART_ITEM_TYPE);
+	dbusmenu_menuitem_property_set (restart_mi,
+                                  DBUSMENU_MENUITEM_PROP_TYPE,
+                                  RESTART_ITEM_TYPE);
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart"));
+		dbusmenu_menuitem_property_set (restart_mi,
+                                    RESTART_ITEM_LABEL,
+                                    _("Restart"));
 	} else {
-		dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart\342\200\246"));
+		dbusmenu_menuitem_property_set (restart_mi,
+                                    RESTART_ITEM_LABEL,
+                                    _("Restart\342\200\246"));
 	}
-	dbusmenu_menuitem_property_set_bool(restart_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_restart());
+	dbusmenu_menuitem_property_set_bool (restart_mi,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       show_restart());
 	dbusmenu_menuitem_child_append(root, restart_mi);
-	g_signal_connect(G_OBJECT(restart_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "restart");
+	g_signal_connect (G_OBJECT(restart_mi),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_dialog), "restart");
 
 	shutdown_mi = dbusmenu_menuitem_new();
 	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down"));
+		dbusmenu_menuitem_property_set (shutdown_mi,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Shut Down"));
 	} else {
-		dbusmenu_menuitem_property_set(shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down\342\200\246"));
+		dbusmenu_menuitem_property_set (shutdown_mi,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Shut Down\342\200\246"));
 	}
-	dbusmenu_menuitem_property_set_bool(shutdown_mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_shutdown());
-	dbusmenu_menuitem_child_append(root, shutdown_mi);
-	g_signal_connect(G_OBJECT(shutdown_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(show_dialog), "shutdown");
+	dbusmenu_menuitem_property_set_bool (shutdown_mi,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       show_shutdown());
+	dbusmenu_menuitem_child_append (root, shutdown_mi);
+	g_signal_connect (G_OBJECT(shutdown_mi),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_dialog), "shutdown");
 
 	RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi = g_new0 (RestartShutdownLogoutMenuItems, 1);
 	restart_shutdown_logout_mi->logout_mi = logout_mi;
@@ -865,7 +889,6 @@ main (int argc, char ** argv)
   dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
 
   rebuild_session_items (session_root_menuitem, dbus_interface);
-
 
 	setup_restart_watch();
 

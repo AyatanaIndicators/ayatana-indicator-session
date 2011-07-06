@@ -24,12 +24,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __DBUS_SHARED_NAMES_H__
 #define __DBUS_SHARED_NAMES_H__ 1
 
-#define INDICATOR_STATUS_DBUS_NAME  "com.canonical.indicator.status"
-#define INDICATOR_STATUS_DBUS_OBJECT "/com/canonical/indicator/status/menu"
-#define INDICATOR_STATUS_SERVICE_DBUS_OBJECT "/com/canonical/indicator/status/service"
-#define INDICATOR_STATUS_SERVICE_DBUS_INTERFACE "com.canonical.indicator.status.service"
-
-#define INDICATOR_USERS_DBUS_NAME  "com.canonical.indicator.users"
+#define INDICATOR_USERS_DBUS_NAME  INDICATOR_SESSION_DBUS_NAME
 #define INDICATOR_USERS_DBUS_OBJECT "/com/canonical/indicator/users/menu"
 #define INDICATOR_USERS_SERVICE_DBUS_OBJECT "/org/gnome/DisplayManager/UserManager"
 #define INDICATOR_USERS_SERVICE_DBUS_INTERFACE "org.gnome.DisplayManager.UserManager"

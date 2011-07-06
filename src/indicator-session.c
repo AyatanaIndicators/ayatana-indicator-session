@@ -276,6 +276,7 @@ new_user_item (DbusmenuMenuitem * newitem,
                DbusmenuClient * client,
                gpointer user_data)
 {
+  g_debug ("new user item  called ");
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
 	gint padding = 0;
 	gtk_widget_style_get(GTK_WIDGET(gmi), "horizontal-padding", &padding, NULL);
@@ -356,7 +357,7 @@ user_property_change (DbusmenuMenuitem * item,
 }
 
 
-/*static void
+static void
 icon_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 {
 	IndicatorSession * self = INDICATOR_SESSION(user_data);
@@ -376,23 +377,30 @@ icon_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 		return;
 	}
 
-	indicator_image_helper_update(self->status_image, name);
+	indicator_image_helper_update(self->users.image, name);
 	return;
-}*/
+}
 
 static void
 service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data)
 {
-	//IndicatorSession * self = INDICATOR_SESSION(user_data);
+	IndicatorSession * self = INDICATOR_SESSION (user_data);
 
 	if (connected) {
-		/*g_dbus_proxy_call(self->service_proxy, "GetIcon", NULL,
+		g_dbus_proxy_call(self->service_proxy, "GetIcon", NULL,
 		                  G_DBUS_CALL_FLAGS_NONE, -1, NULL,
-		                  icon_name_get_cb, user_data);*/
+		                  icon_name_get_cb, user_data);
 	} else {
-		//indicator_image_helper_update(self->status_image, ICON_DEFAULT);
+		indicator_image_helper_update(self->users.image, ICON_DEFAULT);
 	}
 
+	return;
+}
+
+static void
+icon_changed (IndicatorSession * session, const gchar * icon_name)
+{
+	indicator_image_helper_update(session->users.image, icon_name);
 	return;
 }
 
@@ -401,7 +409,13 @@ static void
 receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name,
                 GVariant * parameters, gpointer user_data)
 {
-	//IndicatorSession * self = INDICATOR_SESSION(user_data);
+	IndicatorSession * self = INDICATOR_SESSION(user_data);
+
+	if (g_strcmp0(signal_name, "IconUpdated") == 0) {
+		const gchar *name;
+		g_variant_get (parameters, "(&s)", &name);
+		icon_changed(self, name);
+	}
 
 	return;
 }

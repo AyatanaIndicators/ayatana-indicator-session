@@ -549,12 +549,13 @@ static void
 rebuild_user_items (DbusmenuMenuitem *root,
                     UsersServiceDbus *service)
 {
-  DbusmenuMenuitem *guest_mi = NULL;
   DbusmenuMenuitem *mi = NULL;
-
-  GList *children;
+  DbusmenuMenuitem * guest_mi = NULL;
+  GList *u;
+  UserData *user;
   gboolean can_activate;
-  
+  gboolean can_lockscreen;
+  GList *children;
 
   /* Make sure we have a valid GConf client, and build one
      if needed */
@@ -563,103 +564,140 @@ rebuild_user_items (DbusmenuMenuitem *root,
   /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (service) &&
       !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
+  can_lockscreen = !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL);
 
   /* Remove the old menu items if that makes sense */
   children = dbusmenu_menuitem_take_children (root);
-
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
-  GList *u;
-  UserData *user;
-  
-  GList * users = NULL;
-  users = users_service_dbus_get_user_list (service);
-  guint user_count = g_list_length(users);
 
-  if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
-    users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+  /* Lock screen item */
+  if (can_lockscreen) {
+	lock_menuitem = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set (lock_menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Lock Screen"));
+
+	gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
+	if (shortcut != NULL) {
+		g_debug("Lock screen shortcut: %s", shortcut);
+		dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
+		g_free(shortcut);
+	} else {
+		g_debug("Unable to get lock screen shortcut.");
+	}
+
+	g_signal_connect (G_OBJECT(lock_menuitem),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(lock_screen),
+                    NULL);
+	dbusmenu_menuitem_child_append(root, lock_menuitem);
   }
 
-  for (u = users; u != NULL; u = g_list_next (u)) {
-    user = u->data;
-    user->service = service;
-
-    if (user->uid == getuid()) {
-      /* Hide me from the list */
-      continue;
-    }
-
-    if (g_strcmp0(user->user_name, "guest") == 0) {
-      /* Check to see if the guest has sessions and so therefore should
-         get a check mark. */
-      if (user->sessions != NULL) {
-        dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, TRUE);
-      }
-      /* If we're showing user accounts, keep going through the list */
-      if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
-        continue;
-      }
-      /* If not, we can stop here */
-      break;
-    }
-
-    if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
-      mi = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-      if (user->real_name_conflict) {
-        gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
-        dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
-        g_free(conflictedname);
-      } else {
-        dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
-      }
-      dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
-      if (user->icon_url != NULL && user->icon_url[0] != '\0' && g_str_has_prefix(user->icon_url, "file://")) {
-        dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_url + strlen("file://"));
-      } else {
-        dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
-      }
-      dbusmenu_menuitem_child_append (root, mi);
-      g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
-      user->menuitem = mi;
-    }
-  }
-
-  g_list_free(users);
-  
   /* Set to NULL just incase we don't end up building one */
   users_service_dbus_set_guest_item(service, NULL);
 
   /* Build all of the user switching items */
   if (can_activate == TRUE)
-  {
-    if (check_guest_session ())
     {
-      guest_mi = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (guest_mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-      dbusmenu_menuitem_property_set (guest_mi, USER_ITEM_PROP_NAME, _("Guest Session"));
-      dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
-      dbusmenu_menuitem_child_append (root, guest_mi);
-      g_signal_connect (G_OBJECT (guest_mi),
-                                  DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                                  G_CALLBACK (activate_guest_session),
-                                  service);
-      users_service_dbus_set_guest_item(service, guest_mi);
-    }
-
-    if (check_new_session ())
-    {
-      switch_menuitem = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (switch_menuitem,
+		if (can_lockscreen) {
+			DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
+      dbusmenu_menuitem_property_set_bool (separator1,
+                                           DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                           TRUE);
+			dbusmenu_menuitem_property_set (separator1,
                                       DBUSMENU_MENUITEM_PROP_TYPE,
-                                      MENU_SWITCH_TYPE);
-      dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
-      dbusmenu_menuitem_child_append (root, switch_menuitem);
-      g_signal_connect (G_OBJECT (switch_menuitem),
-                        DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                        G_CALLBACK (activate_new_session), NULL);
-    }
-  }
+                                      DBUSMENU_CLIENT_TYPES_SEPARATOR);
+			dbusmenu_menuitem_child_append (root, separator1);
+		}
+
+      if (check_guest_session ())
+        {
+          guest_mi = dbusmenu_menuitem_new ();
+          dbusmenu_menuitem_property_set_bool (guest_mi,
+                                               DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                               TRUE);
+		      dbusmenu_menuitem_property_set (guest_mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+          dbusmenu_menuitem_property_set (guest_mi, USER_ITEM_PROP_NAME, _("Guest Session"));
+          dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
+          dbusmenu_menuitem_child_append (root, guest_mi);
+          g_signal_connect (G_OBJECT (guest_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), service);
+          users_service_dbus_set_guest_item(service, guest_mi);
+        }
+
+      if (check_new_session ())
+        {
+
+          switch_menuitem = dbusmenu_menuitem_new ();
+		  dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_TYPE, MENU_SWITCH_TYPE);
+		  dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
+          dbusmenu_menuitem_child_append (root, switch_menuitem);
+          g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
+        }
+
+		GList * users = NULL;
+		users = users_service_dbus_get_user_list (service);
+		guint user_count = g_list_length(users);
+
+		if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+			users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+		}
+
+		for (u = users; u != NULL; u = g_list_next (u)) {
+			user = u->data;
+			user->service = service;
+
+			if (user->uid == getuid()) {
+				/* Hide me from the list */
+				continue;
+			}
+
+			if (g_strcmp0(user->user_name, "guest") == 0) {
+				/* Check to see if the guest has sessions and so therefore should
+				   get a check mark. */
+				if (user->sessions != NULL) {
+					dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, TRUE);
+				}
+				/* If we're showing user accounts, keep going through the list */
+				if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+					continue;
+				}
+				/* If not, we can stop here */
+				break;
+			}
+
+			if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+				mi = dbusmenu_menuitem_new ();
+				dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+				if (user->real_name_conflict) {
+					gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
+					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
+					g_free(conflictedname);
+				} else {
+					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
+				}
+				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
+				if (user->icon_url != NULL && user->icon_url[0] != '\0' && g_str_has_prefix(user->icon_url, "file://")) {
+					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_url + strlen("file://"));
+				} else {
+					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
+				}
+				dbusmenu_menuitem_child_append (root, mi);
+				g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
+				user->menuitem = mi;
+			}
+		}
+
+		g_list_free(users);
+	}
+
+	/* If there were a bunch of items before us, we need a
+	   separator. */
+	if (can_lockscreen || can_activate) {
+		DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+		dbusmenu_menuitem_child_append(root, separator);
+	}
 }
 
 static void
@@ -890,14 +928,12 @@ main (int argc, char ** argv)
 
   rebuild_session_items (session_root_menuitem, dbus_interface);
 
-	setup_restart_watch();
-
-	setup_up();
 
   DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
   dbusmenu_server_set_root(server, session_root_menuitem);
     
   users_root_menuitem = dbusmenu_menuitem_new();
+  rebuild_user_items (users_root_menuitem, dbus_interface);
   g_signal_connect (G_OBJECT (dbus_interface),
                     "user-added",
                     G_CALLBACK (user_change),
@@ -906,15 +942,16 @@ main (int argc, char ** argv)
                     "user-removed",
                     G_CALLBACK (user_change),
                     users_root_menuitem);
-
-  rebuild_user_items (users_root_menuitem, dbus_interface);
   
-  DbusmenuServer * users_server = dbusmenu_server_new(INDICATOR_USERS_DBUS_OBJECT);
+  setup_restart_watch();
+	setup_up();
+
+  DbusmenuServer * users_server = dbusmenu_server_new (INDICATOR_USERS_DBUS_OBJECT);
   dbusmenu_server_set_root (users_server, users_root_menuitem);
 
   mainloop = g_main_loop_new(NULL, FALSE);
   g_main_loop_run(mainloop);
-
+  
   return 0;
 }
 

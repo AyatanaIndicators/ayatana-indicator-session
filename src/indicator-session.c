@@ -86,12 +86,13 @@ static gboolean new_user_item (DbusmenuMenuitem * newitem,
 static void user_property_change (DbusmenuMenuitem * item,
                                   const gchar * property,
                                   GVariant * variant,
-                                  gpointer user_data);
-                               
+                                  gpointer user_data);                               
 static gboolean build_restart_item (DbusmenuMenuitem * newitem,
                                     DbusmenuMenuitem * parent,
                                     DbusmenuClient * client,
                                     gpointer user_data);
+static void indicator_session_update_users_label (IndicatorSession* self,
+                                                  GVariant * variant);
 static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
 static void receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name, GVariant * parameters, gpointer user_data);
 static void service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data);
@@ -104,7 +105,7 @@ static GList* indicator_session_get_entries (IndicatorObject* obj);
 
 G_DEFINE_TYPE (IndicatorSession, indicator_session, INDICATOR_OBJECT_TYPE);
 
-static void
+static void 
 indicator_session_class_init (IndicatorSessionClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -134,6 +135,9 @@ indicator_session_init (IndicatorSession *self)
   self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new (INDICATOR_USERS_DBUS_NAME,
                                                       INDICATOR_USERS_DBUS_OBJECT));
   self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
+  self->users.label = GTK_LABEL (gtk_label_new (NULL));
+  // Only show once we have a valid username
+  gtk_widget_hide (GTK_WIDGET(self->users.label));
 
   // devices
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
@@ -153,7 +157,7 @@ indicator_session_init (IndicatorSession *self)
   // Setup the handlers for users
 	DbusmenuClient * users_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->users.menu)));
 	dbusmenu_client_add_type_handler(users_client, USER_ITEM_TYPE, new_user_item);
-	dbusmenu_client_add_type_handler(users_client, MENU_SWITCH_TYPE, build_menu_switch);
+	dbusmenu_client_add_type_handler_full (users_client, MENU_SWITCH_TYPE, build_menu_switch, self, NULL);
   
   // Setup the handlers for devices
 	DbusmenuClient * devices_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->devices.menu)));
@@ -576,7 +580,10 @@ build_menu_switch (DbusmenuMenuitem * newitem,
 	if (gmi == NULL) {
 		return FALSE;
 	}
-	g_object_set_data(G_OBJECT(gmi), dbusmenu_item_data, newitem);
+  
+  IndicatorSession* self = INDICATOR_SESSION (user_data);
+	
+  g_object_set_data(G_OBJECT(gmi), dbusmenu_item_data, newitem);
 
 	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
 
@@ -588,9 +595,37 @@ build_menu_switch (DbusmenuMenuitem * newitem,
                     "style-set",
                     G_CALLBACK(switch_style_set),
                     client);
+                    
 	switch_property_change (newitem,
                           MENU_SWITCH_USER,
                           dbusmenu_menuitem_property_get_variant(newitem, MENU_SWITCH_USER), client);
-
-	return TRUE;
+  
+  indicator_session_update_users_label (self,
+                                        dbusmenu_menuitem_property_get_variant(newitem, MENU_SWITCH_USER));
+	
+  return TRUE;
 }
+
+static void
+indicator_session_update_users_label (IndicatorSession* self, 
+                                      GVariant * variant)
+{
+  const gchar* username = NULL;
+  if (g_variant_get_string(variant, NULL) == NULL ||
+      g_variant_get_string(variant, NULL)[0] == '\0'){
+        // Get out of here - no valid username to display
+        return;
+  }
+  
+  username = g_variant_get_string(variant, NULL);
+  // Just in case protect again.
+  if (username != NULL) {
+    g_debug ("Updating username label");
+    gtk_label_set_text (self->users.label, username);
+    gtk_widget_show(GTK_WIDGET(self->users.label));
+  }
+  else {
+    gtk_widget_hide(GTK_WIDGET(self->users.label));
+  }
+}
+

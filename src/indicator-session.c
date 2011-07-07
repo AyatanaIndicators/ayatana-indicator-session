@@ -362,7 +362,6 @@ user_property_change (DbusmenuMenuitem * item,
 	return;
 }
 
-
 static void
 icon_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 {
@@ -396,10 +395,11 @@ service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointe
 		g_dbus_proxy_call(self->service_proxy, "GetIcon", NULL,
 		                  G_DBUS_CALL_FLAGS_NONE, -1, NULL,
 		                  icon_name_get_cb, user_data);
-	} else {
-		indicator_image_helper_update(self->users.image, ICON_DEFAULT);
 	}
-
+  else {
+		indicator_image_helper_update (self->users.image,
+                                   USER_ITEM_ICON_DEFAULT);
+	}
 	return;
 }
 
@@ -412,8 +412,11 @@ icon_changed (IndicatorSession * session, const gchar * icon_name)
 
 /* Receives all signals from the service, routed to the appropriate functions */
 static void
-receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name,
-                GVariant * parameters, gpointer user_data)
+receive_signal (GDBusProxy * proxy,
+                gchar * sender_name,
+                gchar * signal_name,
+                GVariant * parameters,
+                gpointer user_data)
 {
 	IndicatorSession * self = INDICATOR_SESSION(user_data);
 
@@ -422,10 +425,8 @@ receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name,
 		g_variant_get (parameters, "(&s)", &name);
 		icon_changed(self, name);
 	}
-
 	return;
 }
-
 
 static void
 switch_property_change (DbusmenuMenuitem * item,
@@ -433,72 +434,72 @@ switch_property_change (DbusmenuMenuitem * item,
                         GVariant * variant,
                         gpointer user_data)
 {
-	if (g_strcmp0(property, MENU_SWITCH_USER) != 0) {
-		return;
-	}
+  if (g_strcmp0 (property, MENU_SWITCH_USER) != 0) {
+    return;
+  }
 	
-	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(DBUSMENU_GTKCLIENT(user_data), item);
-	gchar * finalstring = NULL;
-	gboolean set_ellipsize = FALSE;
-	gboolean no_name_in_lang = FALSE;
+  GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(DBUSMENU_GTKCLIENT(user_data), item);
+  gchar * finalstring = NULL;
+  gboolean set_ellipsize = FALSE;
+  gboolean no_name_in_lang = FALSE;
 
-	const gchar * translate = C_("session_menu:switchfrom", "1");
-	if (g_strcmp0(translate, "1") != 0) {
-		no_name_in_lang = TRUE;
-	}
+  const gchar * translate = C_("session_menu:switchfrom", "1");
+  if (g_strcmp0(translate, "1") != 0) {
+    no_name_in_lang = TRUE;
+  }
 
-	if (variant == NULL || g_variant_get_string(variant, NULL) == NULL || g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
-		finalstring = _("Switch User...");
-		set_ellipsize = FALSE;
+  if (variant == NULL || g_variant_get_string(variant, NULL) == NULL || g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
+    finalstring = _("Switch User...");
+    set_ellipsize = FALSE;
     indicator_session_update_users_label (INDICATOR_SESSION (user_data),
                                           NULL);                                                                                                 
-	}
+  }
   else{
     indicator_session_update_users_label (INDICATOR_SESSION (user_data),
                                           variant);                                                                                             
   }
 
-	if (finalstring == NULL) {
-		const gchar * username = g_variant_get_string(variant, NULL);
-		GtkStyle * style = gtk_widget_get_style(GTK_WIDGET(gmi));
+  if (finalstring == NULL) {
+    const gchar * username = g_variant_get_string(variant, NULL);
+    GtkStyle * style = gtk_widget_get_style(GTK_WIDGET(gmi));
 
-		PangoLayout * layout = pango_layout_new(gtk_widget_get_pango_context(GTK_WIDGET(gmi)));
-		pango_layout_set_text(layout, username, -1);
-		pango_layout_set_font_description(layout, style->font_desc);
+    PangoLayout * layout = pango_layout_new(gtk_widget_get_pango_context(GTK_WIDGET(gmi)));
+    pango_layout_set_text (layout, username, -1);
+    pango_layout_set_font_description(layout, style->font_desc);
 
-		gint width;
-		pango_layout_get_pixel_size(layout, &width, NULL);
-		g_object_unref(layout);
-		g_debug("Username width %dpx", width);
+    gint width;
+    pango_layout_get_pixel_size(layout, &width, NULL);
+    g_object_unref(layout);
+    g_debug("Username width %dpx", width);
 
-		gint point = pango_font_description_get_size(style->font_desc);
-		g_debug("Font size %f pt", (gfloat)point / PANGO_SCALE);
+    gint point = pango_font_description_get_size(style->font_desc);
+    g_debug("Font size %f pt", (gfloat)point / PANGO_SCALE);
 
-		gdouble dpi = gdk_screen_get_resolution(gdk_screen_get_default());
-		g_debug("Screen DPI %f", dpi);
+    gdouble dpi = gdk_screen_get_resolution(gdk_screen_get_default());
+    g_debug("Screen DPI %f", dpi);
 
-		gdouble pixels_per_em = ((point * dpi) / 72.0f) / PANGO_SCALE;
-		gdouble ems = width / pixels_per_em;
-		g_debug("Username width %fem", ems);
+    gdouble pixels_per_em = ((point * dpi) / 72.0f) / PANGO_SCALE;
+    gdouble ems = width / pixels_per_em;
+    g_debug("Username width %fem", ems);
 
-		finalstring = g_strdup_printf(_("Switch From %s..."), username);
-		if (ems >= 20.0f) {
-			set_ellipsize = TRUE;
-		} else {
-			set_ellipsize = FALSE;
-		}
+    finalstring = g_strdup_printf(_("Switch From %s..."), username);
+    if (ems >= 20.0f) {
+      set_ellipsize = TRUE;
+    } else {
+      set_ellipsize = FALSE;
+    }
     
-	}
-	gtk_menu_item_set_label(gmi, finalstring);
+  }
+  gtk_menu_item_set_label(gmi, finalstring);
 
-	GtkLabel * label = GTK_LABEL(gtk_bin_get_child(GTK_BIN(gmi)));
-	if (label != NULL) {
-		if (set_ellipsize) {
-			gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
-		} else {
-			gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
-		}
-	}
+  GtkLabel * label = GTK_LABEL(gtk_bin_get_child(GTK_BIN(gmi)));
+  if (label != NULL) {
+    if (set_ellipsize) {
+      gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
+    } else {
+      gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
+    }
+  }
 
 	return;
 }
@@ -628,7 +629,7 @@ indicator_session_update_users_label (IndicatorSession* self,
 
   // Just in case protect again.
   if (username != NULL) {
-    g_debug ("Updating username label");
+    g_debug ("Updating username label ");
     gtk_label_set_text (self->users.label, username);
     gtk_widget_show(GTK_WIDGET(self->users.label));
   }

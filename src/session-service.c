@@ -627,10 +627,9 @@ rebuild_user_items (DbusmenuMenuitem *root,
 
       if (check_new_session ())
         {
-
           switch_menuitem = dbusmenu_menuitem_new ();
-		  dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_TYPE, MENU_SWITCH_TYPE);
-		  dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
+		      dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_TYPE, MENU_SWITCH_TYPE);
+		      dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
           dbusmenu_menuitem_child_append (root, switch_menuitem);
           g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
         }

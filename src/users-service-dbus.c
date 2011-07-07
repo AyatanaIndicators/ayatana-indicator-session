@@ -586,7 +586,6 @@ seat_proxy_session_added (DBusGProxy       *seat_proxy,
   g_return_if_fail(IS_USERS_SERVICE_DBUS(service));
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
   uid_t          uid;
-  gboolean       res;
   struct passwd *pwent;
   UserData      *user;
 
@@ -621,7 +620,7 @@ seat_proxy_session_added (DBusGProxy       *seat_proxy,
       return;
     }
 
-  res = do_add_session (service, user, session_id);
+  do_add_session (service, user, session_id);
 }
 
 static void

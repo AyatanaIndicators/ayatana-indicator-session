@@ -2,6 +2,14 @@
 
 2011-07-07  Ted Gould  <ted@gould.cx>
 
+	0.2.92
+
+2011-07-07  Ted Gould  <ted@gould.cx>
+
+	Adding in accounts-service-user.xml as well to dist.  Not sure why this isn't caught by distcheck.
+
+2011-07-07  Ted Gould  <ted@gould.cx>
+
 	0.2.91
 
 2011-07-07  Ted Gould  <ted@gould.cx>

@@ -144,7 +144,8 @@ EXTRA_DIST = \
 	display-manager.xml \
 	session-dbus.xml \
 	upower.xml \
-	accounts-service.xml
+	accounts-service.xml \
+	accounts-service-user.xml
 
 CLEANFILES = \
 	$(BUILT_SOURCES)

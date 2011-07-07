@@ -56,8 +56,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define EXTRA_LAUNCHER_DIR "/usr/share/indicators/session/applications"
 
-#define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
-
 #define LOCKDOWN_DIR              "/desktop/gnome/lockdown"
 #define LOCKDOWN_KEY_USER         LOCKDOWN_DIR "/disable_user_switching"
 #define LOCKDOWN_KEY_SCREENSAVER  LOCKDOWN_DIR "/disable_lock_screen"
@@ -72,8 +70,6 @@ struct _ActivateData
   UserData *user;
 };
 
-static DBusGConnection   *system_bus = NULL;
-static DBusGProxy        *gdm_proxy = NULL;
 static UsersServiceDbus  *dbus_interface = NULL;
 static SessionDbus       *session_dbus = NULL;
 
@@ -391,7 +387,7 @@ show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 	return;
 }
 
-/* Checks to see if we should show the guest suession item */
+/* Checks to see if we should show the guest session item */
 static gboolean
 check_guest_session (void)
 {
@@ -400,11 +396,7 @@ check_guest_session (void)
 		   this would be the case of the guest user itself. */
 		return FALSE;
 	}
-	if (!g_file_test(GUEST_SESSION_LAUNCHER, G_FILE_TEST_IS_EXECUTABLE)) {
-		/* It doesn't appear that the Guest session stuff is
-		   installed.  So let's not use it then! */
-		return FALSE;
-	}
+	// FIXME: Ask DisplayManager
 
 	return TRUE;
 }
@@ -413,49 +405,18 @@ check_guest_session (void)
 static void
 activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
-	GError * error = NULL;
-
 	lock_if_possible();
 
-	if (dbusmenu_menuitem_property_get_bool(mi, USER_ITEM_PROP_LOGGED_IN)) {
-		if (users_service_dbus_activate_guest_session(USERS_SERVICE_DBUS(user_data))) {
-			return;
-		}
-		g_warning("Unable to activate guest session, falling back to command line activation.");
-	}
-
-	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER " --no-lock", &error)) {
-		g_warning("Unable to start guest session: %s", error->message);
-		g_error_free(error);
-	}
+	if (!users_service_dbus_activate_guest_session(USERS_SERVICE_DBUS(user_data)))
+		g_warning("Unable to activate guest session");
 
 	return;
 }
 
-/* Checks to see if we can create sessions and get a proxy
-   to the display manager (GDM) */
+/* Checks to see if we can create sessions */
 static gboolean
 check_new_session (void)
 {
-	if (system_bus == NULL) {
-		system_bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
-	}
-
-	if (system_bus == NULL) {
-		return FALSE;
-	}
-
-	if (gdm_proxy == NULL) {
-		gdm_proxy = dbus_g_proxy_new_for_name(system_bus,
-		                                      "org.gnome.DisplayManager",
-		                                      "/org/gnome/DisplayManager/LocalDisplayFactory",
-		                                      "org.gnome.DisplayManager.LocalDisplayFactory");
-	}
-
-	if (gdm_proxy == NULL) {
-		return FALSE;
-	}
-
 	return TRUE;
 }
 
@@ -463,14 +424,9 @@ check_new_session (void)
 static void
 activate_new_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
-	GError * error = NULL;
-
 	lock_if_possible();
 
-	if (!g_spawn_command_line_async("gdmflexiserver --startnew", &error)) {
-		g_warning("Unable to start new session: %s", error->message);
-		g_error_free(error);
-	}
+    users_service_dbus_show_greeter (USERS_SERVICE_DBUS(user_data));
 
 	return;
 }
@@ -614,7 +570,7 @@ rebuild_items (DbusmenuMenuitem *root,
 		  dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_TYPE, MENU_SWITCH_TYPE);
 		  dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
           dbusmenu_menuitem_child_append (root, switch_menuitem);
-          g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), NULL);
+          g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), service);
         }
 
 		GList * users = NULL;
@@ -633,6 +589,7 @@ rebuild_items (DbusmenuMenuitem *root,
 				/* Hide me from the list */
 				continue;
 			}
+          g_debug ("%li %s", user->uid, user->user_name);
 
 			if (g_strcmp0(user->user_name, "guest") == 0) {
 				/* Check to see if the guest has sessions and so therefore should
@@ -659,8 +616,8 @@ rebuild_items (DbusmenuMenuitem *root,
 					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
 				}
 				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
-				if (user->icon_url != NULL && user->icon_url[0] != '\0' && g_str_has_prefix(user->icon_url, "file://")) {
-					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_url + strlen("file://"));
+				if (user->icon_file != NULL && user->icon_file[0] != '\0') {
+					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_file);
 				} else {
 					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
 				}
@@ -797,7 +754,7 @@ rebuild_items (DbusmenuMenuitem *root,
    rebuilds the menu */
 static void
 user_change (UsersServiceDbus *service,
-             gint64            user,
+             const gchar      *user_id,
              gpointer          user_data)
 {
 	DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
@@ -899,7 +856,7 @@ main (int argc, char ** argv)
                       G_CALLBACK (user_change),
                       root_menuitem);
     g_signal_connect (G_OBJECT (dbus_interface),
-                      "user-removed",
+                      "user-deleted",
                       G_CALLBACK (user_change),
                       root_menuitem);
 

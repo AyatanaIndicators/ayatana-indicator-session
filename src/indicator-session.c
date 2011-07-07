@@ -450,7 +450,13 @@ switch_property_change (DbusmenuMenuitem * item,
 	if (variant == NULL || g_variant_get_string(variant, NULL) == NULL || g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
 		finalstring = _("Switch User...");
 		set_ellipsize = FALSE;
+    indicator_session_update_users_label (INDICATOR_SESSION (user_data),
+                                          NULL);                                                                                                 
 	}
+  else{
+    indicator_session_update_users_label (INDICATOR_SESSION (user_data),
+                                          variant);                                                                                             
+  }
 
 	if (finalstring == NULL) {
 		const gchar * username = g_variant_get_string(variant, NULL);
@@ -481,8 +487,8 @@ switch_property_change (DbusmenuMenuitem * item,
 		} else {
 			set_ellipsize = FALSE;
 		}
+    
 	}
-
 	gtk_menu_item_set_label(gmi, finalstring);
 
 	GtkLabel * label = GTK_LABEL(gtk_bin_get_child(GTK_BIN(gmi)));
@@ -611,13 +617,15 @@ indicator_session_update_users_label (IndicatorSession* self,
                                       GVariant * variant)
 {
   const gchar* username = NULL;
-  if (g_variant_get_string(variant, NULL) == NULL ||
+  if (variant == NULL || g_variant_get_string(variant, NULL) == NULL ||
       g_variant_get_string(variant, NULL)[0] == '\0'){
-        // Get out of here - no valid username to display
+        // either way set the user label to blank
+        gtk_label_set_text (self->users.label, "");
         return;
   }
   
   username = g_variant_get_string(variant, NULL);
+
   // Just in case protect again.
   if (username != NULL) {
     g_debug ("Updating username label");

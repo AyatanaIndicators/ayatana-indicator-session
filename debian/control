@@ -25,7 +25,7 @@ Package: indicator-session
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, upower
 Recommends: indicator-applet (>= 0.2) | indicator-renderer
-Suggests: gdm
+Suggests: lightdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
 Replaces: indicator-sus
 Description: Indicator showing session management, status and user switching.
@@ -44,7 +44,7 @@ Depends: ${shlibs:Depends},
          upower,
          indicator-session (= ${binary:Version})
 Recommends: indicator-applet (>= 0.2) | indicator-renderer
-Suggests: gdm
+Suggests: lightdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
 Replaces: indicator-session (<< 0.2.90)
 Description: Indicator showing session management, status and user switching.

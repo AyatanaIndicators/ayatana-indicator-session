@@ -3,8 +3,9 @@ indicator-session (0.2.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * New upstream release.
     * Integrates with LightDM now
     * Moved to libindicator 0.4
+  * debian/control: Move suggests from gdm to lightdm 
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jul 2011 11:16:24 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jul 2011 11:17:53 -0500
 
 indicator-session (0.2.90-0ubuntu3) oneiric; urgency=low
 

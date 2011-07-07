@@ -133,20 +133,22 @@ indicator_session_init (IndicatorSession *self)
   // users
   self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new (INDICATOR_USERS_DBUS_NAME,
                                                       INDICATOR_USERS_DBUS_OBJECT));
-  self->users.label = GTK_LABEL (gtk_label_new ("Users"));
+  self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
 
   // devices
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
-  self->devices.label = GTK_LABEL (gtk_label_new ("Devices"));
+  self->devices.image = indicator_image_helper (ICON_DEFAULT);
   
   gtk_widget_show (GTK_WIDGET(self->devices.menu));
-  gtk_widget_show (GTK_WIDGET(self->devices.label));
-  gtk_widget_show (GTK_WIDGET(self->users.label));
+  gtk_widget_show (GTK_WIDGET(self->devices.image));
+  gtk_widget_show (GTK_WIDGET(self->users.image));
   gtk_widget_show (GTK_WIDGET(self->users.menu));
   
   g_object_ref (self->users.menu);
+  g_object_ref (self->users.image);
   g_object_ref (self->devices.menu);
+  g_object_ref (self->devices.image);
   
   // Setup the handlers for users
 	DbusmenuClient * users_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->users.menu)));

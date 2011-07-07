@@ -40,10 +40,7 @@ libexec_PROGRAMS = indicator-session-service$(EXEEXT) \
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -102,8 +99,7 @@ am_indicator_session_service_OBJECTS =  \
 	indicator_session_service-session-dbus.$(OBJEXT) \
 	indicator_session_service-gen-session-dbus.xml.$(OBJEXT) \
 	indicator_session_service-gconf-helper.$(OBJEXT) \
-	indicator_session_service-users-service-dbus.$(OBJEXT) \
-	indicator_session_service-users-service-marshal.$(OBJEXT)
+	indicator_session_service-users-service-dbus.$(OBJEXT)
 indicator_session_service_OBJECTS =  \
 	$(am_indicator_session_service_OBJECTS)
 indicator_session_service_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -314,7 +310,8 @@ libsession_la_SOURCES = \
 	gen-session-dbus.xml.h \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
-	users-service-client.h
+	accounts-service-client.h \
+	accounts-service-user-client.h
 
 libsession_la_CFLAGS = \
 	$(APPLET_CFLAGS) \
@@ -337,8 +334,7 @@ indicator_session_service_SOURCES = \
 	dbusmenu-shared.h \
 	gconf-helper.c \
 	users-service-dbus.h \
-	users-service-dbus.c \
-	users-service-marshal.c
+	users-service-dbus.c
 
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
@@ -381,22 +377,20 @@ gtk_logout_helper_LDADD = \
 BUILT_SOURCES = \
 	consolekit-manager-client.h \
 	consolekit-session-client.h \
-	gdm-local-display-factory-client.h \
+	display-manager-client.h \
 	gen-session-dbus.xml.c \
 	gen-session-dbus.xml.h \
 	upower-client.h \
-	users-service-client.h \
-	users-service-marshal.h \
-	users-service-marshal.c
+	accounts-service-client.h \
+	accounts-service-user-client.h
 
 EXTRA_DIST = \
 	consolekit-manager.xml \
 	consolekit-session.xml \
-	gdm-local-display-factory.xml \
+	display-manager.xml \
 	session-dbus.xml \
 	upower.xml \
-	users-service.xml \
-	users-service.list
+	accounts-service.xml
 
 CLEANFILES = \
 	$(BUILT_SOURCES)
@@ -534,7 +528,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-service.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-users-service-dbus.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-users-service-marshal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsession_la-indicator-session.Plo@am__quote@
 
 .c.o:
@@ -712,22 +705,6 @@ indicator_session_service-users-service-dbus.obj: users-service-dbus.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-dbus.c' object='indicator_session_service-users-service-dbus.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-users-service-dbus.obj `if test -f 'users-service-dbus.c'; then $(CYGPATH_W) 'users-service-dbus.c'; else $(CYGPATH_W) '$(srcdir)/users-service-dbus.c'; fi`
-
-indicator_session_service-users-service-marshal.o: users-service-marshal.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-users-service-marshal.o -MD -MP -MF $(DEPDIR)/indicator_session_service-users-service-marshal.Tpo -c -o indicator_session_service-users-service-marshal.o `test -f 'users-service-marshal.c' || echo '$(srcdir)/'`users-service-marshal.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-users-service-marshal.Tpo $(DEPDIR)/indicator_session_service-users-service-marshal.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-marshal.c' object='indicator_session_service-users-service-marshal.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-users-service-marshal.o `test -f 'users-service-marshal.c' || echo '$(srcdir)/'`users-service-marshal.c
-
-indicator_session_service-users-service-marshal.obj: users-service-marshal.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-users-service-marshal.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-users-service-marshal.Tpo -c -o indicator_session_service-users-service-marshal.obj `if test -f 'users-service-marshal.c'; then $(CYGPATH_W) 'users-service-marshal.c'; else $(CYGPATH_W) '$(srcdir)/users-service-marshal.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-users-service-marshal.Tpo $(DEPDIR)/indicator_session_service-users-service-marshal.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-marshal.c' object='indicator_session_service-users-service-marshal.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-users-service-marshal.obj `if test -f 'users-service-marshal.c'; then $(CYGPATH_W) 'users-service-marshal.c'; else $(CYGPATH_W) '$(srcdir)/users-service-marshal.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -958,19 +935,26 @@ consolekit-session-client.h: $(srcdir)/consolekit-session.xml
 		--output=consolekit-session-client.h \
 		$(srcdir)/consolekit-session.xml
 
-gdm-local-display-factory-client.h: $(srcdir)/gdm-local-display-factory.xml
+display-manager-client.h: $(srcdir)/display-manager.xml
 	dbus-binding-tool \
 		--prefix=_gdm_local_display_factory_client \
 		--mode=glib-client \
-		--output=gdm-local-display-factory-client.h \
-		$(srcdir)/gdm-local-display-factory.xml
+		--output=display-manager-client.h \
+		$(srcdir)/display-manager.xml
 
-users-service-client.h: $(srcdir)/users-service.xml
+accounts-service-client.h: $(srcdir)/accounts-service.xml
 	dbus-binding-tool \
-		--prefix=_users_service_client \
+		--prefix=_accounts_service_client \
 		--mode=glib-client \
-		--output=users-service-client.h \
-		$(srcdir)/users-service.xml
+		--output=accounts-service-client.h \
+		$(srcdir)/accounts-service.xml
+
+accounts-service-user-client.h: $(srcdir)/accounts-service-user.xml
+	dbus-binding-tool \
+		--prefix=_accounts_service_user_client \
+		--mode=glib-client \
+		--output=accounts-service-user-client.h \
+		$(srcdir)/accounts-service-user.xml
 
 upower-client.h: $(srcdir)/upower.xml
 	dbus-binding-tool \
@@ -978,16 +962,6 @@ upower-client.h: $(srcdir)/upower.xml
 		--mode=glib-client \
 		--output=upower-client.h \
 		$(srcdir)/upower.xml
-
-users-service-marshal.h: $(srcdir)/users-service.list
-	glib-genmarshal --header \
-		--prefix=_users_service_marshal $(srcdir)/users-service.list \
-		> users-service-marshal.h
-
-users-service-marshal.c: $(srcdir)/users-service.list
-	glib-genmarshal --body \
-		--prefix=_users_service_marshal $(srcdir)/users-service.list \
-		> users-service-marshal.c
 
 gen-%.xml.c: %.xml
 	@echo "Building $@ from $<"

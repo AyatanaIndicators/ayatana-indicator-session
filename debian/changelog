@@ -1,3 +1,11 @@
+indicator-session (0.2.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Integrates with LightDM now
+    * Moved to libindicator 0.4
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jul 2011 11:16:24 -0500
+
 indicator-session (0.2.90-0ubuntu3) oneiric; urgency=low
 
   * Rebuild for libdbusmenu-gtk3-4

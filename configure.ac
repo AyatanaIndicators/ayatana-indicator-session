@@ -4,7 +4,7 @@ AC_INIT(src/indicator-session.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 0.2.90)
+AM_INIT_AUTOMAKE(indicator-session, 0.2.91)
 
 AM_MAINTAINER_MODE
 
@@ -39,12 +39,12 @@ AC_ARG_WITH([indicator-gtk],
 
 AS_IF([test "x$with_indicator_gtk" = x3],
         [PKG_CHECK_MODULES(APPLET, gtk+-3.0 >= $GTK3_REQUIRED_VERSION
-                                   indicator3 >= $INDICATOR_REQUIRED_VERSION
+                                   indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                                    dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
         ],
       [test "x$with_indicator_gtk" = x2],
          [PKG_CHECK_MODULES(APPLET, gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                    indicator >= $INDICATOR_REQUIRED_VERSION
+                                    indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
                                     dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
         ],
       [AC_MSG_FAILURE([Value for --with-indicator-gtk was neither 2 nor 3])]
@@ -58,7 +58,7 @@ PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VE
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0
-                                  indicator3 >= $INDICATOR_REQUIRED_VERSION)
+                                  indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION)
 
 AC_SUBST(SESSIONERVICE_CFLAGS)
 AC_SUBST(SESSIONERVICE_LIBS)
@@ -95,11 +95,11 @@ if test "x$with_localinstall" = "xyes"; then
 	INDICATORDIR="${libdir}/indicators/2/"
 	INDICATORICONSDIR="${datadir}/indicator-applet/icons/"
 elif test "x$with_indicator_gtk" = x2; then
-	INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator`
-	INDICATORICONSDIR=`$PKG_CONFIG --variable=iconsdir indicator`
+	INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator-0.4`
+	INDICATORICONSDIR=`$PKG_CONFIG --variable=iconsdir indicator-0.4`
 else
-	INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator3`
-	INDICATORICONSDIR=`$PKG_CONFIG --variable=iconsdir indicator3`
+	INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator3-0.4`
+	INDICATORICONSDIR=`$PKG_CONFIG --variable=iconsdir indicator3-0.4`
 fi
 AC_SUBST(INDICATORDIR)
 AC_SUBST(INDICATORICONSDIR)

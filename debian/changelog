@@ -1,4 +1,4 @@
-indicator-session (0.2.92-0ubuntu1~ppa1) oneiric; urgency=low
+indicator-session (0.2.92-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release. (0.2.91)
     * Integrates with LightDM now

@@ -183,6 +183,8 @@ logout_dialog_new (LogoutDialogType type)
 	                                      "text", _(body_strings[type]),
 	                                      NULL));
 
+	gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
+
 	gboolean allowed = FALSE;
 	if (type == LOGOUT_DIALOG_TYPE_LOG_OUT) {
 		allowed = ck_check_allowed(LOGOUT_DIALOG_TYPE_RESTART);

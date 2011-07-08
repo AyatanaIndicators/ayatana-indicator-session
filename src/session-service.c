@@ -589,7 +589,6 @@ rebuild_items (DbusmenuMenuitem *root,
 				/* Hide me from the list */
 				continue;
 			}
-          g_debug ("%li %s", user->uid, user->user_name);
 
 			if (g_strcmp0(user->user_name, "guest") == 0) {
 				/* Check to see if the guest has sessions and so therefore should

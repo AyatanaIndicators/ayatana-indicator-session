@@ -1,3 +1,9 @@
+indicator-session (0.2.92-0ubuntu2) oneiric; urgency=low
+
+  * src/session-service.c: drop g_debug leftover which broke the build
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 08 Jul 2011 11:52:43 +0200
+
 indicator-session (0.2.92-0ubuntu1) oneiric; urgency=low
 
   [ Ted Gould ]

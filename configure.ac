@@ -196,5 +196,6 @@ AC_MSG_NOTICE([
 SUS Indicator Configuration:
 
 	Prefix:        $prefix
+	Indicator Dir: $INDICATORDIR
 	Indicator GTK: $with_gtk
 ])

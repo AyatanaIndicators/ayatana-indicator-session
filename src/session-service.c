@@ -391,32 +391,6 @@ show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 	return;
 }
 
-/* Checks to see if we should show the guest session item */
-static gboolean
-check_guest_session (void)
-{
-	if (geteuid() < 500) {
-		/* System users shouldn't have guest account shown.  Mosly
-		   this would be the case of the guest user itself. */
-		return FALSE;
-	}
-	// FIXME: Ask DisplayManager
-
-	return TRUE;
-}
-
-/* Called when someone clicks on the guest session item. */
-static void
-activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
-{
-	lock_if_possible();
-
-	if (!users_service_dbus_activate_guest_session(USERS_SERVICE_DBUS(user_data)))
-		g_warning("Unable to activate guest session");
-
-	return;
-}
-
 /* Checks to see if we can create sessions */
 static gboolean
 check_new_session (void)
@@ -467,46 +441,13 @@ compare_users_by_username (const gchar *a,
   return retval;
 }
 
-/* Take a desktop file and execute it */
-/*static void
-desktop_activate_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
-{
-	GAppInfo * appinfo = G_APP_INFO(data);
-	g_return_if_fail(appinfo != NULL);
-	g_app_info_launch(appinfo, NULL, NULL, NULL);
-	return;
-}*/
-
-/* Look at the GAppInfo structures and sort based on
-   the application names */
-/*static gint
-sort_app_infos (gconstpointer a, gconstpointer b)
-{
-	GAppInfo * appa = G_APP_INFO(a);
-	GAppInfo * appb = G_APP_INFO(b);
-
-	const gchar * namea = NULL;
-	const gchar * nameb = NULL;
-
-	if (appa != NULL) {
-		namea = g_app_info_get_name(appa);
-	}
-
-	if (appb != NULL) {
-		nameb = g_app_info_get_name(appb);
-	}
-
-	return g_strcmp0(namea, nameb);
-}*/
-
 /* Builds up the menu for us */
-
 static void 
 rebuild_user_items (DbusmenuMenuitem *root,
                     UsersServiceDbus *service)
 {
   DbusmenuMenuitem *mi = NULL;
-  DbusmenuMenuitem * guest_mi = NULL;
+  DbusmenuMenuitem *guest_mi = NULL;
   GList *u;
   UserData *user;
   gboolean can_activate;
@@ -525,100 +466,81 @@ rebuild_user_items (DbusmenuMenuitem *root,
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
 
-	gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
-	if (shortcut != NULL) {
-		g_debug("Lock screen shortcut: %s", shortcut);
-		dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
-		g_free(shortcut);
-	} else {
-		g_debug("Unable to get lock screen shortcut.");
-	}
-
   /* Set to NULL just incase we don't end up building one */
   users_service_dbus_set_guest_item(service, NULL);
 
   /* Build all of the user switching items */
   if (can_activate == TRUE)
-    {
-      if (check_guest_session ())
-        {
-          guest_mi = dbusmenu_menuitem_new ();
-          dbusmenu_menuitem_property_set_bool (guest_mi,
-                                               DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                               TRUE);
-		      dbusmenu_menuitem_property_set (guest_mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-          dbusmenu_menuitem_property_set (guest_mi, USER_ITEM_PROP_NAME, _("Guest Session"));
-          dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, FALSE);
-          dbusmenu_menuitem_child_append (root, guest_mi);
-          g_signal_connect (G_OBJECT (guest_mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_guest_session), service);
-          users_service_dbus_set_guest_item(service, guest_mi);
+  {
+    if (check_new_session ()){
+      switch_menuitem = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (switch_menuitem,
+                                      DBUSMENU_MENUITEM_PROP_TYPE,
+                                      MENU_SWITCH_TYPE);
+      dbusmenu_menuitem_property_set (switch_menuitem,
+                                      MENU_SWITCH_USER,
+                                      g_get_user_name());
+      dbusmenu_menuitem_child_append (root, switch_menuitem);
+      g_signal_connect (G_OBJECT (switch_menuitem),
+                        DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                        G_CALLBACK (activate_new_session),
+                        service);
+    }
+
+    GList * users = NULL;
+    users = users_service_dbus_get_user_list (service);
+    guint user_count = g_list_length(users);
+
+    if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+      users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+    }
+
+    for (u = users; u != NULL; u = g_list_next (u)) {
+      user = u->data;
+      user->service = service;
+
+      g_debug ("%i %s", (gint)user->uid, user->user_name);
+
+      if (g_strcmp0(user->user_name, "guest") == 0) {
+        /* Check to see if the guest has sessions and so therefore should
+           get a check mark. */
+        if (user->sessions != NULL) {
+          dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, TRUE);
         }
-
-      if (check_new_session ())
-        {
-          switch_menuitem = dbusmenu_menuitem_new ();
-		      dbusmenu_menuitem_property_set (switch_menuitem, DBUSMENU_MENUITEM_PROP_TYPE, MENU_SWITCH_TYPE);
-		      dbusmenu_menuitem_property_set (switch_menuitem, MENU_SWITCH_USER, g_get_user_name());
-          dbusmenu_menuitem_child_append (root, switch_menuitem);
-          g_signal_connect (G_OBJECT (switch_menuitem), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_new_session), service);
+        /* If we're showing user accounts, keep going through the list */
+        if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+          continue;
         }
+        /* If not, we can stop here */
+        break;
+      }
 
-		GList * users = NULL;
-		users = users_service_dbus_get_user_list (service);
-		guint user_count = g_list_length(users);
-
-		if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
-			users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
-		}
-
-		for (u = users; u != NULL; u = g_list_next (u)) {
-			user = u->data;
-			user->service = service;
-
-			if (user->uid == getuid()) {
-				/* Hide me from the list */
-				continue;
-			}
-          g_debug ("%i %s", (gint)user->uid, user->user_name);
-
-			if (g_strcmp0(user->user_name, "guest") == 0) {
-				/* Check to see if the guest has sessions and so therefore should
-				   get a check mark. */
-				if (user->sessions != NULL) {
-					dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, TRUE);
-				}
-				/* If we're showing user accounts, keep going through the list */
-				if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
-					continue;
-				}
-				/* If not, we can stop here */
-				break;
-			}
-
-			if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
-				mi = dbusmenu_menuitem_new ();
-				dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
-				if (user->real_name_conflict) {
-					gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
-					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
-					g_free(conflictedname);
-				} else {
-					dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
-				}
-				dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
-				if (user->icon_file != NULL && user->icon_file[0] != '\0') {
-					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_file);
-				} else {
-					dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
-				}
-				dbusmenu_menuitem_child_append (root, mi);
-				g_signal_connect (G_OBJECT (mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK (activate_user_session), user);
-				user->menuitem = mi;
-			}
-		}
-
-		g_list_free(users);
-	}
+      if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
+        mi = dbusmenu_menuitem_new ();
+        dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+        if (user->real_name_conflict) {
+          gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
+          dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
+          g_free(conflictedname);
+        } else {
+          dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
+        }
+        dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
+        if (user->icon_file != NULL && user->icon_file[0] != '\0') {
+          dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_file);
+        } else {
+          dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
+        }
+        dbusmenu_menuitem_child_append (root, mi);
+        g_signal_connect (G_OBJECT (mi),
+                          DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                          G_CALLBACK (activate_user_session),
+                          user);
+        user->menuitem = mi;
+      }
+    }
+    g_list_free(users);
+  }
 }
 
 static void

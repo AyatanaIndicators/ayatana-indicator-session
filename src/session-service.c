@@ -102,6 +102,7 @@ static GConfClient * gconf_client = NULL;
 
 static void rebuild_session_items (DbusmenuMenuitem *root, UsersServiceDbus *service);
 static void rebuild_user_items (DbusmenuMenuitem *root, UsersServiceDbus *service);
+static void activate_online_accounts (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data);
 
 static void
 lockdown_changed (GConfClient *client,
@@ -540,6 +541,42 @@ rebuild_user_items (DbusmenuMenuitem *root,
       }
     }
     g_list_free(users);
+  }
+  // Add the online accounts and separator
+  DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (separator1,
+                                  DBUSMENU_MENUITEM_PROP_TYPE,
+                                  DBUSMENU_CLIENT_TYPES_SEPARATOR);
+  dbusmenu_menuitem_child_append (root, separator1);
+  DbusmenuMenuitem * online_accounts_item = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (online_accounts_item,
+                                  DBUSMENU_MENUITEM_PROP_TYPE,
+                                  DBUSMENU_CLIENT_TYPES_DEFAULT);
+  dbusmenu_menuitem_property_set (online_accounts_item,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Online Accounts..."));
+
+  g_signal_connect (G_OBJECT (online_accounts_item),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK (activate_online_accounts),
+                    NULL);
+                                  
+  dbusmenu_menuitem_child_append (root, online_accounts_item);    
+}
+
+// TODO
+// Wait until dialog is complete to find out name to pass
+// to the control centre.
+static void
+activate_online_accounts (DbusmenuMenuitem *mi,
+                          guint timestamp,
+                          gpointer user_data)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("gnome-control-center", &error))
+  {
+    g_warning("Unable to show control centre: %s", error->message);
+    g_error_free(error);
   }
 }
 

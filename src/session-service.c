@@ -510,7 +510,6 @@ rebuild_user_items (DbusmenuMenuitem *root,
   GList *u;
   UserData *user;
   gboolean can_activate;
-  gboolean can_lockscreen;
   GList *children;
 
   /* Make sure we have a valid GConf client, and build one
@@ -520,19 +519,11 @@ rebuild_user_items (DbusmenuMenuitem *root,
   /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (service) &&
       !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
-  can_lockscreen = !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL);
 
   /* Remove the old menu items if that makes sense */
   children = dbusmenu_menuitem_take_children (root);
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
-
-  /* Lock screen item */
-  if (can_lockscreen) {
-	lock_menuitem = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set (lock_menuitem,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Lock Screen"));
 
 	gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
 	if (shortcut != NULL) {
@@ -543,30 +534,12 @@ rebuild_user_items (DbusmenuMenuitem *root,
 		g_debug("Unable to get lock screen shortcut.");
 	}
 
-	g_signal_connect (G_OBJECT(lock_menuitem),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(lock_screen),
-                    NULL);
-	dbusmenu_menuitem_child_append(root, lock_menuitem);
-  }
-
   /* Set to NULL just incase we don't end up building one */
   users_service_dbus_set_guest_item(service, NULL);
 
   /* Build all of the user switching items */
   if (can_activate == TRUE)
     {
-		if (can_lockscreen) {
-			DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set_bool (separator1,
-                                           DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                           TRUE);
-			dbusmenu_menuitem_property_set (separator1,
-                                      DBUSMENU_MENUITEM_PROP_TYPE,
-                                      DBUSMENU_CLIENT_TYPES_SEPARATOR);
-			dbusmenu_menuitem_child_append (root, separator1);
-		}
-
       if (check_guest_session ())
         {
           guest_mi = dbusmenu_menuitem_new ();
@@ -645,14 +618,6 @@ rebuild_user_items (DbusmenuMenuitem *root,
 		}
 
 		g_list_free(users);
-	}
-
-	/* If there were a bunch of items before us, we need a
-	   separator. */
-	if (can_lockscreen || can_activate) {
-		DbusmenuMenuitem * separator = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set(separator, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-		dbusmenu_menuitem_child_append(root, separator);
 	}
 }
 

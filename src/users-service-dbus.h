@@ -42,9 +42,7 @@ struct _UserData
   gint64   uid;
   gchar   *user_name;
   gchar   *real_name;
-  gchar   *shell;
-  gint     login_count;
-  gchar   *icon_url;
+  gchar   *icon_file;
 
   GList   *sessions;
 
@@ -70,17 +68,16 @@ struct _UsersServiceDbusClass {
   GObjectClass parent_class;
 
   /* Signals */
-  void     (* users_loaded)       (UsersServiceDbus *self, gpointer user_data);
-
-  void     (* user_added)         (UsersServiceDbus *self, gint64 uid, gpointer user_data);
-  void     (* user_removed)       (UsersServiceDbus *self, gint64 uid, gpointer user_data);
-  void     (* user_updated)       (UsersServiceDbus *self, gint64 uid, gpointer user_data);
+  void     (* user_added)         (UsersServiceDbus *self, const gchar *user_id, gpointer user_data);
+  void     (* user_deleted)       (UsersServiceDbus *self, const gchar *user_id, gpointer user_data);
 };
 
 GType users_service_dbus_get_type  (void) G_GNUC_CONST;
 
-gint      users_service_dbus_get_user_count        (UsersServiceDbus *self);
+UserData *users_service_dbus_get_user_by_username  (UsersServiceDbus *self,
+                                                    const gchar *username);
 GList    *users_service_dbus_get_user_list         (UsersServiceDbus *self);
+gboolean  users_service_dbus_show_greeter          (UsersServiceDbus *self);
 gboolean  users_service_dbus_can_activate_session  (UsersServiceDbus *self);
 gboolean  users_service_dbus_activate_user_session (UsersServiceDbus *self,
                                                     UserData         *user);

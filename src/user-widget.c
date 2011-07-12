@@ -203,7 +203,6 @@ user_widget_primitive_draw_cb_gtk_3 (GtkWidget *widget,
     return FALSE;                                           
   }
   
-  
   GtkStyle *style;
   gdouble x, y;
   gdouble offset = 15.0;

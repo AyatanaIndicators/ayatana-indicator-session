@@ -131,7 +131,33 @@ indicator_session_init (IndicatorSession *self)
   // users
   self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new (INDICATOR_USERS_DBUS_NAME,
                                                       INDICATOR_USERS_DBUS_OBJECT));
-  self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
+  // Set the image to the default avator image
+  GdkPixbuf* pixbuf  = NULL; 
+  GError* error = NULL;
+  pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+                                     "avatar-default",
+                                     17,
+                                     GTK_ICON_LOOKUP_FORCE_SIZE,
+                                     &error);
+  
+  
+  
+  GtkWidget* avatar_icon = NULL;
+  
+  if (pixbuf == NULL || error != NULL) {
+    g_warning ("Could not load the default avatar image for some reason");
+    self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
+  }
+  else{
+    avatar_icon = gtk_image_new ();
+    gtk_image_set_from_pixbuf (GTK_IMAGE (avatar_icon), pixbuf);
+    self->users.image = GTK_IMAGE (avatar_icon);
+    g_object_unref (pixbuf);
+  }
+  
+  
+                                                      
+  //self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
   self->users.label = GTK_LABEL (gtk_label_new (NULL));
   // Only show once we have a valid username
   gtk_widget_hide (GTK_WIDGET(self->users.label));

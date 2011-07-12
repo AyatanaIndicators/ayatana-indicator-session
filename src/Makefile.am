@@ -14,6 +14,8 @@ libsession_la_SOURCES = \
 	gen-session-dbus.xml.h \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
+	user-widget.c \
+	user-widget.h \
 	accounts-service-client.h \
 	accounts-service-user-client.h
 libsession_la_CFLAGS = \

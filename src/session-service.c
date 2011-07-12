@@ -759,7 +759,6 @@ restart_dir_changed (void)
 			session_dbus_set_name(session_dbus, ICON_DEFAULT);
 		}
 	}
-
 	return;
 }
 
@@ -794,8 +793,8 @@ main (int argc, char ** argv)
 	IndicatorService * service = indicator_service_new_version(INDICATOR_SESSION_DBUS_NAME,
 		                                                   INDICATOR_SESSION_DBUS_VERSION);
 	g_signal_connect(G_OBJECT(service),
-		         INDICATOR_SERVICE_SIGNAL_SHUTDOWN,
-		         G_CALLBACK(service_shutdown), NULL);
+                   INDICATOR_SERVICE_SIGNAL_SHUTDOWN,
+                   G_CALLBACK(service_shutdown), NULL);
 
 	session_dbus = session_dbus_new();
 

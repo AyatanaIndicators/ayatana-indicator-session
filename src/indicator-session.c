@@ -44,6 +44,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
+#include "user-widget.h"
 
 #define INDICATOR_SESSION_TYPE            (indicator_session_get_type ())
 #define INDICATOR_SESSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_SESSION_TYPE, IndicatorSession))
@@ -83,10 +84,6 @@ static gboolean new_user_item (DbusmenuMenuitem * newitem,
                                DbusmenuMenuitem * parent,
                                DbusmenuClient * client,
                                gpointer user_data);
-static void user_property_change (DbusmenuMenuitem * item,
-                                  const gchar * property,
-                                  GVariant * variant,
-                                  gpointer user_data);                               
 static gboolean build_restart_item (DbusmenuMenuitem * newitem,
                                     DbusmenuMenuitem * parent,
                                     DbusmenuClient * client,
@@ -282,7 +279,25 @@ new_user_item (DbusmenuMenuitem * newitem,
                DbusmenuClient * client,
                gpointer user_data)
 {
-  g_debug ("new user item  called ");
+  
+
+  GtkWidget* user_item = NULL;
+
+  g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
+  g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
+
+  user_item = user_widget_new(newitem);
+
+  GtkMenuItem *user_widget = GTK_MENU_ITEM(user_item);
+
+  gtk_widget_show_all (user_item);
+  dbusmenu_gtkclient_newitem_base (DBUSMENU_GTKCLIENT(client),
+                                   newitem,
+                                   user_widget,
+                                   parent);
+  return TRUE;
+  
+  /*g_debug ("new user item  called ");
 	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
 	gint padding = 0;
 	gtk_widget_style_get(GTK_WIDGET(gmi), "horizontal-padding", &padding, NULL);
@@ -320,12 +335,14 @@ new_user_item (DbusmenuMenuitem * newitem,
 		gtk_widget_show(usericon);
 	}
 
-	GtkWidget * label = gtk_label_new(dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME));
+	GtkWidget * label = gtk_label_new(dbusmenu_menuitem_property_get (newitem,
+                                                                    USER_ITEM_PROP_NAME));
 	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 	gtk_widget_show(label);
 
-	GtkWidget * icon = gtk_image_new_from_icon_name("account-logged-in", GTK_ICON_SIZE_MENU);
+	GtkWidget * icon = gtk_image_new_from_icon_name ("account-logged-in",
+                                                   GTK_ICON_SIZE_MENU);
 	gtk_misc_set_alignment(GTK_MISC(icon), 1.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
 	if (dbusmenu_menuitem_property_get_bool(newitem, USER_ITEM_PROP_LOGGED_IN)) {
@@ -344,9 +361,10 @@ new_user_item (DbusmenuMenuitem * newitem,
                     G_CALLBACK(user_property_change), icon);
 
 	return TRUE;
+  */
 }
 
-static void
+/*static void
 user_property_change (DbusmenuMenuitem * item,
                       const gchar * property,
                       GVariant * variant,
@@ -360,7 +378,7 @@ user_property_change (DbusmenuMenuitem * item,
 		}
 	}
 	return;
-}
+}*/
 
 static void
 icon_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
@@ -382,7 +400,7 @@ icon_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 		return;
 	}
 
-	indicator_image_helper_update(self->users.image, name);
+	//indicator_image_helper_update(self->users.image, name);
 	return;
 }
 

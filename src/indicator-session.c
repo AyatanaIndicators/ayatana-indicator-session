@@ -153,8 +153,13 @@ indicator_session_init (IndicatorSession *self)
   
   // Setup the handlers for users
 	DbusmenuClient * users_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->users.menu)));
-	dbusmenu_client_add_type_handler(users_client, USER_ITEM_TYPE, new_user_item);
-	dbusmenu_client_add_type_handler_full (users_client, MENU_SWITCH_TYPE, build_menu_switch, self, NULL);
+	dbusmenu_client_add_type_handler (users_client,
+                                    USER_ITEM_TYPE,
+                                    new_user_item);
+	dbusmenu_client_add_type_handler_full (users_client,
+                                         MENU_SWITCH_TYPE,
+                                         build_menu_switch,
+                                         self, NULL);
   
   // Setup the handlers for devices
 	DbusmenuClient * devices_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->devices.menu)));
@@ -290,11 +295,16 @@ new_user_item (DbusmenuMenuitem * newitem,
 
   GtkMenuItem *user_widget = GTK_MENU_ITEM(user_item);
 
-  gtk_widget_show_all (user_item);
   dbusmenu_gtkclient_newitem_base (DBUSMENU_GTKCLIENT(client),
                                    newitem,
                                    user_widget,
                                    parent);
+
+ g_debug ("%s (\"%s\")", __func__,
+           dbusmenu_menuitem_property_get (newitem,
+                                           USER_ITEM_PROP_NAME));
+  gtk_widget_show_all (user_item);
+
   return TRUE;
   
   /*g_debug ("new user item  called ");
@@ -466,7 +476,8 @@ switch_property_change (DbusmenuMenuitem * item,
     no_name_in_lang = TRUE;
   }
 
-  if (variant == NULL || g_variant_get_string(variant, NULL) == NULL || g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
+  if (variant == NULL || g_variant_get_string(variant, NULL) == NULL ||
+      g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
     finalstring = _("Switch User...");
     set_ellipsize = FALSE;
     indicator_session_update_users_label (INDICATOR_SESSION (user_data),

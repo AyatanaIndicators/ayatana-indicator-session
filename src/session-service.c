@@ -506,7 +506,9 @@ rebuild_user_items (DbusmenuMenuitem *root,
         /* Check to see if the guest has sessions and so therefore should
            get a check mark. */
         if (user->sessions != NULL) {
-          dbusmenu_menuitem_property_set_bool (guest_mi, USER_ITEM_PROP_LOGGED_IN, TRUE);
+          dbusmenu_menuitem_property_set_bool (guest_mi,
+                                               USER_ITEM_PROP_LOGGED_IN,
+                                               TRUE);
         }
         /* If we're showing user accounts, keep going through the list */
         if (user_count > MINIMUM_USERS && user_count < MAXIMUM_USERS) {
@@ -526,12 +528,20 @@ rebuild_user_items (DbusmenuMenuitem *root,
         } else {
           dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
         }
-        dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, user->sessions != NULL);
+        dbusmenu_menuitem_property_set_bool (mi,
+                                             USER_ITEM_PROP_LOGGED_IN,
+                                             user->sessions != NULL);
         if (user->icon_file != NULL && user->icon_file[0] != '\0') {
           dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_file);
         } else {
           dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
         }
+        
+        gboolean logged_in = g_strcmp0 (user->user_name, g_get_user_name()) == 0;       
+        dbusmenu_menuitem_property_set_bool (mi,
+                                             USER_ITEM_PROP_IS_CURRENT_USER,
+                                             logged_in);          
+        
         dbusmenu_menuitem_child_append (root, mi);
         g_signal_connect (G_OBJECT (mi),
                           DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
@@ -573,7 +583,7 @@ activate_online_accounts (DbusmenuMenuitem *mi,
                           gpointer user_data)
 {
   GError * error = NULL;
-  if (!g_spawn_command_line_async("gnome-control-center", &error))
+  if (!g_spawn_command_line_async("gnome-control-center online-accounts", &error))
   {
     g_warning("Unable to show control centre: %s", error->message);
     g_error_free(error);

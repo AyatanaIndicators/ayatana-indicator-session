@@ -36,7 +36,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define INDICATOR_SESSION_SERVICE_DBUS_OBJECT "/com/canonical/indicator/session/service"
 #define INDICATOR_SESSION_SERVICE_DBUS_IFACE  "com.canonical.indicator.session.service"
 
-// TODO change the logged in prop to 'has-sessions' in keeping with the spec.
 #define USER_ITEM_TYPE            "x-canonical-user-item"
 #define USER_ITEM_PROP_NAME       "user-item-name"
 #define USER_ITEM_PROP_LOGGED_IN  "user-item-logged-in"

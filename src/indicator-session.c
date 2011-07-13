@@ -140,11 +140,10 @@ indicator_session_init (IndicatorSession *self)
                                      GTK_ICON_LOOKUP_FORCE_SIZE,
                                      &error);
   
-  
-  
   GtkWidget* avatar_icon = NULL;
   
-  if (pixbuf == NULL || error != NULL) {
+  // I think the avatar image is available always but just in case have a fallback
+  if (error != NULL) {
     g_warning ("Could not load the default avatar image for some reason");
     self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
   }
@@ -153,14 +152,12 @@ indicator_session_init (IndicatorSession *self)
     gtk_image_set_from_pixbuf (GTK_IMAGE (avatar_icon), pixbuf);
     self->users.image = GTK_IMAGE (avatar_icon);
     g_object_unref (pixbuf);
+    g_error_free (error);
   }
-  
-  
                                                       
-  //self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
   self->users.label = GTK_LABEL (gtk_label_new (NULL));
   // Only show once we have a valid username
-  gtk_widget_hide (GTK_WIDGET(self->users.label));
+  // gtk_widget_hide (GTK_WIDGET(self->users.label));
 
   // devices
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
@@ -326,117 +323,30 @@ new_user_item (DbusmenuMenuitem * newitem,
                                    user_widget,
                                    parent);
 
- g_debug ("%s (\"%s\")", __func__,
+  g_debug ("%s (\"%s\")", __func__,
            dbusmenu_menuitem_property_get (newitem,
                                            USER_ITEM_PROP_NAME));
   gtk_widget_show_all (user_item);
 
   return TRUE;
-  
-  /*g_debug ("new user item  called ");
-	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
-	gint padding = 0;
-	gtk_widget_style_get(GTK_WIDGET(gmi), "horizontal-padding", &padding, NULL);
-	GtkWidget * hbox = gtk_hbox_new(FALSE, padding);
-
-	GtkWidget * usericon = NULL;
-	const gchar * icon_name = dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_ICON);
-	g_debug("Using user icon for '%s' from file: %s", dbusmenu_menuitem_property_get(newitem, USER_ITEM_PROP_NAME), icon_name);
-	if (icon_name != NULL && icon_name[0] != '\0') {
-		if (g_strcmp0(icon_name, USER_ITEM_ICON_DEFAULT) != 0 && g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
-			gint width, height;
-			gtk_icon_size_lookup(GTK_ICON_SIZE_MENU, &width, &height);
-
-			GError * error = NULL;
-			GdkPixbuf * pixbuf = gdk_pixbuf_new_from_file_at_size(icon_name, width, height, &error);
-
-			if (error == NULL) {
-				usericon = gtk_image_new_from_pixbuf(pixbuf);
-				g_object_unref(pixbuf);
-			} else {
-				g_warning("Unable to load user icon '%s': %s", icon_name, error->message);
-				g_error_free(error);
-			}
-		}
-
-		if (usericon == NULL) {
-			GIcon * gicon = g_themed_icon_new_with_default_fallbacks("stock_person-panel");
-			usericon = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
-			g_object_unref(gicon);
-		}
-	}
-	if (usericon != NULL) {
-		gtk_misc_set_alignment(GTK_MISC(usericon), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(hbox), usericon, FALSE, FALSE, 0);
-		gtk_widget_show(usericon);
-	}
-
-	GtkWidget * label = gtk_label_new(dbusmenu_menuitem_property_get (newitem,
-                                                                    USER_ITEM_PROP_NAME));
-	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-	gtk_widget_show(label);
-
-	GtkWidget * icon = gtk_image_new_from_icon_name ("account-logged-in",
-                                                   GTK_ICON_SIZE_MENU);
-	gtk_misc_set_alignment(GTK_MISC(icon), 1.0, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
-	if (dbusmenu_menuitem_property_get_bool(newitem, USER_ITEM_PROP_LOGGED_IN)) {
-		gtk_widget_show(icon);
-	} else {
-		gtk_widget_hide(icon);
-	}
-
-	gtk_container_add(GTK_CONTAINER(gmi), hbox);
-	gtk_widget_show(hbox);
-
-	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
-
-	g_signal_connect (G_OBJECT(newitem),
-                    DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
-                    G_CALLBACK(user_property_change), icon);
-
-	return TRUE;
-  */
 }
 
-/*static void
-user_property_change (DbusmenuMenuitem * item,
-                      const gchar * property,
-                      GVariant * variant,
-                      gpointer user_data)
-{
-	if (g_strcmp0(property, USER_ITEM_PROP_LOGGED_IN) == 0) {
-		if (g_variant_get_boolean(variant)) {
-			gtk_widget_show(GTK_WIDGET(user_data));
-		} else {
-			gtk_widget_hide(GTK_WIDGET(user_data));
-		}
-	}
-	return;
-}*/
 
 static void
-icon_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
+user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 {
 	IndicatorSession * self = INDICATOR_SESSION(user_data);
 	GError * error = NULL;
-	gchar * name;
 	GVariant * result;
 
 	result = g_dbus_proxy_call_finish(self->service_proxy, res, &error);
 
 	if (error != NULL) {
+    g_warning ("unable to complete real name dbus query");
+    g_error_free (error);
 		return;
 	}
-
-	g_variant_get(result, "(&s)", &name);
-
-	if (name == NULL || name[0] == '\0') {
-		return;
-	}
-
-	//indicator_image_helper_update(self->users.image, name);
+  indicator_session_update_users_label (self, result);
 	return;
 }
 
@@ -446,23 +356,13 @@ service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointe
 	IndicatorSession * self = INDICATOR_SESSION (user_data);
 
 	if (connected) {
-		g_dbus_proxy_call(self->service_proxy, "GetIcon", NULL,
+		g_dbus_proxy_call(self->service_proxy, "GetUserRealName", NULL,
 		                  G_DBUS_CALL_FLAGS_NONE, -1, NULL,
-		                  icon_name_get_cb, user_data);
-	}
-  else {
-		indicator_image_helper_update (self->users.image,
-                                   USER_ITEM_ICON_DEFAULT);
+		                  user_real_name_get_cb, user_data);
 	}
 	return;
 }
 
-static void
-icon_changed (IndicatorSession * session, const gchar * icon_name)
-{
-	indicator_image_helper_update(session->users.image, icon_name);
-	return;
-}
 
 /* Receives all signals from the service, routed to the appropriate functions */
 static void
@@ -474,13 +374,13 @@ receive_signal (GDBusProxy * proxy,
 {
 	IndicatorSession * self = INDICATOR_SESSION(user_data);
 
-	if (g_strcmp0(signal_name, "IconUpdated") == 0) {
-		const gchar *name;
-		g_variant_get (parameters, "(&s)", &name);
-		icon_changed(self, name);
-	}
+	if (g_strcmp0(signal_name, "UserRealNameUpdated") == 0) {
+    indicator_session_update_users_label (self, parameters);	
+  }
 	return;
 }
+
+
 
 static void
 switch_property_change (DbusmenuMenuitem * item,
@@ -506,12 +406,6 @@ switch_property_change (DbusmenuMenuitem * item,
       g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
     finalstring = _("Switch User...");
     set_ellipsize = FALSE;
-    indicator_session_update_users_label (INDICATOR_SESSION (user_data),
-                                          NULL);                                                                                                 
-  }
-  else{
-    indicator_session_update_users_label (INDICATOR_SESSION (user_data),
-                                          variant);                                                                                             
   }
 
   if (finalstring == NULL) {
@@ -642,9 +536,7 @@ build_menu_switch (DbusmenuMenuitem * newitem,
 	if (gmi == NULL) {
 		return FALSE;
 	}
-  
-  IndicatorSession* self = INDICATOR_SESSION (user_data);
-	
+  	
   g_object_set_data(G_OBJECT(gmi), dbusmenu_item_data, newitem);
 
 	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
@@ -661,10 +553,7 @@ build_menu_switch (DbusmenuMenuitem * newitem,
 	switch_property_change (newitem,
                           MENU_SWITCH_USER,
                           dbusmenu_menuitem_property_get_variant(newitem, MENU_SWITCH_USER), client);
-  
-  indicator_session_update_users_label (self,
-                                        dbusmenu_menuitem_property_get_variant(newitem, MENU_SWITCH_USER));
-	
+  	
   return TRUE;
 }
 
@@ -675,16 +564,15 @@ indicator_session_update_users_label (IndicatorSession* self,
   const gchar* username = NULL;
   if (variant == NULL || g_variant_get_string(variant, NULL) == NULL ||
       g_variant_get_string(variant, NULL)[0] == '\0'){
-        // either way set the user label to blank
-        gtk_label_set_text (self->users.label, "");
-        return;
+      gtk_widget_hide(GTK_WIDGET(self->users.label));
+      return;
   }
   
-  username = g_variant_get_string(variant, NULL);
+  username = g_strdup (g_variant_get_string(variant, NULL));
 
   // Just in case protect again.
   if (username != NULL) {
-    g_debug ("Updating username label ");
+    g_debug ("!!!!!!!!!!!!update users label: %s", username);
     gtk_label_set_text (self->users.label, username);
     gtk_widget_show(GTK_WIDGET(self->users.label));
   }

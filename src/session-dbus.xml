@@ -3,11 +3,11 @@
   <interface name="com.canonical.indicator.session.service">
 
     <!-- Icon -->
-    <method name="GetIcon">
+    <method name="GetUserRealName">
       <arg name="name" direction="out" type="s"/>
     </method>
 
-    <signal name="IconUpdated">
+    <signal name="UserRealNameUpdated">
       <arg name="name" type="s"/>
     </signal>
 

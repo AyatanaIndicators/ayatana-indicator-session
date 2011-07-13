@@ -143,7 +143,6 @@ keybinding_changed (GConfClient *client,
 			dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, gconf_value_get_string(value));
 		}
 	}
-
 	return;
 }
 
@@ -161,7 +160,7 @@ ensure_gconf_client (void)
 		gconf_client_add_dir(gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 		gconf_client_notify_add(gconf_client, KEYBINDING_DIR, keybinding_changed, NULL, NULL, NULL);
 	}
-	return;
+ 	return;
 }
 
 /* Check to see if the lockdown key is protecting from
@@ -541,6 +540,9 @@ rebuild_user_items (DbusmenuMenuitem *root,
         dbusmenu_menuitem_property_set_bool (mi,
                                              USER_ITEM_PROP_IS_CURRENT_USER,
                                              logged_in);          
+        if (logged_in == TRUE){
+          session_dbus_set_name (session_dbus, user->real_name);
+        }
         
         dbusmenu_menuitem_child_append (root, mi);
         g_signal_connect (G_OBJECT (mi),
@@ -800,8 +802,8 @@ main (int argc, char ** argv)
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
 
-	IndicatorService * service = indicator_service_new_version(INDICATOR_SESSION_DBUS_NAME,
-		                                                   INDICATOR_SESSION_DBUS_VERSION);
+	IndicatorService * service = indicator_service_new_version (INDICATOR_SESSION_DBUS_NAME,
+      		                                                    INDICATOR_SESSION_DBUS_VERSION);
 	g_signal_connect(G_OBJECT(service),
                    INDICATOR_SERVICE_SIGNAL_SHUTDOWN,
                    G_CALLBACK(service_shutdown), NULL);

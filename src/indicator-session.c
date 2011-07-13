@@ -89,10 +89,11 @@ static gboolean build_restart_item (DbusmenuMenuitem * newitem,
                                     DbusmenuClient * client,
                                     gpointer user_data);
 static void indicator_session_update_users_label (IndicatorSession* self,
-                                                  GVariant * variant);
+                                                  const gchar* name);
 static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
 static void receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name, GVariant * parameters, gpointer user_data);
 static void service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data);
+static void user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data);
 
 static void indicator_session_class_init (IndicatorSessionClass *klass);
 static void indicator_session_init       (IndicatorSession *self);
@@ -128,6 +129,8 @@ indicator_session_init (IndicatorSession *self)
 	g_signal_connect(G_OBJECT(self->service),
                    INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE,
                    G_CALLBACK(service_connection_cb), self);
+
+  GtkWidget* avatar_icon = NULL;
   // users
   self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new (INDICATOR_USERS_DBUS_NAME,
                                                       INDICATOR_USERS_DBUS_OBJECT));
@@ -139,8 +142,6 @@ indicator_session_init (IndicatorSession *self)
                                      17,
                                      GTK_ICON_LOOKUP_FORCE_SIZE,
                                      &error);
-  
-  GtkWidget* avatar_icon = NULL;
   
   // I think the avatar image is available always but just in case have a fallback
   if (error != NULL) {
@@ -192,19 +193,6 @@ indicator_session_init (IndicatorSession *self)
   
 	GtkAccelGroup * agroup = gtk_accel_group_new();
 	dbusmenu_gtkclient_set_accel_group(DBUSMENU_GTKCLIENT(devices_client), agroup);
-
-	self->service_proxy_cancel = g_cancellable_new();
-
-	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
-	      	                  G_DBUS_PROXY_FLAGS_NONE,
-		                        NULL,
-		                        INDICATOR_SESSION_DBUS_NAME,
-		                        INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
-		                        INDICATOR_SESSION_SERVICE_DBUS_IFACE,
-		                        self->service_proxy_cancel,
-		                        service_proxy_cb,
-                            self);
-
 	return;
 }
 
@@ -249,9 +237,59 @@ indicator_session_finalize (GObject *object)
 	return;
 }
 
-/* Callback from trying to create the proxy for the service, this
-   could include starting the service.  Sometime it'll fail and
-   we'll try to start that dang service again! */
+static GList*
+indicator_session_get_entries (IndicatorObject* obj)
+{
+	g_return_val_if_fail(IS_INDICATOR_SESSION(obj), NULL);
+  IndicatorSession* self = INDICATOR_SESSION (obj);
+  
+	GList * retval = NULL;
+
+  retval = g_list_prepend (retval, &self->users);
+  retval = g_list_prepend (retval, &self->devices);
+
+	if (retval != NULL) {
+		retval = g_list_reverse(retval);
+	}
+	return retval;  
+}
+
+/* callback for the service manager state of being */
+static void
+service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data)
+{
+	IndicatorSession * self = INDICATOR_SESSION (user_data);
+
+	if (connected) {
+    if (self->service_proxy != NULL){
+      // Its a reconnect !
+      // fetch the users's real name and return
+      g_dbus_proxy_call (self->service_proxy,
+                         "GetUserRealName",
+                         NULL,
+                         G_DBUS_CALL_FLAGS_NONE,
+                         -1,
+                         NULL,
+                         user_real_name_get_cb,
+                         user_data);      
+      return;
+    }
+    
+	  self->service_proxy_cancel = g_cancellable_new();
+	  g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+                              G_DBUS_PROXY_FLAGS_NONE,
+                              NULL,
+                              INDICATOR_SESSION_DBUS_NAME,
+                              INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+                              INDICATOR_SESSION_SERVICE_DBUS_IFACE,
+                              self->service_proxy_cancel,
+                              service_proxy_cb,
+                              self);
+  }    
+	return;
+}
+
+
 static void
 service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 {
@@ -278,29 +316,20 @@ service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	self->service_proxy = proxy;
 
 	g_signal_connect(proxy, "g-signal", G_CALLBACK(receive_signal), self);
-
+  
+  // Fetch the user's real name for the user entry label
+  g_dbus_proxy_call (self->service_proxy,
+                     "GetUserRealName",
+                     NULL,
+                     G_DBUS_CALL_FLAGS_NONE,
+                     -1,
+                     NULL,
+                     user_real_name_get_cb,
+                     user_data);
 	return;
 }
 
 
-static GList*
-indicator_session_get_entries (IndicatorObject* obj)
-{
-	g_return_val_if_fail(IS_INDICATOR_SESSION(obj), NULL);
-  IndicatorSession* self = INDICATOR_SESSION (obj);
-  
-	GList * retval = NULL;
-
-  retval = g_list_prepend (retval, &self->users);
-  retval = g_list_prepend (retval, &self->devices);
-
-	if (retval != NULL) {
-		retval = g_list_reverse(retval);
-	}
-	return retval;  
-}
-
-/* Builds an item with a hip little logged in icon. */
 static gboolean
 new_user_item (DbusmenuMenuitem * newitem,
                DbusmenuMenuitem * parent,
@@ -346,20 +375,10 @@ user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
     g_error_free (error);
 		return;
 	}
-  indicator_session_update_users_label (self, result);
-	return;
-}
-
-static void
-service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data)
-{
-	IndicatorSession * self = INDICATOR_SESSION (user_data);
-
-	if (connected) {
-		g_dbus_proxy_call(self->service_proxy, "GetUserRealName", NULL,
-		                  G_DBUS_CALL_FLAGS_NONE, -1, NULL,
-		                  user_real_name_get_cb, user_data);
-	}
+  
+  const gchar* username = NULL;
+  g_variant_get (result, "(s)", &username);
+  indicator_session_update_users_label (self, username);
 	return;
 }
 
@@ -375,7 +394,9 @@ receive_signal (GDBusProxy * proxy,
 	IndicatorSession * self = INDICATOR_SESSION(user_data);
 
 	if (g_strcmp0(signal_name, "UserRealNameUpdated") == 0) {
-    indicator_session_update_users_label (self, parameters);	
+    const gchar* username = NULL;
+    g_variant_get (parameters, "(s)", &username);
+    indicator_session_update_users_label (self, username);	
   }
 	return;
 }
@@ -559,25 +580,14 @@ build_menu_switch (DbusmenuMenuitem * newitem,
 
 static void
 indicator_session_update_users_label (IndicatorSession* self, 
-                                      GVariant * variant)
+                                      const gchar* name)
 {
-  const gchar* username = NULL;
-  if (variant == NULL || g_variant_get_string(variant, NULL) == NULL ||
-      g_variant_get_string(variant, NULL)[0] == '\0'){
-      gtk_widget_hide(GTK_WIDGET(self->users.label));
-      return;
-  }
+  g_debug ("update users label");
   
-  username = g_strdup (g_variant_get_string(variant, NULL));
-
-  // Just in case protect again.
-  if (username != NULL) {
-    g_debug ("!!!!!!!!!!!!update users label: %s", username);
-    gtk_label_set_text (self->users.label, username);
-    gtk_widget_show(GTK_WIDGET(self->users.label));
-  }
-  else {
+  if (name == NULL){
     gtk_widget_hide(GTK_WIDGET(self->users.label));
-  }
+    return;
+  }  
+  gtk_label_set_text (self->users.label, g_strdup(name));
+  gtk_widget_show(GTK_WIDGET(self->users.label));
 }
-

@@ -541,7 +541,9 @@ rebuild_user_items (DbusmenuMenuitem *root,
                                              USER_ITEM_PROP_IS_CURRENT_USER,
                                              logged_in);          
         if (logged_in == TRUE){
-          session_dbus_set_name (session_dbus, user->real_name);
+          g_debug ("about to set the users real name to %s for user %s",
+                    user->real_name, user->user_name);
+          session_dbus_set_users_real_name (session_dbus, user->real_name);
         }
         
         dbusmenu_menuitem_child_append (root, mi);

@@ -24,12 +24,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __DBUS_SHARED_NAMES_H__
 #define __DBUS_SHARED_NAMES_H__ 1
 
-#define INDICATOR_STATUS_DBUS_NAME  "com.canonical.indicator.status"
-#define INDICATOR_STATUS_DBUS_OBJECT "/com/canonical/indicator/status/menu"
-#define INDICATOR_STATUS_SERVICE_DBUS_OBJECT "/com/canonical/indicator/status/service"
-#define INDICATOR_STATUS_SERVICE_DBUS_INTERFACE "com.canonical.indicator.status.service"
-
-#define INDICATOR_USERS_DBUS_NAME  "com.canonical.indicator.users"
+#define INDICATOR_USERS_DBUS_NAME  INDICATOR_SESSION_DBUS_NAME
 #define INDICATOR_USERS_DBUS_OBJECT "/com/canonical/indicator/users/menu"
 #define INDICATOR_USERS_SERVICE_DBUS_OBJECT "/org/gnome/DisplayManager/UserManager"
 #define INDICATOR_USERS_SERVICE_DBUS_INTERFACE "org.gnome.DisplayManager.UserManager"
@@ -44,8 +39,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USER_ITEM_TYPE            "x-canonical-user-item"
 #define USER_ITEM_PROP_NAME       "user-item-name"
 #define USER_ITEM_PROP_LOGGED_IN  "user-item-logged-in"
+#define USER_ITEM_PROP_IS_CURRENT_USER "user-item-is-current-user"
 #define USER_ITEM_PROP_ICON       "user-item-icon-path"
-#define USER_ITEM_ICON_DEFAULT    "default-icon"
+#define USER_ITEM_ICON_DEFAULT    "user-offline"
 
 #define RESTART_ITEM_TYPE         "x-canonical-restart-item"
 #define RESTART_ITEM_LABEL        "restart-label"

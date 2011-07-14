@@ -5,6 +5,7 @@ Copyright 2010 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Conor Curran <conor.curran@canonical.com>
 
 This program is free software: you can redistribute it and/or modify it 
 under the terms of the GNU General Public License version 3, as published 
@@ -28,7 +29,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "session-dbus.h"
 #include "dbus-shared-names.h"
 
-static GVariant * get_icon (SessionDbus * service);
+static GVariant * get_users_real_name (SessionDbus * service);
 static void bus_get_cb (GObject * object, GAsyncResult * res, gpointer user_data);
 static void bus_method_call (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * method, GVariant * params, GDBusMethodInvocation * invocation, gpointer user_data);
 
@@ -37,6 +38,7 @@ static void bus_method_call (GDBusConnection * connection, const gchar * sender,
 typedef struct _SessionDbusPrivate SessionDbusPrivate;
 struct _SessionDbusPrivate {
 	gchar * name;
+  gboolean user_menu_is_visible;
 	GDBusConnection * bus;
 	GCancellable * bus_cancel;
 	guint dbus_registration;
@@ -98,10 +100,11 @@ session_dbus_init (SessionDbus *self)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(self);
 
-	priv->name = g_strdup(ICON_DEFAULT);
+	priv->name = NULL;
 	priv->bus = NULL;
 	priv->bus_cancel = NULL;
 	priv->dbus_registration = 0;
+  priv->user_menu_is_visible = FALSE;
 
 	priv->bus_cancel = g_cancellable_new();
 	g_bus_get(G_BUS_TYPE_SESSION,
@@ -160,15 +163,20 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
                  const gchar * method, GVariant * params,
                  GDBusMethodInvocation * invocation, gpointer user_data)
 {
-	SessionDbus * service = SESSION_DBUS(user_data);
+	SessionDbus * service = SESSION_DBUS (user_data);
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE (service);
+
 	GVariant * retval = NULL;
 
-	if (g_strcmp0(method, "GetIcon") == 0) {
-		retval = get_icon(service);
-	} else {
-		g_warning("Calling method '%s' on the indicator service and it's unknown", method);
+	if (g_strcmp0(method, "GetUserRealName") == 0) {
+		retval = get_users_real_name (service);
 	}
-
+  else if (g_strcmp0 (method, "GetUserMenuVisibility") == 0){
+    retval =  g_variant_new ("(b)", priv->user_menu_is_visible);
+  }
+  else {
+    g_warning("Calling method '%s' on the indicator service and it's unknown", method);
+	}
 	g_dbus_method_invocation_return_value(invocation, retval);
 	return;
 }
@@ -214,10 +222,10 @@ session_dbus_finalize (GObject *object)
 }
 
 static GVariant *
-get_icon (SessionDbus * service)
+get_users_real_name (SessionDbus * service)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(service);
-	return g_variant_new("(s)", priv->name);
+	return g_variant_new ("(s)", priv->name);
 }
 
 SessionDbus *
@@ -229,29 +237,59 @@ session_dbus_new (void)
 void
 session_dbus_set_name (SessionDbus * session, const gchar * name)
 {
+}
+
+void
+session_dbus_set_users_real_name (SessionDbus * session, const gchar * name)
+{
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
 	GError * error = NULL;
 	if (priv->name != NULL) {
 		g_free(priv->name);
 		priv->name = NULL;
 	}
+    
 	priv->name = g_strdup(name);
 
 	if (priv->bus != NULL) {
 		g_dbus_connection_emit_signal (priv->bus,
-			                       NULL,
-			                       INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
-			                       INDICATOR_SESSION_SERVICE_DBUS_IFACE,
-			                       "IconUpdated",
-			                       g_variant_new ("(s)", priv->name, NULL),
-			                       &error);
+                                   NULL,
+                                   INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+                                   INDICATOR_SESSION_SERVICE_DBUS_IFACE,
+                                   "UserRealNameUpdated",
+                                   g_variant_new ("(s)", priv->name, NULL),
+                                   &error);
 
 		if (error != NULL) {
-			g_warning("Unable to send IconUpdated signal: %s", error->message);
+			g_warning("Unable to send UserRealNameUpdated signal: %s", error->message);
 			g_error_free(error);
 			return;
 		}
 	}
-
 	return;
+}
+
+void 
+session_dbus_set_user_menu_visibility (SessionDbus* session,
+                                       gboolean visible)
+{
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
+	GError * error = NULL;
+    
+	priv->user_menu_is_visible = visible;
+
+	if (priv->bus != NULL) {
+		g_dbus_connection_emit_signal (priv->bus,
+                                   NULL,
+                                   INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+                                   INDICATOR_SESSION_SERVICE_DBUS_IFACE,
+                                   "UserMenuIsVisible",
+                                   g_variant_new ("(b)", priv->user_menu_is_visible),
+                                   &error);
+
+		if (error != NULL) {
+			g_warning("Unable to send UserMenuIsVisible signal: %s", error->message);
+			g_error_free(error);
+		}
+	}  
 }

@@ -73,7 +73,8 @@ am__installdirs = "$(DESTDIR)$(sessionlibdir)" \
 LTLIBRARIES = $(sessionlib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libsession_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_libsession_la_OBJECTS = libsession_la-indicator-session.lo
+am_libsession_la_OBJECTS = libsession_la-indicator-session.lo \
+	libsession_la-user-widget.lo
 libsession_la_OBJECTS = $(am_libsession_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -310,6 +311,8 @@ libsession_la_SOURCES = \
 	gen-session-dbus.xml.h \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
+	user-widget.c \
+	user-widget.h \
 	accounts-service-client.h \
 	accounts-service-user-client.h
 
@@ -530,6 +533,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-service.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-users-service-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsession_la-indicator-session.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsession_la-user-widget.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -562,6 +566,14 @@ libsession_la-indicator-session.lo: indicator-session.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='indicator-session.c' object='libsession_la-indicator-session.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsession_la_CFLAGS) $(CFLAGS) -c -o libsession_la-indicator-session.lo `test -f 'indicator-session.c' || echo '$(srcdir)/'`indicator-session.c
+
+libsession_la-user-widget.lo: user-widget.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsession_la_CFLAGS) $(CFLAGS) -MT libsession_la-user-widget.lo -MD -MP -MF $(DEPDIR)/libsession_la-user-widget.Tpo -c -o libsession_la-user-widget.lo `test -f 'user-widget.c' || echo '$(srcdir)/'`user-widget.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsession_la-user-widget.Tpo $(DEPDIR)/libsession_la-user-widget.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='user-widget.c' object='libsession_la-user-widget.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsession_la_CFLAGS) $(CFLAGS) -c -o libsession_la-user-widget.lo `test -f 'user-widget.c' || echo '$(srcdir)/'`user-widget.c
 
 gtk_logout_helper-gtk-logout-helper.o: gtk-logout-helper.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gtk-logout-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Tpo -c -o gtk_logout_helper-gtk-logout-helper.o `test -f 'gtk-logout-helper.c' || echo '$(srcdir)/'`gtk-logout-helper.c

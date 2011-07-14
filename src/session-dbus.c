@@ -225,7 +225,6 @@ static GVariant *
 get_users_real_name (SessionDbus * service)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(service);
-  g_debug ("Get users real name: %s", priv->name);
 	return g_variant_new ("(s)", priv->name);
 }
 
@@ -249,9 +248,7 @@ session_dbus_set_users_real_name (SessionDbus * session, const gchar * name)
 		g_free(priv->name);
 		priv->name = NULL;
 	}
-  
-  g_debug ("sesssion dbus set name with %s", name);
-  
+    
 	priv->name = g_strdup(name);
 
 	if (priv->bus != NULL) {
@@ -278,9 +275,7 @@ session_dbus_set_user_menu_visibility (SessionDbus* session,
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
 	GError * error = NULL;
-  
-  g_debug ("sesssion dbus set user visibility - %i", visible);
-  
+    
 	priv->user_menu_is_visible = visible;
 
 	if (priv->bus != NULL) {

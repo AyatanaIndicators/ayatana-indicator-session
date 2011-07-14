@@ -102,7 +102,9 @@ static void indicator_session_init       (IndicatorSession *self);
 static void indicator_session_dispose    (GObject *object);
 static void indicator_session_finalize   (GObject *object);
 static GList* indicator_session_get_entries (IndicatorObject* obj);
-
+static guint indicator_session_get_location (IndicatorObject * io,
+                                             IndicatorObjectEntry * entry);
+                                             
 G_DEFINE_TYPE (IndicatorSession, indicator_session, INDICATOR_OBJECT_TYPE);
 
 static void 
@@ -115,6 +117,7 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 
 	IndicatorObjectClass * io_class = INDICATOR_OBJECT_CLASS(klass);
   io_class->get_entries = indicator_session_get_entries;
+  io_class->get_location = indicator_session_get_location;
 	return;
 }
 
@@ -246,6 +249,7 @@ indicator_session_get_entries (IndicatorObject* obj)
 	g_return_val_if_fail(IS_INDICATOR_SESSION(obj), NULL);
   IndicatorSession* self = INDICATOR_SESSION (obj);
   
+  g_debug ("get entries");
 	GList * retval = NULL;
   // Only show the users menu if we have more than one
   if (self->show_users_entry == TRUE){
@@ -257,6 +261,21 @@ indicator_session_get_entries (IndicatorObject* obj)
 		retval = g_list_reverse(retval);
 	}
 	return retval;  
+}
+
+static guint
+indicator_session_get_location (IndicatorObject * io,
+                                IndicatorObjectEntry * entry)
+{  
+	IndicatorSession * self = INDICATOR_SESSION (io);
+  if (entry == &self->users){
+    return 1;
+  }
+  else if (entry == &self->devices){
+    return 0;
+  }
+  g_warning ("IOEntry handed to us to position but we don't own it!");
+  return -1;
 }
 
 /* callback for the service manager state of being */
@@ -421,15 +440,28 @@ user_menu_visibility_get_cb (GObject* obj, GAsyncResult* res, gpointer user_data
 	}
   gboolean update;
   g_variant_get (result, "(b)", &update);
-  g_debug ("GET VISIBILITY CB: NEW VALUE = %i", update);
+  
+  // If it is what we had before no need to do anything...
+  if (self->show_users_entry == update){
+    return;
+  }
+  
+  //Otherwise
   self->show_users_entry = update;
-  g_signal_emit_by_name (user_data,
-                         "entry-added",
-                         self->parent,
-                         self->users);   
-	return;  
-}
 
+  IndicatorObjectEntry user_entry = self->users;
+  
+  if (self->show_users_entry == TRUE){
+    g_signal_emit_by_name ((gpointer)self,
+                           "entry-added",
+                           &user_entry);   
+  }
+  else{
+    g_signal_emit_by_name ((gpointer)self,
+                           "entry-removed",
+                           &user_entry);       
+  }
+}
 
 /* Receives all signals from the service, routed to the appropriate functions */
 static void
@@ -447,10 +479,30 @@ receive_signal (GDBusProxy * proxy,
     indicator_session_update_users_label (self, username);	
   }
   else if (g_strcmp0(signal_name, "UserMenuIsVisible") == 0) {
-    gboolean result = g_variant_get_boolean (parameters); 
-    g_debug ("GET VISIBILITY signal: NEW VALUE = %i", result);
+    gboolean update;
+    g_variant_get (parameters, "(b)", &update);
+    
+    // If it is what we had before no need to do anything...
+    if (self->show_users_entry == update){
+      return;
+    }
+    
+    //Otherwise
+    self->show_users_entry = update;
+
+    IndicatorObjectEntry user_entry = self->users;
+    
+    if (self->show_users_entry == TRUE){
+      g_signal_emit_by_name ((gpointer)self,
+                             "entry-added",
+                             &user_entry);
+    }   
+    else{
+      g_signal_emit_by_name ((gpointer)self,
+                             "entry-removed",
+                             &user_entry);       
+    }
   }
-	return;
 }
 
 

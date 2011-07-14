@@ -490,7 +490,7 @@ rebuild_user_items (DbusmenuMenuitem *root,
     GList * users = NULL;
     users = users_service_dbus_get_user_list (service);
     guint user_count = g_list_length(users);
-    g_debug ("USER COUNT = %i", user_count);
+    // g_debug ("USER COUNT = %i", user_count);
     // We only want to show this menu when we have more than one registered 
     // user
     session_dbus_set_user_menu_visibility (session_dbus, user_count > 1);

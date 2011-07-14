@@ -275,7 +275,7 @@ indicator_session_get_location (IndicatorObject * io,
     return 0;
   }
   g_warning ("IOEntry handed to us to position but we don't own it!");
-  return -1;
+  return 0;
 }
 
 /* callback for the service manager state of being */

@@ -27,7 +27,8 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, upower
 Recommends: indicator-applet (>= 0.2) | indicator-renderer
 Suggests: lightdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
-Replaces: indicator-sus
+Replaces: indicator-sus, indicator-me
+Breaks: indicator-me
 Description: Indicator showing session management, status and user switching.
  This indicator is designed to be placed on the right side of a panel and
  give the user easy control for changing their instant message status.  

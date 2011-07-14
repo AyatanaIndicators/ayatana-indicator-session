@@ -38,6 +38,7 @@ static void bus_method_call (GDBusConnection * connection, const gchar * sender,
 typedef struct _SessionDbusPrivate SessionDbusPrivate;
 struct _SessionDbusPrivate {
 	gchar * name;
+  gboolean user_menu_is_visible;
 	GDBusConnection * bus;
 	GCancellable * bus_cancel;
 	guint dbus_registration;
@@ -103,6 +104,7 @@ session_dbus_init (SessionDbus *self)
 	priv->bus = NULL;
 	priv->bus_cancel = NULL;
 	priv->dbus_registration = 0;
+  priv->user_menu_is_visible = FALSE;
 
 	priv->bus_cancel = g_cancellable_new();
 	g_bus_get(G_BUS_TYPE_SESSION,
@@ -161,15 +163,20 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
                  const gchar * method, GVariant * params,
                  GDBusMethodInvocation * invocation, gpointer user_data)
 {
-	SessionDbus * service = SESSION_DBUS(user_data);
+	SessionDbus * service = SESSION_DBUS (user_data);
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE (service);
+
 	GVariant * retval = NULL;
 
 	if (g_strcmp0(method, "GetUserRealName") == 0) {
 		retval = get_users_real_name (service);
-	} else {
-		g_warning("Calling method '%s' on the indicator service and it's unknown", method);
 	}
-
+  else if (g_strcmp0 (method, "GetUserMenuVisibility") == 0){
+    retval =  g_variant_new ("(b)", priv->user_menu_is_visible);
+  }
+  else {
+    g_warning("Calling method '%s' on the indicator service and it's unknown", method);
+	}
 	g_dbus_method_invocation_return_value(invocation, retval);
 	return;
 }
@@ -263,4 +270,31 @@ session_dbus_set_users_real_name (SessionDbus * session, const gchar * name)
 		}
 	}
 	return;
+}
+
+void 
+session_dbus_set_user_menu_visibility (SessionDbus* session,
+                                       gboolean visible)
+{
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
+	GError * error = NULL;
+  
+  g_debug ("sesssion dbus set user visibility - %i", visible);
+  
+	priv->user_menu_is_visible = visible;
+
+	if (priv->bus != NULL) {
+		g_dbus_connection_emit_signal (priv->bus,
+                                   NULL,
+                                   INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+                                   INDICATOR_SESSION_SERVICE_DBUS_IFACE,
+                                   "UserMenuIsVisible",
+                                   g_variant_new ("(b)", priv->user_menu_is_visible),
+                                   &error);
+
+		if (error != NULL) {
+			g_warning("Unable to send UserMenuIsVisible signal: %s", error->message);
+			g_error_free(error);
+		}
+	}  
 }

@@ -176,10 +176,10 @@ indicator_session_init (IndicatorSession *self)
   gtk_widget_show (GTK_WIDGET(self->users.image));
   gtk_widget_show (GTK_WIDGET(self->users.menu));
   
-  g_object_ref (self->users.menu);
-  g_object_ref (self->users.image);
-  g_object_ref (self->devices.menu);
-  g_object_ref (self->devices.image);
+  g_object_ref_sink (self->users.menu);
+  g_object_ref_sink (self->users.image);
+  g_object_ref_sink (self->devices.menu);
+  g_object_ref_sink (self->devices.image);
   
   // Setup the handlers for users
 	DbusmenuClient * users_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->users.menu)));

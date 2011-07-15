@@ -18,7 +18,7 @@
 
  */
 
-#include "user-menu-mgr.h"
+#include "users-menu-mgr.h"
 #include "gconf-helper.h"
 #include "users-service-dbus.h"
 

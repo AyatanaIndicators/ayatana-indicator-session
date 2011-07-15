@@ -595,15 +595,15 @@ main (int argc, char ** argv)
   DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
   dbusmenu_server_set_root(server, session_root_menuitem);
     
-    
   // Users
-  UserMenuMgr* user_mgr = g_object_new (USER_TYPE_MENU_MGR, NULL);
+  UserMenuMgr* user_mgr = user_menu_mgr_new (session_dbus);
     
   setup_restart_watch();
 	setup_up();
 
-  DbusmenuServer * users_server = dbusmenu_server_new (INDICATOR_USERS_DBUS_OBJECT);
-  dbusmenu_server_set_root (users_server, user_mgr->root_item);
+  DbusmenuServer* users_server = dbusmenu_server_new (INDICATOR_USERS_DBUS_OBJECT);
+  
+  dbusmenu_server_set_root (users_server, user_mgr_get_root_item (user_mgr));
 
   mainloop = g_main_loop_new(NULL, FALSE);
   g_main_loop_run(mainloop);

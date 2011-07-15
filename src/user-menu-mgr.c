@@ -18,7 +18,6 @@
 
  */
 
-#include <libdbusmenu-gtk3/menuitem.h>
 #include <libdbusmenu-glib/client.h>
 
 #include "user-menu-mgr.h"
@@ -26,12 +25,19 @@
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"
-
+#include "users-service-dbus.h"
 
 static GConfClient * gconf_client = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
-G_DEFINE_TYPE (UserMenuMgr, user_menu_mgr, G_TYPE_OBJECT);
+struct _UserMenuMgr
+{
+	GObject parent_instance;
+  UsersServiceDbus* users_dbus_interface;
+  DbusmenuMenuitem* root_item;
+  gint user_count;
+  SessionDbus* session_dbus_interface;  
+};
 
 static void activate_new_session (DbusmenuMenuitem * mi,
                                   guint timestamp,
@@ -50,13 +56,16 @@ static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
 
+static void ensure_gconf_client ();
+
+G_DEFINE_TYPE (UserMenuMgr, user_menu_mgr, G_TYPE_OBJECT);
+
 
 static void
 user_menu_mgr_init (UserMenuMgr *self)
 {
   self->users_dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
   self->root_item = dbusmenu_menuitem_new ();
-  user_menu_mgr_rebuild_items (self);  
   g_signal_connect (G_OBJECT (self->users_dbus_interface),
                     "user-added",
                     G_CALLBACK (user_change),
@@ -81,18 +90,6 @@ user_menu_mgr_class_init (UserMenuMgrClass *klass)
 	//GObjectClass* parent_class = G_OBJECT_CLASS (klass);
 
 	object_class->finalize = user_menu_mgr_finalize;
-}
-
-/* Ensures that we have a GConf client and if we build one
-   set up the signal handler. */
-static void
-ensure_gconf_client ()
-{
-	if (!gconf_client) {
-		gconf_client = gconf_client_get_default ();
-		gconf_client_add_dir (gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_add_dir (gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-	}
 }
 
 /* Builds up the menu for us */
@@ -144,11 +141,8 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
     users = users_service_dbus_get_user_list (self->users_dbus_interface);
     self->user_count = g_list_length(users);
     
-    // TODO !!!!!
-    // g_debug ("USER COUNT = %i", user_count);
-    // We only want to show this menu when we have more than one registered 
-    // user
-    // session_dbus_set_user_menu_visibility (session_dbus, user_count > 1);
+    g_debug ("USER COUNT = %i", self->user_count);
+    session_dbus_set_user_menu_visibility (self->session_dbus_interface, self->user_count > 1);
 
     if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
       users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
@@ -199,13 +193,11 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
         dbusmenu_menuitem_property_set_bool (mi,
                                              USER_ITEM_PROP_IS_CURRENT_USER,
                                              logged_in);          
-        // TODO
-        // Figure where this lives.
-        /*if (logged_in == TRUE){
+        if (logged_in == TRUE){
           g_debug ("about to set the users real name to %s for user %s",
                     user->real_name, user->user_name);
-          session_dbus_set_users_real_name (session_dbus, user->real_name);
-        }*/
+          session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+        }
         
         dbusmenu_menuitem_child_append (self->root_item, mi);
         g_signal_connect (G_OBJECT (mi),
@@ -333,4 +325,34 @@ user_change (UsersServiceDbus *service,
 	return;
 }
 
+/* Ensures that we have a GConf client and if we build one
+   set up the signal handler. */
+static void
+ensure_gconf_client ()
+{
+	if (!gconf_client) {
+		gconf_client = gconf_client_get_default ();
+		gconf_client_add_dir (gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_add_dir (gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+	}
+}
+
+DbusmenuMenuitem*
+user_mgr_get_root_item (UserMenuMgr* self)
+{
+  return self->root_item;
+}
+
+
+/*
+ * Clean Entry Point 
+ */
+UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus)
+{
+  UserMenuMgr* user_mgr = g_object_new (USER_TYPE_MENU_MGR, NULL);
+  user_mgr->session_dbus_interface = session_dbus;
+  user_menu_mgr_rebuild_items (user_mgr);    
+  return user_mgr;
+}
+  
 

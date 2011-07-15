@@ -21,8 +21,11 @@
 #ifndef _USER_MENU_MGR_H_
 #define _USER_MENU_MGR_H_
 
+
 #include <glib-object.h>
-#include "users-service-dbus.h"
+#include <libdbusmenu-gtk3/menuitem.h>
+
+#include "session-dbus.h"
 
 G_BEGIN_DECLS
 
@@ -41,16 +44,10 @@ struct _UserMenuMgrClass
 	GObjectClass parent_class;
 };
 
-struct _UserMenuMgr
-{
-	GObject parent_instance;
-  UsersServiceDbus* users_dbus_interface;
-  DbusmenuMenuitem* root_item;
-  gint user_count;
-};
-
 GType user_menu_mgr_get_type (void) G_GNUC_CONST;
+UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus);
 
+DbusmenuMenuitem* user_mgr_get_root_item (UserMenuMgr* self);
 G_END_DECLS
 
 #endif /* _USER_MENU_MGR_H_ */

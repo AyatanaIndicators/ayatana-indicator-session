@@ -44,14 +44,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
 #include "users-service-dbus.h"
-#include "users-menu-mgr.h"
+#include "user-menu-mgr.h"
 
 #include "gconf-helper.h"
 
 #include "session-dbus.h"
 #include "lock-helper.h"
 #include "upower-client.h"
-
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
@@ -160,9 +159,8 @@ lock_if_possible (void) {
 	ensure_gconf_client ();
 
 	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
-		lock_screen(NULL, 0, NULL);
+		lock_screen (NULL, 0, NULL);
 	}
-
 	return;
 }
 
@@ -600,19 +598,7 @@ main (int argc, char ** argv)
     
   // Users
   UserMenuMgr* user_mgr = g_object_new (USER_TYPE_MENU_MGR, NULL);
-  
-  //users_root_menuitem = dbusmenu_menuitem_new();
-  //rebuild_user_items (users_root_menuitem, dbus_interface);
-  /*g_signal_connect (G_OBJECT (dbus_interface),
-                    "user-added",
-                    G_CALLBACK (user_change),
-                    users_root_menuitem);
-  g_signal_connect (G_OBJECT (dbus_interface),
-                    "user-removed",
-                    G_CALLBACK (user_change),
-                    users_root_menuitem);
-  */
-  
+    
   setup_restart_watch();
 	setup_up();
 

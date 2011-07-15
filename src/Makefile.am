@@ -92,8 +92,8 @@ indicator_session_service_SOURCES = \
 	gconf-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \
-	users_menu_mgr.h \
-	users_menu_mgr.c 	
+	user-menu-mgr.h \
+	user-menu-mgr.c 	
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
 	$(GCONF_CFLAGS) \

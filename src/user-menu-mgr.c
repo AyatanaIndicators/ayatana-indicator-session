@@ -18,9 +18,15 @@
 
  */
 
-#include "users-menu-mgr.h"
+#include <libdbusmenu-gtk3/menuitem.h>
+#include <libdbusmenu-glib/client.h>
+
+#include "user-menu-mgr.h"
 #include "gconf-helper.h"
-#include "users-service-dbus.h"
+#include "dbus-shared-names.h"
+#include "dbusmenu-shared.h"
+#include "lock-helper.h"
+
 
 static GConfClient * gconf_client = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
@@ -32,12 +38,18 @@ static void activate_new_session (DbusmenuMenuitem * mi,
                                   gpointer user_data);
 static void activate_user_session (DbusmenuMenuitem *mi,
                                    guint timestamp,
-                                   gpointer user_data)
+                                   gpointer user_data);
 static gint compare_users_by_username (const gchar *a,
                                        const gchar *b);
 static void activate_online_accounts (DbusmenuMenuitem *mi,
                                       guint timestamp,
                                       gpointer user_data);
+static void user_menu_mgr_rebuild_items (UserMenuMgr *self);
+static gboolean check_new_session ();
+static void user_change (UsersServiceDbus *service,
+                         const gchar      *user_id,
+                         gpointer          user_data);
+
 
 static void
 user_menu_mgr_init (UserMenuMgr *self)
@@ -45,6 +57,14 @@ user_menu_mgr_init (UserMenuMgr *self)
   self->users_dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
   self->root_item = dbusmenu_menuitem_new ();
   user_menu_mgr_rebuild_items (self);  
+  g_signal_connect (G_OBJECT (self->users_dbus_interface),
+                    "user-added",
+                    G_CALLBACK (user_change),
+                    self);
+  g_signal_connect (G_OBJECT (self->users_dbus_interface),
+                    "user-removed",
+                    G_CALLBACK (user_change),
+                    self);
 }
 
 static void
@@ -58,7 +78,7 @@ static void
 user_menu_mgr_class_init (UserMenuMgrClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	GObjectClass* parent_class = G_OBJECT_CLASS (klass);
+	//GObjectClass* parent_class = G_OBJECT_CLASS (klass);
 
 	object_class->finalize = user_menu_mgr_finalize;
 }
@@ -70,10 +90,8 @@ ensure_gconf_client ()
 {
 	if (!gconf_client) {
 		gconf_client = gconf_client_get_default ();
-		gconf_client_add_dir(gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_notify_add(gconf_client, LOCKDOWN_DIR, lockdown_changed, NULL, NULL, NULL);
-		gconf_client_add_dir(gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_notify_add(gconf_client, KEYBINDING_DIR, keybinding_changed, NULL, NULL, NULL);
+		gconf_client_add_dir (gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_add_dir (gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 	}
 }
 
@@ -93,16 +111,16 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
   ensure_gconf_client ();
 
   /* Check to see which menu items we're allowed to have */
-  can_activate = users_service_dbus_can_activate_session (service) &&
+  can_activate = users_service_dbus_can_activate_session (self->users_dbus_interface) &&
       !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
 
   /* Remove the old menu items if that makes sense */
-  children = dbusmenu_menuitem_take_children (root);
+  children = dbusmenu_menuitem_take_children (self->root_item);
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
 
   /* Set to NULL just incase we don't end up building one */
-  users_service_dbus_set_guest_item(service, NULL);
+  users_service_dbus_set_guest_item(self->users_dbus_interface, NULL);
 
   /* Build all of the user switching items */
   if (can_activate == TRUE)
@@ -115,15 +133,15 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
       dbusmenu_menuitem_property_set (switch_menuitem,
                                       MENU_SWITCH_USER,
                                       g_get_user_name());
-      dbusmenu_menuitem_child_append (self->root, switch_menuitem);
+      dbusmenu_menuitem_child_append (self->root_item, switch_menuitem);
       g_signal_connect (G_OBJECT (switch_menuitem),
                         DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK (activate_new_session),
-                        service);
+                        self->users_dbus_interface);
     }
 
     GList * users = NULL;
-    users = users_service_dbus_get_user_list (service);
+    users = users_service_dbus_get_user_list (self->users_dbus_interface);
     self->user_count = g_list_length(users);
     
     // TODO !!!!!
@@ -138,7 +156,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
 
     for (u = users; u != NULL; u = g_list_next (u)) {
       user = u->data;
-      user->service = service;
+      user->service = self->users_dbus_interface;
 
       g_debug ("%i %s", (gint)user->uid, user->user_name);
 
@@ -183,11 +201,11 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
                                              logged_in);          
         // TODO
         // Figure where this lives.
-        if (logged_in == TRUE){
+        /*if (logged_in == TRUE){
           g_debug ("about to set the users real name to %s for user %s",
                     user->real_name, user->user_name);
           session_dbus_set_users_real_name (session_dbus, user->real_name);
-        }
+        }*/
         
         dbusmenu_menuitem_child_append (self->root_item, mi);
         g_signal_connect (G_OBJECT (mi),
@@ -224,10 +242,24 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
 /* Checks to see if we can create sessions */
 // TODO what is this ?
 static gboolean
-check_new_session (void)
+check_new_session ()
 {
 	return TRUE;
 }
+
+/* Check to see if the lockdown key is protecting from
+   locking the screen.  If not, lock it. */
+static void
+lock_if_possible (void) {
+	ensure_gconf_client ();
+
+	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
+		lock_screen(NULL, 0, NULL);
+	}
+
+	return;
+}
+
 
 /* Starts a new generic session */
 static void
@@ -295,8 +327,9 @@ user_change (UsersServiceDbus *service,
              const gchar      *user_id,
              gpointer          user_data)
 {
-	DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
-	rebuild_user_items (root, service);
+	//DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
+  // TODO sort this out.
+	//rebuild_user_items (root, service);
 	return;
 }
 

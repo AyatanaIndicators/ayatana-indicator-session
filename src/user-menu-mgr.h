@@ -22,6 +22,7 @@
 #define _USER_MENU_MGR_H_
 
 #include <glib-object.h>
+#include "users-service-dbus.h"
 
 G_BEGIN_DECLS
 

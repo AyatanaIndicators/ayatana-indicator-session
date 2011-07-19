@@ -40,7 +40,6 @@ static void
 udev_mgr_class_init (UdevMgrClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	GObjectClass* parent_class = G_OBJECT_CLASS (klass);
 
 	object_class->finalize = udev_mgr_finalize;
 }

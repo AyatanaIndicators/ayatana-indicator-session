@@ -25,6 +25,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"
 #include "upower-client.h"
+#include "apt-watcher.h"
 
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
@@ -87,6 +88,7 @@ static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
                               gpointer userdata);
+static AptWatcher* watcher = NULL;                              
 /*static void
 machine_sleep_from_suspend (DbusmenuMenuitem * mi,
                             guint timestamp,
@@ -101,6 +103,7 @@ device_menu_mgr_init (DeviceMenuMgr *self)
   setup_restart_watch(self);
 	setup_up(self);  
 	g_idle_add(lock_screen_setup, NULL);  
+  
 }
 
 static void
@@ -117,6 +120,7 @@ device_menu_mgr_class_init (DeviceMenuMgrClass *klass)
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	//GObjectClass* parent_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = device_menu_mgr_finalize;
+  watcher =  g_object_new (APT_TYPE_WATCHER, NULL);
 }
 
 // TODO

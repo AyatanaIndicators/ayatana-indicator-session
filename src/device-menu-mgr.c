@@ -47,6 +47,10 @@ static DbusmenuMenuitem  *display_settings_menuitem = NULL;
 static DbusmenuMenuitem  *bluetooth_settings_menuitem = NULL;
 static DbusmenuMenuitem  *login_settings_menuitem = NULL;
 static DbusmenuMenuitem  *software_updates_menuitem = NULL;
+static DbusmenuMenuitem  *printers_menuitem = NULL;
+static DbusmenuMenuitem  *scanners_menuitem = NULL;
+static DbusmenuMenuitem  *webcam_menuitem = NULL;
+
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
@@ -465,11 +469,9 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   g_signal_connect (G_OBJECT(system_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_system_settings_with_context), "");
-
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        system_settings_menuitem,
                                        0);
-  
   
   display_settings_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (display_settings_menuitem,
@@ -481,7 +483,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        display_settings_menuitem,
                                        1);
-
   bluetooth_settings_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (bluetooth_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -499,11 +500,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   _("Login Items..."));
   g_signal_connect (G_OBJECT(login_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context), "login");
+                    G_CALLBACK(show_system_settings_with_context),
+                    "login");
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        login_settings_menuitem,
                                        3);
-  
   software_updates_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (software_updates_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -519,15 +520,65 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_property_set (separator1,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_append (self->root_item, separator1);
-  
-  // Devices
+  dbusmenu_menuitem_child_add_position (self->root_item, separator1, 5);
+
+  // Devices control
+  DbusmenuMenuitem * device_heading = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (device_heading,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Attached Devices"));
+  dbusmenu_menuitem_property_set_bool (device_heading,
+                                       DBUSMENU_MENUITEM_PROP_ENABLED,
+                                       FALSE);
+  dbusmenu_menuitem_child_add_position (self->root_item,
+                                        device_heading,
+                                        6);
+
+  printers_menuitem = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (printers_menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Printers"));
+  g_signal_connect (G_OBJECT(printers_menuitem),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_system_settings_with_context),
+                    "printers");
+  dbusmenu_menuitem_child_add_position(self->root_item,
+                                       printers_menuitem,
+                                       7);
+  scanners_menuitem = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (scanners_menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("HP Scanners"));
+  g_signal_connect (G_OBJECT(scanners_menuitem),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_system_settings_with_context),
+                    "scanners");
+  dbusmenu_menuitem_child_add_position (self->root_item,
+                                        scanners_menuitem,
+                                        8);
+  webcam_menuitem = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (webcam_menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("HP Webcam"));
+  g_signal_connect (G_OBJECT(webcam_menuitem),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_system_settings_with_context),
+                    "HP Webcam");
+  dbusmenu_menuitem_child_add_position (self->root_item,
+                                        webcam_menuitem,
+                                        10);
+  DbusmenuMenuitem * separator3 = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (separator3,
+                                  DBUSMENU_MENUITEM_PROP_TYPE,
+                                  DBUSMENU_CLIENT_TYPES_SEPARATOR);
+  dbusmenu_menuitem_child_add_position (self->root_item, separator3, 11);
+                                        
+  // Session control  
   gboolean can_lockscreen;
 
   /* Make sure we have a valid GConf client, and build one
      if needed */
   device_menu_mgr_ensure_gconf_client (self);
-
   can_lockscreen = !gconf_client_get_bool ( gconf_client,
                                             LOCKDOWN_KEY_SCREENSAVER,
                                             NULL);

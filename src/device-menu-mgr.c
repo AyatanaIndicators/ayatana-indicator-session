@@ -43,6 +43,10 @@ struct _DeviceMenuMgr
 static GConfClient       *gconf_client  = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *system_settings_menuitem = NULL;
+static DbusmenuMenuitem  *display_settings_menuitem = NULL;
+static DbusmenuMenuitem  *bluetooth_settings_menuitem = NULL;
+static DbusmenuMenuitem  *login_settings_menuitem = NULL;
+static DbusmenuMenuitem  *software_updates_menuitem = NULL;
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
@@ -71,6 +75,9 @@ static void machine_sleep_with_context (DeviceMenuMgr* self,
 static void show_system_settings_with_context (DbusmenuMenuitem * mi,
                                                guint timestamp,
                                                gchar * type);
+static void show_apt_dialog (DbusmenuMenuitem* mi,
+                             guint timestamp,
+                             gchar * type);                                               
                                         
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
@@ -423,6 +430,11 @@ show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 }
 
 static void
+show_apt_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
+{
+}
+
+static void
 show_system_settings_with_context (DbusmenuMenuitem * mi,
                                    guint timestamp,
                                    gchar * type)
@@ -445,6 +457,7 @@ show_system_settings_with_context (DbusmenuMenuitem * mi,
 static void
 device_menu_mgr_build_static_items (DeviceMenuMgr* self)
 {
+  // Static Setting items
   system_settings_menuitem  = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (system_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -452,17 +465,63 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   g_signal_connect (G_OBJECT(system_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_system_settings_with_context), "");
-  
+
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        system_settings_menuitem,
                                        0);
+  
+  
+  display_settings_menuitem = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (display_settings_menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Displays..."));
+  g_signal_connect (G_OBJECT(display_settings_menuitem),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_system_settings_with_context), "display");
+  dbusmenu_menuitem_child_add_position(self->root_item,
+                                       display_settings_menuitem,
+                                       1);
+
+  bluetooth_settings_menuitem = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (bluetooth_settings_menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Bluetooth..."));
+  g_signal_connect (G_OBJECT(bluetooth_settings_menuitem),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_system_settings_with_context), "bluetooth");
+  dbusmenu_menuitem_child_add_position(self->root_item,
+                                       bluetooth_settings_menuitem,
+                                       2);
+
+  login_settings_menuitem = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (login_settings_menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Login Items..."));
+  g_signal_connect (G_OBJECT(login_settings_menuitem),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_system_settings_with_context), "login");
+  dbusmenu_menuitem_child_add_position(self->root_item,
+                                       login_settings_menuitem,
+                                       3);
+  
+  software_updates_menuitem = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (software_updates_menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("Software Up to Date"));
+  g_signal_connect (G_OBJECT(login_settings_menuitem),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(show_apt_dialog), NULL);
+  dbusmenu_menuitem_child_add_position(self->root_item,
+                                       software_updates_menuitem,
+                                       4);
 
   DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (separator1,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
   dbusmenu_menuitem_child_append (self->root_item, separator1);
-
+  
+  // Devices
   gboolean can_lockscreen;
 
   /* Make sure we have a valid GConf client, and build one

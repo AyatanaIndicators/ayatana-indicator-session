@@ -21,6 +21,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _APT_WATCHER_H_
 
 #include <glib-object.h>
+#include <libdbusmenu-glib/client.h>
+#include <libdbusmenu-gtk3/menuitem.h>
+
+#include "session-dbus.h"
 
 G_BEGIN_DECLS
 
@@ -40,6 +44,9 @@ struct _AptWatcherClass
 };
 
 GType apt_watcher_get_type (void) G_GNUC_CONST;
+
+AptWatcher* apt_watcher_new (SessionDbus* session_dbus,
+                             DbusmenuMenuitem* apt_item);
 
 G_END_DECLS
 

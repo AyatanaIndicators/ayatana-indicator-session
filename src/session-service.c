@@ -52,12 +52,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "users-service-dbus.h"
 #include "user-menu-mgr.h"
 #include "device-menu-mgr.h"
-
-//#include "gconf-helper.h"
-
 #include "session-dbus.h"
-//#include "lock-helper.h"
-
 
 typedef struct _ActivateData ActivateData;
 struct _ActivateData

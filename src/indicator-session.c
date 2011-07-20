@@ -6,7 +6,8 @@ Copyright 2009 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
-
+    Conor Curran <conor.curran@canonical.com>
+    
 This program is free software: you can redistribute it and/or modify it 
 under the terms of the GNU General Public License version 3, as published 
 by the Free Software Foundation.
@@ -20,7 +21,6 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//TODO - remember to reinsert Ted's comments.
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif

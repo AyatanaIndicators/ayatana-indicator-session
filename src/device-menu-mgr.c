@@ -18,6 +18,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <libdbusmenu-glib/client.h>
+#include <libdbusmenu-gtk3/menuitem.h>
 
 #include "device-menu-mgr.h"
 #include "gconf-helper.h"
@@ -39,6 +40,7 @@ struct _DeviceMenuMgr
 	GObject parent_instance;
   DbusmenuMenuitem* root_item;
   SessionDbus* session_dbus_interface;  
+  AptWatcher* apt_watcher;                              
 };
 
 static GConfClient       *gconf_client  = NULL;
@@ -79,16 +81,12 @@ static void machine_sleep_with_context (DeviceMenuMgr* self,
                                         gchar* type);
 static void show_system_settings_with_context (DbusmenuMenuitem * mi,
                                                guint timestamp,
-                                               gchar * type);
-static void show_apt_dialog (DbusmenuMenuitem* mi,
-                             guint timestamp,
-                             gchar * type);                                               
+                                               gchar * type);                                               
                                         
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
                               gpointer userdata);
-static AptWatcher* watcher = NULL;                              
 /*static void
 machine_sleep_from_suspend (DbusmenuMenuitem * mi,
                             guint timestamp,
@@ -99,11 +97,11 @@ G_DEFINE_TYPE (DeviceMenuMgr, device_menu_mgr, G_TYPE_OBJECT);
 static void
 device_menu_mgr_init (DeviceMenuMgr *self)
 {
+  self->apt_watcher = NULL;
   self->root_item = dbusmenu_menuitem_new ();  
   setup_restart_watch(self);
 	setup_up(self);  
 	g_idle_add(lock_screen_setup, NULL);  
-  
 }
 
 static void
@@ -120,7 +118,6 @@ device_menu_mgr_class_init (DeviceMenuMgrClass *klass)
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	//GObjectClass* parent_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = device_menu_mgr_finalize;
-  watcher =  g_object_new (APT_TYPE_WATCHER, NULL);
 }
 
 // TODO
@@ -438,11 +435,6 @@ show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 }
 
 static void
-show_apt_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
-{
-}
-
-static void
 show_system_settings_with_context (DbusmenuMenuitem * mi,
                                    guint timestamp,
                                    gchar * type)
@@ -513,9 +505,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_property_set (software_updates_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
                                   _("Software Up to Date"));
-  g_signal_connect (G_OBJECT(login_settings_menuitem),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_apt_dialog), NULL);
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        software_updates_menuitem,
                                        4);
@@ -870,6 +859,8 @@ DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus)
 {
   DeviceMenuMgr* device_mgr = g_object_new (DEVICE_TYPE_MENU_MGR, NULL);
   device_mgr->session_dbus_interface = session_dbus;
-  device_menu_mgr_build_static_items (device_mgr);    
+  device_menu_mgr_build_static_items (device_mgr);   
+  device_mgr->apt_watcher = apt_watcher_new (session_dbus,
+                                             software_updates_menuitem);
   return device_mgr;
 }

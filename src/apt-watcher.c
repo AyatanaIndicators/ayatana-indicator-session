@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "apt-watcher.h"
 #include <gio/gio.h>
+
+#include "apt-watcher.h"
 
 static guint watcher_id;
 
@@ -27,6 +28,8 @@ struct _AptWatcher
 	GObject parent_instance;
 	GCancellable * proxy_cancel;
 	GDBusProxy * proxy;  
+  SessionDbus* session_dbus_interface;
+  DbusmenuMenuitem* apt_item;
 };
 
 static void
@@ -46,6 +49,10 @@ static void
 fetch_proxy_cb (GObject * object,
                 GAsyncResult * res,
                 gpointer user_data);
+
+static void apt_watcher_show_apt_dialog (DbusmenuMenuitem* mi,
+                                         guint timestamp,
+                                         gchar * type);
 
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
 
@@ -159,11 +166,16 @@ apt_watcher_get_active_transactions_cb (GObject * obj,
     g_error_free (error);
 		return;
 	}
-  
   g_debug ("WE GOT SOME ACTIVE TRANSACTIONS TO EXAMINE, type is %s",
             g_variant_get_type_string (result));
-  //gchar ** transactions = g_variant_get_strv (result);             
+  //g_variant_get (result, "(sas)"); 
+  gchar* first_param = NULL;
+  gchar ** transactions = NULL;
+  g_variant_get (result, "(sas)", first_param, transactions);           
   
+  g_debug ("And the size is the string array %u",
+            g_strv_length (transactions)); 
+  g_debug ("first param = %s", first_param);            
 }
 
 static void
@@ -175,3 +187,25 @@ apt_watcher_on_name_vanished (GDBusConnection *connection,
            name,
            "the system bus");
 }
+
+static void
+apt_watcher_show_apt_dialog (DbusmenuMenuitem * mi,
+                             guint timestamp,
+                             gchar * type)
+{
+  
+}
+
+
+AptWatcher* apt_watcher_new (SessionDbus* session_dbus,
+                             DbusmenuMenuitem* item)
+{
+  AptWatcher* watcher = g_object_new (APT_TYPE_WATCHER, NULL);
+  watcher->session_dbus_interface = session_dbus;
+  watcher->apt_item = item;
+  g_signal_connect (G_OBJECT(watcher->apt_item),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK(apt_watcher_show_apt_dialog), watcher);
+  return watcher;
+}
+                               

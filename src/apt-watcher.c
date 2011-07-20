@@ -18,8 +18,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <gio/gio.h>
+#include <glib/gi18n.h>
 
 #include "apt-watcher.h"
+#include "dbus-shared-names.h"
 
 static guint watcher_id;
 
@@ -30,6 +32,7 @@ struct _AptWatcher
 	GDBusProxy * proxy;  
   SessionDbus* session_dbus_interface;
   DbusmenuMenuitem* apt_item;
+  gint current_state;
 };
 
 static void
@@ -49,16 +52,23 @@ static void
 fetch_proxy_cb (GObject * object,
                 GAsyncResult * res,
                 gpointer user_data);
-
 static void apt_watcher_show_apt_dialog (DbusmenuMenuitem* mi,
                                          guint timestamp,
                                          gchar * type);
+static void apt_watcher_signal_cb (GDBusProxy* proxy,
+                                   gchar* sender_name,
+                                   gchar* signal_name,
+                                   GVariant* parameters,
+                                   gpointer user_data);
+static void apt_watcher_determine_state (AptWatcher* self,
+                                         GVariant* update);
 
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
 
 static void
 apt_watcher_init (AptWatcher *self)
 {
+  self->current_state = UP_TO_DATE;
   self->proxy_cancel = g_cancellable_new();
   g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                             G_DBUS_PROXY_FLAGS_NONE,
@@ -119,7 +129,10 @@ fetch_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
                                  NULL);
   
   //We'll need to connect to the state changed signal                                 
-	//g_signal_connect(proxy, "g-signal", G_CALLBACK(receive_signal), self);  
+	g_signal_connect (self->proxy,
+                    "g-signal",
+                    G_CALLBACK(apt_watcher_signal_cb),
+                    self);  
 }
 
 
@@ -136,7 +149,6 @@ apt_watcher_on_name_appeared (GDBusConnection *connection,
            name,
            "the system bus",
            name_owner);
-
            
   g_dbus_proxy_call (watcher->proxy,
                      "GetActiveTransactions",
@@ -166,16 +178,7 @@ apt_watcher_get_active_transactions_cb (GObject * obj,
     g_error_free (error);
 		return;
 	}
-  g_debug ("WE GOT SOME ACTIVE TRANSACTIONS TO EXAMINE, type is %s",
-            g_variant_get_type_string (result));
-  //g_variant_get (result, "(sas)"); 
-  gchar* first_param = NULL;
-  gchar ** transactions = NULL;
-  g_variant_get (result, "(sas)", first_param, transactions);           
-  
-  g_debug ("And the size is the string array %u",
-            g_strv_length (transactions)); 
-  g_debug ("first param = %s", first_param);            
+  apt_watcher_determine_state (self, result);
 }
 
 static void
@@ -188,6 +191,41 @@ apt_watcher_on_name_vanished (GDBusConnection *connection,
            "the system bus");
 }
 
+static void 
+apt_watcher_determine_state (AptWatcher* self,
+                             GVariant* update)
+{
+  g_debug ("WE GOT SOME ACTIVE TRANSACTIONS TO EXAMINE, type is %s",
+            g_variant_get_type_string (update));
+  
+  gchar* first_param = NULL;
+  gchar ** transactions = NULL;
+
+  g_variant_get (update, "(sas)", &first_param, &transactions);           
+  
+  g_debug ("apt_watcher_determine_state -  the size is the string array %u",
+            g_strv_length (transactions)); 
+  g_debug ("apt_watcher_determine_state - first param = %s", first_param);            
+
+  if (first_param == NULL){
+    if (self->current_state != UP_TO_DATE){
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Software Up to Date"));
+    }    
+  } 
+  else{    
+    gboolean updating = g_str_has_prefix (first_param,
+                                          "/org/debian/apt/transaction/");
+    if (updating == TRUE){                                          
+      self->current_state = UPDATES_IN_PROGRESS;                                          
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Updates Installing..."));    
+    }
+  }
+}
+                               
 static void
 apt_watcher_show_apt_dialog (DbusmenuMenuitem * mi,
                              guint timestamp,
@@ -195,7 +233,25 @@ apt_watcher_show_apt_dialog (DbusmenuMenuitem * mi,
 {
   
 }
+// TODO signal is of type s not sas which is on d-feet !!!
+static void apt_watcher_signal_cb ( GDBusProxy* proxy,
+                                    gchar* sender_name,
+                                    gchar* signal_name,
+                                    GVariant* parameters,
+                                    gpointer user_data)
+{
+  g_return_if_fail (APT_IS_WATCHER (user_data));
+  AptWatcher* self = APT_WATCHER (user_data);
 
+  g_variant_ref (parameters);
+  GVariant *value = g_variant_get_child_value (parameters, 0);
+
+  if (g_strcmp0(signal_name, "ActiveTransactionsChanged") == 0){
+    g_debug ("Active Transactions signal received");
+    apt_watcher_determine_state (self, value);    
+  }
+  g_variant_unref (parameters);
+}
 
 AptWatcher* apt_watcher_new (SessionDbus* session_dbus,
                              DbusmenuMenuitem* item)

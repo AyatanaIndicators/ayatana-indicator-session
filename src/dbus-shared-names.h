@@ -21,10 +21,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 typedef enum {
-  RESTART_NEEDED,
+  UP_TO_DATE,
   UPDATES_IN_PROGRESS,
   UPDATES_AVAILABLE,
-  UP_TO_DATE,
+  RESTART_NEEDED  
 }AptState;
 
 

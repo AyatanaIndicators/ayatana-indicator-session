@@ -74,7 +74,6 @@ static void
 apt_transaction_class_init (AptTransactionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	//GObjectClass* parent_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = apt_transaction_finalize;
 
   signals[UPDATE] =  g_signal_new("state-update",
@@ -99,20 +98,17 @@ apt_transaction_investigate(AptTransaction* self)
                                                "org.debian.apt.transaction",
                                                NULL, /* GCancellable */
                                                &error);        
-  g_debug ("Just after creating the proxy for the transaction - id = %s",
-            self->id);                                               
   if (error != NULL) {
     g_warning ("unable to fetch proxy for transaction object path %s", self->id);
     g_error_free (error);
     return;
   }
-  g_debug ("connecting to the properties changed signal on the transaction object");
+
   g_signal_connect (G_OBJECT(self->proxy),
                     "g-signal",
                     G_CALLBACK (apt_transaction_receive_signal),
                     self);    
 
-  g_debug ("calling simulate on the transaction object");
   g_dbus_proxy_call (self->proxy,
                      "Simulate",
                      NULL,
@@ -133,14 +129,7 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
   g_return_if_fail (APT_IS_TRANSACTION (user_data));
   AptTransaction* self = APT_TRANSACTION(user_data);      
 
-  if (g_strcmp0 (signal_name, "Finished") == 0){
-    g_signal_emit (self,
-                   signals[UPDATE],
-                   0,
-                   FINISHED_CHECKING);
-    
-  }
-  else if (g_strcmp0(signal_name, "PropertyChanged") == 0) 
+  if (g_strcmp0(signal_name, "PropertyChanged") == 0) 
   {
     gchar* prop_name= NULL;
     GVariant* value = NULL;

@@ -185,8 +185,6 @@ apt_watcher_upgrade_system_cb (GObject * obj,
                                GAsyncResult * res,
                                gpointer user_data)
 {
-  g_debug ("UpgradeSystem apt callback");
-
   g_return_if_fail (APT_IS_WATCHER (user_data));
   AptWatcher* self = APT_WATCHER (user_data);
 
@@ -205,7 +203,7 @@ apt_watcher_upgrade_system_cb (GObject * obj,
   g_variant_get (result, "(s)", &transaction_id);
 
   if (transaction_id == NULL){
-    g_debug ("apt_watcher_upgrade_system_cb - transaction id is null");
+    g_warning ("apt_watcher_upgrade_system_cb - transaction id is null");
     return;
   }  
   
@@ -213,49 +211,17 @@ apt_watcher_upgrade_system_cb (GObject * obj,
   
 }
 
-
-
-/*static void 
-apt_watcher_determine_state (AptWatcher* self,
-                             GVariant* update)
-{
-  g_debug ("WE GOT SOME ACTIVE TRANSACTIONS TO EXAMINE, type is %s",
-            g_variant_get_type_string (update));
-  
-  gchar* first_param = NULL;
-  gchar ** transactions = NULL;
-
-  g_variant_get (update, "(sas)", &first_param, &transactions);           
-  
-  g_debug ("apt_watcher_determine_state -  the size is the string array %u",
-            g_strv_length (transactions)); 
-  g_debug ("apt_watcher_determine_state - first param = %s", first_param);            
-
-  if (first_param == NULL){
-    if (self->current_state != UP_TO_DATE){
-      dbusmenu_menuitem_property_set (self->apt_item,
-                                      DBUSMENU_MENUITEM_PROP_LABEL,
-                                      _("Software Up to Date"));
-    }    
-  } 
-  else{    
-    gboolean updating = g_str_has_prefix (first_param,
-                                          "/org/debian/apt/transaction/");
-    if (updating == TRUE){                                          
-      self->current_state = UPDATES_IN_PROGRESS;                                          
-      dbusmenu_menuitem_property_set (self->apt_item,
-                                      DBUSMENU_MENUITEM_PROP_LABEL,
-                                      _("Updates Installing..."));    
-    }
-  }
-}*/
-                               
 static void
 apt_watcher_show_apt_dialog (DbusmenuMenuitem * mi,
                              guint timestamp,
                              gchar * type)
 {
-  
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("update-manager", &error))
+  {
+    g_warning("Unable to show update-manager: %s", error->message);
+    g_error_free(error);
+  }  
 }
 
 static void
@@ -280,6 +246,8 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
                                     _("Updates Available…"));    
   }  
   self->current_state = state;
+  g_object_unref (self->current_transaction);
+  self->current_transaction = NULL;
 } 
  
 static void
@@ -287,6 +255,7 @@ apt_watcher_manage_transactions (AptWatcher* self, gchar* transaction_id)
 {
     if (self->current_transaction == NULL){
       self->current_transaction = apt_transaction_new (transaction_id);
+      g_object_ref (self->current_transaction);
       g_signal_connect (G_OBJECT(self->current_transaction),
                         "state-update",
                         G_CALLBACK(apt_watcher_transaction_state_update_cb), self);
@@ -310,8 +279,17 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
   if (g_strcmp0(signal_name, "ActiveTransactionsChanged") == 0){
     gchar* input = NULL;
     g_variant_get(value, "s", & input);
-    g_debug ("Active Transactions signal - input = %s", input);
-    apt_watcher_manage_transactions (self, input);
+
+    g_debug ("Active Transactions signal - input is null = %i", input == NULL);
+    // TODO don't call on null terminated input
+    g_dbus_proxy_call (self->proxy,
+                       "UpgradeSystem",
+                       g_variant_new("(b)", TRUE),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       NULL,
+                       apt_watcher_upgrade_system_cb,
+                       user_data);    
   }
   g_variant_unref (parameters);
 }

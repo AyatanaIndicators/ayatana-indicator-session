@@ -98,6 +98,8 @@ indicator_session_service_SOURCES = \
 	device-menu-mgr.c \
 	apt-watcher.h \
 	apt-watcher.c \
+	apt-transaction.h \
+	apt-transaction.c \
 	udev-mgr.h \
 	udev-mgr.c
 indicator_session_service_CFLAGS = \

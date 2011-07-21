@@ -19,7 +19,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <gio/gio.h>
 #include <glib/gi18n.h>
-
 #include "apt-watcher.h"
 #include "dbus-shared-names.h"
 
@@ -30,6 +29,7 @@ struct _AptWatcher
 	GObject parent_instance;
 	GCancellable * proxy_cancel;
 	GDBusProxy * proxy;  
+	GDBusProxy * transaction_proxy;  
   SessionDbus* session_dbus_interface;
   DbusmenuMenuitem* apt_item;
   gint current_state;
@@ -44,24 +44,41 @@ static void
 apt_watcher_on_name_vanished (GDBusConnection *connection,
                               const gchar     *name,
                               gpointer         user_data);
-static void
+/*static void
 apt_watcher_get_active_transactions_cb (GObject * obj,
                                         GAsyncResult * res,
                                         gpointer user_data);
-static void
-fetch_proxy_cb (GObject * object,
-                GAsyncResult * res,
-                gpointer user_data);
+                                        * */
+static void fetch_proxy_cb (GObject * object,
+                            GAsyncResult * res,
+                            gpointer user_data);
+
+static void apt_watcher_simulate_transaction_cb (GObject * obj,
+                                                 GAsyncResult * res,
+                                                 gpointer user_data);
+
+static void apt_watcher_upgrade_system_cb (GObject * obj,
+                                           GAsyncResult * res,
+                                           gpointer user_data);
+                                                 
+                
 static void apt_watcher_show_apt_dialog (DbusmenuMenuitem* mi,
                                          guint timestamp,
                                          gchar * type);
+
 static void apt_watcher_signal_cb (GDBusProxy* proxy,
                                    gchar* sender_name,
                                    gchar* signal_name,
                                    GVariant* parameters,
                                    gpointer user_data);
+
 static void apt_watcher_determine_state (AptWatcher* self,
                                          GVariant* update);
+
+static void transaction_on_properties_changed (GDBusProxy          *proxy,
+                                               GVariant            *changed_properties,
+                                               const gchar* const  *invalidated_properties,
+                                               gpointer             user_data);
 
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
 
@@ -70,6 +87,8 @@ apt_watcher_init (AptWatcher *self)
 {
   self->current_state = UP_TO_DATE;
   self->proxy_cancel = g_cancellable_new();
+  self->proxy = NULL;
+  self->transaction_proxy = NULL;
   g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                             G_DBUS_PROXY_FLAGS_NONE,
                             NULL,
@@ -149,18 +168,41 @@ apt_watcher_on_name_appeared (GDBusConnection *connection,
            name,
            "the system bus",
            name_owner);
-           
+
   g_dbus_proxy_call (watcher->proxy,
+                     "UpgradeSystem",
+                     g_variant_new_boolean (TRUE),
+                     G_DBUS_CALL_FLAGS_NONE,
+                     -1,
+                     NULL,
+                     apt_watcher_upgrade_system_cb,
+                     user_data);
+
+  /*g_dbus_proxy_call (watcher->proxy,
                      "GetActiveTransactions",
                      NULL,
                      G_DBUS_CALL_FLAGS_NONE,
                      -1,
                      NULL,
                      apt_watcher_get_active_transactions_cb,
-                     user_data);
+                     user_data);*/
 }
 
 static void
+apt_watcher_on_name_vanished (GDBusConnection *connection,
+                              const gchar     *name,
+                              gpointer         user_data)
+{
+  g_debug ("Name %s does not exist or has just vanished",
+           name);
+  g_return_if_fail (APT_IS_WATCHER (user_data));
+  AptWatcher* self = APT_WATCHER (user_data);
+           
+  if (self->proxy != NULL)
+    g_object_unref (self->proxy);
+}
+
+/*static void
 apt_watcher_get_active_transactions_cb (GObject * obj,
                                         GAsyncResult * res,
                                         gpointer user_data)
@@ -179,16 +221,96 @@ apt_watcher_get_active_transactions_cb (GObject * obj,
 		return;
 	}
   apt_watcher_determine_state (self, result);
+}*/
+
+static void
+apt_watcher_upgrade_system_cb (GObject * obj,
+                               GAsyncResult * res,
+                               gpointer user_data)
+{
+  g_return_if_fail (APT_IS_WATCHER (user_data));
+  AptWatcher* self = APT_WATCHER (user_data);
+
+	GError * error = NULL;
+	GVariant * result;
+
+	result = g_dbus_proxy_call_finish(self->proxy, res, &error);
+
+	if (error != NULL) {
+    g_warning ("unable to complete the UpgradeSystem apt call");
+    g_error_free (error);
+		return;
+	}
+  
+  gchar* transaction_id = NULL;
+  g_variant_get (result, "(s)", &transaction_id);
+  
+  if (transaction_id != NULL){
+    if (self->transaction_proxy != NULL){
+      g_object_unref (self->transaction_proxy);
+      self->transaction_proxy = NULL;
+    }    
+    self->transaction_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                                             G_DBUS_PROXY_FLAGS_NONE,
+                                                             NULL, /* GDBusInterfaceInfo */
+                                                             "org.debian.apt",
+                                                             transaction_id,
+                                                             "org.debian.apt",
+                                                             NULL, /* GCancellable */
+                                                             &error);        
+    if (error != NULL) {
+      g_warning ("unable to fetch proxy for transaction object path");
+      g_error_free (error);
+      return;
+    }
+    g_signal_connect (self->transaction_proxy,
+                      "g-properties-changed",
+                      G_CALLBACK (transaction_on_properties_changed),
+                      self);    
+
+    g_dbus_proxy_call (self->transaction_proxy,
+                       "Simulate",
+                       NULL,
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       NULL,
+                       apt_watcher_simulate_transaction_cb,
+                       self);                                                                                        
+  }
 }
 
 static void
-apt_watcher_on_name_vanished (GDBusConnection *connection,
-                              const gchar     *name,
-                              gpointer         user_data)
+apt_watcher_simulate_transaction_cb (GObject * obj,
+                                     GAsyncResult * res,
+                                     gpointer user_data)
 {
-  g_print ("Name %s does not exist on %s\n",
-           name,
-           "the system bus");
+}
+
+static void
+transaction_on_properties_changed (GDBusProxy          *proxy,
+                                   GVariant            *changed_properties,
+                                   const gchar* const  *invalidated_properties,
+                                   gpointer             user_data)
+{
+  if (g_variant_n_children (changed_properties) > 0)
+  {
+    GVariantIter *iter;
+    const gchar *key;
+    GVariant *value;
+
+    g_print (" *** Properties Changed:\n");
+    g_variant_get (changed_properties,
+                   "a{sv}",
+                   &iter);
+    while (g_variant_iter_loop (iter, "{&sv}", &key, &value))
+    {
+      gchar *value_str;
+      value_str = g_variant_print (value, TRUE);
+      g_print ("      %s -> %s\n", key, value_str);
+      g_free (value_str);
+    }
+    g_variant_iter_free (iter);
+  }    
 }
 
 static void 

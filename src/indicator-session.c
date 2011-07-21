@@ -449,17 +449,17 @@ user_menu_visibility_get_cb (GObject* obj, GAsyncResult* res, gpointer user_data
   //Otherwise
   self->show_users_entry = update;
 
-  IndicatorObjectEntry user_entry = self->users;
+  //IndicatorObjectEntry user_entry = self->users;
   
   if (self->show_users_entry == TRUE){
     g_signal_emit_by_name ((gpointer)self,
                            "entry-added",
-                           &user_entry);   
+                           &self->users);   
   }
   else{
     g_signal_emit_by_name ((gpointer)self,
                            "entry-removed",
-                           &user_entry);       
+                           &self->users);       
   }
 }
 

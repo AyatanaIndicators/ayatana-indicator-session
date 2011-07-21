@@ -110,6 +110,8 @@ apt_transaction_on_properties_changed (GDBusProxy          *proxy,
                                        const gchar* const  *invalidated_properties,
                                        gpointer             user_data)
 {
+  g_print (" *** Apt Transaction Properties Changed:\n");
+
   if (g_variant_n_children (changed_properties) > 0)
   {
     GVariantIter *iter;
@@ -156,12 +158,11 @@ apt_transaction_simulate_transaction_cb (GObject * obj,
   
 }
 
-
 AptTransaction* apt_transaction_new (gchar* transaction_id)
 {
   AptTransaction* tr = g_object_new (APT_TYPE_TRANSACTION, NULL);
   tr->id = transaction_id;
-  g_debug ("Apt transaction new");
+  g_debug ("Apt transaction new id = %s", tr->id);
   apt_transaction_investigate (tr);
   return tr;
 }

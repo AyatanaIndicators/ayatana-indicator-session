@@ -32,7 +32,7 @@ struct _AptWatcher
 	GDBusProxy * proxy;  
   SessionDbus* session_dbus_interface;
   DbusmenuMenuitem* apt_item;
-  gint current_state;
+  AptState current_state;
   AptTransaction* current_transaction;
 };
 
@@ -45,11 +45,6 @@ static void
 apt_watcher_on_name_vanished (GDBusConnection *connection,
                               const gchar     *name,
                               gpointer         user_data);
-/*static void
-apt_watcher_get_active_transactions_cb (GObject * obj,
-                                        GAsyncResult * res,
-                                        gpointer user_data);
-                                        * */
 static void fetch_proxy_cb (GObject * object,
                             GAsyncResult * res,
                             gpointer user_data);
@@ -68,9 +63,9 @@ static void apt_watcher_signal_cb (GDBusProxy* proxy,
                                    gchar* signal_name,
                                    GVariant* parameters,
                                    gpointer user_data);
-
-/*static void apt_watcher_determine_state (AptWatcher* self,
-                                         GVariant* update);*/
+static void  apt_watcher_manage_transactions (AptWatcher* self,
+                                              gchar* transaction_id);
+                                   
 
 
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
@@ -144,7 +139,6 @@ fetch_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
                                  self,
                                  NULL);
   
-  //We'll need to connect to the state changed signal                                 
 	g_signal_connect (self->proxy,
                     "g-signal",
                     G_CALLBACK(apt_watcher_signal_cb),
@@ -174,17 +168,6 @@ apt_watcher_on_name_appeared (GDBusConnection *connection,
                      NULL,
                      apt_watcher_upgrade_system_cb,
                      user_data);
-
-  g_debug ("UpgradeSystem apt call made");
-
-  /*g_dbus_proxy_call (watcher->proxy,
-                     "GetActiveTransactions",
-                     NULL,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     -1,
-                     NULL,
-                     apt_watcher_get_active_transactions_cb,
-                     user_data);*/
 }
 
 static void
@@ -196,27 +179,6 @@ apt_watcher_on_name_vanished (GDBusConnection *connection,
            name);
   g_return_if_fail (APT_IS_WATCHER (user_data));
 }
-
-/*static void
-apt_watcher_get_active_transactions_cb (GObject * obj,
-                                        GAsyncResult * res,
-                                        gpointer user_data)
-{
-  g_return_if_fail (APT_IS_WATCHER (user_data));
-  AptWatcher* self = APT_WATCHER (user_data);
-
-	GError * error = NULL;
-	GVariant * result;
-
-	result = g_dbus_proxy_call_finish(self->proxy, res, &error);
-
-	if (error != NULL) {
-    g_warning ("unable to complete the fetching of active transactions");
-    g_error_free (error);
-		return;
-	}
-  apt_watcher_determine_state (self, result);
-}*/
 
 static void
 apt_watcher_upgrade_system_cb (GObject * obj,
@@ -247,10 +209,8 @@ apt_watcher_upgrade_system_cb (GObject * obj,
     return;
   }  
   
-  if (self->current_transaction == NULL){
-    self->current_transaction = apt_transaction_new (transaction_id);  
-  }  
-
+  apt_watcher_manage_transactions (self, transaction_id);
+  
 }
 
 
@@ -297,6 +257,42 @@ apt_watcher_show_apt_dialog (DbusmenuMenuitem * mi,
 {
   
 }
+
+static void
+apt_watcher_transaction_state_update_cb (AptTransaction* trans,
+                                         gint update,
+                                         gpointer user_data)
+{
+  g_debug ("apt-watcher -transaction update %i", update);
+  g_return_if_fail (APT_IS_WATCHER (user_data));
+  AptWatcher* self = APT_WATCHER (user_data);
+  
+  AptState state = (AptState)update;
+  
+  if ( state == UP_TO_DATE ){
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Software Up to Date"));    
+  }
+  else if ( state == UPDATES_AVAILABLE ){
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Updates Available…"));    
+  }  
+  self->current_state = state;
+} 
+ 
+static void
+apt_watcher_manage_transactions (AptWatcher* self, gchar* transaction_id)
+{
+    if (self->current_transaction == NULL){
+      self->current_transaction = apt_transaction_new (transaction_id);
+      g_signal_connect (G_OBJECT(self->current_transaction),
+                        "state-update",
+                        G_CALLBACK(apt_watcher_transaction_state_update_cb), self);
+    }  
+}
+
 // TODO - Ask MVO about this.
 // Signal is of type s not sas which is on d-feet !!!
 static void apt_watcher_signal_cb ( GDBusProxy* proxy,
@@ -312,13 +308,10 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
   GVariant *value = g_variant_get_child_value (parameters, 0);
 
   if (g_strcmp0(signal_name, "ActiveTransactionsChanged") == 0){
-    g_debug ("Active Transactions signal received");
     gchar* input = NULL;
     g_variant_get(value, "s", & input);
     g_debug ("Active Transactions signal - input = %s", input);
-    if (self->current_transaction == NULL){
-      self->current_transaction = apt_transaction_new (input);  
-    }
+    apt_watcher_manage_transactions (self, input);
   }
   g_variant_unref (parameters);
 }

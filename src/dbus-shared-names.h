@@ -22,8 +22,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 typedef enum {
   UP_TO_DATE,
-  UPDATES_IN_PROGRESS,
+  CHECKING_FOR_UPDATES,
   UPDATES_AVAILABLE,
+  FINISHED_CHECKING,
+  UPDATING,  
   RESTART_NEEDED  
 }AptState;
 

@@ -54,7 +54,6 @@ static DbusmenuMenuitem  *printers_menuitem = NULL;
 static DbusmenuMenuitem  *scanners_menuitem = NULL;
 static DbusmenuMenuitem  *webcam_menuitem = NULL;
 
-
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
 
@@ -188,6 +187,7 @@ sleep_response (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
 	return;
 }
 
+
 /*static void
 machine_sleep_from_suspend (DbusmenuMenuitem * mi,
                             guint timestamp,
@@ -251,16 +251,15 @@ suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	gboolean local_can_suspend = g_value_get_boolean(&candoit);
 	if (local_can_suspend != can_suspend) {
 		can_suspend = local_can_suspend;
+    // TODO figure out what needs updating on the menu
 		device_menu_mgr_rebuild_items(self);
 	}
-
 	return;
 }
 
 /* Response to getting the hibernate property */
 // TODO
 // Is this needed anymore
-
 static void
 hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
@@ -435,6 +434,19 @@ show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 }
 
 static void
+show_session_properties (DbusmenuMenuitem * mi,
+                         guint timestamp,
+                         gchar * type)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("gnome-session-properties", &error))
+  {
+    g_warning("Unable to show dialog: %s", error->message);
+    g_error_free(error);
+  }  
+}                                   
+
+static void
 show_system_settings_with_context (DbusmenuMenuitem * mi,
                                    guint timestamp,
                                    gchar * type)
@@ -496,7 +508,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   _("Login Items..."));
   g_signal_connect (G_OBJECT(login_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context),
+                    G_CALLBACK(show_session_properties),
                     "login");
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        login_settings_menuitem,
@@ -660,108 +672,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
 static void
 device_menu_mgr_rebuild_items (DeviceMenuMgr* self)
 {
-  //gboolean can_lockscreen;
-
-  /* Make sure we have a valid GConf client, and build one
-     if needed */
-  //device_menu_mgr_ensure_gconf_client (self);
-
-  /*can_lockscreen = !gconf_client_get_bool ( gconf_client,
-                                            LOCKDOWN_KEY_SCREENSAVER,
-                                            NULL);
-  if (can_lockscreen) {
-	lock_menuitem = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set (lock_menuitem,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Lock Screen"));
-
-	gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
-	if (shortcut != NULL) {
-		g_debug("Lock screen shortcut: %s", shortcut);
-		dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
-		g_free(shortcut);
-	} else {
-		g_debug("Unable to get lock screen shortcut.");
-	}
-
-	g_signal_connect (G_OBJECT(lock_menuitem),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(lock_screen), NULL);
-	dbusmenu_menuitem_child_append(self->root_item, lock_menuitem);
-  }
-
-	logout_mi = dbusmenu_menuitem_new();
-	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set (logout_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Log Out"));
-	} else {
-		dbusmenu_menuitem_property_set (logout_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Log Out\342\200\246"));
-	}
-	dbusmenu_menuitem_property_set_bool (logout_mi,
-                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       show_logout());
-	dbusmenu_menuitem_child_append(self->root_item, logout_mi);
-	g_signal_connect( G_OBJECT(logout_mi),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_dialog), "logout");
-
-	if (can_suspend && allow_suspend) {
-		suspend_mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set (suspend_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Suspend"));
-		dbusmenu_menuitem_child_append (self->root_item, suspend_mi);
-		g_signal_connect( G_OBJECT(suspend_mi),
-                      DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                      G_CALLBACK(machine_sleep_from_suspend),
-                      self);
-	}
-
-	if (can_hibernate && allow_hibernate) {
-		hibernate_mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set (hibernate_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Hibernate"));
-		dbusmenu_menuitem_child_append(self->root_item, hibernate_mi);
-		g_signal_connect (G_OBJECT(hibernate_mi),
-                      DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                      G_CALLBACK(machine_sleep_from_hibernate), self);
-	}
-
-	dbusmenu_menuitem_child_append(self->root_item, restart_mi);
-	g_signal_connect (G_OBJECT(restart_mi),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_dialog), "restart");
-
-	shutdown_mi = dbusmenu_menuitem_new();
-	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set (shutdown_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Shut Down"));
-	} else {
-		dbusmenu_menuitem_property_set (shutdown_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Shut Down\342\200\246"));
-	}
-	dbusmenu_menuitem_property_set_bool (shutdown_mi,
-                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       show_shutdown());
-	dbusmenu_menuitem_child_append (self->root_item, shutdown_mi);
-	g_signal_connect (G_OBJECT(shutdown_mi),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_dialog), "shutdown");
-
-	RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi = g_new0 (RestartShutdownLogoutMenuItems, 1);
-	restart_shutdown_logout_mi->logout_mi = logout_mi;
-	restart_shutdown_logout_mi->restart_mi = restart_mi;
-	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
-
-	update_menu_entries(restart_shutdown_logout_mi);
-
-	return;*/
 }
 
 /* When the directory changes we need to figure out how our menu

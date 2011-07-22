@@ -100,7 +100,12 @@ am_indicator_session_service_OBJECTS =  \
 	indicator_session_service-session-dbus.$(OBJEXT) \
 	indicator_session_service-gen-session-dbus.xml.$(OBJEXT) \
 	indicator_session_service-gconf-helper.$(OBJEXT) \
-	indicator_session_service-users-service-dbus.$(OBJEXT)
+	indicator_session_service-users-service-dbus.$(OBJEXT) \
+	indicator_session_service-user-menu-mgr.$(OBJEXT) \
+	indicator_session_service-device-menu-mgr.$(OBJEXT) \
+	indicator_session_service-apt-watcher.$(OBJEXT) \
+	indicator_session_service-apt-transaction.$(OBJEXT) \
+	indicator_session_service-udev-mgr.$(OBJEXT)
 indicator_session_service_OBJECTS =  \
 	$(am_indicator_session_service_OBJECTS)
 indicator_session_service_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -337,7 +342,17 @@ indicator_session_service_SOURCES = \
 	dbusmenu-shared.h \
 	gconf-helper.c \
 	users-service-dbus.h \
-	users-service-dbus.c
+	users-service-dbus.c \
+	user-menu-mgr.h \
+	user-menu-mgr.c \
+	device-menu-mgr.h \
+	device-menu-mgr.c \
+	apt-watcher.h \
+	apt-watcher.c \
+	apt-transaction.h \
+	apt-transaction.c \
+	udev-mgr.h \
+	udev-mgr.c
 
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
@@ -526,11 +541,16 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-dialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gconf-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-apt-transaction.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-apt-watcher.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-device-menu-mgr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gconf-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-lock-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-service.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-udev-mgr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-user-menu-mgr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-users-service-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsession_la-indicator-session.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsession_la-user-widget.Plo@am__quote@
@@ -718,6 +738,86 @@ indicator_session_service-users-service-dbus.obj: users-service-dbus.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='users-service-dbus.c' object='indicator_session_service-users-service-dbus.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-users-service-dbus.obj `if test -f 'users-service-dbus.c'; then $(CYGPATH_W) 'users-service-dbus.c'; else $(CYGPATH_W) '$(srcdir)/users-service-dbus.c'; fi`
+
+indicator_session_service-user-menu-mgr.o: user-menu-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-user-menu-mgr.o -MD -MP -MF $(DEPDIR)/indicator_session_service-user-menu-mgr.Tpo -c -o indicator_session_service-user-menu-mgr.o `test -f 'user-menu-mgr.c' || echo '$(srcdir)/'`user-menu-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-user-menu-mgr.Tpo $(DEPDIR)/indicator_session_service-user-menu-mgr.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='user-menu-mgr.c' object='indicator_session_service-user-menu-mgr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-user-menu-mgr.o `test -f 'user-menu-mgr.c' || echo '$(srcdir)/'`user-menu-mgr.c
+
+indicator_session_service-user-menu-mgr.obj: user-menu-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-user-menu-mgr.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-user-menu-mgr.Tpo -c -o indicator_session_service-user-menu-mgr.obj `if test -f 'user-menu-mgr.c'; then $(CYGPATH_W) 'user-menu-mgr.c'; else $(CYGPATH_W) '$(srcdir)/user-menu-mgr.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-user-menu-mgr.Tpo $(DEPDIR)/indicator_session_service-user-menu-mgr.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='user-menu-mgr.c' object='indicator_session_service-user-menu-mgr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-user-menu-mgr.obj `if test -f 'user-menu-mgr.c'; then $(CYGPATH_W) 'user-menu-mgr.c'; else $(CYGPATH_W) '$(srcdir)/user-menu-mgr.c'; fi`
+
+indicator_session_service-device-menu-mgr.o: device-menu-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-device-menu-mgr.o -MD -MP -MF $(DEPDIR)/indicator_session_service-device-menu-mgr.Tpo -c -o indicator_session_service-device-menu-mgr.o `test -f 'device-menu-mgr.c' || echo '$(srcdir)/'`device-menu-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-device-menu-mgr.Tpo $(DEPDIR)/indicator_session_service-device-menu-mgr.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='device-menu-mgr.c' object='indicator_session_service-device-menu-mgr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-device-menu-mgr.o `test -f 'device-menu-mgr.c' || echo '$(srcdir)/'`device-menu-mgr.c
+
+indicator_session_service-device-menu-mgr.obj: device-menu-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-device-menu-mgr.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-device-menu-mgr.Tpo -c -o indicator_session_service-device-menu-mgr.obj `if test -f 'device-menu-mgr.c'; then $(CYGPATH_W) 'device-menu-mgr.c'; else $(CYGPATH_W) '$(srcdir)/device-menu-mgr.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-device-menu-mgr.Tpo $(DEPDIR)/indicator_session_service-device-menu-mgr.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='device-menu-mgr.c' object='indicator_session_service-device-menu-mgr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-device-menu-mgr.obj `if test -f 'device-menu-mgr.c'; then $(CYGPATH_W) 'device-menu-mgr.c'; else $(CYGPATH_W) '$(srcdir)/device-menu-mgr.c'; fi`
+
+indicator_session_service-apt-watcher.o: apt-watcher.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-apt-watcher.o -MD -MP -MF $(DEPDIR)/indicator_session_service-apt-watcher.Tpo -c -o indicator_session_service-apt-watcher.o `test -f 'apt-watcher.c' || echo '$(srcdir)/'`apt-watcher.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-apt-watcher.Tpo $(DEPDIR)/indicator_session_service-apt-watcher.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='apt-watcher.c' object='indicator_session_service-apt-watcher.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-apt-watcher.o `test -f 'apt-watcher.c' || echo '$(srcdir)/'`apt-watcher.c
+
+indicator_session_service-apt-watcher.obj: apt-watcher.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-apt-watcher.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-apt-watcher.Tpo -c -o indicator_session_service-apt-watcher.obj `if test -f 'apt-watcher.c'; then $(CYGPATH_W) 'apt-watcher.c'; else $(CYGPATH_W) '$(srcdir)/apt-watcher.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-apt-watcher.Tpo $(DEPDIR)/indicator_session_service-apt-watcher.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='apt-watcher.c' object='indicator_session_service-apt-watcher.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-apt-watcher.obj `if test -f 'apt-watcher.c'; then $(CYGPATH_W) 'apt-watcher.c'; else $(CYGPATH_W) '$(srcdir)/apt-watcher.c'; fi`
+
+indicator_session_service-apt-transaction.o: apt-transaction.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-apt-transaction.o -MD -MP -MF $(DEPDIR)/indicator_session_service-apt-transaction.Tpo -c -o indicator_session_service-apt-transaction.o `test -f 'apt-transaction.c' || echo '$(srcdir)/'`apt-transaction.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-apt-transaction.Tpo $(DEPDIR)/indicator_session_service-apt-transaction.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='apt-transaction.c' object='indicator_session_service-apt-transaction.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-apt-transaction.o `test -f 'apt-transaction.c' || echo '$(srcdir)/'`apt-transaction.c
+
+indicator_session_service-apt-transaction.obj: apt-transaction.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-apt-transaction.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-apt-transaction.Tpo -c -o indicator_session_service-apt-transaction.obj `if test -f 'apt-transaction.c'; then $(CYGPATH_W) 'apt-transaction.c'; else $(CYGPATH_W) '$(srcdir)/apt-transaction.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-apt-transaction.Tpo $(DEPDIR)/indicator_session_service-apt-transaction.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='apt-transaction.c' object='indicator_session_service-apt-transaction.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-apt-transaction.obj `if test -f 'apt-transaction.c'; then $(CYGPATH_W) 'apt-transaction.c'; else $(CYGPATH_W) '$(srcdir)/apt-transaction.c'; fi`
+
+indicator_session_service-udev-mgr.o: udev-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-udev-mgr.o -MD -MP -MF $(DEPDIR)/indicator_session_service-udev-mgr.Tpo -c -o indicator_session_service-udev-mgr.o `test -f 'udev-mgr.c' || echo '$(srcdir)/'`udev-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-udev-mgr.Tpo $(DEPDIR)/indicator_session_service-udev-mgr.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='udev-mgr.c' object='indicator_session_service-udev-mgr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-udev-mgr.o `test -f 'udev-mgr.c' || echo '$(srcdir)/'`udev-mgr.c
+
+indicator_session_service-udev-mgr.obj: udev-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-udev-mgr.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-udev-mgr.Tpo -c -o indicator_session_service-udev-mgr.obj `if test -f 'udev-mgr.c'; then $(CYGPATH_W) 'udev-mgr.c'; else $(CYGPATH_W) '$(srcdir)/udev-mgr.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-udev-mgr.Tpo $(DEPDIR)/indicator_session_service-udev-mgr.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='udev-mgr.c' object='indicator_session_service-udev-mgr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-udev-mgr.obj `if test -f 'udev-mgr.c'; then $(CYGPATH_W) 'udev-mgr.c'; else $(CYGPATH_W) '$(srcdir)/udev-mgr.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

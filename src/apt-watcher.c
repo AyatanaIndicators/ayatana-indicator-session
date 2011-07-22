@@ -235,18 +235,23 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
   
   AptState state = (AptState)update;
   
-  if ( state == UP_TO_DATE ){
+  if (state == UP_TO_DATE){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Software Up to Date"));    
   }
-  else if ( state == UPDATES_AVAILABLE ){
+  else if (state == UPDATES_AVAILABLE){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Updates Available…"));    
+  }
+  else if (state == UPGRADE_IN_PROGRESS){
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Updates Installing…"));    
   }  
   self->current_state = state;
-  g_object_unref (self->current_transaction);
+  g_object_unref (G_OBJECT(self->current_transaction));
   self->current_transaction = NULL;
 } 
  
@@ -255,7 +260,7 @@ apt_watcher_manage_transactions (AptWatcher* self, gchar* transaction_id)
 {
     if (self->current_transaction == NULL){
       self->current_transaction = apt_transaction_new (transaction_id);
-      g_object_ref (self->current_transaction);
+      //g_object_ref (self->current_transaction);
       g_signal_connect (G_OBJECT(self->current_transaction),
                         "state-update",
                         G_CALLBACK(apt_watcher_transaction_state_update_cb), self);

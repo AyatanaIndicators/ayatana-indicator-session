@@ -54,14 +54,16 @@ apt_transaction_init (AptTransaction *self)
 {
   self->proxy = NULL;
   self->id = NULL;
-  
 }
 
 static void
 apt_transaction_finalize (GObject *object)
 {
-	/* TODO: Add deinitalization code here */
   AptTransaction* self = APT_TRANSACTION(object);
+  g_signal_handlers_disconnect_by_func (G_OBJECT (self->proxy),
+                                        G_CALLBACK (apt_transaction_receive_signal),
+                                        self);
+
   if (self->proxy != NULL){
     g_object_unref (self->proxy);
     self->proxy = NULL;
@@ -91,7 +93,7 @@ apt_transaction_investigate(AptTransaction* self)
   GError * error = NULL;
 
   self->proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                               G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                                               G_DBUS_PROXY_FLAGS_NONE,
                                                NULL, /* GDBusInterfaceInfo */
                                                "org.debian.apt",
                                                self->id,
@@ -127,13 +129,41 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
                                 gpointer user_data)
 {
   g_return_if_fail (APT_IS_TRANSACTION (user_data));
-  AptTransaction* self = APT_TRANSACTION(user_data);      
-
+  AptTransaction* self = APT_TRANSACTION(user_data);
+  
+  GVariant* role = g_dbus_proxy_get_cached_property (self->proxy,
+                                                     "Role");
+  g_debug ("Role variant type = %s", g_variant_get_type_string (role));
+  if (g_variant_is_of_type (role, G_VARIANT_TYPE_STRING) == TRUE){
+    gchar* current_role = NULL;
+    g_variant_get (role, "s", &current_role);
+    g_debug ("Current transaction role = %s", current_role);
+    if (g_strcmp0 (current_role, "role-commit-packages") == 0 ||
+        g_strcmp0 (current_role, "role-upgrade-system") == 0){
+      g_debug ("UPGRADE IN PROGRESS");
+      g_signal_emit (self,
+                     signals[UPDATE],
+                     0,
+                     UPGRADE_IN_PROGRESS);            
+      // Return from here because an upgrade is in progress so
+      // any other information is irrelevant.                     
+      return;                     
+    }
+  }
+  
   if (g_strcmp0(signal_name, "PropertyChanged") == 0) 
   {
     gchar* prop_name= NULL;
     GVariant* value = NULL;
     g_variant_get (parameters, "(sv)", &prop_name, &value);
+    
+    g_debug ("transaction prop update - prop = %s", prop_name);
+    
+    if (g_variant_is_of_type (value, G_VARIANT_TYPE_STRING) == TRUE){
+      gchar* key = NULL;
+      g_variant_get (value, "s", &key);
+      g_debug ("transaction prop update - value = %s", key);
+    }
     
     if (g_strcmp0 (prop_name, "Dependencies") == 0){
       

@@ -4,7 +4,7 @@ AC_INIT(src/indicator-session.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 0.2.93)
+AM_INIT_AUTOMAKE(indicator-session, 0.3.0)
 
 AM_MAINTAINER_MODE
 
@@ -31,18 +31,18 @@ INDICATOR_REQUIRED_VERSION=0.3.19
 DBUSMENUGTK_REQUIRED_VERSION=0.3.91
 POLKIT_REQUIRED_VERSION=0.92
 
-AC_ARG_WITH([indicator-gtk],
-  [AS_HELP_STRING([--with-indicator-gtk],
+AC_ARG_WITH([gtk],
+  [AS_HELP_STRING([--with-gtk],
     [Which version of gtk to use for the indicator @<:@default=3@:>@])],
   [],
-  [with_indicator_gtk=3])
+  [with_gtk=3])
 
-AS_IF([test "x$with_indicator_gtk" = x3],
+AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(APPLET, gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                    indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                                    dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
         ],
-      [test "x$with_indicator_gtk" = x2],
+      [test "x$with_gtk" = x2],
          [PKG_CHECK_MODULES(APPLET, gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                     indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
                                     dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
@@ -54,17 +54,34 @@ AC_SUBST(APPLET_LIBS)
 
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
 
-PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                  dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
-                                  dbus-glib-1
-                                  gio-unix-2.0
-                                  indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION)
+AS_IF([test "x$with_gtk" = x3],
+    [PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                       dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       dbus-glib-1
+                                       gio-unix-2.0
+                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION)
+    ],
+    [test "x$with_gtk" = x2],
+    [PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                       dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       dbus-glib-1
+                                       gio-unix-2.0
+                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION)
+    ]
+)
 
 AC_SUBST(SESSIONERVICE_CFLAGS)
 AC_SUBST(SESSIONERVICE_LIBS)
 
-PKG_CHECK_MODULES(GTKLOGOUTHELPER, gtk+-3.0 >= $GTK3_REQUIRED_VERSION
-                                   polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION)
+AS_IF([test "x$with_gtk" = x3],
+    [PKG_CHECK_MODULES(GTKLOGOUTHELPER, gtk+-3.0 >= $GTK3_REQUIRED_VERSION
+                                        polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION)
+    ],
+    [test "x$with_gtk" = x2],
+    [PKG_CHECK_MODULES(GTKLOGOUTHELPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                        polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION)
+    ]
+)
 
 
 AC_SUBST(GTKLOGOUTHELPER_CFLAGS)
@@ -94,7 +111,7 @@ AC_ARG_ENABLE(localinstall, AS_HELP_STRING([--enable-localinstall], [install all
 if test "x$with_localinstall" = "xyes"; then
 	INDICATORDIR="${libdir}/indicators/2/"
 	INDICATORICONSDIR="${datadir}/indicator-applet/icons/"
-elif test "x$with_indicator_gtk" = x2; then
+elif test "x$with_gtk" = x2; then
 	INDICATORDIR=`$PKG_CONFIG --variable=indicatordir indicator-0.4`
 	INDICATORICONSDIR=`$PKG_CONFIG --variable=iconsdir indicator-0.4`
 else
@@ -179,5 +196,6 @@ AC_MSG_NOTICE([
 SUS Indicator Configuration:
 
 	Prefix:        $prefix
-	Indicator GTK: $with_indicator_gtk
+	Indicator Dir: $INDICATORDIR
+	Indicator GTK: $with_gtk
 ])

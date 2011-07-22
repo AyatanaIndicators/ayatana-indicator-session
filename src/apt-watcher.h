@@ -21,8 +21,15 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _APT_WATCHER_H_
 
 #include <glib-object.h>
+
 #include <libdbusmenu-glib/client.h>
+
+#include <gtk/gtk.h>
+#if GTK_CHECK_VERSION(3, 0, 0)
 #include <libdbusmenu-gtk3/menuitem.h>
+#else
+#include <libdbusmenu-gtk/menuitem.h>
+#endif
 
 #include "session-dbus.h"
 

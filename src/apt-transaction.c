@@ -31,11 +31,15 @@ static void apt_transaction_receive_signal (GDBusProxy * proxy,
                                             gchar * signal_name,
                                             GVariant * parameters,
                                             gpointer user_data);
+static void apt_transaction_finish_proxy_setup (GObject *source_object,
+                                                GAsyncResult *res,
+                                                gpointer user_data);
 
 struct _AptTransaction
 {
 	GObject       parent_instance;
 	GDBusProxy *  proxy;    
+	GCancellable * proxy_cancel;  
   gchar*        id;
   AptState      current_state;
 };
@@ -54,7 +58,7 @@ apt_transaction_init (AptTransaction *self)
 {
   self->proxy = NULL;
   self->id = NULL;
-  
+  self->proxy_cancel = g_cancellable_new();
 }
 
 static void
@@ -84,25 +88,46 @@ apt_transaction_class_init (AptTransactionClass *klass)
                                    g_cclosure_marshal_VOID__INT,
                                    G_TYPE_NONE, 1, G_TYPE_INT);  
 }
+// TODO: you don't need this additional helper
+// Just GObject properties properly
+static void
+apt_transaction_investigate (AptTransaction* self)
+{
+  g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+                            G_DBUS_PROXY_FLAGS_NONE,
+                            NULL,
+                            "org.debian.apt",
+                            self->id,
+                            "org.debian.apt.transaction",
+                            self->proxy_cancel,
+                            apt_transaction_finish_proxy_setup,
+                            self);
+}
 
 static void
-apt_transaction_investigate(AptTransaction* self)
+apt_transaction_finish_proxy_setup (GObject *source_object,
+                                    GAsyncResult *res,
+                                    gpointer user_data)
 {
-  GError * error = NULL;
+  g_return_if_fail (APT_IS_TRANSACTION (user_data));
+  AptTransaction* self = APT_TRANSACTION(user_data);      
+	GError * error = NULL;
 
-  self->proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                               G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
-                                               NULL, /* GDBusInterfaceInfo */
-                                               "org.debian.apt",
-                                               self->id,
-                                               "org.debian.apt.transaction",
-                                               NULL, /* GCancellable */
-                                               &error);        
-  if (error != NULL) {
-    g_warning ("unable to fetch proxy for transaction object path %s", self->id);
-    g_error_free (error);
-    return;
-  }
+	GDBusProxy * proxy = g_dbus_proxy_new_for_bus_finish(res, &error);
+
+	if (self->proxy_cancel != NULL) {
+		g_object_unref(self->proxy_cancel);
+		self->proxy_cancel = NULL;
+	}
+
+	if (error != NULL) {
+		g_warning("Could not grab DBus proxy for %s: %s",
+               "org.debian.apt", error->message);
+		g_error_free(error);
+		return;
+	}
+  
+  self->proxy = proxy;
 
   g_signal_connect (G_OBJECT(self->proxy),
                     "g-signal",
@@ -117,7 +142,8 @@ apt_transaction_investigate(AptTransaction* self)
                      NULL,
                      apt_transaction_simulate_transaction_cb,
                      self);                                                                                        
-}
+  
+}                                    
 
 static void
 apt_transaction_receive_signal (GDBusProxy * proxy,
@@ -171,6 +197,7 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
       }
     }
   }
+  g_variant_unref (parameters);
 }
 
 static void

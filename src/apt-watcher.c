@@ -20,7 +20,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include "apt-watcher.h"
-#include "dbus-shared-names.h"
 #include "apt-transaction.h"
 
 static guint watcher_id;
@@ -235,31 +234,56 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
   
   AptState state = (AptState)update;
   
-  if ( state == UP_TO_DATE ){
+  if (state == UP_TO_DATE){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Software Up to Date"));    
+                                    _("Software Up to Date"));   
+    // Simulations don't send a finished signal for some reason
+    // Anyway from a simulation we just need one state update 
+    // (updates available or not)
+    if (apt_transaction_get_transaction_type (self->current_transaction)
+        == SIMULATION){
+      g_object_unref (G_OBJECT(self->current_transaction));
+      self->current_transaction = NULL;
+    }                                                                   
   }
-  else if ( state == UPDATES_AVAILABLE ){
+  else if (state == UPDATES_AVAILABLE){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Updates Available…"));    
+    // Simulations don't send a finished signal for some reason
+    // Anyway from a simulation we just need one state update 
+    // (updates available or not)
+    if (apt_transaction_get_transaction_type (self->current_transaction)
+        == SIMULATION){
+      g_object_unref (G_OBJECT(self->current_transaction));
+      self->current_transaction = NULL;
+    }                              
+  }
+  else if (state == UPGRADE_IN_PROGRESS){
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Updates Installing…"));    
   }  
+  else if (state == FINISHED){
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Software Up to Date"));
+    g_object_unref (G_OBJECT(self->current_transaction));
+    self->current_transaction = NULL;                                    
+  }
   self->current_state = state;
-  g_object_unref (self->current_transaction);
-  self->current_transaction = NULL;
 } 
  
 static void
 apt_watcher_manage_transactions (AptWatcher* self, gchar* transaction_id)
 {
     if (self->current_transaction == NULL){
-      self->current_transaction = apt_transaction_new (transaction_id);
-      g_object_ref (self->current_transaction);
+      self->current_transaction = apt_transaction_new (transaction_id, SIMULATION);
       g_signal_connect (G_OBJECT(self->current_transaction),
                         "state-update",
                         G_CALLBACK(apt_watcher_transaction_state_update_cb), self);
-    }  
+    }
 }
 
 // TODO - Ask MVO about this.
@@ -279,17 +303,22 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
   if (g_strcmp0(signal_name, "ActiveTransactionsChanged") == 0){
     gchar* input = NULL;
     g_variant_get(value, "s", & input);
+    if (g_str_has_prefix (input, "/org/debian/apt/transaction/") == TRUE){
+      g_debug ("Active Transactions signal - input is null = %i", input == NULL);
+      
+      if (self->current_transaction != NULL)
+      {
+        g_object_unref (G_OBJECT(self->current_transaction));
+        self->current_transaction = NULL;
+      }
 
-    g_debug ("Active Transactions signal - input is null = %i", input == NULL);
-    // TODO don't call on null terminated input
-    g_dbus_proxy_call (self->proxy,
-                       "UpgradeSystem",
-                       g_variant_new("(b)", TRUE),
-                       G_DBUS_CALL_FLAGS_NONE,
-                       -1,
-                       NULL,
-                       apt_watcher_upgrade_system_cb,
-                       user_data);    
+      self->current_transaction = apt_transaction_new (input, REAL);
+      g_signal_connect (G_OBJECT(self->current_transaction),
+                        "state-update",
+                        G_CALLBACK(apt_watcher_transaction_state_update_cb), self);
+      
+          
+    }
   }
   g_variant_unref (parameters);
 }

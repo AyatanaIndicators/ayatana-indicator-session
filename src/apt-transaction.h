@@ -21,6 +21,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _APT_TRANSACTION_H_
 
 #include <glib-object.h>
+#include "dbus-shared-names.h"
 
 G_BEGIN_DECLS
 
@@ -39,8 +40,8 @@ struct _AptTransactionClass
 	GObjectClass parent_class;
 };
 
-AptTransaction* apt_transaction_new (gchar* transaction_id);
-
+AptTransaction* apt_transaction_new (gchar* transaction_id, TransactionType t);
+TransactionType apt_transaction_get_transaction_type (AptTransaction* self);
 GType apt_transaction_get_type (void) G_GNUC_CONST;
 
 G_END_DECLS

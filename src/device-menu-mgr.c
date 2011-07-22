@@ -58,7 +58,7 @@ static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
 
 static DbusmenuMenuitem * hibernate_mi = NULL;
-//static DbusmenuMenuitem * suspend_mi = NULL;
+static DbusmenuMenuitem * suspend_mi = NULL;
 static DbusmenuMenuitem * logout_mi = NULL;
 static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
@@ -86,11 +86,11 @@ static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
                               gpointer userdata);
-/*static void
+static void
 machine_sleep_from_suspend (DbusmenuMenuitem * mi,
                             guint timestamp,
                             gpointer userdata);
-*/
+
 G_DEFINE_TYPE (DeviceMenuMgr, device_menu_mgr, G_TYPE_OBJECT);
 
 static void
@@ -106,7 +106,6 @@ device_menu_mgr_init (DeviceMenuMgr *self)
 static void
 device_menu_mgr_finalize (GObject *object)
 {
-	/* TODO: Add deinitalization code here */
 	G_OBJECT_CLASS (device_menu_mgr_parent_class)->finalize (object);
 }
 
@@ -115,7 +114,6 @@ static void
 device_menu_mgr_class_init (DeviceMenuMgrClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	//GObjectClass* parent_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = device_menu_mgr_finalize;
 }
 
@@ -187,15 +185,14 @@ sleep_response (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
 	return;
 }
 
-
-/*static void
+static void
 machine_sleep_from_suspend (DbusmenuMenuitem * mi,
                             guint timestamp,
                             gpointer userdata)
 {
   DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
   machine_sleep_with_context (self, "Suspend");
-}*/
+}
 
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
@@ -229,9 +226,6 @@ machine_sleep_with_context (DeviceMenuMgr* self, gchar* type)
 }
 
 /* A response to getting the suspend property */
-// TODO
-// Is this needed anymore
-
 static void
 suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
@@ -252,14 +246,14 @@ suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	if (local_can_suspend != can_suspend) {
 		can_suspend = local_can_suspend;
     // TODO figure out what needs updating on the menu
+    // And add or remove it but just don't rebuild the whole menu
+    // a waste
 		device_menu_mgr_rebuild_items(self);
 	}
 	return;
 }
 
 /* Response to getting the hibernate property */
-// TODO
-// Is this needed anymore
 static void
 hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
@@ -505,13 +499,13 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   login_settings_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (login_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Login Items..."));
+                                  _("Startup Applications..."));
   g_signal_connect (G_OBJECT(login_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_session_properties),
                     "login");
   dbusmenu_menuitem_child_add_position(self->root_item,
-                                       login_settings_menuitem,
+                                       login_settings_menuitem,                                  
                                        3);
   software_updates_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (software_updates_menuitem,
@@ -561,6 +555,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         scanners_menuitem,
                                         8);
+ //tmp
+  dbusmenu_menuitem_property_set_bool (scanners_menuitem,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       FALSE);
+                                        
   webcam_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (webcam_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -572,6 +571,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         webcam_menuitem,
                                         10);
+ //tmp
+  dbusmenu_menuitem_property_set_bool (webcam_menuitem,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       FALSE);
+                                        
   DbusmenuMenuitem * separator3 = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (separator3,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
@@ -630,6 +634,18 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_dialog), "logout");
 
+	if (can_suspend && allow_suspend) {
+		suspend_mi = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set (suspend_mi,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Suspend"));
+		dbusmenu_menuitem_child_append (self->root_item, suspend_mi);
+		g_signal_connect( G_OBJECT(suspend_mi),
+                      DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                      G_CALLBACK(machine_sleep_from_suspend),
+                      self);
+	}
+
 	if (can_hibernate && allow_hibernate) {
 		hibernate_mi = dbusmenu_menuitem_new();
 		dbusmenu_menuitem_property_set (hibernate_mi,
@@ -672,7 +688,13 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
 static void
 device_menu_mgr_rebuild_items (DeviceMenuMgr* self)
 {
-}
+  dbusmenu_menuitem_property_set_bool (hibernate_mi,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       can_hibernate && allow_hibernate);
+  dbusmenu_menuitem_property_set_bool (suspend_mi,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       can_suspend && allow_suspend);
+}                                       
 
 /* When the directory changes we need to figure out how our menu
    item should look. */

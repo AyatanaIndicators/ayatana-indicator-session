@@ -1,4 +1,4 @@
-indicator-session (0.3.0-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (0.3.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.
     - fixed bug where the user menu wouldn't open in unity (LP: #812728)

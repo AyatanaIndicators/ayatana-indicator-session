@@ -1,6 +1,10 @@
 indicator-session (0.3.0-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release.
+    - fixed bug where the user menu wouldn't open in unity (LP: #812728)
+    - Include apt, settings and device menus
+  * debian/rules
+    - Updated gtk configure args
 
  -- Ken VanDine <ken.vandine@canonical.com>  Fri, 22 Jul 2011 13:41:08 -0400
 

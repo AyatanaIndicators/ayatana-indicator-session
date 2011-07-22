@@ -95,7 +95,13 @@ indicator_session_service_SOURCES = \
 	user-menu-mgr.h \
 	user-menu-mgr.c \	
 	device-menu-mgr.h \
-	device-menu-mgr.c 	
+	device-menu-mgr.c \
+	apt-watcher.h \
+	apt-watcher.c \
+	apt-transaction.h \
+	apt-transaction.c \
+	udev-mgr.h \
+	udev-mgr.c
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
 	$(GCONF_CFLAGS) \

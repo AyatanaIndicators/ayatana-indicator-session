@@ -20,6 +20,15 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+typedef enum {
+  UP_TO_DATE,
+  CHECKING_FOR_UPDATES,
+  UPDATES_AVAILABLE,
+  FINISHED_CHECKING,
+  UPDATING,  
+  RESTART_NEEDED  
+}AptState;
+
 
 #ifndef __DBUS_SHARED_NAMES_H__
 #define __DBUS_SHARED_NAMES_H__ 1

@@ -34,10 +34,10 @@ static void apt_transaction_receive_signal (GDBusProxy * proxy,
 
 struct _AptTransaction
 {
-	GObject       parent_instance;
-	GDBusProxy *  proxy;    
-  gchar*        id;
-  AptState      current_state;
+	GObject         parent_instance;
+	GDBusProxy *    proxy;    
+  gchar*          id;
+  TransactionType type;
 };
 
 enum {
@@ -63,11 +63,10 @@ apt_transaction_finalize (GObject *object)
   g_signal_handlers_disconnect_by_func (G_OBJECT (self->proxy),
                                         G_CALLBACK (apt_transaction_receive_signal),
                                         self);
-
   if (self->proxy != NULL){
     g_object_unref (self->proxy);
     self->proxy = NULL;
-  }    
+  }
   g_free (self->id);
 	G_OBJECT_CLASS (apt_transaction_parent_class)->finalize (object);
 }
@@ -111,14 +110,16 @@ apt_transaction_investigate(AptTransaction* self)
                     G_CALLBACK (apt_transaction_receive_signal),
                     self);    
 
-  g_dbus_proxy_call (self->proxy,
-                     "Simulate",
-                     NULL,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     -1,
-                     NULL,
-                     apt_transaction_simulate_transaction_cb,
-                     self);                                                                                        
+  if (self->type == SIMULATION){
+    g_dbus_proxy_call (self->proxy,
+                       "Simulate",
+                       NULL,
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       NULL,
+                       apt_transaction_simulate_transaction_cb,
+                       self);                                                                                        
+  }                       
 }
 
 static void
@@ -130,33 +131,13 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
 {
   g_return_if_fail (APT_IS_TRANSACTION (user_data));
   AptTransaction* self = APT_TRANSACTION(user_data);
+  AptState current_state = UP_TO_DATE;
   
-  GVariant* role = g_dbus_proxy_get_cached_property (self->proxy,
-                                                     "Role");
-  g_debug ("Role variant type = %s", g_variant_get_type_string (role));
-  if (g_variant_is_of_type (role, G_VARIANT_TYPE_STRING) == TRUE){
-    gchar* current_role = NULL;
-    g_variant_get (role, "s", &current_role);
-    g_debug ("Current transaction role = %s", current_role);
-    if (g_strcmp0 (current_role, "role-commit-packages") == 0 ||
-        g_strcmp0 (current_role, "role-upgrade-system") == 0){
-      g_debug ("UPGRADE IN PROGRESS");
-      g_signal_emit (self,
-                     signals[UPDATE],
-                     0,
-                     UPGRADE_IN_PROGRESS);            
-      // Return from here because an upgrade is in progress so
-      // any other information is irrelevant.                     
-      return;                     
-    }
-  }
-  
-  if (g_strcmp0(signal_name, "PropertyChanged") == 0) 
+  if (g_strcmp0(signal_name, "PropertyChanged") == 0 && self->type == SIMULATION) 
   {
     gchar* prop_name= NULL;
     GVariant* value = NULL;
-    g_variant_get (parameters, "(sv)", &prop_name, &value);
-    
+    g_variant_get (parameters, "(sv)", &prop_name, &value);    
     g_debug ("transaction prop update - prop = %s", prop_name);
     
     if (g_variant_is_of_type (value, G_VARIANT_TYPE_STRING) == TRUE){
@@ -166,8 +147,7 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
     }
     
     if (g_strcmp0 (prop_name, "Dependencies") == 0){
-      
-      
+            
       gchar** install = NULL;
       gchar** reinstall = NULL;
       gchar** remove = NULL;
@@ -177,8 +157,7 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
       gchar** keep = NULL;
       g_variant_get (value, "(asasasasasasas)", &install, 
                      &reinstall, &remove, &purge, &upgrade, &downgrade,
-                     &keep);
-      
+                     &keep);      
       //g_debug ("Seemed to uppack dependencies without any warnings");
       //g_debug ("Upgrade quantity : %u", g_strv_length(upgrade));
       gboolean upgrade_needed = (g_strv_length(upgrade) > 0) ||
@@ -187,20 +166,39 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
                                 (g_strv_length(remove) > 0) ||
                                 (g_strv_length(purge) > 0);
       if (upgrade_needed == TRUE){
-        g_signal_emit (self,
-                       signals[UPDATE],
-                       0,
-                       UPDATES_AVAILABLE);
-        
+        current_state = UPDATES_AVAILABLE;        
       }
       else{
-        g_signal_emit (self,
-                       signals[UPDATE],
-                       0,
-                       UP_TO_DATE);
+        current_state = UP_TO_DATE;
       }
     }
   }
+  else if (g_strcmp0(signal_name, "PropertyChanged") == 0 &&
+           self->type == REAL)
+  {
+    GVariant* role = g_dbus_proxy_get_cached_property (self->proxy,
+                                                       "Role");
+    if (g_variant_is_of_type (role, G_VARIANT_TYPE_STRING) == TRUE){
+      gchar* current_role = NULL;
+      g_variant_get (role, "s", &current_role);
+      g_debug ("Current transaction role = %s", current_role);
+      if (g_strcmp0 (current_role, "role-commit-packages") == 0 ||
+          g_strcmp0 (current_role, "role-upgrade-system") == 0){
+        g_debug ("UPGRADE IN PROGRESS");
+        current_state = UPGRADE_IN_PROGRESS;                        
+      }
+    }
+  } 
+  else if (g_strcmp0(signal_name, "Finished") == 0) 
+  {
+    g_debug ("TRANSACTION Finished");
+    current_state = FINISHED;
+  }
+  // Finally send out the state update  
+  g_signal_emit (self,
+                 signals[UPDATE],
+                 0,
+                 current_state);
 }
 
 static void
@@ -209,18 +207,23 @@ apt_transaction_simulate_transaction_cb (GObject * obj,
                                          gpointer user_data)
 {
 	GError * error = NULL;
-
 	if (error != NULL) {
     g_warning ("unable to complete the simulate call");
     g_error_free (error);
 		return;
 	}
 }
+TransactionType 
+apt_transaction_get_transaction_type (AptTransaction* self)
+{
+  return self->type;
+}
 
-AptTransaction* apt_transaction_new (gchar* transaction_id)
+AptTransaction* apt_transaction_new (gchar* transaction_id, TransactionType t)
 {
   AptTransaction* tr = g_object_new (APT_TYPE_TRANSACTION, NULL);
   tr->id = transaction_id;
+  tr->type = t;
   g_debug ("Apt transaction new id = %s", tr->id);
   apt_transaction_investigate (tr);
   return tr;

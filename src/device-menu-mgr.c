@@ -499,13 +499,13 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   login_settings_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (login_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Login Items..."));
+                                  _("Startup Applications..."));
   g_signal_connect (G_OBJECT(login_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_session_properties),
                     "login");
   dbusmenu_menuitem_child_add_position(self->root_item,
-                                       login_settings_menuitem,
+                                       login_settings_menuitem,                                  
                                        3);
   software_updates_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (software_updates_menuitem,
@@ -555,6 +555,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         scanners_menuitem,
                                         8);
+ //tmp
+  dbusmenu_menuitem_property_set_bool (scanners_menuitem,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       FALSE);
+                                        
   webcam_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (webcam_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -566,6 +571,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         webcam_menuitem,
                                         10);
+ //tmp
+  dbusmenu_menuitem_property_set_bool (webcam_menuitem,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       FALSE);
+                                        
   DbusmenuMenuitem * separator3 = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (separator3,
                                   DBUSMENU_MENUITEM_PROP_TYPE,

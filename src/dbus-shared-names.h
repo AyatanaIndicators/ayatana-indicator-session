@@ -20,17 +20,22 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef __DBUS_SHARED_NAMES_H__
+#define __DBUS_SHARED_NAMES_H__ 
+
 typedef enum {
   UP_TO_DATE,
   CHECKING_FOR_UPDATES,
   UPDATES_AVAILABLE,
-  UPGRADE_IN_PROGRESS,  
+  UPGRADE_IN_PROGRESS, 
+  FINISHED, 
   RESTART_NEEDED  
 }AptState;
 
-
-#ifndef __DBUS_SHARED_NAMES_H__
-#define __DBUS_SHARED_NAMES_H__ 1
+typedef enum {
+  SIMULATION,
+  REAL
+}TransactionType;
 
 #define INDICATOR_USERS_DBUS_NAME  INDICATOR_SESSION_DBUS_NAME
 #define INDICATOR_USERS_DBUS_OBJECT "/com/canonical/indicator/users/menu"

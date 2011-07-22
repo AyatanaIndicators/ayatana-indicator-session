@@ -71,10 +71,10 @@ static GMainLoop * mainloop = NULL;
 void
 service_shutdown (IndicatorService * service, gpointer user_data)
 {
-	/*if (mainloop != NULL) {
+	if (mainloop != NULL) {
 		g_debug("Service shutdown");
 		g_main_loop_quit(mainloop);
-	}*/
+	}
 	return;
 }
 

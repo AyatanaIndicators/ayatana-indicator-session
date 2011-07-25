@@ -58,12 +58,14 @@ AS_IF([test "x$with_gtk" = x3],
     [PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0                                       
                                        gio-unix-2.0
                                        indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION)
     ],
     [test "x$with_gtk" = x2],
     [PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0                                       
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= $INDICATOR_REQUIRED_VERSION)

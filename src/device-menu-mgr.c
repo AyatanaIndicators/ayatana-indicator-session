@@ -27,7 +27,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lock-helper.h"
 #include "upower-client.h"
 #include "apt-watcher.h"
-
+#include "udev-mgr.h"
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
@@ -41,6 +41,7 @@ struct _DeviceMenuMgr
   DbusmenuMenuitem* root_item;
   SessionDbus* session_dbus_interface;  
   AptWatcher* apt_watcher;                              
+  UdevMgr* udev_mgr;
 };
 
 static GConfClient       *gconf_client  = NULL;
@@ -214,7 +215,6 @@ machine_sleep_with_context (DeviceMenuMgr* self, gchar* type)
 
 	screensaver_throttle(type);
 	lock_if_possible (self);
-
 	dbus_g_proxy_begin_call(up_main_proxy,
 	                        type,
 	                        sleep_response,
@@ -681,7 +681,9 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
 	restart_shutdown_logout_mi->logout_mi = logout_mi;
 	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
 
-	update_menu_entries(restart_shutdown_logout_mi);                    
+	update_menu_entries(restart_shutdown_logout_mi);
+  // Time to create the udev mgr and hand it the static relevant items.
+  self->udev_mgr = udev_mgr_new (webcam_menuitem, scanners_menuitem);   
 }
 
 

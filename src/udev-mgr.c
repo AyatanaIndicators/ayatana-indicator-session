@@ -26,6 +26,7 @@ static void udev_mgr_uevent_cb  (GUdevClient *client,
                                  gchar       *action,
                                  GUdevDevice *device,
                                  gpointer     user_data);   
+                                 
 struct _UdevMgr
 {
 	GObject parent_instance;
@@ -34,6 +35,8 @@ struct _UdevMgr
   GUdevClient* client;  
 };
 
+const char *subsystems[1] = {"usb"};
+const gchar* usb_subsystem = "usb";
 
 G_DEFINE_TYPE (UdevMgr, udev_mgr, G_TYPE_OBJECT);
 
@@ -41,37 +44,19 @@ static void
 udev_mgr_init (UdevMgr* self)
 {
   self->client = NULL;
-	const gchar *subsystems[1] = {"usb"};
   self->client = g_udev_client_new (subsystems);
-  const gchar* usb_subsystem = "usb";
   
   GList* devices_available  = g_udev_client_query_by_subsystem (self->client,
                                                                 usb_subsystem);
   
-  if (FALSE){                                                              
-    g_list_foreach (devices_available, udevice_mgr_device_list_iterator, self);
-  }
-  //g_list_free (devices_available);
-  if (FALSE){
+  g_list_foreach (devices_available, udevice_mgr_device_list_iterator, self);
+  g_list_free (devices_available);
   g_signal_connect (G_OBJECT (self->client),
-                    "u-event",
+                   "uevent",
                     G_CALLBACK (udev_mgr_uevent_cb),
                     self);
-  }       
 }
  
-static void
-udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
-{
-  g_return_if_fail (G_UDEV_IS_DEVICE (data));
-  GUdevDevice* device = G_UDEV_DEVICE (data);
-  const gchar* name = g_udev_device_get_name (device);
-  
-  g_debug ("UDEV MGR - the name of the device = %s", name);
-  // for now tidy up here.
-  g_object_unref (device);
-}
-
 static void
 udev_mgr_finalize (GObject *object)
 {
@@ -85,6 +70,18 @@ udev_mgr_class_init (UdevMgrClass *klass)
 	object_class->finalize = udev_mgr_finalize;
 }
 
+static void
+udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
+{
+  g_return_if_fail (G_UDEV_IS_DEVICE (data));
+  GUdevDevice* device = G_UDEV_DEVICE (data);
+  const gchar* name = g_udev_device_get_name (device);
+  
+  g_debug ("UDEV MGR - the name of the device = %s", name);
+  // for now tidy up here.
+  g_object_unref (device);
+}
+
 static void udev_mgr_uevent_cb (GUdevClient *client,
                                 gchar       *action,
                                 GUdevDevice *device,
@@ -93,6 +90,7 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
   g_debug ("just received a UEVENT with an action :  %s", action);
   g_return_if_fail (UDEV_IS_MGR (user_data));
 }
+
 
 UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner, 
                        DbusmenuMenuitem* webcam)

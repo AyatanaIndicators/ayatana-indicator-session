@@ -20,6 +20,11 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "udev-mgr.h"
 #include <gudev/gudev.h>
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
 static void udevice_mgr_device_list_iterator (gpointer data,
                                               gpointer userdata);
 static void udev_mgr_uevent_cb  (GUdevClient *client,
@@ -87,8 +92,43 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
                                 GUdevDevice *device,
                                 gpointer     user_data)   
 {
-  g_debug ("just received a UEVENT with an action :  %s", action);
   g_return_if_fail (UDEV_IS_MGR (user_data));
+
+  g_debug ("just received a UEVENT with an action :  %s", action);
+
+  const gchar* vendor;
+  const gchar* product;
+  const gchar* number;
+  
+	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
+	product = g_udev_device_get_property (device, "ID_MODEL_ID");
+  number = g_udev_device_get_number (device);
+  g_debug ("device vendor id %s and product id of %s and number of %s",
+           g_strdup(vendor),
+           g_strdup(product),
+           g_strdup(number));
+           
+  const gchar *const *list;
+  const gchar *const *iter;  
+  char propstr[500];
+  guint32 namelen = 0, i;  
+  
+  list = g_udev_device_get_property_keys(device);
+  
+  for (iter = list; iter && *iter; iter++) {
+    if (strlen(*iter) > namelen)
+      namelen = strlen(*iter);
+  }
+  namelen++;
+
+  for (iter = list; iter && *iter; iter++) {
+    strcpy(propstr, *iter);
+    strcat(propstr, ":");
+    for (i = 0; i < namelen - strlen(*iter); i++)
+           strcat(propstr, " ");
+    strcat(propstr, g_udev_device_get_property(device, *iter));
+    g_debug("%s", propstr);
+  }  
 }
 
 

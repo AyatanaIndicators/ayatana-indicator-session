@@ -17,27 +17,29 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "udev-mgr.h"
 #include <gudev/gudev.h>
-
+// TEMP
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
+
+#include "udev-mgr.h"
+#include "sane-rules.h"
 
 static void udevice_mgr_device_list_iterator (gpointer data,
                                               gpointer userdata);
 static void udev_mgr_uevent_cb  (GUdevClient *client,
                                  gchar       *action,
                                  GUdevDevice *device,
-                                 gpointer     user_data);   
-                                 
+                                 gpointer     user_data);                                   
 struct _UdevMgr
 {
 	GObject parent_instance;
   DbusmenuMenuitem* scanner_item;
   DbusmenuMenuitem* webcam_item;  
   GUdevClient* client;  
+  GHashTable* supported_scanners;
 };
 
 const char *subsystems[1] = {"usb"};
@@ -46,11 +48,23 @@ const gchar* usb_subsystem = "usb";
 G_DEFINE_TYPE (UdevMgr, udev_mgr, G_TYPE_OBJECT);
 
 static void
+test_usb_scanners(gpointer data, gpointer user_data)
+{
+  gchar* model = (gchar*)data;
+  g_debug ("in hash table for epsom model %s was found", model);
+}
+
+static void
 udev_mgr_init (UdevMgr* self)
 {
   self->client = NULL;
-  self->client = g_udev_client_new (subsystems);
-  
+  self->supported_scanners = NULL;
+
+  self->client = g_udev_client_new (subsystems);  
+  self->supported_scanners = g_hash_table_new (g_str_hash, g_str_equal);
+  populate_usb_scanners(self->supported_scanners);
+  GList* epsom = g_hash_table_lookup(self->supported_scanners, "04b8");
+  g_list_foreach(epsom, test_usb_scanners, NULL);
   GList* devices_available  = g_udev_client_query_by_subsystem (self->client,
                                                                 usb_subsystem);
   
@@ -62,6 +76,7 @@ udev_mgr_init (UdevMgr* self)
                     self);
 }
  
+
 static void
 udev_mgr_finalize (GObject *object)
 {

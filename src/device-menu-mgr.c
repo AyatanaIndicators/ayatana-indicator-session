@@ -555,7 +555,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         scanners_menuitem,
                                         8);
- //tmp
   dbusmenu_menuitem_property_set_bool (scanners_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        FALSE);
@@ -683,7 +682,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
 
 	update_menu_entries(restart_shutdown_logout_mi);
   // Time to create the udev mgr and hand it the static relevant items.
-  self->udev_mgr = udev_mgr_new (webcam_menuitem, scanners_menuitem);   
+  self->udev_mgr = udev_mgr_new (scanners_menuitem, webcam_menuitem);   
 }
 
 

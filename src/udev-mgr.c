@@ -34,9 +34,8 @@ static void udev_mgr_uevent_cb  (GUdevClient *client,
                                  gchar       *action,
                                  GUdevDevice *device,
                                  gpointer     user_data);   
-/*static gboolean udev_mgr_compare_models (gconstpointer data1,
-                                         gconstpointer data2);
-*/                                                                 
+static void udev_mgr_update_menuitems (UdevMgr* self);
+                                 
 struct _UdevMgr
 {
 	GObject parent_instance;
@@ -44,6 +43,7 @@ struct _UdevMgr
   DbusmenuMenuitem* webcam_item;  
   GUdevClient* client;  
   GHashTable* supported_scanners;
+  gint scanners_present;
 };
 
 const char *subsystems[1] = {"usb"};
@@ -63,15 +63,11 @@ udev_mgr_init (UdevMgr* self)
 {
   self->client = NULL;
   self->supported_scanners = NULL;
-
+  self->scanners_present = 0;
+  
   self->client = g_udev_client_new (subsystems);  
   self->supported_scanners = g_hash_table_new (g_str_hash, g_str_equal);
   populate_usb_scanners(self->supported_scanners);
-  GList* devices_available  = g_udev_client_query_by_subsystem (self->client,
-                                                                usb_subsystem);
-  
-  g_list_foreach (devices_available, udevice_mgr_device_list_iterator, self);
-  g_list_free (devices_available);
   g_signal_connect (G_OBJECT (self->client),
                    "uevent",
                     G_CALLBACK (udev_mgr_uevent_cb),
@@ -101,9 +97,7 @@ udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
   UdevMgr* self = UDEV_MGR (userdata);
   
   GUdevDevice* device = G_UDEV_DEVICE (data);
-  
-  const gchar* name = g_udev_device_get_name (device);
-  
+    
   const gchar* vendor = NULL;
   const gchar* product = NULL;
   GList* vendor_list = NULL;
@@ -126,11 +120,20 @@ udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
       g_debug ("CANT FIND THE MODEL %s FOR  VENDOR %s", product, vendor);
     }
     else{
-      dbusmenu_menuitem
+      self->scanners_present += 1;    
       g_debug ("WE HAVE A SUCCESSFUL MATCH!");
-    }
+    }    
   }
+  g_debug ("JUST SET SCANNERS TO TRUE");                                                 
   g_object_unref (device);
+}
+
+
+static void udev_mgr_update_menuitems (UdevMgr* self)
+{
+  dbusmenu_menuitem_property_set_bool (self->scanner_item,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       self->scanners_present > 0);
 }
 
 static void udev_mgr_uevent_cb (GUdevClient *client,
@@ -178,12 +181,12 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
   }  
 }
 
-/*static gboolean
-udev_mgr_compare_models (gconstpointer data1,
-                         gconstpointer data2)
+static gboolean
+udev_mgr_is_this_a_supported_scanner (UdevMgr* self, 
+                                      GUdevDevice *device)
 {
-  return FALSE;
-}*/
+  
+}
 
 UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner, 
                        DbusmenuMenuitem* webcam)
@@ -191,5 +194,14 @@ UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner,
   UdevMgr* mgr = g_object_new (UDEV_TYPE_MGR, NULL);
   mgr->scanner_item = scanner;
   mgr->webcam_item = webcam;
+
+  GList* devices_available  = g_udev_client_query_by_subsystem (mgr->client,
+                                                                usb_subsystem);
+  
+  g_list_foreach (devices_available,
+                  udevice_mgr_device_list_iterator,
+                  mgr);
+  g_list_free (devices_available);
+  udev_mgr_update_menuitems (mgr);  
   return mgr;
 }

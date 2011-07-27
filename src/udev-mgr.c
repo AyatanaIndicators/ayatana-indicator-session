@@ -18,6 +18,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <gudev/gudev.h>
+
 // TEMP
 #include <stdio.h>
 #include <string.h>
@@ -32,7 +33,10 @@ static void udevice_mgr_device_list_iterator (gpointer data,
 static void udev_mgr_uevent_cb  (GUdevClient *client,
                                  gchar       *action,
                                  GUdevDevice *device,
-                                 gpointer     user_data);                                   
+                                 gpointer     user_data);   
+/*static gboolean udev_mgr_compare_models (gconstpointer data1,
+                                         gconstpointer data2);
+*/                                                                 
 struct _UdevMgr
 {
 	GObject parent_instance;
@@ -47,12 +51,12 @@ const gchar* usb_subsystem = "usb";
 
 G_DEFINE_TYPE (UdevMgr, udev_mgr, G_TYPE_OBJECT);
 
-static void
+/*static void
 test_usb_scanners(gpointer data, gpointer user_data)
 {
   gchar* model = (gchar*)data;
   g_debug ("in hash table for epsom model %s was found", model);
-}
+}*/
 
 static void
 udev_mgr_init (UdevMgr* self)
@@ -63,8 +67,6 @@ udev_mgr_init (UdevMgr* self)
   self->client = g_udev_client_new (subsystems);  
   self->supported_scanners = g_hash_table_new (g_str_hash, g_str_equal);
   populate_usb_scanners(self->supported_scanners);
-  GList* epsom = g_hash_table_lookup(self->supported_scanners, "04b8");
-  g_list_foreach(epsom, test_usb_scanners, NULL);
   GList* devices_available  = g_udev_client_query_by_subsystem (self->client,
                                                                 usb_subsystem);
   
@@ -94,11 +96,40 @@ static void
 udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
 {
   g_return_if_fail (G_UDEV_IS_DEVICE (data));
+  g_return_if_fail (UDEV_IS_MGR (userdata));
+  
+  UdevMgr* self = UDEV_MGR (userdata);
+  
   GUdevDevice* device = G_UDEV_DEVICE (data);
+  
   const gchar* name = g_udev_device_get_name (device);
   
-  g_debug ("UDEV MGR - the name of the device = %s", name);
-  // for now tidy up here.
+  const gchar* vendor = NULL;
+  const gchar* product = NULL;
+  GList* vendor_list = NULL;
+  
+	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
+  
+  if (vendor == NULL){
+    g_object_unref (device);
+    return;
+  }
+
+	product = g_udev_device_get_property (device, "ID_MODEL_ID");
+  vendor_list = g_hash_table_lookup(self->supported_scanners, (gpointer)vendor);
+  
+  GList* model = NULL;
+  
+  if (vendor_list != NULL){
+    model = g_list_find_custom(vendor_list, product, (GCompareFunc)g_strcmp0);
+    if (model == NULL){
+      g_debug ("CANT FIND THE MODEL %s FOR  VENDOR %s", product, vendor);
+    }
+    else{
+      dbusmenu_menuitem
+      g_debug ("WE HAVE A SUCCESSFUL MATCH!");
+    }
+  }
   g_object_unref (device);
 }
 
@@ -118,6 +149,7 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
 	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
 	product = g_udev_device_get_property (device, "ID_MODEL_ID");
   number = g_udev_device_get_number (device);
+ 
   g_debug ("device vendor id %s and product id of %s and number of %s",
            g_strdup(vendor),
            g_strdup(product),
@@ -146,6 +178,12 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
   }  
 }
 
+/*static gboolean
+udev_mgr_compare_models (gconstpointer data1,
+                         gconstpointer data2)
+{
+  return FALSE;
+}*/
 
 UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner, 
                        DbusmenuMenuitem* webcam)

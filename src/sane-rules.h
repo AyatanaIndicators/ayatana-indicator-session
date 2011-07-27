@@ -3,7 +3,8 @@
 void populate_usb_scanners (GHashTable* scanners)
 {
   GList* epson = NULL;
-
+  // For testing
+  epson = g_list_append (epson, g_strdup("0001"));
   epson = g_list_append (epson, g_strdup("0101"));
   epson = g_list_append (epson, g_strdup("0103"));
   epson = g_list_append (epson, g_strdup("0104"));

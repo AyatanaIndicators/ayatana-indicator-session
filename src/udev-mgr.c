@@ -35,7 +35,10 @@ static void udev_mgr_uevent_cb  (GUdevClient *client,
                                  GUdevDevice *device,
                                  gpointer     user_data);   
 static void udev_mgr_update_menuitems (UdevMgr* self);
-                                 
+static void udev_mgr_check_if_device_is_supported (UdevMgr* self, 
+                                                   GUdevDevice *device,
+                                                   UdevMgrDeviceAction action);
+                                                                                        
 struct _UdevMgr
 {
 	GObject parent_instance;
@@ -43,10 +46,10 @@ struct _UdevMgr
   DbusmenuMenuitem* webcam_item;  
   GUdevClient* client;  
   GHashTable* supported_scanners;
-  gint scanners_present;
+  GHashTable* scanners_present;
 };
 
-const char *subsystems[1] = {"usb"};
+const char *subsystems[2] = {"usb", "scsi"};
 const gchar* usb_subsystem = "usb";
 
 G_DEFINE_TYPE (UdevMgr, udev_mgr, G_TYPE_OBJECT);
@@ -63,21 +66,23 @@ udev_mgr_init (UdevMgr* self)
 {
   self->client = NULL;
   self->supported_scanners = NULL;
-  self->scanners_present = 0;
-  
+  self->scanners_present = NULL;
+    
   self->client = g_udev_client_new (subsystems);  
   self->supported_scanners = g_hash_table_new (g_str_hash, g_str_equal);
+  self->scanners_present = g_hash_table_new (g_str_hash, g_str_equal);
+  
   populate_usb_scanners(self->supported_scanners);
   g_signal_connect (G_OBJECT (self->client),
                    "uevent",
                     G_CALLBACK (udev_mgr_uevent_cb),
                     self);
 }
- 
 
 static void
 udev_mgr_finalize (GObject *object)
 {
+  // TODO tidy up hashtables. 
 	G_OBJECT_CLASS (udev_mgr_parent_class)->finalize (object);
 }
 
@@ -97,8 +102,9 @@ udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
   UdevMgr* self = UDEV_MGR (userdata);
   
   GUdevDevice* device = G_UDEV_DEVICE (data);
-    
-  const gchar* vendor = NULL;
+  udev_mgr_check_if_device_is_supported (self, device, ADD);
+
+  /*const gchar* vendor = NULL;
   const gchar* product = NULL;
   GList* vendor_list = NULL;
   
@@ -124,7 +130,7 @@ udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
       g_debug ("WE HAVE A SUCCESSFUL MATCH!");
     }    
   }
-  g_debug ("JUST SET SCANNERS TO TRUE");                                                 
+  g_debug ("JUST SET SCANNERS TO TRUE");*/                                                 
   g_object_unref (device);
 }
 
@@ -133,7 +139,7 @@ static void udev_mgr_update_menuitems (UdevMgr* self)
 {
   dbusmenu_menuitem_property_set_bool (self->scanner_item,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       self->scanners_present > 0);
+                                       g_hash_table_size (self->scanners_present) > 0);
 }
 
 static void udev_mgr_uevent_cb (GUdevClient *client,
@@ -142,9 +148,15 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
                                 gpointer     user_data)   
 {
   g_return_if_fail (UDEV_IS_MGR (user_data));
-
+  UdevMgr* self = UDEV_MGR (user_data);
   g_debug ("just received a UEVENT with an action :  %s", action);
+ 
+  UdevMgrDeviceAction udev_mgr_action = ADD;
 
+  if (g_strcmp0 (action, "remove") == 0){
+    udev_mgr_action = REMOVE;
+  }
+  udev_mgr_check_if_device_is_supported (self, device, udev_mgr_action);
   const gchar* vendor;
   const gchar* product;
   const gchar* number;
@@ -178,14 +190,53 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
            strcat(propstr, " ");
     strcat(propstr, g_udev_device_get_property(device, *iter));
     g_debug("%s", propstr);
-  }  
+  } 
 }
 
-static gboolean
-udev_mgr_is_this_a_supported_scanner (UdevMgr* self, 
-                                      GUdevDevice *device)
+static void
+udev_mgr_check_if_device_is_supported (UdevMgr* self, 
+                                       GUdevDevice *device,
+                                       UdevMgrDeviceAction action)
 {
+  const gchar* vendor = NULL;
+	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
   
+  if (vendor == NULL)
+    return;
+
+  GList* vendor_list = NULL;
+  vendor_list = g_hash_table_lookup (self->supported_scanners,
+                                     (gpointer)vendor);
+  if (vendor_list == NULL)
+    return;
+
+  const gchar* model_id = NULL;
+	model_id = g_udev_device_get_property (device, "ID_MODEL_ID");
+  
+  if (model_id == NULL)
+    return;
+  
+  GList* model_entry = NULL;
+  model_entry = g_list_find_custom(vendor_list, model_id, (GCompareFunc)g_strcmp0);
+    
+  if (model_entry != NULL){
+    if (action == REMOVE){
+      // TODO handle the case where its removed
+      // remove it if present from the hash and call update_menuitems
+    } 
+    else{      
+      g_hash_table_insert (self->scanners_present,
+                           g_strdup(vendor),
+                           g_strdup(model_id)); 
+    }
+  }
+  // DEBUG purposes.  
+  if (model_entry == NULL){
+    g_debug ("CANT FIND THE MODEL %s FOR  VENDOR %s", model_id, vendor);
+  }
+  else{
+    g_debug ("WE HAVE A SUCCESSFUL MATCH!");
+  }    
 }
 
 UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner, 

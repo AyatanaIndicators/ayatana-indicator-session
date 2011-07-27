@@ -52,6 +52,11 @@ GType udev_mgr_get_type (void) G_GNUC_CONST;
 UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner_item, 
                        DbusmenuMenuitem* webcam_item);
 
+typedef enum {
+  ADD,
+  REMOVE
+}UdevMgrDeviceAction;
+
 G_END_DECLS
 
 #endif /* _UDEV_MGR_H_ */

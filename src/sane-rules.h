@@ -1,9 +1,7 @@
 
 void populate_usb_scanners (GHashTable* scanners)
 {
-  GList* epson = NULL;
   GList* hp = NULL;
-
   hp = g_list_append (hp, g_strdup ("0101"));
   hp = g_list_append (hp, g_strdup ("0105"));
   hp = g_list_append (hp, g_strdup ("0201"));
@@ -201,593 +199,325 @@ void populate_usb_scanners (GHashTable* scanners)
   g_hash_table_insert (scanners,
                        g_strdup("04a7"),
                        g_list_copy(visioneer));
+  GList* canon = NULL;
+  canon = g_list_append (canon, g_strdup("1601"));
+  canon = g_list_append (canon, g_strdup("1602"));
+  canon = g_list_append (canon, g_strdup("1603"));
+  canon = g_list_append (canon, g_strdup("1604"));
+  canon = g_list_append (canon, g_strdup("1606"));
+  canon = g_list_append (canon, g_strdup("1607"));
+  canon = g_list_append (canon, g_strdup("1608"));
+  canon = g_list_append (canon, g_strdup("1609"));
+  canon = g_list_append (canon, g_strdup("160a"));
+  canon = g_list_append (canon, g_strdup("160b"));
+  canon = g_list_append (canon, g_strdup("1706"));
+  canon = g_list_append (canon, g_strdup("1707"));
+  canon = g_list_append (canon, g_strdup("1708"));
+  canon = g_list_append (canon, g_strdup("1709"));
+  canon = g_list_append (canon, g_strdup("170a"));
+  canon = g_list_append (canon, g_strdup("170b"));
+  canon = g_list_append (canon, g_strdup("170c"));
+  canon = g_list_append (canon, g_strdup("170d"));
+  canon = g_list_append (canon, g_strdup("170e"));
+  canon = g_list_append (canon, g_strdup("1712"));
+  canon = g_list_append (canon, g_strdup("1713"));
+  canon = g_list_append (canon, g_strdup("1714"));
+  canon = g_list_append (canon, g_strdup("1715"));
+  canon = g_list_append (canon, g_strdup("1716"));
+  canon = g_list_append (canon, g_strdup("1717"));
+  canon = g_list_append (canon, g_strdup("1718"));
+  canon = g_list_append (canon, g_strdup("1719"));
+  canon = g_list_append (canon, g_strdup("171a"));
+  canon = g_list_append (canon, g_strdup("171b"));
+  canon = g_list_append (canon, g_strdup("171c"));
+  canon = g_list_append (canon, g_strdup("1721"));
+  canon = g_list_append (canon, g_strdup("1722"));
+  canon = g_list_append (canon, g_strdup("1723"));
+  canon = g_list_append (canon, g_strdup("1724"));
+  canon = g_list_append (canon, g_strdup("1725"));
+  canon = g_list_append (canon, g_strdup("1726"));
+  canon = g_list_append (canon, g_strdup("1727"));
+  canon = g_list_append (canon, g_strdup("1728"));
+  canon = g_list_append (canon, g_strdup("1729"));
+  canon = g_list_append (canon, g_strdup("172b"));
+  canon = g_list_append (canon, g_strdup("172c"));
+  canon = g_list_append (canon, g_strdup("172d"));
+  canon = g_list_append (canon, g_strdup("172e"));
+  canon = g_list_append (canon, g_strdup("172f"));
+  canon = g_list_append (canon, g_strdup("1730"));
+  canon = g_list_append (canon, g_strdup("1731"));
+  canon = g_list_append (canon, g_strdup("1732"));
+  canon = g_list_append (canon, g_strdup("1733"));
+  canon = g_list_append (canon, g_strdup("1734"));
+  canon = g_list_append (canon, g_strdup("1735"));
+  canon = g_list_append (canon, g_strdup("1736"));
+  canon = g_list_append (canon, g_strdup("173a"));
+  canon = g_list_append (canon, g_strdup("173b"));
+  canon = g_list_append (canon, g_strdup("173c"));
+  canon = g_list_append (canon, g_strdup("173d"));
+  canon = g_list_append (canon, g_strdup("173e"));
+  canon = g_list_append (canon, g_strdup("173f"));
+  canon = g_list_append (canon, g_strdup("1740"));
+  canon = g_list_append (canon, g_strdup("1741"));
+  canon = g_list_append (canon, g_strdup("1742"));
+  canon = g_list_append (canon, g_strdup("1901"));
+  canon = g_list_append (canon, g_strdup("1904"));
+  canon = g_list_append (canon, g_strdup("1905"));
+  canon = g_list_append (canon, g_strdup("1909"));
+  canon = g_list_append (canon, g_strdup("190a"));
+  canon = g_list_append (canon, g_strdup("2204"));
+  canon = g_list_append (canon, g_strdup("2206"));
+  canon = g_list_append (canon, g_strdup("2207"));
+  canon = g_list_append (canon, g_strdup("2208"));
+  canon = g_list_append (canon, g_strdup("220d"));
+  canon = g_list_append (canon, g_strdup("220e"));
+  canon = g_list_append (canon, g_strdup("2213"));
+  canon = g_list_append (canon, g_strdup("221c"));
+  canon = g_list_append (canon, g_strdup("2220"));
+  canon = g_list_append (canon, g_strdup("2222"));
+  canon = g_list_append (canon, g_strdup("262f"));
+  canon = g_list_append (canon, g_strdup("2630"));
+  canon = g_list_append (canon, g_strdup("263c"));
+  canon = g_list_append (canon, g_strdup("263d"));
+  canon = g_list_append (canon, g_strdup("263e"));
+  canon = g_list_append (canon, g_strdup("263f"));
+  canon = g_list_append (canon, g_strdup("264c"));
+  canon = g_list_append (canon, g_strdup("264d"));
+  canon = g_list_append (canon, g_strdup("264e"));
+  canon = g_list_append (canon, g_strdup("264f"));
+  canon = g_list_append (canon, g_strdup("2659"));
+  canon = g_list_append (canon, g_strdup("265d"));
+  canon = g_list_append (canon, g_strdup("265e"));
+  canon = g_list_append (canon, g_strdup("265f"));
+  canon = g_list_append (canon, g_strdup("2660"));
+  canon = g_list_append (canon, g_strdup("2684"));
+  canon = g_list_append (canon, g_strdup("2686"));
+  canon = g_list_append (canon, g_strdup("26a3"));
+  canon = g_list_append (canon, g_strdup("26b0"));
+  canon = g_list_append (canon, g_strdup("26b4"));
+  canon = g_list_append (canon, g_strdup("26b5"));
+  canon = g_list_append (canon, g_strdup("26ec"));
+  canon = g_list_append (canon, g_strdup("26ed"));
+  canon = g_list_append (canon, g_strdup("26ee"));
+  g_hash_table_insert (scanners,
+                       g_strdup("04a9"),
+                       g_list_copy(canon));
+  
+  GList* nikon = NULL;
+  nikon = g_list_append (nikon, g_strdup ("4000"));
+  nikon = g_list_append (nikon, g_strdup ("4001"));
+  nikon = g_list_append (nikon, g_strdup ("4002"));
+  g_hash_table_insert (scanners,
+                       g_strdup("04b0"),
+                       g_list_copy(nikon));
 
-# Canon DR-2080C
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1601", ENV{libsane_matched}="yes"
-# Canon CR-180 | Canon CR-180II
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1602", ENV{libsane_matched}="yes"
-# Canon DR-9080C
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1603", ENV{libsane_matched}="yes"
-# Canon DR-7080C
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1604", ENV{libsane_matched}="yes"
-# Canon DR-5010C
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1606", ENV{libsane_matched}="yes"
-# Canon DR-6080
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1607", ENV{libsane_matched}="yes"
-# Canon DR-2580C
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1608", ENV{libsane_matched}="yes"
-# Canon DR-3080CII
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1609", ENV{libsane_matched}="yes"
-# Canon DR-2050C | Canon DR-2050SP
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="160a", ENV{libsane_matched}="yes"
-# Canon DR-7580
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="160b", ENV{libsane_matched}="yes"
-# Canon PIXMA MP750
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1706", ENV{libsane_matched}="yes"
-# Canon PIXMA MP780
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1707", ENV{libsane_matched}="yes"
-# Canon PIXMA MP760
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1708", ENV{libsane_matched}="yes"
-# Canon PIXMA MP150
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1709", ENV{libsane_matched}="yes"
-# Canon PIXMA MP170
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="170a", ENV{libsane_matched}="yes"
-# Canon PIXMA MP450
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="170b", ENV{libsane_matched}="yes"
-# Canon PIXMA MP500
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="170c", ENV{libsane_matched}="yes"
-# Canon PIXMA MP800
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="170d", ENV{libsane_matched}="yes"
-# Canon PIXMA MP800R
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="170e", ENV{libsane_matched}="yes"
-# Canon PIXMA MP530
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1712", ENV{libsane_matched}="yes"
-# Canon PIXMA MP830
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1713", ENV{libsane_matched}="yes"
-# Canon PIXMA MP160
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1714", ENV{libsane_matched}="yes"
-# Canon PIXMA MP180
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1715", ENV{libsane_matched}="yes"
-# Canon PIXMA MP460
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1716", ENV{libsane_matched}="yes"
-# Canon PIXMA MP510
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1717", ENV{libsane_matched}="yes"
-# Canon PIXMA MP600
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1718", ENV{libsane_matched}="yes"
-# Canon PIXMA MP600R
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1719", ENV{libsane_matched}="yes"
-# Canon PIXMA MP810
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="171a", ENV{libsane_matched}="yes"
-# Canon PIXMA MP960
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="171b", ENV{libsane_matched}="yes"
-# Canon PIXMA MX7600
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="171c", ENV{libsane_matched}="yes"
-# Canon PIXMA MP210
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1721", ENV{libsane_matched}="yes"
-# Canon PIXMA MP220
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1722", ENV{libsane_matched}="yes"
-# Canon PIXMA MP470
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1723", ENV{libsane_matched}="yes"
-# Canon PIXMA MP520
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1724", ENV{libsane_matched}="yes"
-# Canon PIXMA MP610
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1725", ENV{libsane_matched}="yes"
-# Canon PIXMA MP970
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1726", ENV{libsane_matched}="yes"
-# Canon PIXMA MX300
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1727", ENV{libsane_matched}="yes"
-# Canon PIXMA MX310
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1728", ENV{libsane_matched}="yes"
-# Canon PIXMA MX700
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1729", ENV{libsane_matched}="yes"
-# Canon PIXMA MP140
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="172b", ENV{libsane_matched}="yes"
-# Canon PIXMA MX850
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="172c", ENV{libsane_matched}="yes"
-# Canon PIXMA MP980
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="172d", ENV{libsane_matched}="yes"
-# Canon PIXMA MP630
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="172e", ENV{libsane_matched}="yes"
-# Canon PIXMA MP620
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="172f", ENV{libsane_matched}="yes"
-# Canon PIXMA MP540
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1730", ENV{libsane_matched}="yes"
-# Canon PIXMA MP480
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1731", ENV{libsane_matched}="yes"
-# Canon PIXMA MP240
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1732", ENV{libsane_matched}="yes"
-# Canon PIXMA MP260
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1733", ENV{libsane_matched}="yes"
-# Canon PIXMA MP190
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1734", ENV{libsane_matched}="yes"
-# Canon PIXMA MX860
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1735", ENV{libsane_matched}="yes"
-# Canon PIXMA MX320
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1736", ENV{libsane_matched}="yes"
-# Canon PIXMA MX330
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1737", ENV{libsane_matched}="yes"
-# Canon PIXMA MP250
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="173a", ENV{libsane_matched}="yes"
-# Canon PIXMA MP270
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="173b", ENV{libsane_matched}="yes"
-# Canon PIXMA MP490
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="173c", ENV{libsane_matched}="yes"
-# Canon PIXMA MP550
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="173d", ENV{libsane_matched}="yes"
-# Canon PIXMA MP560
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="173e", ENV{libsane_matched}="yes"
-# Canon PIXMA MP640
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="173f", ENV{libsane_matched}="yes"
-# Canon PIXMA MP990
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1740", ENV{libsane_matched}="yes"
-# Canon PIXMA MX340
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1741", ENV{libsane_matched}="yes"
-# Canon PIXMA MX350
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1742", ENV{libsane_matched}="yes"
-# Canon PIXMA MX870
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1743", ENV{libsane_matched}="yes"
-# Canon CanoScan 8800F
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1901", ENV{libsane_matched}="yes"
-# Canon CanoScan LiDE 100
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1904", ENV{libsane_matched}="yes"
-# Canon CanoScan LiDE 200
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1905", ENV{libsane_matched}="yes"
-# Canon CanoScan LiDE 110
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="1909", ENV{libsane_matched}="yes"
-# Canon CanoScan LiDE 210
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="190a", ENV{libsane_matched}="yes"
-# Canon CanoScan fb630u | Canon CanoScan fb636u
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2204", ENV{libsane_matched}="yes"
-# Canon CanoScan N650U/N656U
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2206", ENV{libsane_matched}="yes"
-# Canon CanoScan N1220U
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2207", ENV{libsane_matched}="yes"
-# Canon CanoScan D660U
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2208", ENV{libsane_matched}="yes"
-# Canon CanoScan N670U/N676U/LiDE20
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="220d", ENV{libsane_matched}="yes"
-# Canon CanoScan N1240U/LiDE30
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="220e", ENV{libsane_matched}="yes"
-# Canon CanoScan LiDE 35 | Canon CanoScan LiDE 40 | Canon CanoScan LiDE 50
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2213", ENV{libsane_matched}="yes"
-# Canon CanoScan LiDE 60
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="221c", ENV{libsane_matched}="yes"
-# Canon CanoScan LiDE25
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2220", ENV{libsane_matched}="yes"
-# Canon DR-1210C
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2222", ENV{libsane_matched}="yes"
-# Canon PIXMA MP730
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="262f", ENV{libsane_matched}="yes"
-# Canon PIXMA MP700
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2630", ENV{libsane_matched}="yes"
-# Canon PIXMA MP360
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="263c", ENV{libsane_matched}="yes"
-# Canon PIXMA MP370
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="263d", ENV{libsane_matched}="yes"
-# Canon PIXMA MP390
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="263e", ENV{libsane_matched}="yes"
-# Canon PIXMA MP375R
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="263f", ENV{libsane_matched}="yes"
-# Canon PIXMA MP740
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="264c", ENV{libsane_matched}="yes"
-# Canon PIXMA MP710
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="264d", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF5630
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="264e", ENV{libsane_matched}="yes"
-# Canon laserBase MF5650
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="264f", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF8170c
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2659", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF5730
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="265d", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF5750
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="265e", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF5770
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="265f", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF3110
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2660", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF3240
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2684", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF6500 series
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="2686", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF4120 | Canon imageCLASS MF4122 | Canon imageCLASS MF4140
-# Canon imageCLASS MF4150
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="26a3", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF4690
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="26b0", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF4010 | Canon imageCLASS MF4018
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="26b4", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF4270
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="26b5", ENV{libsane_matched}="yes"
-# Canon imageCLASS MF4370dn | Canon imageCLASS MF4380dn
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="26ec", ENV{libsane_matched}="yes"
-# Canon imageCLASS D480
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="26ed", ENV{libsane_matched}="yes"
-# Canon I-SENSYS MF4320d | Canon I-SENSYS MF4330d | Canon imageCLASS MF4350d
-ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="26ee", ENV{libsane_matched}="yes"
-# Nikon LS 40 ED | Nikon LS 40 ED | Nikon Coolspan IV
-ATTRS{idVendor}=="04b0", ATTRS{idProduct}=="4000", ENV{libsane_matched}="yes"
-# Nikon LS 50 ED | Nikon Coolscan V ED | Nikon LS 50 ED
-# Nikon Coolscan V ED
-ATTRS{idVendor}=="04b0", ATTRS{idProduct}=="4001", ENV{libsane_matched}="yes"
-# Nikon Super Coolscan LS-5000 ED | Nikon Super Coolscan LS-5000 ED
-ATTRS{idVendor}=="04b0", ATTRS{idProduct}=="4002", ENV{libsane_matched}="yes"
-# Epson Perfection 636U | Epson GT-7000U | Epson Perfection 636U
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0101", ENV{libsane_matched}="yes"
-# Epson Perfection 610 | Epson GT-6600U | Epson Perfection 610
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0103", ENV{libsane_matched}="yes"
-# Epson Perfection 1200U | Epson Perfection 1200Photo | Epson GT-7600U
-# Epson GT-7600UF | Epson Perfection 1200U | Epson Perfection 1200U PHOTO
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0104", ENV{libsane_matched}="yes"
-# Epson Stylus Scan 2000
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0105", ENV{libsane_matched}="yes"
-# Epson Stylus Scan 2500
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0106", ENV{libsane_matched}="yes"
-# Epson Expression 1600 | Epson ES-2000 | Epson Expression 1600
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0107", ENV{libsane_matched}="yes"
-# Epson ES-8500 | Epson Expression 1640XL
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0109", ENV{libsane_matched}="yes"
-# Epson Perfection 1640 | Epson GT-8700 | Epson GT-8700F
-# Epson Perfection 1640SU | Epson Perfection 1640SU PHOTO
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="010a", ENV{libsane_matched}="yes"
-# Epson Perfection 1240 | Epson GT-7700U | Epson Perfection 1240U
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="010b", ENV{libsane_matched}="yes"
-# Epson Perfection 640 | Epson GT-6700U | Epson Perfection 640U
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="010c", ENV{libsane_matched}="yes"
-# Epson Expression 1680 | Epson ES-2200 | Epson Expression 1680
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="010e", ENV{libsane_matched}="yes"
-# Epson Perfection 1250 | Epson Perfection 1250Photo
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="010f", ENV{libsane_matched}="yes"
-# Epson Perfection 1650 | Epson GT-8200U | Epson GT-8200UF
-# Epson Perfection 1650 | Epson Perfection 1650 PHOTO
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0110", ENV{libsane_matched}="yes"
-# Epson Perfection 2450 | Epson GT-9700F | Epson Perfection 2450 PHOTO
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0112", ENV{libsane_matched}="yes"
-# Epson Perfection 660
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0114", ENV{libsane_matched}="yes"
-# Epson Perfection 2400 | Epson GT-9300UF | Epson Perfection 2400 PHOTO
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="011b", ENV{libsane_matched}="yes"
-# Epson Perfection 3200 | Epson GT-9800F | Epson Perfection 3200 PHOTO
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="011c", ENV{libsane_matched}="yes"
-# Epson Perfection 1260 | Epson Perfection 1260Photo
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="011d", ENV{libsane_matched}="yes"
-# Epson Perfection 1660 | Epson GT-8300UF | Epson Perfection 1660 PHOTO
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="011e", ENV{libsane_matched}="yes"
-# Epson Perfection 1670
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="011f", ENV{libsane_matched}="yes"
-# Epson Perfection 1270
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0120", ENV{libsane_matched}="yes"
-# Epson Perfection 2480 | Epson Perfection 2580
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0121", ENV{libsane_matched}="yes"
-# Epson Perfection 3490 | Epson Perfection 3590
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0122", ENV{libsane_matched}="yes"
-# Epson ES-7000H | Epson GT-15000
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0126", ENV{libsane_matched}="yes"
-# Epson Perfection 4870 | Epson GT-X700 | Epson Perfection 4870 PHOTO
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0128", ENV{libsane_matched}="yes"
-# Epson ES-10000G | Epson Expression 10000XL
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0129", ENV{libsane_matched}="yes"
-# Epson Perfection 4990 | Epson GT-X800 | Epson Perfection 4990 PHOTO
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="012a", ENV{libsane_matched}="yes"
-# Epson ES-H300 | Epson GT-2500
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="012b", ENV{libsane_matched}="yes"
-# Epson V700 | Epson V750 | Epson GT-X900
-# Epson Perfection V700 Photo | Epson Perfection V750 Photo
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="012c", ENV{libsane_matched}="yes"
-# Epson GT-X970
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0135", ENV{libsane_matched}="yes"
-# Epson CX-5200 | Epson CX-5400 | Epson CC-600PX
-# Epson Stylus CX5100 | Epson Stylus CX5200
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0801", ENV{libsane_matched}="yes"
-# Epson CX-3200 | Epson CC-570L | Epson Stylus CX3100
-# Epson Stylus CX3200
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0802", ENV{libsane_matched}="yes"
-# Epson CX-6300 | Epson CX-6400 | Epson Stylus CX6300
-# Epson Stylus CX6400
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0805", ENV{libsane_matched}="yes"
-# Epson RX-600 | Epson PM-A850 | Epson Stylus Photo RX600
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0806", ENV{libsane_matched}="yes"
-# Epson RX-500 | Epson Stylus Photo RX500 | Epson Stylus Photo RX510
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0807", ENV{libsane_matched}="yes"
-# Epson CX-5400 | Epson Stylus CX5300 | Epson Stylus CX5400
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0808", ENV{libsane_matched}="yes"
-# Epson Stylus CX-1500
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="080c", ENV{libsane_matched}="yes"
-# Epson CX-4600 | Epson Stylus CX4500 | Epson Stylus CX4600
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="080d", ENV{libsane_matched}="yes"
-# Epson CX-3600 | Epson CX-3650 | Epson PX-A550
-# Epson Stylus CX3500 | Epson Stylus CX3600 | Epson Stylus CX3650
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="080e", ENV{libsane_matched}="yes"
-# Epson RX-425 | Epson Stylus Photo RX420 | Epson Stylus Photo RX425
-# Epson Stylus Photo RX430
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="080f", ENV{libsane_matched}="yes"
-# Epson RX-700 | Epson PM-A900 | Epson Stylus Photo RX700
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0810", ENV{libsane_matched}="yes"
-# Epson RX-620 | Epson PM-A870 | Epson Stylus Photo RX620
-# Epson Stylus Photo RX630
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0811", ENV{libsane_matched}="yes"
-# Epson CX-6500 | Epson CX-6600 | Epson Stylus CX6500
-# Epson Stylus CX6600
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0813", ENV{libsane_matched}="yes"
-# Epson PM-A700
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0814", ENV{libsane_matched}="yes"
-# Epson AcuLaser CX11 | Epson AcuLaser CX11NF | Epson AcuLaser CX11
-# Epson AcuLaser CX11NF | Epson LP-A500
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0815", ENV{libsane_matched}="yes"
-# Epson LP-M5500 | Epson LP-M5500F
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0817", ENV{libsane_matched}="yes"
-# Epson DX-3850 | Epson CX-3700 | Epson CX-3800
-# Epson DX-3800 | Epson Stylus CX3700 | Epson Stylus CX3800
-# Epson Stylus DX3800
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0818", ENV{libsane_matched}="yes"
-# Epson CX-4800 | Epson PX-A650 | Epson Stylus CX4700
-# Epson Stylus CX4800 | Epson Stylus DX4800 | Epson Stylus DX4850
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0819", ENV{libsane_matched}="yes"
-# Epson PM-A750 | Epson Stylus Photo RX520 | Epson Stylus Photo RX530
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="081a", ENV{libsane_matched}="yes"
-# Epson PM-A890 | Epson Stylus Photo RX640 | Epson Stylus Photo RX650
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="081c", ENV{libsane_matched}="yes"
-# Epson PM-A950
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="081d", ENV{libsane_matched}="yes"
-# Epson Stylus CX7700 | Epson Stylus CX7800
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="081f", ENV{libsane_matched}="yes"
-# Epson CX-4200 | Epson Stylus CX4100 | Epson Stylus CX4200
-# Epson Stylus DX4200
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0820", ENV{libsane_matched}="yes"
-# Epson PM-A820 | Epson Stylus Photo RX560 | Epson Stylus Photo RX580
-# Epson Stylus Photo RX590
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0827", ENV{libsane_matched}="yes"
-# Epson PM-A970
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0828", ENV{libsane_matched}="yes"
-# Epson PM-T990
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0829", ENV{libsane_matched}="yes"
-# Epson PM-A920
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="082a", ENV{libsane_matched}="yes"
-# Epson CX-5000 | Epson DX-5000 | Epson DX-5050
-# Epson Stylus CX4900 | Epson Stylus CX5000 | Epson Stylus DX5000
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="082b", ENV{libsane_matched}="yes"
-# Epson DX-6000 | Epson PX-A720 | Epson Stylus CX5900
-# Epson Stylus CX6000 | Epson Stylus DX6000
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="082e", ENV{libsane_matched}="yes"
-# Epson DX-4050 | Epson PX-A620 | Epson Stylus CX3900
-# Epson Stylus DX4000
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="082f", ENV{libsane_matched}="yes"
-# Epson ME 200 | Epson Stylus CX2800 | Epson Stylus CX2900
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0830", ENV{libsane_matched}="yes"
-# Epson LP-M5600
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0833", ENV{libsane_matched}="yes"
-# Epson LP-M6000
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0834", ENV{libsane_matched}="yes"
-# Epson AcuLaser CX21
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0835", ENV{libsane_matched}="yes"
-# Epson PM-T960
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0836", ENV{libsane_matched}="yes"
-# Epson PM-A940 | Epson Stylus Photo RX680 | Epson Stylus Photo RX685
-# Epson Stylus Photo RX690
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0837", ENV{libsane_matched}="yes"
-# Epson DX-7400 | Epson PX-A640 | Epson Stylus CX7300
-# Epson Stylus CX7400 | Epson Stylus DX7400
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0838", ENV{libsane_matched}="yes"
-# Epson PX-A740 | Epson Stylus CX8300 | Epson Stylus CX8400
-# Epson Stylus DX8400
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0839", ENV{libsane_matched}="yes"
-# Epson PX-FA700 | Epson Stylus CX9300F | Epson Stylus CX9400Fax
-# Epson Stylus DX9400F
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="083a", ENV{libsane_matched}="yes"
-# Epson PM-A840 | Epson PM-A840S | Epson Stylus Photo RX585
-# Epson Stylus Photo RX595 | Epson Stylus Photo RX610
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="083c", ENV{libsane_matched}="yes"
-# Epson ME 300 | Epson PX-401A | Epson Stylus NX100
-# Epson Stylus SX100 | Epson Stylus TX100
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0841", ENV{libsane_matched}="yes"
-# Epson LP-M5000
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0843", ENV{libsane_matched}="yes"
-# Epson Artisan 800 | Epson EP-901A | Epson EP-901F
-# Epson Stylus Photo PX800FW | Epson Stylus Photo TX800FW
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0844", ENV{libsane_matched}="yes"
-# Epson Artisan 700 | Epson EP-801A | Epson Stylus Photo PX700W
-# Epson Stylus Photo TX700W
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0846", ENV{libsane_matched}="yes"
-# Epson ME Office 700FW | Epson PX-601F | Epson Stylus Office BX600FW
-# Epson Stylus Office TX600FW | Epson Stylus SX600FW | Epson WorkForce 600
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0847", ENV{libsane_matched}="yes"
-# Epson ME Office 600F | Epson Stylus Office BX300F | Epson Stylus Office TX300F
-# Epson Stylus NX300
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0848", ENV{libsane_matched}="yes"
-# Epson Stylus NX200 | Epson Stylus SX200 | Epson Stylus SX205
-# Epson Stylus TX200 | Epson Stylus TX203 | Epson Stylus TX209
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0849", ENV{libsane_matched}="yes"
-# Epson PX-501A | Epson Stylus NX400 | Epson Stylus SX400
-# Epson Stylus SX405 | Epson Stylus TX400
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="084a", ENV{libsane_matched}="yes"
-# Epson WorkForce 500
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="084c", ENV{libsane_matched}="yes"
-# Epson PX-402A | Epson Stylus NX110 Series | Epson Stylus SX110 Series
-# Epson Stylus TX110 Series
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="084d", ENV{libsane_matched}="yes"
-# Epson ME OFFICE 510 | Epson Stylus NX210 Series | Epson Stylus SX210 Series
-# Epson Stylus TX210 Series
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="084f", ENV{libsane_matched}="yes"
-# Epson Stylus NX410 Series | Epson Stylus SX410 Series | Epson Stylus TX410 Series
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0851", ENV{libsane_matched}="yes"
-# Epson ME OFFICE 650FN Series | Epson Stylus Office BX310FN Series | Epson Stylus Office TX510FN Series
-# Epson WorkForce 310 Series
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0854", ENV{libsane_matched}="yes"
-# Epson PX-502A | Epson Stylus NX510 Series | Epson Stylus SX510W Series
-# Epson Stylus TX550W Series
-ATTRS{idVendor}=="04b8", ATTRS{idProduct}=="0856", ENV{libsane_matched}="yes"
-# Fujitsu fi-4010CU
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1029", ENV{libsane_matched}="yes"
-# Fujitsu fi-4120C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1041", ENV{libsane_matched}="yes"
-# Fujitsu fi-4220C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1042", ENV{libsane_matched}="yes"
-# Fujitsu fi-4530C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1078", ENV{libsane_matched}="yes"
-# Fujitsu fi-5750C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1095", ENV{libsane_matched}="yes"
-# Fujitsu fi-5110EOX/2
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1096", ENV{libsane_matched}="yes"
-# Fujitsu fi-5110C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1097", ENV{libsane_matched}="yes"
-# Fujitsu fi-5650C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10ad", ENV{libsane_matched}="yes"
-# Fujitsu fi-4120C2
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10ae", ENV{libsane_matched}="yes"
-# Fujitsu fi-4220C2
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10af", ENV{libsane_matched}="yes"
-# Fujitsu fi-60F
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10c7", ENV{libsane_matched}="yes"
-# Fujitsu fi-4340C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10cf", ENV{libsane_matched}="yes"
-# Fujitsu fi-5120C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10e0", ENV{libsane_matched}="yes"
-# Fujitsu fi-5220C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10e1", ENV{libsane_matched}="yes"
-# Fujitsu fi-5530C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10e2", ENV{libsane_matched}="yes"
-# Fujitsu fi-5110EOX3
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10e6", ENV{libsane_matched}="yes"
-# Fujitsu fi-5900C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10e7", ENV{libsane_matched}="yes"
-# Fujitsu fi-5015C
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10ef", ENV{libsane_matched}="yes"
-# Fujitsu fi-5110EOXM
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10f2", ENV{libsane_matched}="yes"
-# Fujitsu ScanSnap S500
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="10fe", ENV{libsane_matched}="yes"
-# Fujitsu ScanSnap S500M
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1135", ENV{libsane_matched}="yes"
-# Fujitsu fi-5530C2
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="114a", ENV{libsane_matched}="yes"
-# Fujitsu fi-6140
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="114d", ENV{libsane_matched}="yes"
-# Fujitsu fi-6240
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="114e", ENV{libsane_matched}="yes"
-# Fujitsu fi-6130
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="114f", ENV{libsane_matched}="yes"
-# Fujitsu fi-6230
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1150", ENV{libsane_matched}="yes"
-# Fujitsu ScanSnap S510
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1155", ENV{libsane_matched}="yes"
-# Fujitsu ScanSnap S300
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1156", ENV{libsane_matched}="yes"
-# Fujitsu ScanSnap S510M
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="116f", ENV{libsane_matched}="yes"
-# Fujitsu fi-6770
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1174", ENV{libsane_matched}="yes"
-# Fujitsu fi-6770A
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1175", ENV{libsane_matched}="yes"
-# Fujitsu fi-6670
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1176", ENV{libsane_matched}="yes"
-# Fujitsu fi-6670A
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1177", ENV{libsane_matched}="yes"
-# Fujitsu fi-6750S
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="1178", ENV{libsane_matched}="yes"
-# Fujitsu ScanSnap S300M
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="117f", ENV{libsane_matched}="yes"
-# Fujitsu fi-6800
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="119d", ENV{libsane_matched}="yes"
-# Fujitsu fi-6800-CGA
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="119e", ENV{libsane_matched}="yes"
-# Fujitsu fi-6900
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="119f", ENV{libsane_matched}="yes"
-# Fujitsu fi-6900-CGA
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11a0", ENV{libsane_matched}="yes"
-# Fujitsu ScanSnap S1500 | Fujitsu ScanSnap S1500M
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11a2", ENV{libsane_matched}="yes"
-# Fujitsu ScanSnap S1300
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11ed", ENV{libsane_matched}="yes"
-# Fujitsu fi-6125
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11ee", ENV{libsane_matched}="yes"
-# Fujitsu fi-6225
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11ef", ENV{libsane_matched}="yes"
-# Fujitsu fi-6145
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11f1", ENV{libsane_matched}="yes"
-# Fujitsu fi-6245
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11f2", ENV{libsane_matched}="yes"
-# Fujitsu fi-6135
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11f3", ENV{libsane_matched}="yes"
-# Fujitsu fi-6235
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11f4", ENV{libsane_matched}="yes"
-# Fujitsu fi-6110
-ATTRS{idVendor}=="04c5", ATTRS{idProduct}=="11fc", ENV{libsane_matched}="yes"
-# Konica e-mini
-ATTRS{idVendor}=="04c8", ATTRS{idProduct}=="0722", ENV{libsane_matched}="yes"
-# Panasonic KV-S2026C
-ATTRS{idVendor}=="04da", ATTRS{idProduct}=="1000", ENV{libsane_matched}="yes"
-# Panasonic KV-S2046C
-ATTRS{idVendor}=="04da", ATTRS{idProduct}=="1001", ENV{libsane_matched}="yes"
-# Panasonic KV-S1025C
-ATTRS{idVendor}=="04da", ATTRS{idProduct}=="1006", ENV{libsane_matched}="yes"
-# Panasonic KV-S1020C
-ATTRS{idVendor}=="04da", ATTRS{idProduct}=="1007", ENV{libsane_matched}="yes"
-# Panasonic KV-S2048C
-ATTRS{idVendor}=="04da", ATTRS{idProduct}=="1009", ENV{libsane_matched}="yes"
-# Panasonic KV-S2028C
-ATTRS{idVendor}=="04da", ATTRS{idProduct}=="100a", ENV{libsane_matched}="yes"
-# Panasonic KV-SS080
-ATTRS{idVendor}=="04da", ATTRS{idProduct}=="100f", ENV{libsane_matched}="yes"
-# Panasonic KV-S1045C
-ATTRS{idVendor}=="04da", ATTRS{idProduct}=="1010", ENV{libsane_matched}="yes"
-# Samsung SCX-4200
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="341b", ENV{libsane_matched}="yes"
-# Samsung SCX4725-FN
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="341f", ENV{libsane_matched}="yes"
-# Samsung SCX-4500
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="3426", ENV{libsane_matched}="yes"
-# Samsung CLX-3170fn | Samsung CLX-3175FW
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="342a", ENV{libsane_matched}="yes"
-# Samsung SCX-4500W
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="342b", ENV{libsane_matched}="yes"
-# Samsung SCX-4824
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="342c", ENV{libsane_matched}="yes"
-# Samsung SCX-4300
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="342e", ENV{libsane_matched}="yes"
-# Samsung SCX-4600
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="3433", ENV{libsane_matched}="yes"
-# Samsung SCX-4623
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="3434", ENV{libsane_matched}="yes"
-# Samsung SCX-4825FN
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="343c", ENV{libsane_matched}="yes"
-# Samsung SCX-4623FW
-ATTRS{idVendor}=="04e8", ATTRS{idProduct}=="3440", ENV{libsane_matched}="yes"
-# Pentax DSmobile 600
-ATTRS{idVendor}=="04f9", ATTRS{idProduct}=="2038", ENV{libsane_matched}="yes"
-# Aiptek Aiptek Pencam
-ATTRS{idVendor}=="0553", ATTRS{idProduct}=="0202", ENV{libsane_matched}="yes"
-# Mustek ScanExpress 1200 CU
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="0001", ENV{libsane_matched}="yes"
-# Mustek ScanExpress 600 CU
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="0002", ENV{libsane_matched}="yes"
-# Mustek ScanExpress 1200 UB | Trust Compact Scan USB 19200
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="0006", ENV{libsane_matched}="yes"
-# Mustek ScanExpress 1200 CU Plus
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="0008", ENV{libsane_matched}="yes"
-# Mustek BearPaw 1200 F
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="0010", ENV{libsane_matched}="yes"
-# Mustek ScanExpress A3 USB
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="0210", ENV{libsane_matched}="yes"
-# Mustek BearPaw 2400 CS | Mustek BearPaw 2400 TA | Trust 240TH Easy Webscan Gold
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="0218", ENV{libsane_matched}="yes"
-# Mustek BearPaw 2400 CS Plus | Mustek BearPaw 2400 TA Plus | Mustek Plug-n-Scan 2400 MT
-# Mustek Plug-n-Scan 2400 M | Packard Bell Diamond 2450
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="0219", ENV{libsane_matched}="yes"
-# Mustek BearPaw 2448 CS Plus | Mustek BearPaw 2448 TA Plus
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="021a", ENV{libsane_matched}="yes"
-# Mustek BearPaw 1200 CU Plus | Packard Bell Diamond 1200 Plus
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="021b", ENV{libsane_matched}="yes"
-# Mustek BearPaw 1200 CU Plus | Mustek BearPaw 1248 CU | Packard Bell Diamond 1200 Plus
-# Trust Direct WebScan 19200
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="021c", ENV{libsane_matched}="yes"
-# Mustek BearPaw 2400 CU Plus
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="021d", ENV{libsane_matched}="yes"
-# Mustek BearPaw 1200 CS | Mustek BearPaw 1200 TA
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="021e", ENV{libsane_matched}="yes"
-# Mustek ScanExpress 1248 UB
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="021f", ENV{libsane_matched}="yes"
-# Mustek BearPaw 2448TA Pro
-ATTRS{idVendor}=="055f", ATTRS{idProduct}=="0409", ENV{libsane_matched}="yes"
+  GList* epson = NULL;
+  epson = g_list_append (epson, g_strdup("0101"));
+  epson = g_list_append (epson, g_strdup("0103"));
+  epson = g_list_append (epson, g_strdup("0104"));
+  epson = g_list_append (epson, g_strdup("0105"));
+  epson = g_list_append (epson, g_strdup("0106"));
+  epson = g_list_append (epson, g_strdup("0107"));
+  epson = g_list_append (epson, g_strdup("0109"));
+  epson = g_list_append (epson, g_strdup("010a"));
+  epson = g_list_append (epson, g_strdup("010b"));
+  epson = g_list_append (epson, g_strdup("010c"));
+  epson = g_list_append (epson, g_strdup("010e"));
+  epson = g_list_append (epson, g_strdup("010f"));
+  epson = g_list_append (epson, g_strdup("0110"));
+  epson = g_list_append (epson, g_strdup("0112"));
+  epson = g_list_append (epson, g_strdup("0114"));
+  epson = g_list_append (epson, g_strdup("011b"));
+  epson = g_list_append (epson, g_strdup("011c"));
+  epson = g_list_append (epson, g_strdup("011d"));
+  epson = g_list_append (epson, g_strdup("011e"));
+  epson = g_list_append (epson, g_strdup("011f"));
+  epson = g_list_append (epson, g_strdup("0120"));
+  epson = g_list_append (epson, g_strdup("0121"));
+  epson = g_list_append (epson, g_strdup("0122"));
+  epson = g_list_append (epson, g_strdup("0126"));
+  epson = g_list_append (epson, g_strdup("0128"));
+  epson = g_list_append (epson, g_strdup("0129"));
+  epson = g_list_append (epson, g_strdup("012a"));
+  epson = g_list_append (epson, g_strdup("012b"));
+  epson = g_list_append (epson, g_strdup("012c"));
+  epson = g_list_append (epson, g_strdup("0135"));
+  epson = g_list_append (epson, g_strdup("0801"));
+  epson = g_list_append (epson, g_strdup("0802"));
+  epson = g_list_append (epson, g_strdup("0805"));
+  epson = g_list_append (epson, g_strdup("0806"));
+  epson = g_list_append (epson, g_strdup("0807"));
+  epson = g_list_append (epson, g_strdup("0808"));
+  epson = g_list_append (epson, g_strdup("080c"));
+  epson = g_list_append (epson, g_strdup("080d"));
+  epson = g_list_append (epson, g_strdup("080e"));
+  epson = g_list_append (epson, g_strdup("080f"));
+  epson = g_list_append (epson, g_strdup("0810"));
+  epson = g_list_append (epson, g_strdup("0811"));
+  epson = g_list_append (epson, g_strdup("0813"));
+  epson = g_list_append (epson, g_strdup("0814"));
+  epson = g_list_append (epson, g_strdup("0815"));
+  epson = g_list_append (epson, g_strdup("0817"));
+  epson = g_list_append (epson, g_strdup("0818"));
+  epson = g_list_append (epson, g_strdup("0819"));
+  epson = g_list_append (epson, g_strdup("081a"));
+  epson = g_list_append (epson, g_strdup("081c"));
+  epson = g_list_append (epson, g_strdup("081d"));
+  epson = g_list_append (epson, g_strdup("081f"));
+  epson = g_list_append (epson, g_strdup("0820"));
+  epson = g_list_append (epson, g_strdup("0827"));
+  epson = g_list_append (epson, g_strdup("0828"));
+  epson = g_list_append (epson, g_strdup("0829"));
+  epson = g_list_append (epson, g_strdup("082a"));
+  epson = g_list_append (epson, g_strdup("082b"));
+  epson = g_list_append (epson, g_strdup("082e"));
+  epson = g_list_append (epson, g_strdup("082f"));
+  epson = g_list_append (epson, g_strdup("0830"));
+  epson = g_list_append (epson, g_strdup("0833"));
+  epson = g_list_append (epson, g_strdup("0834"));
+  epson = g_list_append (epson, g_strdup("0835"));
+  epson = g_list_append (epson, g_strdup("0836"));
+  epson = g_list_append (epson, g_strdup("0837"));
+  epson = g_list_append (epson, g_strdup("0838"));
+  epson = g_list_append (epson, g_strdup("0839"));
+  epson = g_list_append (epson, g_strdup("083a"));
+  epson = g_list_append (epson, g_strdup("083c"));
+  epson = g_list_append (epson, g_strdup("0841"));
+  epson = g_list_append (epson, g_strdup("0843"));
+  epson = g_list_append (epson, g_strdup("0844"));
+  epson = g_list_append (epson, g_strdup("0846"));
+  epson = g_list_append (epson, g_strdup("0847"));
+  epson = g_list_append (epson, g_strdup("0848"));
+  epson = g_list_append (epson, g_strdup("0849"));
+  epson = g_list_append (epson, g_strdup("084a"));
+  epson = g_list_append (epson, g_strdup("084c"));
+  epson = g_list_append (epson, g_strdup("084d"));
+  epson = g_list_append (epson, g_strdup("084f"));
+  epson = g_list_append (epson, g_strdup("0851"));
+  epson = g_list_append (epson, g_strdup("0854"));
+  epson = g_list_append (epson, g_strdup("0856"));
+  g_hash_table_insert (scanners,
+                       g_strdup("04b8"),
+                       g_list_copy(epson));
+
+  GList* fujitsu = NULL;
+  fujitsu = g_list_append (fujitsu, g_strdup ("1029"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1041"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1042"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1078"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1095"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1096"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1097"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10ad"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10ae"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10af"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10c7"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10cf"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10e0"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10e1"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10e2"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10e6"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10e7"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10ef"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10f2"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("10fe"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1135"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("114a"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("114d"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("114e"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("114f"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1150"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1155"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1156"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("116f"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1174"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1175"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1176"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1177"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("1178"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("117f"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("119d"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("119e"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("119f"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11a0"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11a2"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11ed"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11ee"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11ef"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11f1"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11f2"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11f3"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11f4"));
+  fujitsu = g_list_append (fujitsu, g_strdup ("11fc"));
+  g_hash_table_insert (scanners,
+                       g_strdup("04c5"),
+                       g_list_copy(fujitsu));
+  GList* konica = NULL;
+  konica = g_list_append (konica, g_strdup ("0722"));
+  g_hash_table_insert (scanners,
+                       g_strdup("04c8"),
+                       g_list_copy(konica));
+  GList* panasonic = NULL;
+  panasonic = g_list_append (panasonic, g_strdup ("1000"));
+  panasonic = g_list_append (panasonic, g_strdup ("1001"));
+  panasonic = g_list_append (panasonic, g_strdup ("1006"));
+  panasonic = g_list_append (panasonic, g_strdup ("1007"));
+  panasonic = g_list_append (panasonic, g_strdup ("1009"));
+  panasonic = g_list_append (panasonic, g_strdup ("100a"));
+  panasonic = g_list_append (panasonic, g_strdup ("100f"));
+  panasonic = g_list_append (panasonic, g_strdup ("1010"));
+  g_hash_table_insert (scanners,
+                       g_strdup("04da"),
+                       g_list_copy(panasonic));
+
+  GList* samsung = NULL;
+  
+  samsung = g_list_append (samsung, g_strdup ("341b"));
+  samsung = g_list_append (samsung, g_strdup ("341f"));
+  samsung = g_list_append (samsung, g_strdup ("3426"));
+  samsung = g_list_append (samsung, g_strdup ("342a"));
+  samsung = g_list_append (samsung, g_strdup ("342b"));
+  samsung = g_list_append (samsung, g_strdup ("342c"));
+  samsung = g_list_append (samsung, g_strdup ("3433"));
+  samsung = g_list_append (samsung, g_strdup ("3434"));
+  samsung = g_list_append (samsung, g_strdup ("343c"));
+  samsung = g_list_append (samsung, g_strdup ("3434"));
+  g_hash_table_insert (scanners,
+                       g_strdup("04e8"),
+                       g_list_copy(samsung));
+  
+  GList* pentax;
+  pentax = g_list_append (pentax, g_strdup ("2038"));
+  g_hash_table_insert (scanners,
+                       g_strdup("04f9"),
+                       g_list_copy(pentax));
+
+  GList* apitek;
+  apitek = g_list_append (apitek, g_strdup ("0202"));
+  g_hash_table_insert (scanners,
+                       g_strdup("0553"),
+                       g_list_copy(apitek));
+
+  GList* mustek;
+  mustek = g_list_append (mustek, g_strdup ("0001"));
+  mustek = g_list_append (mustek, g_strdup ("0002"));
+  mustek = g_list_append (mustek, g_strdup ("0006"));
+  mustek = g_list_append (mustek, g_strdup ("0008"));
+  mustek = g_list_append (mustek, g_strdup ("0010"));
+  mustek = g_list_append (mustek, g_strdup ("0210"));
+  mustek = g_list_append (mustek, g_strdup ("0218"));
+  mustek = g_list_append (mustek, g_strdup ("0219"));
+  mustek = g_list_append (mustek, g_strdup ("021a"));
+  mustek = g_list_append (mustek, g_strdup ("021b"));
+  mustek = g_list_append (mustek, g_strdup ("021c"));
+  mustek = g_list_append (mustek, g_strdup ("021d"));
+  mustek = g_list_append (mustek, g_strdup ("021e"));
+  mustek = g_list_append (mustek, g_strdup ("021f"));
+  mustek = g_list_append (mustek, g_strdup ("0409"));
+  g_hash_table_insert (scanners,
+                       g_strdup("055f"),
+                       g_list_copy(mustek));
+
 # Artec/Ultima Ultima 2000 | Artec/Ultima Ultima 2000 e+ | Boeder Sm@rtScan Slim Edition
 # Fujitsu 1200CUS | Googlegear 2000 | Medion/Lifetec/Tevion/Cytron MD 4394
 # Medion/Lifetec/Tevion/Cytron MD/LT 9375 | Medion/Lifetec/Tevion/Cytron MD/LT 9385 | Medion/Lifetec/Tevion/Cytron LT 9452
@@ -1076,17 +806,4 @@ ATTRS{idVendor}=="413c", ATTRS{idProduct}=="5124", ENV{libsane_matched}="yes"
 # Dell 1600n
 ATTRS{idVendor}=="413c", ATTRS{idProduct}=="5250", ENV{libsane_matched}="yes"
   
-  epson = g_list_append (epson, g_strdup("0101"));
-  epson = g_list_append (epson, g_strdup("0103"));
-  epson = g_list_append (epson, g_strdup("0104"));
-  epson = g_list_append (epson, g_strdup("0105"));
-  epson = g_list_append (epson, g_strdup("0106"));
-  epson = g_list_append (epson, g_strdup("0107"));
-  epson = g_list_append (epson, g_strdup("0109"));
-  epson = g_list_append (epson, g_strdup("010a"));
-  epson = g_list_append (epson, g_strdup("010b"));
-
-  g_hash_table_insert (scanners,
-                       g_strdup("04b8"),
-                       g_list_copy(epson));
 }

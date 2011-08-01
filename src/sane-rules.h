@@ -47,23 +47,19 @@ void populate_usb_scanners (GHashTable* scanners)
                        g_strdup("03f0"),
                        g_list_copy(hp));
 
-  GList* mustek = NULL;
-
-  mustek = g_list_append (mustek, g_strdup ("1000"));
-  mustek = g_list_append (mustek, g_strdup ("1001"));
-
+  GList* mustek_2 = NULL;
+  mustek_2 = g_list_append (mustek_2, g_strdup ("1000"));
+  mustek_2 = g_list_append (mustek_2, g_strdup ("1001"));
   g_hash_table_insert (scanners,
                        g_strdup("03f0"),
-                       g_list_copy(mustek));
+                       g_list_copy(mustek_2));
 
   GList* kodak = NULL;
-
   kodak = g_list_append (kodak, g_strdup ("6001"));
   kodak = g_list_append (kodak, g_strdup ("6002"));
   kodak = g_list_append (kodak, g_strdup ("6003"));
   kodak = g_list_append (kodak, g_strdup ("6004"));
   kodak = g_list_append (kodak, g_strdup ("6005"));
-
   g_hash_table_insert (scanners,
                        g_strdup("040a"),
                        g_list_copy(kodak));
@@ -486,19 +482,19 @@ void populate_usb_scanners (GHashTable* scanners)
                        g_strdup("04e8"),
                        g_list_copy(samsung));
   
-  GList* pentax;
+  GList* pentax = NULL;
   pentax = g_list_append (pentax, g_strdup ("2038"));
   g_hash_table_insert (scanners,
                        g_strdup("04f9"),
                        g_list_copy(pentax));
 
-  GList* apitek;
+  GList* apitek = NULL;
   apitek = g_list_append (apitek, g_strdup ("0202"));
   g_hash_table_insert (scanners,
                        g_strdup("0553"),
                        g_list_copy(apitek));
 
-  GList* mustek;
+  GList* mustek = NULL;
   mustek = g_list_append (mustek, g_strdup ("0001"));
   mustek = g_list_append (mustek, g_strdup ("0002"));
   mustek = g_list_append (mustek, g_strdup ("0006"));
@@ -517,293 +513,233 @@ void populate_usb_scanners (GHashTable* scanners)
   g_hash_table_insert (scanners,
                        g_strdup("055f"),
                        g_list_copy(mustek));
-
-# Artec/Ultima Ultima 2000 | Artec/Ultima Ultima 2000 e+ | Boeder Sm@rtScan Slim Edition
-# Fujitsu 1200CUS | Googlegear 2000 | Medion/Lifetec/Tevion/Cytron MD 4394
-# Medion/Lifetec/Tevion/Cytron MD/LT 9375 | Medion/Lifetec/Tevion/Cytron MD/LT 9385 | Medion/Lifetec/Tevion/Cytron LT 9452
-# Medion/Lifetec/Tevion/Cytron MD 9458 | Mustek BearPaw 1200 CU | Mustek BearPaw 2400 CU
-# Mustek ScanExpress 1200 UB Plus | Mustek ScanExpress 2400 USB | Mustek ScanMagic 1200 UB Plus
-# Packard Bell Diamond 1200 | Trust Compact Scan USB 19200 | Trust Flat Scan USB 19200
-ATTRS{idVendor}=="05d8", ATTRS{idProduct}=="4002", ENV{libsane_matched}="yes"
-# Artec/Ultima E+ 48U | Medion/Lifetec/Tevion/Cytron MD9693 | Medion/Lifetec/Tevion/Cytron MD9705
-# Medion/Lifetec/Tevion/Cytron MD4394 | Microstar MR 9791
-ATTRS{idVendor}=="05d8", ATTRS{idProduct}=="4003", ENV{libsane_matched}="yes"
-# Artec/Ultima E+ Pro
-ATTRS{idVendor}=="05d8", ATTRS{idProduct}=="4004", ENV{libsane_matched}="yes"
-# Memorex MEM 48U
-ATTRS{idVendor}=="05d8", ATTRS{idProduct}=="4005", ENV{libsane_matched}="yes"
-# Trust Easy Webscan 19200
-ATTRS{idVendor}=="05d8", ATTRS{idProduct}=="4006", ENV{libsane_matched}="yes"
-# Trust 240H Easy Webscan Gold
-ATTRS{idVendor}=="05d8", ATTRS{idProduct}=="4007", ENV{libsane_matched}="yes"
-# UMAX AstraSlim SE
-ATTRS{idVendor}=="05d8", ATTRS{idProduct}=="4009", ENV{libsane_matched}="yes"
-# UMAX AstraSlim 1200 SE
-ATTRS{idVendor}=="05d8", ATTRS{idProduct}=="4010", ENV{libsane_matched}="yes"
-# Yakumo Scan50
-ATTRS{idVendor}=="05d8", ATTRS{idProduct}=="4011", ENV{libsane_matched}="yes"
-# Microtek ScanMaker X6USB
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="0099", ENV{libsane_matched}="yes"
-# Microtek SlimScan C6
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="009a", ENV{libsane_matched}="yes"
-# Microtek ScanMaker V6USL
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="00a3", ENV{libsane_matched}="yes"
-# Microtek ScanMaker V6UPL
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="00b6", ENV{libsane_matched}="yes"
-# Microtek ScanMaker 4800
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="30cf", ENV{libsane_matched}="yes"
-# Microtek ScanMaker 3840
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="30d4", ENV{libsane_matched}="yes"
-# Microtek ScanMaker 3600
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="40b3", ENV{libsane_matched}="yes"
-# Microtek ScanMaker 3700
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="40b8", ENV{libsane_matched}="yes"
-# Microtek ScanMaker 3600
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="40ca", ENV{libsane_matched}="yes"
-# Microtek ScanMaker 3700
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="40cb", ENV{libsane_matched}="yes"
-# Microtek ScanMaker 3750
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="40dd", ENV{libsane_matched}="yes"
-# Microtek ScanMaker 3600
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="40ff", ENV{libsane_matched}="yes"
-# Microtek ScanMaker V6USL
-ATTRS{idVendor}=="05da", ATTRS{idProduct}=="80a3", ENV{libsane_matched}="yes"
-# iVina 1200U
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0268", ENV{libsane_matched}="yes"
-# Minolta Dimage Scan Dual II
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="026a", ENV{libsane_matched}="yes"
-# Avision AV600U
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a13", ENV{libsane_matched}="yes"
-# Minolta-QMS SC-110
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a15", ENV{libsane_matched}="yes"
-# Avision DS610CU Scancopier | Minolta-QMS SC-215 | OKI S700 Scancopier
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a16", ENV{libsane_matched}="yes"
-# Avision AV600U Plus
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a18", ENV{libsane_matched}="yes"
-# Avision AV610
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a19", ENV{libsane_matched}="yes"
-# Avision AV220
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a23", ENV{libsane_matched}="yes"
-# Avision AV210
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a24", ENV{libsane_matched}="yes"
-# Avision AV210
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a25", ENV{libsane_matched}="yes"
-# Avision AV120
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a27", ENV{libsane_matched}="yes"
-# Avision AV220C2
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a2a", ENV{libsane_matched}="yes"
-# Avision AV220D2
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a2b", ENV{libsane_matched}="yes"
-# Avision AV220+
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a2c", ENV{libsane_matched}="yes"
-# Avision AV220C2-G
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a2d", ENV{libsane_matched}="yes"
-# Avision AV220C2-B
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a2e", ENV{libsane_matched}="yes"
-# Avision AV210C2-G
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a2f", ENV{libsane_matched}="yes"
-# Avision AV122
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a33", ENV{libsane_matched}="yes"
-# Avision AV210C2
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a3a", ENV{libsane_matched}="yes"
-# Avision AV121
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a3c", ENV{libsane_matched}="yes"
-# Avision AV8300
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a40", ENV{libsane_matched}="yes"
-# Avision AM3000 Series
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a41", ENV{libsane_matched}="yes"
-# Avision @V5100
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a45", ENV{libsane_matched}="yes"
-# Avision AV8050U
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a4d", ENV{libsane_matched}="yes"
-# Avision AV3200SU
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a4e", ENV{libsane_matched}="yes"
-# Avision AV3730SU
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a4f", ENV{libsane_matched}="yes"
-# Avision AV610C2
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a5e", ENV{libsane_matched}="yes"
-# Avision IT8300
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a61", ENV{libsane_matched}="yes"
-# Avision AV3750SU
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a65", ENV{libsane_matched}="yes"
-# Avision AV3850SU
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a66", ENV{libsane_matched}="yes"
-# Avision AV8350
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a68", ENV{libsane_matched}="yes"
-# Avision FB6080E
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a82", ENV{libsane_matched}="yes"
-# Avision FB2080E
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a84", ENV{libsane_matched}="yes"
-# Avision AV122 C2
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a93", ENV{libsane_matched}="yes"
-# Avision AV220-G
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0a94", ENV{libsane_matched}="yes"
-# Avision @V2500
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="0aa1", ENV{libsane_matched}="yes"
-# Avision AV210D2+
-ATTRS{idVendor}=="0638", ATTRS{idProduct}=="1a35", ENV{libsane_matched}="yes"
-# Minolta Elite II
-ATTRS{idVendor}=="0686", ATTRS{idProduct}=="4004", ENV{libsane_matched}="yes"
-# Minolta Dimage Scan Dual III
-ATTRS{idVendor}=="0686", ATTRS{idProduct}=="400d", ENV{libsane_matched}="yes"
-# Minolta Dimage Scan Elite 5400
-ATTRS{idVendor}=="0686", ATTRS{idProduct}=="400e", ENV{libsane_matched}="yes"
-# AGFA SnapScan 1212U
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="0001", ENV{libsane_matched}="yes"
-# AGFA SnapScan 1236u
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="0002", ENV{libsane_matched}="yes"
-# Agfa Snapscan Touch
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="0100", ENV{libsane_matched}="yes"
-# AGFA SnapScan 1212U_2
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="2061", ENV{libsane_matched}="yes"
-# AGFA SnapScan e40
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="208d", ENV{libsane_matched}="yes"
-# AGFA SnapScan e50
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="208f", ENV{libsane_matched}="yes"
-# AGFA SnapScan e20
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="2091", ENV{libsane_matched}="yes"
-# AGFA SnapScan e10
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="2093", ENV{libsane_matched}="yes"
-# AGFA SnapScan e25
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="2095", ENV{libsane_matched}="yes"
-# AGFA SnapScan e26
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="2097", ENV{libsane_matched}="yes"
-# AGFA SnapScan e52
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="20fd", ENV{libsane_matched}="yes"
-# AGFA SnapScan e42
-ATTRS{idVendor}=="06bd", ATTRS{idProduct}=="20ff", ENV{libsane_matched}="yes"
-# UMAX Astra 4900
-ATTRS{idVendor}=="06dc", ATTRS{idProduct}=="0020", ENV{libsane_matched}="yes"
-# Plustek OpticPro U12 | Plustek OpticPro UT12 | Plustek OpticPro 1212U
-# RevScan RevScan Orange R48Ti | Genius ColorPage Vivid III USB
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0001", ENV{libsane_matched}="yes"
-# Plustek OpticPro U12
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0010", ENV{libsane_matched}="yes"
-# Plustek OpticPro U24
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0011", ENV{libsane_matched}="yes"
-# Plustek OpticPro UT12
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0013", ENV{libsane_matched}="yes"
-# Plustek OpticPro U24
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0015", ENV{libsane_matched}="yes"
-# Plustek OpticPro UT12 | Plustek OpticPro UT16 | Plustek OpticPro UT24
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0017", ENV{libsane_matched}="yes"
-# Plustek OpticPro 1248U | RevScan 19200i
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0400", ENV{libsane_matched}="yes"
-# Plustek OpticPro 1248U
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0401", ENV{libsane_matched}="yes"
-# Plustek OpticPro U16B
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0402", ENV{libsane_matched}="yes"
-# Plustek OpticPro U16B+ | Plustek OpticPro UT16B
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0403", ENV{libsane_matched}="yes"
-# Nortek MyScan 1200 | Plustek OpticPro S12 | Plustek OpticPro ST12
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="040b", ENV{libsane_matched}="yes"
-# Plustek OpticPro S24
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="040e", ENV{libsane_matched}="yes"
-# NeatReceipts Scanalizer Professional 2.5 | Plustek OpticSlim M12
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0412", ENV{libsane_matched}="yes"
-# Plustek OpticSlim 1200
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0413", ENV{libsane_matched}="yes"
-# Plustek OpticSlim 2400
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0422", ENV{libsane_matched}="yes"
-# Plustek OpticSlim 2400 plus
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0454", ENV{libsane_matched}="yes"
-# Plustek Iriscan Express 2
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="045f", ENV{libsane_matched}="yes"
-# NeatReceipts Mobile Scanner
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0462", ENV{libsane_matched}="yes"
-# Plustek OpticBook 3600
-ATTRS{idVendor}=="07b3", ATTRS{idProduct}=="0900", ENV{libsane_matched}="yes"
-# Corex 600c
-ATTRS{idVendor}=="08f0", ATTRS{idProduct}=="0002", ENV{libsane_matched}="yes"
-# Corex 800c
-ATTRS{idVendor}=="08f0", ATTRS{idProduct}=="0005", ENV{libsane_matched}="yes"
-# Xerox Phaser 6110MFP
-ATTRS{idVendor}=="0924", ATTRS{idProduct}=="3d5d", ENV{libsane_matched}="yes"
-# Xerox Phaser 3200MFP
-ATTRS{idVendor}=="0924", ATTRS{idProduct}=="3da4", ENV{libsane_matched}="yes"
-# Xerox WorkCentre 4118 Series
-ATTRS{idVendor}=="0924", ATTRS{idProduct}=="420c", ENV{libsane_matched}="yes"
-# Xerox WorkCentre 3119 Series
-ATTRS{idVendor}=="0924", ATTRS{idProduct}=="4265", ENV{libsane_matched}="yes"
-# Xerox WorkCentre 3210
-ATTRS{idVendor}=="0924", ATTRS{idProduct}=="4293", ENV{libsane_matched}="yes"
-# Xerox WorkCentre 3220
-ATTRS{idVendor}=="0924", ATTRS{idProduct}=="4294", ENV{libsane_matched}="yes"
-# Pentax DSmobile 600
-ATTRS{idVendor}=="0a17", ATTRS{idProduct}=="3210", ENV{libsane_matched}="yes"
-# Portable Peripheral Co., Ltd. Q-Scan USB001 (A4 portable scanner)
-ATTRS{idVendor}=="0a53", ATTRS{idProduct}=="1000", ENV{libsane_matched}="yes"
-# Syscan TravelScan 460/464 | Ambir Visigo A4
-ATTRS{idVendor}=="0a82", ATTRS{idProduct}=="4600", ENV{libsane_matched}="yes"
-# Syscan DocketPort 465
-ATTRS{idVendor}=="0a82", ATTRS{idProduct}=="4802", ENV{libsane_matched}="yes"
-# Syscan DocketPort 665
-ATTRS{idVendor}=="0a82", ATTRS{idProduct}=="4803", ENV{libsane_matched}="yes"
-# Syscan DocketPort 685/ Ambir DS685
-ATTRS{idVendor}=="0a82", ATTRS{idProduct}=="480c", ENV{libsane_matched}="yes"
-# Syscan DocketPort 485
-ATTRS{idVendor}=="0a82", ATTRS{idProduct}=="4810", ENV{libsane_matched}="yes"
-# Syscan TravelScan 662
-ATTRS{idVendor}=="0a82", ATTRS{idProduct}=="6620", ENV{libsane_matched}="yes"
-# Canon CR-55
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="160c", ENV{libsane_matched}="yes"
-# Canon DR-1210C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="160f", ENV{libsane_matched}="yes"
-# Canon DR-4010C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1614", ENV{libsane_matched}="yes"
-# Canon DR-2510C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1617", ENV{libsane_matched}="yes"
-# Canon DR-X10C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1618", ENV{libsane_matched}="yes"
-# Canon CR-25
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="161a", ENV{libsane_matched}="yes"
-# Canon DR-2010C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="161b", ENV{libsane_matched}="yes"
-# Canon DR-3010C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="161d", ENV{libsane_matched}="yes"
-# Canon DR-7090C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1620", ENV{libsane_matched}="yes"
-# Canon DR-9050C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1622", ENV{libsane_matched}="yes"
-# Canon DR-7550C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1623", ENV{libsane_matched}="yes"
-# Canon DR-6050C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1624", ENV{libsane_matched}="yes"
-# Canon DR-6010C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1626", ENV{libsane_matched}="yes"
-# Canon CR-190i
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="162b", ENV{libsane_matched}="yes"
-# Canon DR-6030C
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1638", ENV{libsane_matched}="yes"
-# Canon CR-135i
-ATTRS{idVendor}=="1083", ATTRS{idProduct}=="1639", ENV{libsane_matched}="yes"
-# Digital Dream l' espion XS
-ATTRS{idVendor}=="1183", ATTRS{idProduct}=="0001", ENV{libsane_matched}="yes"
-# KONICA MINOLTA magicolor 1690MF
-ATTRS{idVendor}=="132b", ATTRS{idProduct}=="2089", ENV{libsane_matched}="yes"
-# UMAX Astra 1220U
-ATTRS{idVendor}=="1606", ATTRS{idProduct}=="0010", ENV{libsane_matched}="yes"
-# UMAX Astra 1600U | UMAX Astra 2000U
-ATTRS{idVendor}=="1606", ATTRS{idProduct}=="0030", ENV{libsane_matched}="yes"
-# Umax UMAX 3400
-ATTRS{idVendor}=="1606", ATTRS{idProduct}=="0050", ENV{libsane_matched}="yes"
-# Umax UMAX 3400 | Umax UMAX Astranet ia101 | Umax UMAX 3450
-ATTRS{idVendor}=="1606", ATTRS{idProduct}=="0060", ENV{libsane_matched}="yes"
-# UMAX Astra 4400 | UMAX Astra 4450
-ATTRS{idVendor}=="1606", ATTRS{idProduct}=="0070", ENV{libsane_matched}="yes"
-# UMAX Astra 2100U
-ATTRS{idVendor}=="1606", ATTRS{idProduct}=="0130", ENV{libsane_matched}="yes"
-# Umax UMAX 5400
-ATTRS{idVendor}=="1606", ATTRS{idProduct}=="0160", ENV{libsane_matched}="yes"
-# UMAX Astra 2200 (SU)
-ATTRS{idVendor}=="1606", ATTRS{idProduct}=="0230", ENV{libsane_matched}="yes"
-# DCT DocketPort 487
-ATTRS{idVendor}=="1dcc", ATTRS{idProduct}=="4810", ENV{libsane_matched}="yes"
-# Dell A920
-ATTRS{idVendor}=="413c", ATTRS{idProduct}=="5105", ENV{libsane_matched}="yes"
-# Dell Dell MFP Laser Printer 1815dn
-ATTRS{idVendor}=="413c", ATTRS{idProduct}=="5124", ENV{libsane_matched}="yes"
-# Dell 1600n
-ATTRS{idVendor}=="413c", ATTRS{idProduct}=="5250", ENV{libsane_matched}="yes"
+  GList* artec = NULL;
+  artec = g_list_append (artec, g_strdup ("4002"));
+  artec = g_list_append (artec, g_strdup ("4003"));
+  artec = g_list_append (artec, g_strdup ("4004"));
+  artec = g_list_append (artec, g_strdup ("4005"));
+  artec = g_list_append (artec, g_strdup ("4006"));
+  artec = g_list_append (artec, g_strdup ("4007"));
+  artec = g_list_append (artec, g_strdup ("4009"));
+  artec = g_list_append (artec, g_strdup ("4010"));
+  artec = g_list_append (artec, g_strdup ("4011"));
+  g_hash_table_insert (scanners,
+                       g_strdup("05d8"),
+                       g_list_copy(artec));
   
+  GList* microtek = NULL;
+  microtek = g_list_append (microtek, g_strdup ("0099"));
+  microtek = g_list_append (microtek, g_strdup ("009a"));
+  microtek = g_list_append (microtek, g_strdup ("00a3"));
+  microtek = g_list_append (microtek, g_strdup ("00b6"));
+  microtek = g_list_append (microtek, g_strdup ("30cf"));
+  microtek = g_list_append (microtek, g_strdup ("30d4"));
+  microtek = g_list_append (microtek, g_strdup ("40b3"));
+  microtek = g_list_append (microtek, g_strdup ("40b8"));
+  microtek = g_list_append (microtek, g_strdup ("40ca"));
+  microtek = g_list_append (microtek, g_strdup ("40cb"));
+  microtek = g_list_append (microtek, g_strdup ("40dd"));
+  microtek = g_list_append (microtek, g_strdup ("40ff"));
+  microtek = g_list_append (microtek, g_strdup ("80a3"));
+  g_hash_table_insert (scanners,
+                       g_strdup("05da"),
+                       g_list_copy(microtek));
+  
+  GList* avision = NULL;
+  avision = g_list_append (avision, g_strdup ("0268"));
+  avision = g_list_append (avision, g_strdup ("026a"));
+  avision = g_list_append (avision, g_strdup ("0a13"));
+  avision = g_list_append (avision, g_strdup ("0a15"));
+  avision = g_list_append (avision, g_strdup ("0a16"));
+  avision = g_list_append (avision, g_strdup ("0a18"));
+  avision = g_list_append (avision, g_strdup ("0a19"));
+  avision = g_list_append (avision, g_strdup ("0a23"));
+  avision = g_list_append (avision, g_strdup ("0a24"));
+  avision = g_list_append (avision, g_strdup ("0a25"));
+  avision = g_list_append (avision, g_strdup ("0a27"));
+  avision = g_list_append (avision, g_strdup ("0a2a"));
+  avision = g_list_append (avision, g_strdup ("0a2b"));
+  avision = g_list_append (avision, g_strdup ("0a2c"));
+  avision = g_list_append (avision, g_strdup ("0a2d"));
+  avision = g_list_append (avision, g_strdup ("0a2e"));
+  avision = g_list_append (avision, g_strdup ("0a2f"));
+  avision = g_list_append (avision, g_strdup ("0a33"));
+  avision = g_list_append (avision, g_strdup ("0a3a"));
+  avision = g_list_append (avision, g_strdup ("0a3c"));
+  avision = g_list_append (avision, g_strdup ("0a40"));
+  avision = g_list_append (avision, g_strdup ("0a41"));
+  avision = g_list_append (avision, g_strdup ("0a45"));
+  avision = g_list_append (avision, g_strdup ("0a4d"));
+  avision = g_list_append (avision, g_strdup ("0a4e"));
+  avision = g_list_append (avision, g_strdup ("0a4f"));
+  avision = g_list_append (avision, g_strdup ("0a5e"));
+  avision = g_list_append (avision, g_strdup ("0a61"));
+  avision = g_list_append (avision, g_strdup ("0a65"));
+  avision = g_list_append (avision, g_strdup ("0a66"));
+  avision = g_list_append (avision, g_strdup ("0a68"));
+  avision = g_list_append (avision, g_strdup ("0a82"));
+  avision = g_list_append (avision, g_strdup ("0a84"));
+  avision = g_list_append (avision, g_strdup ("0a93"));
+  avision = g_list_append (avision, g_strdup ("0a94"));
+  avision = g_list_append (avision, g_strdup ("0aa1"));
+  avision = g_list_append (avision, g_strdup ("1a35"));
+  g_hash_table_insert (scanners,
+                       g_strdup("0638"),
+                       g_list_copy(avision));
+  GList* minolta = NULL;
+  minolta = g_list_append (minolta, g_strdup ("4004"));
+  minolta = g_list_append (minolta, g_strdup ("400d"));
+  minolta = g_list_append (minolta, g_strdup ("400e"));
+  g_hash_table_insert (scanners,
+                       g_strdup("0686"),
+                       g_list_copy(minolta));
+
+  GList* agfa = NULL;
+  agfa = g_list_append (agfa, g_strdup ("0001"));
+  agfa = g_list_append (agfa, g_strdup ("0002"));
+  agfa = g_list_append (agfa, g_strdup ("0100"));
+  agfa = g_list_append (agfa, g_strdup ("2061"));
+  agfa = g_list_append (agfa, g_strdup ("208d"));
+  agfa = g_list_append (agfa, g_strdup ("208f"));
+  agfa = g_list_append (agfa, g_strdup ("2091"));
+  agfa = g_list_append (agfa, g_strdup ("2093"));
+  agfa = g_list_append (agfa, g_strdup ("2095"));
+  agfa = g_list_append (agfa, g_strdup ("2097"));
+  agfa = g_list_append (agfa, g_strdup ("20fd"));
+  agfa = g_list_append (agfa, g_strdup ("20ff"));
+  g_hash_table_insert (scanners,
+                       g_strdup("06bd"),
+                       g_list_copy(minolta));
+  
+  GList* umax_2 = NULL;
+  umax_2 = g_list_append (umax_2, g_strdup ("0020"));
+  g_hash_table_insert (scanners,
+                       g_strdup("06dc"),
+                       g_list_copy(umax_2));
+
+  GList* plustek = NULL;
+  
+  plustek = g_list_append (plustek, g_strdup ("0001"));
+  plustek = g_list_append (plustek, g_strdup ("0010"));
+  plustek = g_list_append (plustek, g_strdup ("0011"));
+  plustek = g_list_append (plustek, g_strdup ("0013"));
+  plustek = g_list_append (plustek, g_strdup ("0015"));
+  plustek = g_list_append (plustek, g_strdup ("0017"));
+  plustek = g_list_append (plustek, g_strdup ("0400"));
+  plustek = g_list_append (plustek, g_strdup ("0401"));
+  plustek = g_list_append (plustek, g_strdup ("0402"));
+  plustek = g_list_append (plustek, g_strdup ("0403"));
+  plustek = g_list_append (plustek, g_strdup ("040b"));
+  plustek = g_list_append (plustek, g_strdup ("040e"));
+  plustek = g_list_append (plustek, g_strdup ("0412"));
+  plustek = g_list_append (plustek, g_strdup ("0413"));
+  plustek = g_list_append (plustek, g_strdup ("0422"));
+  plustek = g_list_append (plustek, g_strdup ("0454"));
+  plustek = g_list_append (plustek, g_strdup ("045f"));
+  plustek = g_list_append (plustek, g_strdup ("0462"));
+  plustek = g_list_append (plustek, g_strdup ("0900"));
+  g_hash_table_insert (scanners,
+                       g_strdup("07b3"),
+                       g_list_copy(plustek));
+
+  GList* corex = NULL;
+  corex = g_list_append (corex, g_strdup ("0002"));
+  corex = g_list_append (corex, g_strdup ("0005"));
+  g_hash_table_insert (scanners,
+                       g_strdup("08f0"),
+                       g_list_copy(corex));
+  
+  GList* xerox = NULL;
+  xerox = g_list_append (xerox, g_strdup ("3d5d"));
+  xerox = g_list_append (xerox, g_strdup ("3da4"));
+  xerox = g_list_append (xerox, g_strdup ("420c"));
+  xerox = g_list_append (xerox, g_strdup ("4265"));
+  xerox = g_list_append (xerox, g_strdup ("4293"));
+  xerox = g_list_append (xerox, g_strdup ("4294"));
+  g_hash_table_insert (scanners,
+                       g_strdup("0924"),
+                       g_list_copy(xerox));
+  
+  GList* pentax_2 = NULL;
+  pentax_2 = g_list_append (pentax_2, g_strdup ("3210"));
+  g_hash_table_insert (scanners,
+                       g_strdup("0a17"),
+                       g_list_copy(pentax_2));
+
+  GList* portable = NULL;
+  portable = g_list_append (portable, g_strdup ("1000"));
+  g_hash_table_insert (scanners,
+                       g_strdup("0a53"),
+                       g_list_copy(portable));
+  
+  GList* syscan = NULL;
+  syscan = g_list_append (syscan, g_strdup ("4600"));
+  syscan = g_list_append (syscan, g_strdup ("4802"));
+  syscan = g_list_append (syscan, g_strdup ("4803"));
+  syscan = g_list_append (syscan, g_strdup ("480c"));
+  syscan = g_list_append (syscan, g_strdup ("4810"));
+  syscan = g_list_append (syscan, g_strdup ("6620"));
+  g_hash_table_insert (scanners,
+                       g_strdup("0a82"),
+                       g_list_copy(syscan));
+  
+  GList* canon_2 = NULL;
+  canon_2 = g_list_append (canon_2, g_strdup ("160c"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("160f"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1614"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1617"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1618"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("161a"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("161b"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("161d"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1620"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1622"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1623"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1624"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1626"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("162b"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1638"));  
+  canon_2 = g_list_append (canon_2, g_strdup ("1639"));  
+  g_hash_table_insert (scanners,
+                       g_strdup("1083"),
+                       g_list_copy(canon_2));
+  
+  GList* digital = NULL;
+  digital = g_list_append (digital, g_strdup ("0001"));
+  g_hash_table_insert (scanners,
+                       g_strdup("1183"),
+                       g_list_copy(digital));
+  
+  GList* konica_2 = NULL;
+  konica_2 = g_list_append (konica_2, g_strdup ("2089"));
+  g_hash_table_insert (scanners,
+                       g_strdup("132b"),
+                       g_list_copy(konica_2));
+  
+  GList* umax = NULL;
+  umax = g_list_append (umax, g_strdup ("0010"));
+  umax = g_list_append (umax, g_strdup ("0030"));
+  umax = g_list_append (umax, g_strdup ("0050"));
+  umax = g_list_append (umax, g_strdup ("0060"));
+  umax = g_list_append (umax, g_strdup ("0070"));
+  umax = g_list_append (umax, g_strdup ("0130"));
+  umax = g_list_append (umax, g_strdup ("0160"));
+  umax = g_list_append (umax, g_strdup ("0230"));
+  g_hash_table_insert (scanners,
+                       g_strdup("1606"),
+                       g_list_copy(umax));
+
+  GList* docketport = NULL;
+  docketport = g_list_append (docketport, g_strdup ("4810"));  
+  g_hash_table_insert (scanners,
+                       g_strdup("1dcc"),
+                       g_list_copy(docketport));
+
+  GList* dell = NULL;
+  dell = g_list_append (dell, g_strdup ("5105"));
+  dell = g_list_append (dell, g_strdup ("5124"));
+  dell = g_list_append (dell, g_strdup ("5250"));
+  g_hash_table_insert (scanners,
+                       g_strdup("413c"),
+                       g_list_copy(dell));
 }

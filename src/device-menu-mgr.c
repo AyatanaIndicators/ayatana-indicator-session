@@ -441,6 +441,19 @@ show_session_properties (DbusmenuMenuitem * mi,
 }                                   
 
 static void
+show_printer_properties (DbusmenuMenuitem * mi,
+                         guint timestamp,
+                         gchar * type)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("system-config-printer", &error))
+  {
+    g_warning("Unable to show dialog: %s", error->message);
+    g_error_free(error);
+  }
+}
+
+static void
 show_system_settings_with_context (DbusmenuMenuitem * mi,
                                    guint timestamp,
                                    gchar * type)
@@ -539,7 +552,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   _("Printers"));
   g_signal_connect (G_OBJECT(printers_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context),
+                    G_CALLBACK(show_printer_properties),
                     "printers");
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        printers_menuitem,

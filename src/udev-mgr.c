@@ -203,8 +203,7 @@ udev_mgr_handle_webcam (UdevMgr* self,
     }
     g_hash_table_insert (self->webcams_present,
                          g_strdup (product),
-                         g_strdup (vendor));
-                               
+                         g_strdup (vendor));                               
   }
   udev_mgr_update_menuitems (self);  
 }                        
@@ -267,6 +266,7 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
                                            UdevMgrDeviceAction action)
 {
   const gchar* vendor = NULL;
+  debug_device (self, device, action);    
   
 	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
   

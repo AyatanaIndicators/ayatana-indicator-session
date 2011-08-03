@@ -547,7 +547,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   scanners_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (scanners_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("HP Scanners"));
+                                  _("Scanners"));
   g_signal_connect (G_OBJECT(scanners_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_system_settings_with_context),
@@ -562,11 +562,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   webcam_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (webcam_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("HP Webcam"));
+                                  _("Webcam"));
   g_signal_connect (G_OBJECT(webcam_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_system_settings_with_context),
-                    "HP Webcam");
+                    "Webcam");
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         webcam_menuitem,
                                         10);

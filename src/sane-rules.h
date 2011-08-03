@@ -2,6 +2,7 @@
 void populate_usb_scanners (GHashTable* scanners)
 {
   GList* hp = NULL;
+
   hp = g_list_append (hp, g_strdup ("0101"));
   hp = g_list_append (hp, g_strdup ("0105"));
   hp = g_list_append (hp, g_strdup ("0201"));
@@ -308,6 +309,10 @@ void populate_usb_scanners (GHashTable* scanners)
                        g_list_copy(nikon));
 
   GList* epson = NULL;
+
+  // for testing (its a printer not a scanner!)  
+  //epson = g_list_append (epson, g_strdup ("0001"));
+  
   epson = g_list_append (epson, g_strdup("0101"));
   epson = g_list_append (epson, g_strdup("0103"));
   epson = g_list_append (epson, g_strdup("0104"));

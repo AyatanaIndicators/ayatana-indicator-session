@@ -42,6 +42,14 @@ static void udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
 static void udev_mgr_check_if_scsi_device_is_supported (UdevMgr* self, 
                                                         GUdevDevice *device,
                                                         UdevMgrDeviceAction action);
+static void udev_mgr_handle_webcam (UdevMgr* self,
+                                    GUdevDevice* device,
+                                    UdevMgrDeviceAction action);
+                                                        
+static void debug_device (UdevMgr* self,
+                          GUdevDevice* device,
+                          UdevMgrDeviceAction action);
+                                                        
 
 struct _UdevMgr
 {
@@ -51,19 +59,15 @@ struct _UdevMgr
   GUdevClient* client;  
   GHashTable* supported_usb_scanners;
   GHashTable* scanners_present;
+  GHashTable* webcams_present;
 };
 
-const char *subsystems[2] = {"usb", "scsi"};
+const char *subsystems[3] = {"usb", "scsi", "video4linux"};
 const gchar* usb_subsystem = "usb";
+const gchar* video4linux_subsystem = "video4linux";
+
 
 G_DEFINE_TYPE (UdevMgr, udev_mgr, G_TYPE_OBJECT);
-
-/*static void
-test_usb_scanners(gpointer data, gpointer user_data)
-{
-  gchar* model = (gchar*)data;
-  g_debug ("in hash table for epsom model %s was found", model);
-}*/
 
 static void
 udev_mgr_init (UdevMgr* self)
@@ -71,12 +75,16 @@ udev_mgr_init (UdevMgr* self)
   self->client = NULL;
   self->supported_usb_scanners = NULL;
   self->scanners_present = NULL;
-    
+  self->webcams_present = NULL;
+  
   self->client = g_udev_client_new (subsystems);  
   self->supported_usb_scanners = g_hash_table_new (g_str_hash, g_str_equal);
   self->scanners_present = g_hash_table_new (g_str_hash, g_str_equal);
+  self->webcams_present = g_hash_table_new (g_str_hash, g_str_equal);
   
+  // load into memory all supported scanners ...
   populate_usb_scanners(self->supported_usb_scanners);
+  
   g_signal_connect (G_OBJECT (self->client),
                    "uevent",
                     G_CALLBACK (udev_mgr_uevent_cb),
@@ -106,35 +114,16 @@ udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
   UdevMgr* self = UDEV_MGR (userdata);
   
   GUdevDevice* device = G_UDEV_DEVICE (data);
-  udev_mgr_check_if_usb_device_is_supported (self, device, ADD);
 
-  /*const gchar* vendor = NULL;
-  const gchar* product = NULL;
-  GList* vendor_list = NULL;
-  
-	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
-  
-  if (vendor == NULL){
-    g_object_unref (device);
-    return;
-  }
+  const gchar* subsystem = NULL;  
+  subsystem = g_udev_device_get_subsystem (device);
 
-	product = g_udev_device_get_property (device, "ID_MODEL_ID");
-  vendor_list = g_hash_table_lookup(self->supported_scanners, (gpointer)vendor);
-  
-  GList* model = NULL;
-  
-  if (vendor_list != NULL){
-    model = g_list_find_custom(vendor_list, product, (GCompareFunc)g_strcmp0);
-    if (model == NULL){
-      g_debug ("CANT FIND THE MODEL %s FOR  VENDOR %s", product, vendor);
-    }
-    else{
-      self->scanners_present += 1;    
-      g_debug ("WE HAVE A SUCCESSFUL MATCH!");
-    }    
+  if (g_strcmp0 (subsystem, "usb") == 0){
+    udev_mgr_check_if_usb_device_is_supported (self, device, ADD);
   }
-  g_debug ("JUST SET SCANNERS TO TRUE");*/                                                 
+  else if (g_strcmp0 (subsystem, "video4linux") == 0){
+    udev_mgr_handle_webcam (self, device, ADD);    
+  }
   g_object_unref (device);
 }
 
@@ -144,6 +133,11 @@ static void udev_mgr_update_menuitems (UdevMgr* self)
   dbusmenu_menuitem_property_set_bool (self->scanner_item,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        g_hash_table_size (self->scanners_present) > 0);
+
+  dbusmenu_menuitem_property_set_bool (self->webcam_item,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       g_hash_table_size (self->webcams_present) > 0);
+
 }
 
 static void udev_mgr_uevent_cb (GUdevClient *client,
@@ -162,68 +156,79 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
   if (g_strcmp0 (action, "remove") == 0){
     udev_mgr_action = REMOVE;
   }
-  const gchar* subsystem = NULL;
-  const gchar* device_type = NULL;
   
-  device_type = g_udev_device_get_devtype (device);  
+  const gchar* subsystem = NULL;  
   subsystem = g_udev_device_get_subsystem (device);
 
-  g_debug ("And the subsystem is %s", subsystem);  
-  g_debug ("And the device_type is %s", device_type);  
-
   if (g_strcmp0 (subsystem, "usb") == 0){
-    if ( g_udev_device_has_property (device, "ID_USB_INTERFACES")){
-      const gchar* id_usb_interfaces = NULL;
-      id_usb_interfaces = g_udev_device_get_property (device, "ID_USB_INTERFACES");
-      
-      GError* error = NULL;
-      GMatchInfo *match_info = NULL;
-      GRegex* webcam_regex = NULL;
-      
-      webcam_regex = g_regex_new (":0e[0-9]{4}:*", 
-                                   0,
-                                   0,
-                                   &error);  
-      // This seems to be case with certain webcams
-      //#":ff[f|0]{4}                                        
-      if (error != NULL){
-        g_debug ("Errors creating the regex : %s", error->message);        
-      }                                                                       
-      gboolean result = g_regex_match (webcam_regex,
-                                       id_usb_interfaces,
-                                       0,
-                                       & match_info);
-  
-      g_debug ("we have found the id usb interfaces : %s", id_usb_interfaces); 
-      
-      if (result == TRUE){
-        g_debug ("SUCCESSFUL MATCH");
-      }   
-      else {
-        g_debug ("NO MATCH");
-      }
-    }
-                                          
-    udev_mgr_check_if_usb_device_is_supported (self, device, udev_mgr_action);
+    udev_mgr_check_if_usb_device_is_supported (self,
+                                               device,
+                                               udev_mgr_action);
+  }
+  else if (g_strcmp0 (subsystem, "video4linux") == 0){
+    udev_mgr_handle_webcam (self, device, udev_mgr_action);
   }
   else if (g_strcmp0 (subsystem, "scsi") == 0){
     udev_mgr_check_if_scsi_device_is_supported (self, device, udev_mgr_action);    
   }
-  
-  return;
+}
+
+static void
+udev_mgr_handle_webcam (UdevMgr* self,
+                        GUdevDevice* device,
+                        UdevMgrDeviceAction action)
+{
+  if (FALSE)
+    debug_device (self, device, action);    
   
   const gchar* vendor;
   const gchar* product;
+  
+  vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
+  product = g_udev_device_get_property (device, "ID_MODEL_ID");
+  
+  if (action == REMOVE){
+    if (g_hash_table_lookup (self->webcams_present, product) == NULL){
+      g_warning ("Got a remove event on a webcam device but we don't have that device in our webcam cache");
+      return;                     
+    }
+    g_hash_table_remove (self->webcams_present,
+                         g_strdup (product));
+    
+  }
+  else {
+    if (g_hash_table_lookup (self->webcams_present, product) != NULL){
+      g_warning ("Got an ADD event on a webcam device but we already have that device in our webcam cache");
+      return;                     
+    }
+    g_hash_table_insert (self->webcams_present,
+                         g_strdup (product),
+                         g_strdup (vendor));
+                               
+  }
+  udev_mgr_update_menuitems (self);  
+}                        
+
+static void
+debug_device (UdevMgr* self,
+              GUdevDevice* device,
+              UdevMgrDeviceAction action)
+{
+  const gchar* vendor;
+  const gchar* product;
   const gchar* number;
+  const gchar* name;
   
 	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
 	product = g_udev_device_get_property (device, "ID_MODEL_ID");
   number = g_udev_device_get_number (device);
- 
-  g_debug ("device vendor id %s and product id of %s and number of %s",
+  name = g_udev_device_get_name (device);
+  
+  g_debug ("device vendor id %s , product id of %s , number of %s and name of %s",
            g_strdup(vendor),
            g_strdup(product),
-           g_strdup(number));
+           g_strdup(number),
+           g_strdup(name));
            
   const gchar *const *list;
   const gchar *const *iter;  
@@ -245,7 +250,7 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
            strcat(propstr, " ");
     strcat(propstr, g_udev_device_get_property(device, *iter));
     g_debug("%s", propstr);
-  } 
+  }   
 }
 
 
@@ -261,7 +266,6 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
                                            GUdevDevice *device,
                                            UdevMgrDeviceAction action)
 {
-  g_debug ("got a uevent");
   const gchar* vendor = NULL;
   
 	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
@@ -288,24 +292,25 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
     
   if (model_entry != NULL){
     if (action == REMOVE){
-      // TODO handle the case where its removed
-      // remove it if present from the hash and call update_menuitems
+      if (g_hash_table_lookup (self->scanners_present, g_strdup(vendor)) == NULL){
+        g_warning ("Got an REMOVE event on a scanner device but we dont have that device in our scanners cache");
+      }
+      else{
+        g_hash_table_remove (self->scanners_present, g_strdup(vendor));
+      }
     }
     else{      
-      // TODO: populate it with the name of the device
-      // this will be needed for the menuitem
-      g_hash_table_insert (self->scanners_present,
-                           g_strdup(vendor),
-                           g_strdup(model_id)); 
+      if (g_hash_table_lookup (self->scanners_present, g_strdup(vendor)) != NULL){
+        g_warning ("Got an ADD event on a scanner device but we already have that device in our scanners cache");
+      }
+      else{
+        g_hash_table_insert (self->scanners_present,
+                             g_strdup(vendor),
+                             g_strdup(model_id)); 
+      }
     }
+    udev_mgr_update_menuitems (self);
   }
-  // DEBUG purposes.  
-  if (model_entry == NULL){
-    g_debug ("CANT FIND THE MODEL %s FOR  VENDOR %s", model_id, vendor);
-  }
-  else{
-    g_debug ("WE HAVE A SUCCESSFUL MATCH!");
-  }    
 }
 
 UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner, 
@@ -315,12 +320,22 @@ UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner,
   mgr->scanner_item = scanner;
   mgr->webcam_item = webcam;
 
-  GList* devices_available  = g_udev_client_query_by_subsystem (mgr->client,
+  GList* usb_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
                                                                 usb_subsystem);
-  g_list_foreach (devices_available,
+  g_list_foreach (usb_devices_available,
                   udevice_mgr_device_list_iterator,
                   mgr);
-  g_list_free (devices_available);
-  udev_mgr_update_menuitems (mgr);  
+                  
+  g_list_free (usb_devices_available);
+
+  GList* video_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
+                                                                      video4linux_subsystem);
+  g_list_foreach (video_devices_available,
+                  udevice_mgr_device_list_iterator,
+                  mgr);
+  
+  g_list_free (video_devices_available);
+
+  //udev_mgr_update_menuitems (mgr);  
   return mgr;
 }

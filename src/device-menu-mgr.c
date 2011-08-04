@@ -81,8 +81,11 @@ static void machine_sleep_with_context (DeviceMenuMgr* self,
                                         gchar* type);
 static void show_system_settings_with_context (DbusmenuMenuitem * mi,
                                                guint timestamp,
-                                               gchar * type);                                               
-                                        
+                                               gchar * type);  
+                                               
+static void show_simple_scan (DbusmenuMenuitem * mi,
+                              guint timestamp,
+                              gchar * type);                                       
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
@@ -460,6 +463,18 @@ show_system_settings_with_context (DbusmenuMenuitem * mi,
 	g_free(control_centre_command);
 }
 
+static void show_simple_scan (DbusmenuMenuitem * mi,
+                              guint timestamp,
+                              gchar * type)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("simple-scan", &error))
+  {
+    g_warning("Unable to launch simple-scan: %s", error->message);
+    g_error_free(error);
+  }  
+}                              
+
 static void
 device_menu_mgr_build_static_items (DeviceMenuMgr* self)
 {
@@ -550,14 +565,14 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   _("Scanners"));
   g_signal_connect (G_OBJECT(scanners_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context),
-                    "scanners");
+                    G_CALLBACK(show_simple_scan),
+                    NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         scanners_menuitem,
                                         8);
   dbusmenu_menuitem_property_set_bool (scanners_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       FALSE);
+                                       TRUE);
                                         
   webcam_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (webcam_menuitem,

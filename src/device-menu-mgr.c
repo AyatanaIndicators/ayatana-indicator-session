@@ -83,9 +83,13 @@ static void show_system_settings_with_context (DbusmenuMenuitem * mi,
                                                guint timestamp,
                                                gchar * type);  
                                                
-static void show_simple_scan (DbusmenuMenuitem * mi,
-                              guint timestamp,
-                              gchar * type);                                       
+static void device_menu_mgr_show_simple_scan (DbusmenuMenuitem * mi,
+                                              guint timestamp,
+                                              gchar * type);   
+static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
+                                         guint timestamp,
+                                         gchar * type);
+                                                                  
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
@@ -463,15 +467,40 @@ show_system_settings_with_context (DbusmenuMenuitem * mi,
 	g_free(control_centre_command);
 }
 
-static void show_simple_scan (DbusmenuMenuitem * mi,
-                              guint timestamp,
-                              gchar * type)
+// TODO: refactor both of these down to the one method.
+static void device_menu_mgr_show_simple_scan (DbusmenuMenuitem * mi,
+                                              guint timestamp,
+                                              gchar * type)
 {
   GError * error = NULL;
   if (!g_spawn_command_line_async("simple-scan", &error))
   {
     g_warning("Unable to launch simple-scan: %s", error->message);
     g_error_free(error);
+    if (!g_spawn_command_line_async("software-center simple-scan", &error))
+    {
+      g_warning ("Unable to launch software-centre simple-scan: %s",
+                 error->message);
+      g_error_free(error);
+    }    
+  }  
+}                              
+
+static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
+                                         guint timestamp,
+                                         gchar * type)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("cheese", &error))
+  {
+    g_warning("Unable to launch cheese: %s", error->message);
+    g_error_free(error);
+    if (!g_spawn_command_line_async("software-center cheese", &error))
+    {
+      g_warning ("Unable to launch software-centre cheese: %s",
+                 error->message);
+      g_error_free(error);
+    }    
   }  
 }                              
 
@@ -565,14 +594,14 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   _("Scanners"));
   g_signal_connect (G_OBJECT(scanners_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_simple_scan),
+                    G_CALLBACK(device_menu_mgr_show_simple_scan),
                     NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         scanners_menuitem,
                                         8);
   dbusmenu_menuitem_property_set_bool (scanners_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       TRUE);
+                                       FALSE);
                                         
   webcam_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (webcam_menuitem,
@@ -580,12 +609,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   _("Webcam"));
   g_signal_connect (G_OBJECT(webcam_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context),
-                    "Webcam");
+                    G_CALLBACK(device_menu_mgr_show_cheese),
+                    NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         webcam_menuitem,
                                         10);
- //tmp
   dbusmenu_menuitem_property_set_bool (webcam_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        FALSE);

@@ -1,3 +1,29 @@
+void populate_scsi_scanners (GHashTable* scanners)
+{
+  GList* epson = NULL;
+  epson = g_list_append (epson, g_strdup ("GT-9700"));
+  epson = g_list_append (epson, g_strdup ("GT-9800"));
+  epson = g_list_append (epson, g_strdup ("Perfection1200"));
+  epson = g_list_append (epson, g_strdup ("Perfection636"));
+  epson = g_list_append (epson, g_strdup ("SCANNER GT-7000"));
+  g_hash_table_insert (scanners,
+                       g_strdup("EPSON"),
+                       g_list_copy(epson));
+
+
+  GList* hp = NULL;
+  hp = g_list_append (hp, g_strdup ("C1130A"));
+  hp = g_list_append (hp, g_strdup ("C1750A"));
+  hp = g_list_append (hp, g_strdup ("C1790A"));
+  hp = g_list_append (hp, g_strdup ("C2500A"));
+  hp = g_list_append (hp, g_strdup ("C2520A"));
+  hp = g_list_append (hp, g_strdup ("C5110A"));
+  hp = g_list_append (hp, g_strdup ("C6270A"));
+  hp = g_list_append (hp, g_strdup ("C7670A"));
+  g_hash_table_insert (scanners,
+                       g_strdup("HP"),
+                       g_list_copy(hp));
+}
 
 void populate_usb_scanners (GHashTable* scanners)
 {

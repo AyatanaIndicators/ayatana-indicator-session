@@ -37,19 +37,17 @@ static void udev_mgr_uevent_cb  (GUdevClient *client,
 static void udev_mgr_update_menuitems (UdevMgr* self);
 static void udev_mgr_check_if_usb_device_is_supported (UdevMgr* self, 
                                                         GUdevDevice *device,
-                                                        UdevMgrDeviceAction action);   
-                                                                                                                                             
-static void udev_mgr_check_if_scsi_device_is_supported (UdevMgr* self, 
-                                                        GUdevDevice *device,
-                                                        UdevMgrDeviceAction action);
+                                                        UdevMgrDeviceAction action);                                                                                                                                               
 static void udev_mgr_handle_webcam (UdevMgr* self,
                                     GUdevDevice* device,
-                                    UdevMgrDeviceAction action);
-                                                        
+                                    UdevMgrDeviceAction action);                                                      
+static void udev_mgr_handle_scsi_device (UdevMgr* self,
+                                         GUdevDevice* device,
+                                         UdevMgrDeviceAction action);
+
 static void debug_device (UdevMgr* self,
                           GUdevDevice* device,
                           UdevMgrDeviceAction action);
-                                                        
 
 struct _UdevMgr
 {
@@ -58,12 +56,14 @@ struct _UdevMgr
   DbusmenuMenuitem* webcam_item;  
   GUdevClient* client;  
   GHashTable* supported_usb_scanners;
+  GHashTable* supported_scsi_scanners;
   GHashTable* scanners_present;
   GHashTable* webcams_present;
 };
 
 const char *subsystems[3] = {"usb", "scsi", "video4linux"};
 const gchar* usb_subsystem = "usb";
+const gchar* scsi_subsystem = "scsi";
 const gchar* video4linux_subsystem = "video4linux";
 
 
@@ -76,15 +76,29 @@ udev_mgr_init (UdevMgr* self)
   self->supported_usb_scanners = NULL;
   self->scanners_present = NULL;
   self->webcams_present = NULL;
-  
+  g_debug ("About to create hash tables");
   self->client = g_udev_client_new (subsystems);  
-  self->supported_usb_scanners = g_hash_table_new (g_str_hash, g_str_equal);
-  self->scanners_present = g_hash_table_new (g_str_hash, g_str_equal);
-  self->webcams_present = g_hash_table_new (g_str_hash, g_str_equal);
+  self->supported_usb_scanners = g_hash_table_new_full (g_str_hash,
+                                                        g_str_equal,
+                                                        g_free,
+                                                        g_free);
+  self->supported_scsi_scanners = g_hash_table_new_full (g_str_hash,
+                                                         g_str_equal,
+                                                         g_free,
+                                                         g_free);
+  self->scanners_present = g_hash_table_new_full (g_str_hash,
+                                                  g_str_equal,
+                                                  g_free,
+                                                  g_free);
+  self->webcams_present = g_hash_table_new_full (g_str_hash,
+                                                 g_str_equal,
+                                                 g_free,
+                                                 g_free);
+  g_debug ("After creating hash tables");
   
   // load into memory all supported scanners ...
-  populate_usb_scanners(self->supported_usb_scanners);
-  
+  populate_usb_scanners (self->supported_usb_scanners);
+  populate_scsi_scanners (self->supported_scsi_scanners);
   g_signal_connect (G_OBJECT (self->client),
                    "uevent",
                     G_CALLBACK (udev_mgr_uevent_cb),
@@ -124,6 +138,10 @@ udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
   else if (g_strcmp0 (subsystem, "video4linux") == 0){
     udev_mgr_handle_webcam (self, device, ADD);    
   }
+  else if (g_strcmp0 (subsystem, "scsi") == 0){
+    udev_mgr_handle_scsi_device (self, device, ADD);    
+  }
+  
   g_object_unref (device);
 }
 
@@ -169,9 +187,10 @@ static void udev_mgr_uevent_cb (GUdevClient *client,
     udev_mgr_handle_webcam (self, device, udev_mgr_action);
   }
   else if (g_strcmp0 (subsystem, "scsi") == 0){
-    udev_mgr_check_if_scsi_device_is_supported (self, device, udev_mgr_action);    
+    udev_mgr_handle_scsi_device (self, device, udev_mgr_action);    
   }
 }
+
 
 static void
 udev_mgr_handle_webcam (UdevMgr* self,
@@ -193,7 +212,7 @@ udev_mgr_handle_webcam (UdevMgr* self,
       return;                     
     }
     g_hash_table_remove (self->webcams_present,
-                         g_strdup (product));
+                         product);
     
   }
   else {
@@ -252,13 +271,55 @@ debug_device (UdevMgr* self,
   }   
 }
 
-
-static void
-udev_mgr_check_if_scsi_device_is_supported (UdevMgr* self, 
-                                            GUdevDevice *device,
-                                            UdevMgrDeviceAction action)
+static void udev_mgr_handle_scsi_device (UdevMgr* self,
+                                         GUdevDevice* device,
+                                         UdevMgrDeviceAction action)
 {
-}
+  const gchar* vendor = NULL;
+	vendor = g_udev_device_get_property (device, "VENDOR");
+  
+  if (vendor == NULL)
+    return;
+
+  GList* vendor_list = NULL;
+  vendor_list = g_hash_table_lookup (self->supported_scsi_scanners,
+                                     (gpointer)vendor);
+  if (vendor_list == NULL)
+    return;
+
+  const gchar* model_id = NULL;
+	model_id = g_udev_device_get_property (device, "MODEL");
+  
+  if (model_id == NULL)
+    return;
+
+  GList* model_entry = NULL;
+  model_entry = g_list_find_custom (vendor_list,
+                                    model_id,
+                                    (GCompareFunc)g_strcmp0);
+    
+  if (model_entry != NULL){
+    if (action == REMOVE){
+      if (g_hash_table_lookup (self->scanners_present, g_strdup(vendor)) == NULL){
+        g_warning ("Got an REMOVE event on a scanner device but we dont have that device in our scanners cache");
+      }
+      else{
+        g_hash_table_remove (self->scanners_present, vendor);
+      }
+    }
+    else{      
+      if (g_hash_table_lookup (self->scanners_present, g_strdup(vendor)) != NULL){
+        g_warning ("Got an ADD event on a scanner device but we already have that device in our scanners cache");
+      }
+      else{
+        g_hash_table_insert (self->scanners_present,
+                             g_strdup(vendor),
+                             g_strdup(model_id)); 
+      }
+    }
+    udev_mgr_update_menuitems (self);
+  }
+}                                         
 
 static void
 udev_mgr_check_if_usb_device_is_supported (UdevMgr* self, 
@@ -273,7 +334,7 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
   if (vendor == NULL)
     return;
 
-  g_debug ("vendor = %s", vendor);
+  //g_debug ("vendor = %s", vendor);
   
   GList* vendor_list = NULL;
   vendor_list = g_hash_table_lookup (self->supported_usb_scanners,
@@ -296,7 +357,7 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
         g_warning ("Got an REMOVE event on a scanner device but we dont have that device in our scanners cache");
       }
       else{
-        g_hash_table_remove (self->scanners_present, g_strdup(vendor));
+        g_hash_table_remove (self->scanners_present, vendor);
       }
     }
     else{      
@@ -319,15 +380,17 @@ UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner,
   UdevMgr* mgr = g_object_new (UDEV_TYPE_MGR, NULL);
   mgr->scanner_item = scanner;
   mgr->webcam_item = webcam;
-
+  
+  // Check for USB devices
   GList* usb_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
-                                                                usb_subsystem);
+                                                                    usb_subsystem);
   g_list_foreach (usb_devices_available,
                   udevice_mgr_device_list_iterator,
                   mgr);
                   
   g_list_free (usb_devices_available);
-
+  
+  // Check for webcams
   GList* video_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
                                                                       video4linux_subsystem);
   g_list_foreach (video_devices_available,
@@ -335,7 +398,15 @@ UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner,
                   mgr);
   
   g_list_free (video_devices_available);
+  
+  // Check for SCSI devices
+  GList* scsi_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
+                                                                     scsi_subsystem);
+  g_list_foreach (scsi_devices_available,
+                  udevice_mgr_device_list_iterator,
+                  mgr);
+                  
+  g_list_free (usb_devices_available);
 
-  //udev_mgr_update_menuitems (mgr);  
   return mgr;
 }

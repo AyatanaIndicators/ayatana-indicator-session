@@ -8,7 +8,7 @@ void populate_scsi_scanners (GHashTable* scanners)
   epson = g_list_append (epson, g_strdup ("SCANNER GT-7000"));
   g_hash_table_insert (scanners,
                        g_strdup("EPSON"),
-                       g_list_copy(epson));
+                       epson);
 
 
   GList* hp = NULL;
@@ -22,7 +22,7 @@ void populate_scsi_scanners (GHashTable* scanners)
   hp = g_list_append (hp, g_strdup ("C7670A"));
   g_hash_table_insert (scanners,
                        g_strdup("HP"),
-                       g_list_copy(hp));
+                       hp);
 }
 
 
@@ -74,14 +74,14 @@ void populate_usb_scanners (GHashTable* scanners)
   
   g_hash_table_insert (scanners,
                        g_strdup("03f0"),
-                       g_list_copy(hp));
+                       hp);
 
   GList* mustek_2 = NULL;
   mustek_2 = g_list_append (mustek_2, g_strdup ("1000"));
   mustek_2 = g_list_append (mustek_2, g_strdup ("1001"));
   g_hash_table_insert (scanners,
                        g_strdup("0400"),
-                       g_list_copy(mustek_2));
+                       mustek_2);
 
   GList* kodak = NULL;
   kodak = g_list_append (kodak, g_strdup ("6001"));
@@ -91,7 +91,7 @@ void populate_usb_scanners (GHashTable* scanners)
   kodak = g_list_append (kodak, g_strdup ("6005"));
   g_hash_table_insert (scanners,
                        g_strdup("040a"),
-                       g_list_copy(kodak));
+                       kodak);
                                               
   GList* creative = NULL;
   
@@ -99,7 +99,7 @@ void populate_usb_scanners (GHashTable* scanners)
 
   g_hash_table_insert (scanners,
                        g_strdup("041e"),
-                       g_list_copy(creative));
+                       creative);
   
   GList* lexmark = NULL;
   
@@ -110,7 +110,7 @@ void populate_usb_scanners (GHashTable* scanners)
 
   g_hash_table_insert (scanners,
                        g_strdup("043d"),
-                       g_list_copy(lexmark));
+                       lexmark);
   
 
   GList* genius = NULL;
@@ -132,32 +132,32 @@ void populate_usb_scanners (GHashTable* scanners)
   genius = g_list_append (genius, g_strdup("20c1"));
   g_hash_table_insert (scanners,
                        g_strdup("0458"),
-                       g_list_copy(genius));
+                       genius);
 
   GList* medion = NULL;
   medion = g_list_append (medion, g_strdup("0377"));
   g_hash_table_insert (scanners,
                        g_strdup("0461"),
-                       g_list_copy(medion));
+                       medion);
 
   GList* trust = NULL;
   trust = g_list_append (trust, g_strdup("1000"));
   trust = g_list_append (trust, g_strdup("1002"));
   g_hash_table_insert (scanners,
                        g_strdup("047b"),
-                       g_list_copy(trust));
+                       trust);
                          
   GList* kyocera = NULL;
   kyocera = g_list_append (kyocera, g_strdup("0335"));
   g_hash_table_insert (scanners,
                        g_strdup("0482"),
-                       g_list_copy(kyocera));
+                       kyocera);
   
   GList* compaq = NULL;
   compaq = g_list_append (compaq, g_strdup("001a"));
   g_hash_table_insert (scanners,
                        g_strdup("049f"),
-                       g_list_copy(compaq));
+                       compaq);
   GList* benq = NULL;
   benq = g_list_append (benq, g_strdup("1a20"));
   benq = g_list_append (benq, g_strdup("1a2a"));
@@ -176,7 +176,7 @@ void populate_usb_scanners (GHashTable* scanners)
   benq = g_list_append (benq, g_strdup("2211"));
   g_hash_table_insert (scanners,
                        g_strdup("04a5"),
-                       g_list_copy(benq));
+                       benq);
 
   GList* visioneer = NULL;
   visioneer = g_list_append (visioneer, g_strdup("0229"));
@@ -223,7 +223,7 @@ void populate_usb_scanners (GHashTable* scanners)
   visioneer = g_list_append (visioneer, g_strdup("04ac"));
   g_hash_table_insert (scanners,
                        g_strdup("04a7"),
-                       g_list_copy(visioneer));
+                       visioneer);
   GList* canon = NULL;
   canon = g_list_append (canon, g_strdup("1601"));
   canon = g_list_append (canon, g_strdup("1602"));
@@ -326,7 +326,7 @@ void populate_usb_scanners (GHashTable* scanners)
   canon = g_list_append (canon, g_strdup("26ee"));
   g_hash_table_insert (scanners,
                        g_strdup("04a9"),
-                       g_list_copy(canon));
+                       canon);
   
   GList* nikon = NULL;
   nikon = g_list_append (nikon, g_strdup ("4000"));
@@ -334,7 +334,7 @@ void populate_usb_scanners (GHashTable* scanners)
   nikon = g_list_append (nikon, g_strdup ("4002"));
   g_hash_table_insert (scanners,
                        g_strdup("04b0"),
-                       g_list_copy(nikon));
+                       nikon);
 
   GList* epson = NULL;
 
@@ -427,7 +427,7 @@ void populate_usb_scanners (GHashTable* scanners)
   epson = g_list_append (epson, g_strdup("0856"));
   g_hash_table_insert (scanners,
                        g_strdup("04b8"),
-                       g_list_copy(epson));
+                       epson);
 
   GList* fujitsu = NULL;
   fujitsu = g_list_append (fujitsu, g_strdup ("1029"));
@@ -480,12 +480,12 @@ void populate_usb_scanners (GHashTable* scanners)
   fujitsu = g_list_append (fujitsu, g_strdup ("11fc"));
   g_hash_table_insert (scanners,
                        g_strdup("04c5"),
-                       g_list_copy(fujitsu));
+                       fujitsu);
   GList* konica = NULL;
   konica = g_list_append (konica, g_strdup ("0722"));
   g_hash_table_insert (scanners,
                        g_strdup("04c8"),
-                       g_list_copy(konica));
+                       konica);
   GList* panasonic = NULL;
   panasonic = g_list_append (panasonic, g_strdup ("1000"));
   panasonic = g_list_append (panasonic, g_strdup ("1001"));
@@ -497,7 +497,7 @@ void populate_usb_scanners (GHashTable* scanners)
   panasonic = g_list_append (panasonic, g_strdup ("1010"));
   g_hash_table_insert (scanners,
                        g_strdup("04da"),
-                       g_list_copy(panasonic));
+                       panasonic);
 
   GList* samsung = NULL;
   
@@ -513,19 +513,19 @@ void populate_usb_scanners (GHashTable* scanners)
   samsung = g_list_append (samsung, g_strdup ("3434"));
   g_hash_table_insert (scanners,
                        g_strdup("04e8"),
-                       g_list_copy(samsung));
+                       samsung);
   
   GList* pentax = NULL;
   pentax = g_list_append (pentax, g_strdup ("2038"));
   g_hash_table_insert (scanners,
                        g_strdup("04f9"),
-                       g_list_copy(pentax));
+                       pentax);
 
   GList* apitek = NULL;
   apitek = g_list_append (apitek, g_strdup ("0202"));
   g_hash_table_insert (scanners,
                        g_strdup("0553"),
-                       g_list_copy(apitek));
+                       apitek);
 
   GList* mustek = NULL;
   mustek = g_list_append (mustek, g_strdup ("0001"));
@@ -545,7 +545,7 @@ void populate_usb_scanners (GHashTable* scanners)
   mustek = g_list_append (mustek, g_strdup ("0409"));
   g_hash_table_insert (scanners,
                        g_strdup("055f"),
-                       g_list_copy(mustek));
+                       mustek);
   GList* artec = NULL;
   artec = g_list_append (artec, g_strdup ("4002"));
   artec = g_list_append (artec, g_strdup ("4003"));
@@ -558,7 +558,7 @@ void populate_usb_scanners (GHashTable* scanners)
   artec = g_list_append (artec, g_strdup ("4011"));
   g_hash_table_insert (scanners,
                        g_strdup("05d8"),
-                       g_list_copy(artec));
+                       artec);
   
   GList* microtek = NULL;
   microtek = g_list_append (microtek, g_strdup ("0099"));
@@ -576,7 +576,7 @@ void populate_usb_scanners (GHashTable* scanners)
   microtek = g_list_append (microtek, g_strdup ("80a3"));
   g_hash_table_insert (scanners,
                        g_strdup("05da"),
-                       g_list_copy(microtek));
+                       microtek);
   
   GList* avision = NULL;
   avision = g_list_append (avision, g_strdup ("0268"));
@@ -618,14 +618,14 @@ void populate_usb_scanners (GHashTable* scanners)
   avision = g_list_append (avision, g_strdup ("1a35"));
   g_hash_table_insert (scanners,
                        g_strdup("0638"),
-                       g_list_copy(avision));
+                       avision);
   GList* minolta = NULL;
   minolta = g_list_append (minolta, g_strdup ("4004"));
   minolta = g_list_append (minolta, g_strdup ("400d"));
   minolta = g_list_append (minolta, g_strdup ("400e"));
   g_hash_table_insert (scanners,
                        g_strdup("0686"),
-                       g_list_copy(minolta));
+                       minolta);
 
   GList* agfa = NULL;
   agfa = g_list_append (agfa, g_strdup ("0001"));
@@ -642,13 +642,13 @@ void populate_usb_scanners (GHashTable* scanners)
   agfa = g_list_append (agfa, g_strdup ("20ff"));
   g_hash_table_insert (scanners,
                        g_strdup("06bd"),
-                       g_list_copy(minolta));
+                       minolta);
   
   GList* umax_2 = NULL;
   umax_2 = g_list_append (umax_2, g_strdup ("0020"));
   g_hash_table_insert (scanners,
                        g_strdup("06dc"),
-                       g_list_copy(umax_2));
+                       umax_2);
 
   GList* plustek = NULL;
   
@@ -673,14 +673,14 @@ void populate_usb_scanners (GHashTable* scanners)
   plustek = g_list_append (plustek, g_strdup ("0900"));
   g_hash_table_insert (scanners,
                        g_strdup("07b3"),
-                       g_list_copy(plustek));
+                       plustek);
 
   GList* corex = NULL;
   corex = g_list_append (corex, g_strdup ("0002"));
   corex = g_list_append (corex, g_strdup ("0005"));
   g_hash_table_insert (scanners,
                        g_strdup("08f0"),
-                       g_list_copy(corex));
+                       corex);
   
   GList* xerox = NULL;
   xerox = g_list_append (xerox, g_strdup ("3d5d"));
@@ -691,19 +691,19 @@ void populate_usb_scanners (GHashTable* scanners)
   xerox = g_list_append (xerox, g_strdup ("4294"));
   g_hash_table_insert (scanners,
                        g_strdup("0924"),
-                       g_list_copy(xerox));
+                       xerox);
   
   GList* pentax_2 = NULL;
   pentax_2 = g_list_append (pentax_2, g_strdup ("3210"));
   g_hash_table_insert (scanners,
                        g_strdup("0a17"),
-                       g_list_copy(pentax_2));
+                       pentax_2);
 
   GList* portable = NULL;
   portable = g_list_append (portable, g_strdup ("1000"));
   g_hash_table_insert (scanners,
                        g_strdup("0a53"),
-                       g_list_copy(portable));
+                       portable);
   
   GList* syscan = NULL;
   syscan = g_list_append (syscan, g_strdup ("4600"));
@@ -714,7 +714,7 @@ void populate_usb_scanners (GHashTable* scanners)
   syscan = g_list_append (syscan, g_strdup ("6620"));
   g_hash_table_insert (scanners,
                        g_strdup("0a82"),
-                       g_list_copy(syscan));
+                       syscan);
   
   GList* canon_2 = NULL;
   canon_2 = g_list_append (canon_2, g_strdup ("160c"));  
@@ -735,19 +735,19 @@ void populate_usb_scanners (GHashTable* scanners)
   canon_2 = g_list_append (canon_2, g_strdup ("1639"));  
   g_hash_table_insert (scanners,
                        g_strdup("1083"),
-                       g_list_copy(canon_2));
+                       canon_2);
   
   GList* digital = NULL;
   digital = g_list_append (digital, g_strdup ("0001"));
   g_hash_table_insert (scanners,
                        g_strdup("1183"),
-                       g_list_copy(digital));
+                       digital);
   
   GList* konica_2 = NULL;
   konica_2 = g_list_append (konica_2, g_strdup ("2089"));
   g_hash_table_insert (scanners,
                        g_strdup("132b"),
-                       g_list_copy(konica_2));
+                       konica_2);
   
   GList* umax = NULL;
   umax = g_list_append (umax, g_strdup ("0010"));
@@ -760,13 +760,13 @@ void populate_usb_scanners (GHashTable* scanners)
   umax = g_list_append (umax, g_strdup ("0230"));
   g_hash_table_insert (scanners,
                        g_strdup("1606"),
-                       g_list_copy(umax));
+                       umax);
 
   GList* docketport = NULL;
   docketport = g_list_append (docketport, g_strdup ("4810"));  
   g_hash_table_insert (scanners,
                        g_strdup("1dcc"),
-                       g_list_copy(docketport));
+                       docketport);
 
   GList* dell = NULL;
   dell = g_list_append (dell, g_strdup ("5105"));
@@ -774,5 +774,5 @@ void populate_usb_scanners (GHashTable* scanners)
   dell = g_list_append (dell, g_strdup ("5250"));
   g_hash_table_insert (scanners,
                        g_strdup("413c"),
-                       g_list_copy(dell));
+                       dell);
 }

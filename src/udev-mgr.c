@@ -81,11 +81,11 @@ udev_mgr_init (UdevMgr* self)
   self->supported_usb_scanners = g_hash_table_new_full (g_str_hash,
                                                         g_str_equal,
                                                         g_free,
-                                                        g_free);
+                                                        (GDestroyNotify)g_list_free);
   self->supported_scsi_scanners = g_hash_table_new_full (g_str_hash,
                                                          g_str_equal,
                                                          g_free,
-                                                         g_free);
+                                                         (GDestroyNotify)g_list_free);
   self->scanners_present = g_hash_table_new_full (g_str_hash,
                                                   g_str_equal,
                                                   g_free,

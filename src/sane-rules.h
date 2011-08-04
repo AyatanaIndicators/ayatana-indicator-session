@@ -25,6 +25,8 @@ void populate_scsi_scanners (GHashTable* scanners)
                        g_list_copy(hp));
 }
 
+
+
 void populate_usb_scanners (GHashTable* scanners)
 {
   GList* hp = NULL;
@@ -78,7 +80,7 @@ void populate_usb_scanners (GHashTable* scanners)
   mustek_2 = g_list_append (mustek_2, g_strdup ("1000"));
   mustek_2 = g_list_append (mustek_2, g_strdup ("1001"));
   g_hash_table_insert (scanners,
-                       g_strdup("03f0"),
+                       g_strdup("0400"),
                        g_list_copy(mustek_2));
 
   GList* kodak = NULL;

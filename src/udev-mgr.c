@@ -76,7 +76,6 @@ udev_mgr_init (UdevMgr* self)
   self->supported_usb_scanners = NULL;
   self->scanners_present = NULL;
   self->webcams_present = NULL;
-  g_debug ("About to create hash tables");
   self->client = g_udev_client_new (subsystems);  
   self->supported_usb_scanners = g_hash_table_new_full (g_str_hash,
                                                         g_str_equal,
@@ -94,7 +93,6 @@ udev_mgr_init (UdevMgr* self)
                                                  g_str_equal,
                                                  g_free,
                                                  g_free);
-  g_debug ("After creating hash tables");
   
   // load into memory all supported scanners ...
   populate_usb_scanners (self->supported_usb_scanners);
@@ -108,7 +106,11 @@ udev_mgr_init (UdevMgr* self)
 static void
 udev_mgr_finalize (GObject *object)
 {
-  // TODO tidy up hashtables. 
+  UdevMgr* self = UDEV_MGR (object);
+  g_hash_table_destroy (self->supported_scsi_scanners);  
+  g_hash_table_destroy (self->supported_usb_scanners);  
+  g_hash_table_destroy (self->scanners_present);  
+  g_hash_table_destroy (self->webcams_present);  
 	G_OBJECT_CLASS (udev_mgr_parent_class)->finalize (object);
 }
 

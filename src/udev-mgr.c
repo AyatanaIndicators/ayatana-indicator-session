@@ -277,6 +277,24 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
                                          GUdevDevice* device,
                                          UdevMgrDeviceAction action)
 {
+  const gchar* type = NULL;
+	type = g_udev_device_get_property (device, "TYPE");
+  // apparently anything thats type 3 and SCSI is a Scanner
+  if (g_strcmp0 (type, "6") == 0){
+    gchar* random_scanner_name = 	g_strdup_printf("%p--scanner", self);
+    g_hash_table_insert (self->scanners_present,
+                         g_strdup(random_scanner_name),
+                         g_strdup("Scanner")); 
+    g_free (random_scanner_name);
+    udev_mgr_update_menuitems (self);    
+    return;                         
+  }
+
+  // We only care about type 3 for the special cases below
+  if (g_strcmp0 (type, "3") != 0){
+    return;
+  }
+
   const gchar* vendor = NULL;
 	vendor = g_udev_device_get_property (device, "VENDOR");
   

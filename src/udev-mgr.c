@@ -151,7 +151,7 @@ udevice_mgr_device_list_iterator (gpointer data, gpointer userdata)
   
   GUdevDevice* device = G_UDEV_DEVICE (data);
 
-  const gchar* subsystem = NULL;  
+  const gchar* subsystem = NULL; 
   subsystem = g_udev_device_get_subsystem (device);
 
   if (g_strcmp0 (subsystem, "usb") == 0){
@@ -421,31 +421,36 @@ UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner,
   mgr->webcam_item = webcam;
   
   // Check for USB devices
-  GList* usb_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
-                                                                    usb_subsystem);
-  g_list_foreach (usb_devices_available,
-                  udevice_mgr_device_list_iterator,
-                  mgr);
-                  
-  g_list_free (usb_devices_available);
-  
+  GList* usb_devices_available = NULL;
+  usb_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
+                                                             usb_subsystem);
+  if (usb_devices_available != NULL){
+    g_list_foreach (usb_devices_available,
+                    udevice_mgr_device_list_iterator,
+                    mgr);
+                    
+    g_list_free (usb_devices_available);
+  }  
   // Check for webcams
-  GList* video_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
-                                                                      video4linux_subsystem);
-  g_list_foreach (video_devices_available,
-                  udevice_mgr_device_list_iterator,
-                  mgr);
-  
-  g_list_free (video_devices_available);
-  
+  GList* video_devices_available  = NULL;
+  video_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
+                                                               video4linux_subsystem);
+  if (video_devices_available != NULL){
+    g_list_foreach (video_devices_available,
+                    udevice_mgr_device_list_iterator,
+                    mgr);
+    
+    g_list_free (video_devices_available);
+  }  
   // Check for SCSI devices
-  GList* scsi_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
-                                                                     scsi_subsystem);
-  g_list_foreach (scsi_devices_available,
-                  udevice_mgr_device_list_iterator,
-                  mgr);
-                  
-  g_list_free (usb_devices_available);
-
+  GList* scsi_devices_available = NULL;
+  scsi_devices_available  = g_udev_client_query_by_subsystem (mgr->client,
+                                                              scsi_subsystem);
+  if (scsi_devices_available != NULL){
+    g_list_foreach (scsi_devices_available,
+                    udevice_mgr_device_list_iterator,
+                    mgr);                    
+    g_list_free (scsi_devices_available);
+  }
   return mgr;
 }

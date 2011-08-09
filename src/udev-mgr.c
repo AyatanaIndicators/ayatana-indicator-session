@@ -45,9 +45,14 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
                                          GUdevDevice* device,
                                          UdevMgrDeviceAction action);
 
+static void udev_mgr_cleanup_lists(gpointer data, gpointer self);
+static void udev_mgr_cleanup_entries(gpointer data, gpointer self);
+
+
 static void debug_device (UdevMgr* self,
                           GUdevDevice* device,
                           UdevMgrDeviceAction action);
+                          
 
 struct _UdevMgr
 {
@@ -80,11 +85,11 @@ udev_mgr_init (UdevMgr* self)
   self->supported_usb_scanners = g_hash_table_new_full (g_str_hash,
                                                         g_str_equal,
                                                         g_free,
-                                                        (GDestroyNotify)g_list_free);
+                                                        (GDestroyNotify)udev_mgr_cleanup_lists);
   self->supported_scsi_scanners = g_hash_table_new_full (g_str_hash,
                                                          g_str_equal,
                                                          g_free,
-                                                         (GDestroyNotify)g_list_free);
+                                                         (GDestroyNotify)udev_mgr_cleanup_lists);
   self->scanners_present = g_hash_table_new_full (g_str_hash,
                                                   g_str_equal,
                                                   g_free,
@@ -101,6 +106,21 @@ udev_mgr_init (UdevMgr* self)
                    "uevent",
                     G_CALLBACK (udev_mgr_uevent_cb),
                     self);
+}
+
+static void
+udev_mgr_cleanup_lists(gpointer data, gpointer self)
+{
+  GList* scanners = (GList*)data;
+  g_list_foreach (scanners, udev_mgr_cleanup_entries, NULL);  
+  g_list_free(scanners);
+}
+
+static void
+udev_mgr_cleanup_entries(gpointer data, gpointer self)
+{
+  gchar* entry = (gchar*)data;
+  g_free(entry);
 }
 
 static void
@@ -283,9 +303,8 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
   if (g_strcmp0 (type, "6") == 0){
     gchar* random_scanner_name = 	g_strdup_printf("%p--scanner", self);
     g_hash_table_insert (self->scanners_present,
-                         g_strdup(random_scanner_name),
+                         random_scanner_name,
                          g_strdup("Scanner")); 
-    g_free (random_scanner_name);
     udev_mgr_update_menuitems (self);    
     return;                         
   }

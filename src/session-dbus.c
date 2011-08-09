@@ -293,3 +293,25 @@ session_dbus_set_user_menu_visibility (SessionDbus* session,
 		}
 	}  
 }
+
+void session_dbus_restart_required (SessionDbus* session)
+{
+	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
+	GError * error = NULL;
+    
+	if (priv->bus != NULL) {
+		g_dbus_connection_emit_signal (priv->bus,
+                                   NULL,
+                                   INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
+                                   INDICATOR_SESSION_SERVICE_DBUS_IFACE,
+                                   "RebootRequired",
+                                   NULL,
+                                   &error);
+
+		if (error != NULL) {
+			g_warning("Unable to send reboot-required signal: %s", error->message);
+			g_error_free(error);
+		}
+	}  
+  
+}

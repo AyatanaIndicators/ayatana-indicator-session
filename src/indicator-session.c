@@ -491,6 +491,7 @@ receive_signal (GDBusProxy * proxy,
       g_signal_emit_by_name ((gpointer)self,
                              "entry-added",
                              &self->users);
+                             
     }   
     else{
       g_signal_emit_by_name ((gpointer)self,
@@ -498,6 +499,10 @@ receive_signal (GDBusProxy * proxy,
                              &self->users);       
     }
   }
+  else if (g_strcmp0(signal_name, "RebootRequired") == 0) {
+    // TODO waiting on design to give me a name.
+    self->devices.image = indicator_image_helper (ICON_DEFAULT);        
+  }  
 }
 
 

@@ -266,11 +266,23 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
                                     _("Updates Installing…"));    
   }  
   else if (state == FINISHED){
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Software Up to Date"));
+    GVariant* reboot_result = g_dbus_proxy_get_cached_property (self->proxy,
+                                                               "RebootRequired");
+    gboolean reboot;
+    g_variant_get (reboot_result, "b", &reboot);
+    if (reboot == FALSE){
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Software Up to Date"));
+    }
+    else{
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Reboot Required"));
+      session_dbus_restart_required (self->session_dbus_interface);
+    }
     g_object_unref (G_OBJECT(self->current_transaction));
-    self->current_transaction = NULL;                                    
+    self->current_transaction = NULL;                                        
   }
   self->current_state = state;
 } 

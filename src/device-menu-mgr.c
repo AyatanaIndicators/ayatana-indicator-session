@@ -518,9 +518,8 @@ static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
 }                              
 
 static void
-device_menu_mgr_build_static_items (DeviceMenuMgr* self)
+device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
 {
-  // Static Setting items
   system_settings_menuitem  = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (system_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -577,8 +576,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
   dbusmenu_menuitem_child_add_position (self->root_item, separator1, 5);
+}
 
-  // Devices control
+static void
+device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
+{
   DbusmenuMenuitem * device_heading = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (device_heading,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -636,58 +638,74 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
   dbusmenu_menuitem_child_add_position (self->root_item, separator3, 11);
-                                        
+}
+
+static void
+device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
+{
+  // Static Setting items
+  if (!greeter_mode) {
+    device_menu_mgr_build_settings_items (self);
+  }
+
+  // Devices control
+  if (!greeter_mode) {
+    device_menu_mgr_build_devices_items (self);
+  }
+
   // Session control  
-  gboolean can_lockscreen;
+  if (!greeter_mode) {
+    gboolean can_lockscreen;
 
-  /* Make sure we have a valid GConf client, and build one
-     if needed */
-  device_menu_mgr_ensure_gconf_client (self);
-  can_lockscreen = !gconf_client_get_bool ( gconf_client,
-                                            LOCKDOWN_KEY_SCREENSAVER,
-                                            NULL);
-  /* Lock screen item */
-  if (can_lockscreen) {
-    lock_menuitem = dbusmenu_menuitem_new();
-    dbusmenu_menuitem_property_set (lock_menuitem,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Lock Screen"));
+    /* Make sure we have a valid GConf client, and build one
+       if needed */
+    device_menu_mgr_ensure_gconf_client (self);
+    can_lockscreen = !gconf_client_get_bool ( gconf_client,
+                                              LOCKDOWN_KEY_SCREENSAVER,
+                                              NULL);
+    /* Lock screen item */
+    if (can_lockscreen) {
+      lock_menuitem = dbusmenu_menuitem_new();
+      dbusmenu_menuitem_property_set (lock_menuitem,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Lock Screen"));
 
-    gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
-    if (shortcut != NULL) {
-      g_debug("Lock screen shortcut: %s", shortcut);
-      dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
-      g_free(shortcut);
+      gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
+      if (shortcut != NULL) {
+        g_debug("Lock screen shortcut: %s", shortcut);
+        dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
+        g_free(shortcut);
+      }
+      else {
+        g_debug("Unable to get lock screen shortcut.");
+      }
+
+      g_signal_connect (G_OBJECT(lock_menuitem),
+                        DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                        G_CALLBACK(lock_screen), NULL);
+      dbusmenu_menuitem_child_append(self->root_item, lock_menuitem);
+    }
+
+    logout_mi = dbusmenu_menuitem_new();
+
+    if (supress_confirmations()) {
+      dbusmenu_menuitem_property_set (logout_mi,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Log Out"));
     }
     else {
-      g_debug("Unable to get lock screen shortcut.");
+      dbusmenu_menuitem_property_set (logout_mi,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Log Out\342\200\246"));
     }
-
-    g_signal_connect (G_OBJECT(lock_menuitem),
+    dbusmenu_menuitem_property_set_bool (logout_mi,
+                                         DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                         show_logout());
+    dbusmenu_menuitem_child_append(self->root_item, logout_mi);
+    g_signal_connect( G_OBJECT(logout_mi),
                       DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                      G_CALLBACK(lock_screen), NULL);
-    dbusmenu_menuitem_child_append(self->root_item, lock_menuitem);
-  } 
-   
-	logout_mi = dbusmenu_menuitem_new();
-
-	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set (logout_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Log Out"));
-	}
-  else {
-		dbusmenu_menuitem_property_set (logout_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Log Out\342\200\246"));
-	}
-	dbusmenu_menuitem_property_set_bool (logout_mi,
-                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       show_logout());
-	dbusmenu_menuitem_child_append(self->root_item, logout_mi);
-	g_signal_connect( G_OBJECT(logout_mi),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_dialog), "logout");
+                      G_CALLBACK(show_dialog), "logout");
+  }
 
 	if (can_suspend && allow_suspend) {
 		suspend_mi = dbusmenu_menuitem_new();
@@ -844,12 +862,14 @@ device_mgr_get_root_item (DeviceMenuMgr* self)
 /*
  * Clean Entry Point 
  */
-DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus)
+DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_mode)
 {
   DeviceMenuMgr* device_mgr = g_object_new (DEVICE_TYPE_MENU_MGR, NULL);
   device_mgr->session_dbus_interface = session_dbus;
-  device_menu_mgr_build_static_items (device_mgr);   
-  device_mgr->apt_watcher = apt_watcher_new (session_dbus,
-                                             software_updates_menuitem);
+  device_menu_mgr_build_static_items (device_mgr, greeter_mode);
+  if (software_updates_menuitem != NULL) {
+    device_mgr->apt_watcher = apt_watcher_new (session_dbus,
+                                               software_updates_menuitem);
+  }
   return device_mgr;
 }

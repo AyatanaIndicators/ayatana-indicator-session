@@ -1,3 +1,16 @@
+indicator-session (0.3.1-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - restart is missing from SessionMenu (LP: #815077)
+    - Don't allow starting programs via the greeter indicators (LP: #811853)
+    - Printer menu item should launch system-config-printer (LP: #818602)
+    - gudev integration
+    - apt restart required awareness
+  * debian/control
+    - Added build depends on libgudev-1.0-dev
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 10 Aug 2011 16:23:33 -0400
+
 indicator-session (0.3.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.

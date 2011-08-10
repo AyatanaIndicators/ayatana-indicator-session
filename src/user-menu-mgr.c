@@ -149,9 +149,8 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
 
     for (u = users; u != NULL; u = g_list_next (u)) {
       user = u->data;
+      g_debug ("%p: %s", user, user->real_name);      
       user->service = self->users_dbus_interface;
-
-      g_debug ("%i %s", (gint)user->uid, user->user_name);
 
       if (g_strcmp0(user->user_name, "guest") == 0) {
         /* Check to see if the guest has sessions and so therefore should
@@ -171,13 +170,26 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
 
       if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
         mi = dbusmenu_menuitem_new ();
-        dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, USER_ITEM_TYPE);
+        dbusmenu_menuitem_property_set (mi,
+                                        DBUSMENU_MENUITEM_PROP_TYPE,
+                                        USER_ITEM_TYPE);
         if (user->real_name_conflict) {
           gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
           dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
           g_free(conflictedname);
         } else {
-          dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, user->real_name);
+          //g_debug ("%i %s", (gint)user->uid, user->real_name);
+          //g_debug ("users uid = %i", (gint)user->uid);
+          //g_debug ("users real name = %s", user->real_name);
+          if (user == NULL){
+            g_debug ("USER pointer is NULL");
+            return;
+          }
+          g_debug ("%p: %s", user, user->real_name);      
+          
+          dbusmenu_menuitem_property_set (mi,
+                                          USER_ITEM_PROP_NAME,
+                                          user->real_name);
         }
         dbusmenu_menuitem_property_set_bool (mi,
                                              USER_ITEM_PROP_LOGGED_IN,

@@ -21,6 +21,14 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _UDEV_MGR_H_
 
 #include <glib-object.h>
+#include <libdbusmenu-glib/client.h>
+
+#include <gtk/gtk.h>
+#if GTK_CHECK_VERSION(3, 0, 0)
+#include <libdbusmenu-gtk3/menuitem.h>
+#else
+#include <libdbusmenu-gtk/menuitem.h>
+#endif
 
 G_BEGIN_DECLS
 
@@ -39,12 +47,15 @@ struct _UdevMgrClass
 	GObjectClass parent_class;
 };
 
-struct _UdevMgr
-{
-	GObject parent_instance;
-};
 
 GType udev_mgr_get_type (void) G_GNUC_CONST;
+UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner_item, 
+                       DbusmenuMenuitem* webcam_item);
+
+typedef enum {
+  ADD,
+  REMOVE
+}UdevMgrDeviceAction;
 
 G_END_DECLS
 

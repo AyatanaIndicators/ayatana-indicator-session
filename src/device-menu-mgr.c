@@ -27,7 +27,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lock-helper.h"
 #include "upower-client.h"
 #include "apt-watcher.h"
-
+#include "udev-mgr.h"
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
@@ -41,6 +41,7 @@ struct _DeviceMenuMgr
   DbusmenuMenuitem* root_item;
   SessionDbus* session_dbus_interface;  
   AptWatcher* apt_watcher;                              
+  UdevMgr* udev_mgr;
 };
 
 static GConfClient       *gconf_client  = NULL;
@@ -80,8 +81,15 @@ static void machine_sleep_with_context (DeviceMenuMgr* self,
                                         gchar* type);
 static void show_system_settings_with_context (DbusmenuMenuitem * mi,
                                                guint timestamp,
-                                               gchar * type);                                               
-                                        
+                                               gchar * type);  
+                                               
+static void device_menu_mgr_show_simple_scan (DbusmenuMenuitem * mi,
+                                              guint timestamp,
+                                              gchar * type);   
+static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
+                                         guint timestamp,
+                                         gchar * type);
+                                                                  
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
@@ -214,7 +222,6 @@ machine_sleep_with_context (DeviceMenuMgr* self, gchar* type)
 
 	screensaver_throttle(type);
 	lock_if_possible (self);
-
 	dbus_g_proxy_begin_call(up_main_proxy,
 	                        type,
 	                        sleep_response,
@@ -460,6 +467,43 @@ show_system_settings_with_context (DbusmenuMenuitem * mi,
 	g_free(control_centre_command);
 }
 
+// TODO: refactor both of these down to the one method.
+static void device_menu_mgr_show_simple_scan (DbusmenuMenuitem * mi,
+                                              guint timestamp,
+                                              gchar * type)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("simple-scan", &error))
+  {
+    g_warning("Unable to launch simple-scan: %s", error->message);
+    g_error_free(error);
+    if (!g_spawn_command_line_async("software-center simple-scan", &error))
+    {
+      g_warning ("Unable to launch software-centre simple-scan: %s",
+                 error->message);
+      g_error_free(error);
+    }    
+  }  
+}                              
+
+static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
+                                         guint timestamp,
+                                         gchar * type)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("cheese", &error))
+  {
+    g_warning("Unable to launch cheese: %s", error->message);
+    g_error_free(error);
+    if (!g_spawn_command_line_async("software-center cheese", &error))
+    {
+      g_warning ("Unable to launch software-centre cheese: %s",
+                 error->message);
+      g_error_free(error);
+    }    
+  }  
+}                              
+
 static void
 device_menu_mgr_build_static_items (DeviceMenuMgr* self)
 {
@@ -547,15 +591,14 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   scanners_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (scanners_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("HP Scanners"));
+                                  _("Scanners"));
   g_signal_connect (G_OBJECT(scanners_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context),
-                    "scanners");
+                    G_CALLBACK(device_menu_mgr_show_simple_scan),
+                    NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         scanners_menuitem,
                                         8);
- //tmp
   dbusmenu_menuitem_property_set_bool (scanners_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        FALSE);
@@ -563,15 +606,14 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   webcam_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (webcam_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("HP Webcam"));
+                                  _("Webcam"));
   g_signal_connect (G_OBJECT(webcam_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context),
-                    "HP Webcam");
+                    G_CALLBACK(device_menu_mgr_show_cheese),
+                    NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         webcam_menuitem,
                                         10);
- //tmp
   dbusmenu_menuitem_property_set_bool (webcam_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        FALSE);
@@ -681,7 +723,9 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
 	restart_shutdown_logout_mi->logout_mi = logout_mi;
 	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
 
-	update_menu_entries(restart_shutdown_logout_mi);                    
+	update_menu_entries(restart_shutdown_logout_mi);
+  // Time to create the udev mgr and hand it the static relevant items.
+  self->udev_mgr = udev_mgr_new (scanners_menuitem, webcam_menuitem);   
 }
 
 

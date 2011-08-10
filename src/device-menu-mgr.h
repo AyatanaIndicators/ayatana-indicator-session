@@ -44,7 +44,7 @@ struct _DeviceMenuMgrClass
 
 GType device_menu_mgr_get_type (void) G_GNUC_CONST;
 
-DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus);
+DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_mode);
 
 DbusmenuMenuitem* device_mgr_get_root_item (DeviceMenuMgr* self);
 

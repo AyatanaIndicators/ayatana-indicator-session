@@ -78,11 +78,21 @@ service_shutdown (IndicatorService * service, gpointer user_data)
 	return;
 }
 
+static gboolean
+get_greeter_mode (void)
+{
+  const gchar *var;
+  var = g_getenv("INDICATOR_GREETER_MODE");
+  return (g_strcmp0(var, "1") == 0);
+}
+
 /* Main, is well, main.  It brings everything up and throws
    us into the mainloop of no return. */
 int
 main (int argc, char ** argv)
 {
+  gboolean greeter_mode;
+
   g_type_init();
 
 	/* Setting up i18n and gettext.  Apparently, we need
@@ -99,15 +109,19 @@ main (int argc, char ** argv)
 
 	session_dbus = session_dbus_new();
 
+  greeter_mode = get_greeter_mode();
+
   // Devices
-  DeviceMenuMgr* device_mgr = device_menu_mgr_new (session_dbus);
+  DeviceMenuMgr* device_mgr = device_menu_mgr_new (session_dbus, greeter_mode);
   DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
   dbusmenu_server_set_root(server, device_mgr_get_root_item (device_mgr));
     
-  // Users
-  UserMenuMgr* user_mgr = user_menu_mgr_new (session_dbus);    
-  DbusmenuServer* users_server = dbusmenu_server_new (INDICATOR_USERS_DBUS_OBJECT);
-  dbusmenu_server_set_root (users_server, user_mgr_get_root_item (user_mgr));
+  if (!greeter_mode) {
+    // Users
+    UserMenuMgr* user_mgr = user_menu_mgr_new (session_dbus);    
+    DbusmenuServer* users_server = dbusmenu_server_new (INDICATOR_USERS_DBUS_OBJECT);
+    dbusmenu_server_set_root (users_server, user_mgr_get_root_item (user_mgr));
+  }
 
   mainloop = g_main_loop_new(NULL, FALSE);
   g_main_loop_run(mainloop);

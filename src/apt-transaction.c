@@ -185,8 +185,6 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
       g_variant_get (value, "(asasasasasasas)", &install, 
                      &reinstall, &remove, &purge, &upgrade, &downgrade,
                      &keep);      
-      //g_debug ("Seemed to uppack dependencies without any warnings");
-      //g_debug ("Upgrade quantity : %u", g_strv_length(upgrade));
       gboolean upgrade_needed = (g_strv_length(upgrade) > 0) ||
                                 (g_strv_length(install) > 0) ||
                                 (g_strv_length(reinstall) > 0) ||

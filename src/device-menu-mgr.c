@@ -27,7 +27,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lock-helper.h"
 #include "upower-client.h"
 #include "apt-watcher.h"
-
+#include "udev-mgr.h"
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
@@ -41,6 +41,7 @@ struct _DeviceMenuMgr
   DbusmenuMenuitem* root_item;
   SessionDbus* session_dbus_interface;  
   AptWatcher* apt_watcher;                              
+  UdevMgr* udev_mgr;
 };
 
 static GConfClient       *gconf_client  = NULL;
@@ -80,8 +81,15 @@ static void machine_sleep_with_context (DeviceMenuMgr* self,
                                         gchar* type);
 static void show_system_settings_with_context (DbusmenuMenuitem * mi,
                                                guint timestamp,
-                                               gchar * type);                                               
-                                        
+                                               gchar * type);  
+                                               
+static void device_menu_mgr_show_simple_scan (DbusmenuMenuitem * mi,
+                                              guint timestamp,
+                                              gchar * type);   
+static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
+                                         guint timestamp,
+                                         gchar * type);
+                                                                  
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
@@ -214,7 +222,6 @@ machine_sleep_with_context (DeviceMenuMgr* self, gchar* type)
 
 	screensaver_throttle(type);
 	lock_if_possible (self);
-
 	dbus_g_proxy_begin_call(up_main_proxy,
 	                        type,
 	                        sleep_response,
@@ -441,6 +448,19 @@ show_session_properties (DbusmenuMenuitem * mi,
 }                                   
 
 static void
+show_printer_properties (DbusmenuMenuitem * mi,
+                         guint timestamp,
+                         gchar * type)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("system-config-printer", &error))
+  {
+    g_warning("Unable to show dialog: %s", error->message);
+    g_error_free(error);
+  }
+}
+
+static void
 show_system_settings_with_context (DbusmenuMenuitem * mi,
                                    guint timestamp,
                                    gchar * type)
@@ -460,10 +480,46 @@ show_system_settings_with_context (DbusmenuMenuitem * mi,
 	g_free(control_centre_command);
 }
 
-static void
-device_menu_mgr_build_static_items (DeviceMenuMgr* self)
+// TODO: refactor both of these down to the one method.
+static void device_menu_mgr_show_simple_scan (DbusmenuMenuitem * mi,
+                                              guint timestamp,
+                                              gchar * type)
 {
-  // Static Setting items
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("simple-scan", &error))
+  {
+    g_warning("Unable to launch simple-scan: %s", error->message);
+    g_error_free(error);
+    if (!g_spawn_command_line_async("software-center simple-scan", &error))
+    {
+      g_warning ("Unable to launch software-centre simple-scan: %s",
+                 error->message);
+      g_error_free(error);
+    }    
+  }  
+}                              
+
+static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
+                                         guint timestamp,
+                                         gchar * type)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("cheese", &error))
+  {
+    g_warning("Unable to launch cheese: %s", error->message);
+    g_error_free(error);
+    if (!g_spawn_command_line_async("software-center cheese", &error))
+    {
+      g_warning ("Unable to launch software-centre cheese: %s",
+                 error->message);
+      g_error_free(error);
+    }    
+  }  
+}                              
+
+static void
+device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
+{
   system_settings_menuitem  = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (system_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -520,8 +576,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
   dbusmenu_menuitem_child_add_position (self->root_item, separator1, 5);
+}
 
-  // Devices control
+static void
+device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
+{
   DbusmenuMenuitem * device_heading = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (device_heading,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -539,7 +598,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   _("Printers"));
   g_signal_connect (G_OBJECT(printers_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context),
+                    G_CALLBACK(show_printer_properties),
                     "printers");
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        printers_menuitem,
@@ -547,15 +606,14 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   scanners_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (scanners_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("HP Scanners"));
+                                  _("Scanners"));
   g_signal_connect (G_OBJECT(scanners_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context),
-                    "scanners");
+                    G_CALLBACK(device_menu_mgr_show_simple_scan),
+                    NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         scanners_menuitem,
                                         8);
- //tmp
   dbusmenu_menuitem_property_set_bool (scanners_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        FALSE);
@@ -563,15 +621,14 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
   webcam_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (webcam_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("HP Webcam"));
+                                  _("Webcam"));
   g_signal_connect (G_OBJECT(webcam_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context),
-                    "HP Webcam");
+                    G_CALLBACK(device_menu_mgr_show_cheese),
+                    NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         webcam_menuitem,
                                         10);
- //tmp
   dbusmenu_menuitem_property_set_bool (webcam_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        FALSE);
@@ -581,58 +638,74 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
   dbusmenu_menuitem_child_add_position (self->root_item, separator3, 11);
-                                        
+}
+
+static void
+device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
+{
+  // Static Setting items
+  if (!greeter_mode) {
+    device_menu_mgr_build_settings_items (self);
+  }
+
+  // Devices control
+  if (!greeter_mode) {
+    device_menu_mgr_build_devices_items (self);
+  }
+
   // Session control  
-  gboolean can_lockscreen;
+  if (!greeter_mode) {
+    gboolean can_lockscreen;
 
-  /* Make sure we have a valid GConf client, and build one
-     if needed */
-  device_menu_mgr_ensure_gconf_client (self);
-  can_lockscreen = !gconf_client_get_bool ( gconf_client,
-                                            LOCKDOWN_KEY_SCREENSAVER,
-                                            NULL);
-  /* Lock screen item */
-  if (can_lockscreen) {
-    lock_menuitem = dbusmenu_menuitem_new();
-    dbusmenu_menuitem_property_set (lock_menuitem,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Lock Screen"));
+    /* Make sure we have a valid GConf client, and build one
+       if needed */
+    device_menu_mgr_ensure_gconf_client (self);
+    can_lockscreen = !gconf_client_get_bool ( gconf_client,
+                                              LOCKDOWN_KEY_SCREENSAVER,
+                                              NULL);
+    /* Lock screen item */
+    if (can_lockscreen) {
+      lock_menuitem = dbusmenu_menuitem_new();
+      dbusmenu_menuitem_property_set (lock_menuitem,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Lock Screen"));
 
-    gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
-    if (shortcut != NULL) {
-      g_debug("Lock screen shortcut: %s", shortcut);
-      dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
-      g_free(shortcut);
+      gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
+      if (shortcut != NULL) {
+        g_debug("Lock screen shortcut: %s", shortcut);
+        dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
+        g_free(shortcut);
+      }
+      else {
+        g_debug("Unable to get lock screen shortcut.");
+      }
+
+      g_signal_connect (G_OBJECT(lock_menuitem),
+                        DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                        G_CALLBACK(lock_screen), NULL);
+      dbusmenu_menuitem_child_append(self->root_item, lock_menuitem);
+    }
+
+    logout_mi = dbusmenu_menuitem_new();
+
+    if (supress_confirmations()) {
+      dbusmenu_menuitem_property_set (logout_mi,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Log Out"));
     }
     else {
-      g_debug("Unable to get lock screen shortcut.");
+      dbusmenu_menuitem_property_set (logout_mi,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Log Out\342\200\246"));
     }
-
-    g_signal_connect (G_OBJECT(lock_menuitem),
+    dbusmenu_menuitem_property_set_bool (logout_mi,
+                                         DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                         show_logout());
+    dbusmenu_menuitem_child_append(self->root_item, logout_mi);
+    g_signal_connect( G_OBJECT(logout_mi),
                       DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                      G_CALLBACK(lock_screen), NULL);
-    dbusmenu_menuitem_child_append(self->root_item, lock_menuitem);
-  } 
-   
-	logout_mi = dbusmenu_menuitem_new();
-
-	if (supress_confirmations()) {
-		dbusmenu_menuitem_property_set (logout_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Log Out"));
-	}
-  else {
-		dbusmenu_menuitem_property_set (logout_mi,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Log Out\342\200\246"));
-	}
-	dbusmenu_menuitem_property_set_bool (logout_mi,
-                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       show_logout());
-	dbusmenu_menuitem_child_append(self->root_item, logout_mi);
-	g_signal_connect( G_OBJECT(logout_mi),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_dialog), "logout");
+                      G_CALLBACK(show_dialog), "logout");
+  }
 
 	if (can_suspend && allow_suspend) {
 		suspend_mi = dbusmenu_menuitem_new();
@@ -681,7 +754,9 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self)
 	restart_shutdown_logout_mi->logout_mi = logout_mi;
 	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
 
-	update_menu_entries(restart_shutdown_logout_mi);                    
+	update_menu_entries(restart_shutdown_logout_mi);
+  // Time to create the udev mgr and hand it the static relevant items.
+  self->udev_mgr = udev_mgr_new (scanners_menuitem, webcam_menuitem);   
 }
 
 
@@ -787,12 +862,14 @@ device_mgr_get_root_item (DeviceMenuMgr* self)
 /*
  * Clean Entry Point 
  */
-DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus)
+DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_mode)
 {
   DeviceMenuMgr* device_mgr = g_object_new (DEVICE_TYPE_MENU_MGR, NULL);
   device_mgr->session_dbus_interface = session_dbus;
-  device_menu_mgr_build_static_items (device_mgr);   
-  device_mgr->apt_watcher = apt_watcher_new (session_dbus,
-                                             software_updates_menuitem);
+  device_menu_mgr_build_static_items (device_mgr, greeter_mode);
+  if (software_updates_menuitem != NULL) {
+    device_mgr->apt_watcher = apt_watcher_new (session_dbus,
+                                               software_updates_menuitem);
+  }
   return device_mgr;
 }

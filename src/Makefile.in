@@ -352,7 +352,8 @@ indicator_session_service_SOURCES = \
 	apt-transaction.h \
 	apt-transaction.c \
 	udev-mgr.h \
-	udev-mgr.c
+	udev-mgr.c \
+	sane-rules.h
 
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \

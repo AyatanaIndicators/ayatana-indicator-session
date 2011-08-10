@@ -2759,7 +2759,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=indicator-session
- VERSION=0.3.0
+ VERSION=0.3.1
 
 
 cat >>confdefs.h <<_ACEOF
@@ -13155,11 +13155,13 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib-0.4 >= \$DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= \$DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0
                                        gio-unix-2.0
                                        indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0
                                        gio-unix-2.0
                                        indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION") 2>&5
   ac_status=$?
@@ -13168,6 +13170,7 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
   pkg_cv_SESSIONSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0
                                        gio-unix-2.0
                                        indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
@@ -13184,11 +13187,13 @@ if test -n "$SESSIONSERVICE_LIBS"; then
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib-0.4 >= \$DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= \$DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0
                                        gio-unix-2.0
                                        indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0
                                        gio-unix-2.0
                                        indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION") 2>&5
   ac_status=$?
@@ -13197,6 +13202,7 @@ if test -n "$SESSIONSERVICE_LIBS"; then
   pkg_cv_SESSIONSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0
                                        gio-unix-2.0
                                        indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
@@ -13222,12 +13228,14 @@ fi
 	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0
                                        gio-unix-2.0
                                        indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>&1`
         else
 	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0
                                        gio-unix-2.0
                                        indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>&1`
         fi
@@ -13237,6 +13245,7 @@ fi
 	as_fn_error $? "Package requirements (dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
+                                       gudev-1.0
                                        gio-unix-2.0
                                        indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION) were not met:
 
@@ -13283,11 +13292,13 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib-0.4 >= \$DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= \$DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= $INDICATOR_REQUIRED_VERSION") 2>&5
@@ -13296,6 +13307,7 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
   test $ac_status = 0; }; then
   pkg_cv_SESSIONSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
@@ -13312,11 +13324,13 @@ if test -n "$SESSIONSERVICE_LIBS"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib-0.4 >= \$DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= \$DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= $INDICATOR_REQUIRED_VERSION") 2>&5
@@ -13325,6 +13339,7 @@ if test -n "$SESSIONSERVICE_LIBS"; then
   test $ac_status = 0; }; then
   pkg_cv_SESSIONSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
@@ -13350,12 +13365,14 @@ fi
         if test $_pkg_short_errors_supported = yes; then
 	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>&1`
         else
 	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>&1`
@@ -13365,6 +13382,7 @@ fi
 
 	as_fn_error $? "Package requirements (dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                       gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= $INDICATOR_REQUIRED_VERSION) were not met:

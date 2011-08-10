@@ -17,8 +17,7 @@
     <signal name="UserMenuIsVisible">
       <arg name="update" type="b"/>
     </signal>
-    <signal name="RestartNeeded">
-      <arg name="name" type="s"/>
+    <signal name="RestartRequired">
     </signal>
   </interface>
 </node>

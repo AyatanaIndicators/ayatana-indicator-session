@@ -1,9 +1,9 @@
-indicator-session (0.3.1-0ubuntu2) UNRELEASED; urgency=low
+indicator-session (0.3.1-0ubuntu2) oneiric; urgency=low
 
   * debian/rules: run intltool-update to update the translations template
     (lp: #820705)
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 11 Aug 2011 17:05:25 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 11 Aug 2011 17:09:08 +0200
 
 indicator-session (0.3.1-0ubuntu1) oneiric; urgency=low
 

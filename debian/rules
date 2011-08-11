@@ -22,3 +22,5 @@ common-install-arch::
 	find debian/tmp -name \*.la -delete
 	find debian/tmp -name \*.a -delete
 	find debian/tmp -name classic-desktop.sh | xargs chmod +x
+	cd po; intltool-update --pot --verbose
+

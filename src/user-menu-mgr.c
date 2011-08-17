@@ -26,8 +26,11 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lock-helper.h"
 #include "users-service-dbus.h"
 
+#define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
+
 static GConfClient * gconf_client = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
+
 
 struct _UserMenuMgr
 {
@@ -56,6 +59,11 @@ static void user_change (UsersServiceDbus *service,
                          gpointer          user_data);
 
 static void ensure_gconf_client ();
+static gboolean check_guest_session (void);
+static void activate_guest_session (DbusmenuMenuitem * mi,
+                                    guint timestamp,
+                                    gpointer user_data);
+
 
 G_DEFINE_TYPE (UserMenuMgr, user_menu_mgr, G_TYPE_OBJECT);
 
@@ -121,6 +129,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
   /* Build all of the user switching items */
   if (can_activate == TRUE)
   {
+    
     if (check_new_session ()){
       switch_menuitem = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (switch_menuitem,
@@ -134,8 +143,33 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
                         DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK (activate_new_session),
                         self->users_dbus_interface);
+    }    
+    
+    if (check_guest_session ())
+    {
+      g_debug ("ADDING GUEST SESSION");
+      guest_mi = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (guest_mi,
+                                      DBUSMENU_MENUITEM_PROP_TYPE,
+                                      USER_ITEM_TYPE);
+      dbusmenu_menuitem_property_set (guest_mi,
+                                      USER_ITEM_PROP_NAME,
+                                      _("Guest Session"));
+      dbusmenu_menuitem_property_set_bool (guest_mi,
+                                           USER_ITEM_PROP_LOGGED_IN,
+                                           FALSE);
+      dbusmenu_menuitem_child_append (self->root_item, guest_mi);
+      g_signal_connect (G_OBJECT (guest_mi),
+                        DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                        G_CALLBACK (activate_guest_session),
+                        self);
+      users_service_dbus_set_guest_item (self->users_dbus_interface,
+                                         guest_mi);
     }
-
+    else{
+      g_debug ("NOT ADDING GUEST SESSION");      
+    }
+    
     GList * users = NULL;
     users = users_service_dbus_get_user_list (self->users_dbus_interface);
     self->user_count = g_list_length(users);
@@ -193,7 +227,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
         }
         dbusmenu_menuitem_property_set_bool (mi,
                                              USER_ITEM_PROP_LOGGED_IN,
-                                             user->sessions != NULL);
+                                             /*user->sessions != NULL*/FALSE);
         if (user->icon_file != NULL && user->icon_file[0] != '\0') {
           dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_file);
         } else {
@@ -352,6 +386,49 @@ DbusmenuMenuitem*
 user_mgr_get_root_item (UserMenuMgr* self)
 {
   return self->root_item;
+}
+
+/* Checks to see if we should show the guest suession item */
+static gboolean
+check_guest_session (void)
+{
+	if (geteuid() < 500) {
+		/* System users shouldn't have guest account shown.  Mosly
+		   this would be the case of the guest user itself. */
+		return FALSE;
+	}
+	if (!g_file_test(GUEST_SESSION_LAUNCHER, G_FILE_TEST_IS_EXECUTABLE)) {
+		/* It doesn't appear that the Guest session stuff is
+		   installed.  So let's not use it then! */
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/* Called when someone clicks on the guest session item. */
+static void
+activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
+{
+	GError * error = NULL;
+  UserData *user = (UserData *)user_data;
+  UsersServiceDbus *service = user->service;
+
+	lock_if_possible();
+
+	if (dbusmenu_menuitem_property_get_bool(mi, USER_ITEM_PROP_LOGGED_IN)) {
+		if (users_service_dbus_activate_guest_session(service)) {
+			return;
+		}
+		g_warning("Unable to activate guest session, falling back to command line activation.");
+	}
+
+	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER " --no-lock", &error)) {
+		g_warning("Unable to start guest session: %s", error->message);
+		g_error_free(error);
+	}
+
+	return;
 }
 
 

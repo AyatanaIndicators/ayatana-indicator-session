@@ -556,7 +556,11 @@ static void
 add_sessions_for_user (UsersServiceDbus *self,
                        UserData         *user)
 {
-  g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
+  g_return_if_fail (IS_USERS_SERVICE_DBUS(self));
+
+  g_debug ("!!!!!!!!!! - add_sessions_for_user %i %s",
+          (int)user->uid, user->user_name);
+
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   GError          *error;
   GPtrArray       *sessions;

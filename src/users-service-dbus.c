@@ -325,6 +325,11 @@ get_cksessions_cb (DBusGProxy *proxy, GPtrArray * sessions, GError * error, gpoi
 		return;
 	}
 
+	/* If there's no error we should at least get an
+	   array of zero entries */
+	g_return_if_fail(sessions != NULL);
+	g_debug("Got %d initial sessions", sessions->len);
+
 	int i;
 	for (i = 0; i < sessions->len; i++) {
 		seat_proxy_session_added(proxy, g_ptr_array_index(sessions, i), USERS_SERVICE_DBUS(userdata));

@@ -185,11 +185,18 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
       g_variant_get (value, "(asasasasasasas)", &install, 
                      &reinstall, &remove, &purge, &upgrade, &downgrade,
                      &keep);      
-      gboolean upgrade_needed = (g_strv_length(upgrade) > 0) ||
-                                (g_strv_length(install) > 0) ||
-                                (g_strv_length(reinstall) > 0) ||
-                                (g_strv_length(remove) > 0) ||
-                                (g_strv_length(purge) > 0);
+      /*                     
+      g_debug ("upgrade package length %i", g_strv_length(upgrade));                
+      g_debug ("install package length %i", g_strv_length(install));
+      g_debug ("reinstall package length %i", g_strv_length(reinstall));
+      g_debug ("remove package length %i", g_strv_length(remove));
+      g_debug ("purge package length %i", g_strv_length(purge));
+      */
+      gboolean upgrade_needed = (g_strv_length(upgrade) > 1) ||
+                                (g_strv_length(install) > 1) ||
+                                (g_strv_length(reinstall) > 1) ||
+                                (g_strv_length(remove) > 1) ||
+                                (g_strv_length(purge) > 1);
       if (upgrade_needed == TRUE){
         current_state = UPDATES_AVAILABLE;        
       }

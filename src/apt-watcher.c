@@ -281,8 +281,9 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
                                       _("Reboot Required"));
       session_dbus_restart_required (self->session_dbus_interface);
     }
+    g_debug ("Finished with a reboot value of %i", reboot); 
     g_object_unref (G_OBJECT(self->current_transaction));
-    self->current_transaction = NULL;                                        
+    self->current_transaction = NULL;                                    
   }
   self->current_state = state;
 } 
@@ -327,9 +328,7 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
       self->current_transaction = apt_transaction_new (input, REAL);
       g_signal_connect (G_OBJECT(self->current_transaction),
                         "state-update",
-                        G_CALLBACK(apt_watcher_transaction_state_update_cb), self);
-      
-          
+                        G_CALLBACK(apt_watcher_transaction_state_update_cb), self);              
     }
   }
   g_variant_unref (parameters);

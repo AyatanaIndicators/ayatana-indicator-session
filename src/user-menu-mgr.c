@@ -29,7 +29,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 static GConfClient * gconf_client = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
-
 struct _UserMenuMgr
 {
 	GObject parent_instance;
@@ -50,7 +49,8 @@ static gint compare_users_by_username (const gchar *a,
 static void activate_online_accounts (DbusmenuMenuitem *mi,
                                       guint timestamp,
                                       gpointer user_data);
-static void user_menu_mgr_rebuild_items (UserMenuMgr *self);
+static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
+                                         gboolean greeter_mode);
 static gboolean check_new_session ();
 static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
@@ -99,7 +99,7 @@ user_menu_mgr_class_init (UserMenuMgrClass *klass)
 
 /* Builds up the menu for us */
 static void 
-user_menu_mgr_rebuild_items (UserMenuMgr *self)
+user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 {
   DbusmenuMenuitem *mi = NULL;
   DbusmenuMenuitem *guest_mi = NULL;
@@ -145,7 +145,6 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
     
     if (check_guest_session ())
     {
-      g_debug ("ADDING GUEST SESSION");
       guest_mi = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (guest_mi,
                                       DBUSMENU_MENUITEM_PROP_TYPE,
@@ -164,16 +163,19 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
       users_service_dbus_set_guest_item (self->users_dbus_interface,
                                          guest_mi);
     }
-    else{
-      g_debug ("NOT ADDING GUEST SESSION");      
-    }
     
     GList * users = NULL;
     users = users_service_dbus_get_user_list (self->users_dbus_interface);
     self->user_count = g_list_length(users);
     
-    g_debug ("USER COUNT = %i", self->user_count);
-    session_dbus_set_user_menu_visibility (self->session_dbus_interface, self->user_count > 1);
+    gboolean user_menu_is_visible = FALSE;
+    
+    if (!greeter_mode){
+      user_menu_is_visible = self->user_count > 1;
+    }
+    
+    session_dbus_set_user_menu_visibility (self->session_dbus_interface,
+                                           user_menu_is_visible);
 
     if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
       users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
@@ -418,11 +420,11 @@ activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_da
 /*
  * Clean Entry Point 
  */
-UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus)
+UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_mode)
 {
   UserMenuMgr* user_mgr = g_object_new (USER_TYPE_MENU_MGR, NULL);
   user_mgr->session_dbus_interface = session_dbus;
-  user_menu_mgr_rebuild_items (user_mgr);    
+  user_menu_mgr_rebuild_items (user_mgr, greeter_mode);    
   return user_mgr;
 }
   

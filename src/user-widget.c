@@ -126,8 +126,6 @@ user_widget_init (UserWidget *self)
 
   priv->user_name = gtk_label_new ("");
   priv->container = gtk_hbox_new (FALSE, 0);
-  // TODO: 
-  // Delete tick icon and draw primitively.
 	priv->tick_icon = gtk_image_new_from_icon_name ("account-logged-in",
                                                    GTK_ICON_SIZE_MENU);
  	gtk_misc_set_alignment(GTK_MISC(priv->tick_icon), 1.0, 0.5);
@@ -150,6 +148,10 @@ user_widget_init (UserWidget *self)
   
   gtk_widget_show_all (priv->container);
   gtk_container_add (GTK_CONTAINER (self), priv->container);  
+  
+  gtk_widget_show_all (priv->tick_icon);
+  gtk_widget_set_no_show_all (priv->tick_icon, TRUE);
+  gtk_widget_hide (priv->tick_icon);
   
   // Fetch the drawing context.
   #if GTK_CHECK_VERSION(3, 0, 0) 
@@ -177,11 +179,6 @@ user_widget_finalize (GObject *object)
 {
   G_OBJECT_CLASS (user_widget_parent_class)->finalize (object);
 }
-
-/**
- * We override the expose method to enable primitive drawing of the 
- * empty album art image and rounded rectangles on the album art.
- */
 
 #if GTK_CHECK_VERSION(3, 0, 0)  
 
@@ -317,11 +314,16 @@ user_widget_set_twin_item (UserWidget* self,
   gtk_label_set_label (GTK_LABEL (priv->user_name),
                        dbusmenu_menuitem_property_get (twin_item, USER_ITEM_PROP_NAME));
 
-	//if (dbusmenu_menuitem_property_get_bool (twin_item, USER_ITEM_PROP_LOGGED_IN)) {
-	//	gtk_widget_show(priv->tick_icon);
-	//} else {
-  gtk_widget_show(priv->tick_icon);
-	//}
+	if (dbusmenu_menuitem_property_get_bool (twin_item, USER_ITEM_PROP_LOGGED_IN)) {
+    g_debug ("%s USER HAS ACTIVE SESSIONS", 
+             dbusmenu_menuitem_property_get (twin_item, USER_ITEM_PROP_NAME));
+	  gtk_widget_show(priv->tick_icon);
+	}
+  else {
+    g_debug ("%s USER DOESN'T HAVE ACTIVE SESSIONS", 
+             dbusmenu_menuitem_property_get (twin_item, USER_ITEM_PROP_NAME));
+    gtk_widget_hide(priv->tick_icon);
+	}
 
 	g_debug("Using user icon for '%s' from file: %s",
           dbusmenu_menuitem_property_get(twin_item, USER_ITEM_PROP_NAME), icon_name);

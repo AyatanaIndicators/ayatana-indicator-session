@@ -20,12 +20,12 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <glib/gi18n.h>
-#include <gconf/gconf-client.h>
+#include <gio/gio.h>
 #include <dbus/dbus-glib.h>
 #include "lock-helper.h"
 
-#define GCONF_DIR  "/apps/gnome-screensaver"
-#define GCONF_KEY  GCONF_DIR "/lock_enabled"
+#define SCREENSAVER_SCHEMA            "org.gnome.desktop.screensaver"
+#define SCREENSAVER_LOCK_ENABLED_KEY  "lock-enabled"
 
 static DBusGProxy * gss_proxy = NULL;
 static GMainLoop * gss_mainloop = NULL;
@@ -34,7 +34,7 @@ static DBusGProxyCall * cookie_call = NULL;
 
 static gboolean is_guest = FALSE;
 
-static GConfClient * gconf_client = NULL;
+static GSettings * settings = NULL;
 
 void build_gss_proxy (void);
 
@@ -131,11 +131,11 @@ will_lock_screen (void)
 		return FALSE;
 	}
 
-	if (gconf_client == NULL) {
-		gconf_client = gconf_client_get_default();
+	if (settings == NULL) {
+		settings = g_settings_new (SCREENSAVER_SCHEMA);
 	}
 
-	return gconf_client_get_bool (gconf_client, GCONF_KEY, NULL);
+	return g_settings_get_boolean (settings, SCREENSAVER_LOCK_ENABLED_KEY);
 }
 
 /* When the screensave go active, if we've got a mainloop
@@ -150,11 +150,22 @@ gss_active_changed (DBusGProxy * proxy, gboolean active, gpointer data)
 	return;
 }
 
+static gboolean
+get_greeter_mode (void)
+{
+	const gchar *var;
+	var = g_getenv("INDICATOR_GREETER_MODE");
+	return (g_strcmp0(var, "1") == 0);
+}
+
 /* Build the gss proxy and set up it's signals */
 void
 build_gss_proxy (void)
 {
 	if (gss_proxy == NULL) {
+		if (get_greeter_mode ())
+			return; /* Don't start/lock the screensaver from the login screen */
+
 		DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 		g_return_if_fail(session_bus != NULL);
 

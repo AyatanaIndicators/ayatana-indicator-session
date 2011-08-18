@@ -1,3 +1,17 @@
+indicator-session (0.3.2-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - Top-right bar shows "nvalid UTF-8]" (LP: #811852)
+    - Don't display 'updates available' when there aren't any (LP: #819495)
+    - guest item in user menu (LP: #827909)
+    - user menu shows all users with active sessions (LP: #827932)
+    - Use ellipsis consistently in the indicator-session strings (LP: #621339)
+    - ftbfs with gcc-4.6 -Werror (LP: #793105)
+    - lightdm asks for password when resuming from suspend even when no one 
+      is logged in (LP: #812804)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 18 Aug 2011 14:30:06 -0400
+
 indicator-session (0.3.1-0ubuntu2) oneiric; urgency=low
 
   * debian/rules: run intltool-update to update the translations template

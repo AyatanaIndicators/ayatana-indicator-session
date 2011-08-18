@@ -25,19 +25,26 @@ libsession_la_CFLAGS = \
 libsession_la_LIBADD = $(APPLET_LIBS)
 libsession_la_LDFLAGS = -module -avoid-version
 
-consolekit-manager-client.h: $(srcdir)/consolekit-manager.xml
+consolekit-manager-client.h: $(srcdir)/org.freedesktop.ConsoleKit.Manager.xml
 	dbus-binding-tool \
 		--prefix=_consolekit_manager_client \
 		--mode=glib-client \
 		--output=consolekit-manager-client.h \
-		$(srcdir)/consolekit-manager.xml
+		$(srcdir)/org.freedesktop.ConsoleKit.Manager.xml
 
-consolekit-session-client.h: $(srcdir)/consolekit-session.xml
+consolekit-seat-client.h: $(srcdir)/org.freedesktop.ConsoleKit.Seat.xml
+	dbus-binding-tool \
+		--prefix=_consolekit_seat_client \
+		--mode=glib-client \
+		--output=consolekit-seat-client.h \
+		$(srcdir)/org.freedesktop.ConsoleKit.Seat.xml
+
+consolekit-session-client.h: $(srcdir)/org.freedesktop.ConsoleKit.Session.xml
 	dbus-binding-tool \
 		--prefix=_consolekit_session_client \
 		--mode=glib-client \
 		--output=consolekit-session-client.h \
-		$(srcdir)/consolekit-session.xml
+		$(srcdir)/org.freedesktop.ConsoleKit.Session.xml
 
 display-manager-client.h: $(srcdir)/display-manager.xml
 	dbus-binding-tool \
@@ -143,6 +150,7 @@ gtk_logout_helper_LDADD = \
 
 BUILT_SOURCES = \
 	consolekit-manager-client.h \
+	consolekit-seat-client.h \
 	consolekit-session-client.h \
 	display-manager-client.h \
 	gen-session-dbus.xml.c \
@@ -152,8 +160,9 @@ BUILT_SOURCES = \
 	accounts-service-user-client.h
 
 EXTRA_DIST = \
-	consolekit-manager.xml \
-	consolekit-session.xml \
+	org.freedesktop.ConsoleKit.Manager.xml \
+	org.freedesktop.ConsoleKit.Seat.xml \
+	org.freedesktop.ConsoleKit.Session.xml \
 	display-manager.xml \
 	session-dbus.xml \
 	upower.xml \

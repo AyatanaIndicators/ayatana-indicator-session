@@ -36,6 +36,7 @@
 #include "accounts-service-client.h"
 #include "consolekit-manager-client.h"
 #include "consolekit-session-client.h"
+#include "consolekit-seat-client.h"
 
 #define CK_ADDR             "org.freedesktop.ConsoleKit"
 #define CK_SESSION_IFACE    "org.freedesktop.ConsoleKit.Session"
@@ -315,6 +316,28 @@ create_ck_proxy (UsersServiceDbus *self)
     }
 }
 
+/* Get the initial sessions when starting up */
+static void 
+get_cksessions_cb (DBusGProxy *proxy, GPtrArray * sessions, GError * error, gpointer userdata)
+{
+	if (error != NULL) {
+		g_warning("Unable to get initial sessions: %s", error->message);
+		return;
+	}
+
+	/* If there's no error we should at least get an
+	   array of zero entries */
+	g_return_if_fail(sessions != NULL);
+	g_debug("Got %d initial sessions", sessions->len);
+
+	int i;
+	for (i = 0; i < sessions->len; i++) {
+		seat_proxy_session_added(proxy, g_ptr_array_index(sessions, i), USERS_SERVICE_DBUS(userdata));
+	}
+
+	return;
+}
+
 static void
 create_seat_proxy (UsersServiceDbus *self)
 {
@@ -363,6 +386,10 @@ create_seat_proxy (UsersServiceDbus *self)
                                G_CALLBACK (seat_proxy_session_removed),
                                self,
                                NULL);
+
+  org_freedesktop_ConsoleKit_Seat_get_sessions_async (priv->seat_proxy, get_cksessions_cb, self);
+
+  return;
 }
 
 static void
@@ -556,7 +583,11 @@ static void
 add_sessions_for_user (UsersServiceDbus *self,
                        UserData         *user)
 {
-  g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
+  g_return_if_fail (IS_USERS_SERVICE_DBUS(self));
+
+  g_debug ("!!!!!!!!!! - add_sessions_for_user %i %s",
+          (int)user->uid, user->user_name);
+
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
   GError          *error;
   GPtrArray       *sessions;

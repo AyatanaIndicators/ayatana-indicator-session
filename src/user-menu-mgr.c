@@ -49,13 +49,19 @@ static gint compare_users_by_username (const gchar *a,
 static void activate_online_accounts (DbusmenuMenuitem *mi,
                                       guint timestamp,
                                       gpointer user_data);
-static void user_menu_mgr_rebuild_items (UserMenuMgr *self);
+static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
+                                         gboolean greeter_mode);
 static gboolean check_new_session ();
 static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
 
 static void ensure_gconf_client ();
+static gboolean check_guest_session (void);
+static void activate_guest_session (DbusmenuMenuitem * mi,
+                                    guint timestamp,
+                                    gpointer user_data);
+
 
 G_DEFINE_TYPE (UserMenuMgr, user_menu_mgr, G_TYPE_OBJECT);
 
@@ -93,7 +99,7 @@ user_menu_mgr_class_init (UserMenuMgrClass *klass)
 
 /* Builds up the menu for us */
 static void 
-user_menu_mgr_rebuild_items (UserMenuMgr *self)
+user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 {
   DbusmenuMenuitem *mi = NULL;
   DbusmenuMenuitem *guest_mi = NULL;
@@ -121,6 +127,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
   /* Build all of the user switching items */
   if (can_activate == TRUE)
   {
+    
     if (check_new_session ()){
       switch_menuitem = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (switch_menuitem,
@@ -134,14 +141,41 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
                         DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK (activate_new_session),
                         self->users_dbus_interface);
+    }    
+    
+    if (check_guest_session ())
+    {
+      guest_mi = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (guest_mi,
+                                      DBUSMENU_MENUITEM_PROP_TYPE,
+                                      USER_ITEM_TYPE);
+      dbusmenu_menuitem_property_set (guest_mi,
+                                      USER_ITEM_PROP_NAME,
+                                      _("Guest Session"));
+      dbusmenu_menuitem_property_set_bool (guest_mi,
+                                           USER_ITEM_PROP_LOGGED_IN,
+                                           FALSE);
+      dbusmenu_menuitem_child_append (self->root_item, guest_mi);
+      g_signal_connect (G_OBJECT (guest_mi),
+                        DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                        G_CALLBACK (activate_guest_session),
+                        self);
+      users_service_dbus_set_guest_item (self->users_dbus_interface,
+                                         guest_mi);
     }
-
+    
     GList * users = NULL;
     users = users_service_dbus_get_user_list (self->users_dbus_interface);
     self->user_count = g_list_length(users);
     
-    g_debug ("USER COUNT = %i", self->user_count);
-    session_dbus_set_user_menu_visibility (self->session_dbus_interface, self->user_count > 1);
+    gboolean user_menu_is_visible = FALSE;
+    
+    if (!greeter_mode){
+      user_menu_is_visible = self->user_count > 1;
+    }
+    
+    session_dbus_set_user_menu_visibility (self->session_dbus_interface,
+                                           user_menu_is_visible);
 
     if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
       users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
@@ -232,7 +266,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
                                   DBUSMENU_CLIENT_TYPES_DEFAULT);
   dbusmenu_menuitem_property_set (online_accounts_item,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Online Accounts..."));
+                                  _("Online Accounts…"));
 
   g_signal_connect (G_OBJECT (online_accounts_item),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
@@ -354,15 +388,43 @@ user_mgr_get_root_item (UserMenuMgr* self)
   return self->root_item;
 }
 
+/* Checks to see if we should show the guest suession item */
+static gboolean
+check_guest_session (void)
+{
+	if (geteuid() < 500) {
+		/* System users shouldn't have guest account shown.  Mosly
+		   this would be the case of the guest user itself. */
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/* Called when someone clicks on the guest session item. */
+static void
+activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
+{
+  g_return_if_fail (USER_IS_MENU_MGR (user_data));  
+  UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
+  UsersServiceDbus *service = user_mgr->users_dbus_interface;
+
+	lock_if_possible();
+  
+  if (users_service_dbus_activate_guest_session(service)) {
+    return;
+  }
+}
+
 
 /*
  * Clean Entry Point 
  */
-UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus)
+UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_mode)
 {
   UserMenuMgr* user_mgr = g_object_new (USER_TYPE_MENU_MGR, NULL);
   user_mgr->session_dbus_interface = session_dbus;
-  user_menu_mgr_rebuild_items (user_mgr);    
+  user_menu_mgr_rebuild_items (user_mgr, greeter_mode);    
   return user_mgr;
 }
   

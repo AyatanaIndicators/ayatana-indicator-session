@@ -45,7 +45,8 @@ struct _UserMenuMgrClass
 };
 
 GType user_menu_mgr_get_type (void) G_GNUC_CONST;
-UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus);
+UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus,
+                                gboolean greeter_mode);
 
 DbusmenuMenuitem* user_mgr_get_root_item (UserMenuMgr* self);
 G_END_DECLS

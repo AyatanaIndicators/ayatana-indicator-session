@@ -266,7 +266,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                                   DBUSMENU_CLIENT_TYPES_DEFAULT);
   dbusmenu_menuitem_property_set (online_accounts_item,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Online Accounts..."));
+                                  _("Online Accounts…"));
 
   g_signal_connect (G_OBJECT (online_accounts_item),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,

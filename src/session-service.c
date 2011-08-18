@@ -118,7 +118,7 @@ main (int argc, char ** argv)
     
   if (!greeter_mode) {
     // Users
-    UserMenuMgr* user_mgr = user_menu_mgr_new (session_dbus);    
+    UserMenuMgr* user_mgr = user_menu_mgr_new (session_dbus, greeter_mode);    
     DbusmenuServer* users_server = dbusmenu_server_new (INDICATOR_USERS_DBUS_OBJECT);
     dbusmenu_server_set_root (users_server, user_mgr_get_root_item (user_mgr));
   }

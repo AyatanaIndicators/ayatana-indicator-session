@@ -254,7 +254,7 @@ debug_device (UdevMgr* self,
               GUdevDevice* device,
               UdevMgrDeviceAction action)
 {
-  const gchar* vendor;
+  /*const gchar* vendor;
   const gchar* product;
   const gchar* number;
   const gchar* name;
@@ -269,7 +269,7 @@ debug_device (UdevMgr* self,
            g_strdup(product),
            g_strdup(number),
            g_strdup(name));
-           
+         
   const gchar *const *list;
   const gchar *const *iter;  
   char propstr[500];
@@ -290,7 +290,7 @@ debug_device (UdevMgr* self,
            strcat(propstr, " ");
     strcat(propstr, g_udev_device_get_property(device, *iter));
     g_debug("%s", propstr);
-  }   
+  }*/  
 }
 
 static void udev_mgr_handle_scsi_device (UdevMgr* self,

@@ -26,8 +26,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lock-helper.h"
 #include "users-service-dbus.h"
 
-#define GUEST_SESSION_LAUNCHER  "/usr/share/gdm/guest-session/guest-session-launch"
-
 static GConfClient * gconf_client = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
@@ -227,7 +225,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
         }
         dbusmenu_menuitem_property_set_bool (mi,
                                              USER_ITEM_PROP_LOGGED_IN,
-                                             /*user->sessions != NULL*/FALSE);
+                                             user->sessions != NULL);
         if (user->icon_file != NULL && user->icon_file[0] != '\0') {
           dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_file);
         } else {
@@ -397,11 +395,6 @@ check_guest_session (void)
 		   this would be the case of the guest user itself. */
 		return FALSE;
 	}
-	if (!g_file_test(GUEST_SESSION_LAUNCHER, G_FILE_TEST_IS_EXECUTABLE)) {
-		/* It doesn't appear that the Guest session stuff is
-		   installed.  So let's not use it then! */
-		return FALSE;
-	}
 
 	return TRUE;
 }
@@ -410,25 +403,15 @@ check_guest_session (void)
 static void
 activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
-	GError * error = NULL;
-  UserData *user = (UserData *)user_data;
-  UsersServiceDbus *service = user->service;
+  g_return_if_fail (USER_IS_MENU_MGR (user_data));  
+  UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
+  UsersServiceDbus *service = user_mgr->users_dbus_interface;
 
 	lock_if_possible();
-
-	if (dbusmenu_menuitem_property_get_bool(mi, USER_ITEM_PROP_LOGGED_IN)) {
-		if (users_service_dbus_activate_guest_session(service)) {
-			return;
-		}
-		g_warning("Unable to activate guest session, falling back to command line activation.");
-	}
-
-	if (!g_spawn_command_line_async(GUEST_SESSION_LAUNCHER " --no-lock", &error)) {
-		g_warning("Unable to start guest session: %s", error->message);
-		g_error_free(error);
-	}
-
-	return;
+  
+  if (users_service_dbus_activate_guest_session(service)) {
+    return;
+  }
 }
 
 

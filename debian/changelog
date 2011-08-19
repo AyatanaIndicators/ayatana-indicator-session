@@ -2,8 +2,9 @@ indicator-session (0.3.2-0ubuntu2~ppa1) UNRELEASED; urgency=low
 
   * Upstream Merge
     * GSettings transition
+  * debian/rules: Adding autoreconf
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 19 Aug 2011 14:55:08 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 19 Aug 2011 14:57:28 -0500
 
 indicator-session (0.3.2-0ubuntu1) oneiric; urgency=low
 

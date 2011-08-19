@@ -199,3 +199,4 @@ src/Makefile
 modified:
 .bzrignore
 src/libsession_la-user-widget.lo
+consolekit-seat-client.h

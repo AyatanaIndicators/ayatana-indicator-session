@@ -23,8 +23,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __GCONF_HELPER_H__
 #define __GCONF_HELPER_H__ 1
 
-#include <gconf/gconf-client.h>
-
 #include <glib/gi18n.h>
 
 #include <dbus/dbus-glib.h>

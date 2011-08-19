@@ -20,8 +20,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <gio/gio.h>
-#include <gconf/gconf-client.h>
-
 #include <glib/gi18n.h>
 
 #include <dbus/dbus-glib.h>
@@ -33,13 +31,14 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbus-shared-names.h"
 #include "gconf-helper.h"
 
-static GConfClient * gconf_client = NULL;
 static GSettings* settings = NULL;
 
+#if 0
 static guint confirmation_notify = 0;
 static guint logout_notify = 0;
 static guint restart_notify = 0;
 static guint shutdown_notify = 0;
+#endif
 
 static void
 build_settings (void) {
@@ -73,6 +72,7 @@ show_shutdown (void) {
 	return !g_settings_get_boolean (settings, SHUTDOWN_KEY) ;
 }
 
+#if 0
 static void update_menu_entries_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {
 	RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi = (RestartShutdownLogoutMenuItems*) data;
 	GConfValue * value = gconf_entry_get_value (entry);
@@ -123,9 +123,11 @@ update_shutdown_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry
 		dbusmenu_menuitem_property_set_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE, !gconf_value_get_bool(value));
 	}
 }
+#endif
 
 void
 update_menu_entries(RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi) {
+#if 0
 	/* If we don't have a client, build one. */
 	if(!gconf_client) {
 		gconf_client = gconf_client_get_default ();
@@ -166,7 +168,7 @@ update_menu_entries(RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi)
 				update_restart_callback, restart_shutdown_logout_mi->restart_mi, NULL, NULL);
 	shutdown_notify = gconf_client_notify_add (gconf_client, SHUTDOWN_KEY,
 				update_shutdown_callback, restart_shutdown_logout_mi->shutdown_mi, NULL, NULL);
-
+#endif
 	return;
 }
 

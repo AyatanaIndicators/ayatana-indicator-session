@@ -1,6 +1,6 @@
 compile
 m4
-po
+po/indicator-session.pot
 src/libmessaging.la
 src/libmessaging_la-indicator-messages.lo
 config.guess.cdbs-orig
@@ -200,3 +200,5 @@ modified:
 .bzrignore
 src/libsession_la-user-widget.lo
 consolekit-seat-client.h
+data/com.canonical.indicator.session.gschema.valid
+data/com.canonical.indicator.session.gschema.xml

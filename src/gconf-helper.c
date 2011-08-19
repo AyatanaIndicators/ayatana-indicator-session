@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+#include <gio/gio.h>
 #include <gconf/gconf-client.h>
 
 #include <glib/gi18n.h>
@@ -34,6 +34,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "gconf-helper.h"
 
 static GConfClient * gconf_client = NULL;
+static GSettings* settings = NULL;
+
 static guint confirmation_notify = 0;
 static guint logout_notify = 0;
 static guint restart_notify = 0;
@@ -41,10 +43,10 @@ static guint shutdown_notify = 0;
 
 gboolean
 supress_confirmations (void) {
-	if(!gconf_client) {
-		gconf_client = gconf_client_get_default ();
+	if(!settings) {
+		settings = g_settings_new ("com.canonical.indicators.sound");
 	}
-	return gconf_client_get_bool (gconf_client, SUPPRESS_KEY, NULL) ;
+	return g_settings_get_boolean (settings, SUPPRESS_KEY, NULL) ;
 }
 
 gboolean

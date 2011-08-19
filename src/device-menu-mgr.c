@@ -126,25 +126,21 @@ device_menu_mgr_class_init (DeviceMenuMgrClass *klass)
 	object_class->finalize = device_menu_mgr_finalize;
 }
 
-#if 0
 // TODO
 // Is this needed anymore
 static void
-lockdown_changed (GConfClient *client,
-                  guint        cnxd_id,
-                  GConfEntry  *entry,
+lockdown_changed (GSettings * settings,
+                  const gchar * key,
                   gpointer     user_data)
 {
-  DeviceMenuMgr* self = DEVICE_MENU_MGR (user_data);
-	GConfValue  *value = gconf_entry_get_value (entry);
-	const gchar *key   = gconf_entry_get_key (entry);
+	DeviceMenuMgr* self = DEVICE_MENU_MGR (user_data);
 
-	if (value == NULL || key == NULL) {
+	if (key == NULL) {
 		return;
 	}
 
 	if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0 ||
-      g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
+	      g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
 		device_menu_mgr_rebuild_items(self);
 	}
 
@@ -152,28 +148,23 @@ lockdown_changed (GConfClient *client,
 }
 
 static void
-keybinding_changed (GConfClient *client,
-                    guint        cnxd_id,
-                    GConfEntry  *entry,
+keybinding_changed (GSettings   *settings,
+                    const gchar *key,
                     gpointer     user_data)
 {
-	GConfValue  *value = gconf_entry_get_value (entry);
-	const gchar *key   = gconf_entry_get_key (entry);
-
-	if (value == NULL || key == NULL) {
+	if (key == NULL) {
 		return;
 	}
 
 	if (g_strcmp0 (key, KEY_LOCK_SCREEN) == 0) {
-		g_debug("Keybinding changed to: %s", gconf_value_get_string(value));
+		g_debug("Keybinding changed to: %s", g_settings_get_string(settings, key));
 		if (lock_menuitem != NULL) {
 			dbusmenu_menuitem_property_set_shortcut_string (lock_menuitem,
-                                                      gconf_value_get_string(value));
+                                                      g_settings_get_string(settings, key));
 		}
 	}
 	return;
 }
-#endif
 
 /* Check to see if the lockdown key is protecting from
    locking the screen.  If not, lock it. */
@@ -836,28 +827,14 @@ device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self)
 {
 	if (!lockdown_settings) {
 		lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
+		g_signal_connect(lockdown_settings, "changed", G_CALLBACK(lockdown_changed), self);
 	}
 	if (!keybinding_settings) {
 		keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
+		g_signal_connect(lockdown_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(keybinding_changed), self);
 	}
-#if 0
-		gconf_client_add_dir(gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_notify_add (gconf_client,
-                             LOCKDOWN_DIR,
-                             lockdown_changed,
-                             self,
-                             NULL,
-                             NULL);
 
-		gconf_client_add_dir(gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_notify_add (gconf_client,
-                             KEYBINDING_DIR,
-                             keybinding_changed,
-                             self,
-                             NULL,
-                             NULL);
-	}
-#endif
+	return;
 }
 
 DbusmenuMenuitem*

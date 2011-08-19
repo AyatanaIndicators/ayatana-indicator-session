@@ -376,7 +376,7 @@ static void
 ensure_settings_client ()
 {
 	if(!settings) {
-		settings = g_settings_new (SESSION_SCHEMA);
+		settings = g_settings_new (LOCKDOWN_SCHEMA);
 	}
 	return;
 }

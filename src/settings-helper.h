@@ -31,15 +31,15 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 
-#define SESSION_SCHEMA      "org.canonical.indicator.session"
-#define SUPPRESS_KEY        "suppress_logout_restart_shutdown"
-#define LOGOUT_KEY          "suppress_logout_menuitem"
-#define RESTART_KEY         "suppress_restart_menuitem"
-#define SHUTDOWN_KEY        "suppress_shutdown_menuitem"
+#define SESSION_SCHEMA      "com.canonical.indicator.session"
+#define SUPPRESS_KEY        "suppress-logout-restart-shutdown"
+#define LOGOUT_KEY          "suppress-logout-menuitem"
+#define RESTART_KEY         "suppress-restart-menuitem"
+#define SHUTDOWN_KEY        "suppress-shutdown-menuitem"
 
 #define LOCKDOWN_SCHEMA           "org.gnome.desktop.lockdown"
-#define LOCKDOWN_KEY_USER         "disable_user_switching"
-#define LOCKDOWN_KEY_SCREENSAVER  "disable_lock_screen"
+#define LOCKDOWN_KEY_USER         "disable-user-switching"
+#define LOCKDOWN_KEY_SCREENSAVER  "disable-lock-screen"
 #define KEYBINDING_SCHEMA         "org.gnome.settings-daemon.plugins.media-keys"
 #define KEY_LOCK_SCREEN           "screensaver"
 

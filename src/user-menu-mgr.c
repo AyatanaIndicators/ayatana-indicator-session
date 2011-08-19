@@ -174,9 +174,6 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
       user_menu_is_visible = self->user_count > 1;
     }
     
-    g_debug ("USER COUNT FROM REBUILD PERSPECTIVE : %i",
-             self->user_count);
-    
     session_dbus_set_user_menu_visibility (self->session_dbus_interface,
                                            user_menu_is_visible);
 
@@ -367,7 +364,6 @@ user_change (UsersServiceDbus *service,
              const gchar      *user_id,
              gpointer          user_data)
 {
-  g_debug ("user change in the user menu mgr");
   g_return_if_fail (USER_IS_MENU_MGR (user_data));  
   UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
 	user_menu_mgr_rebuild_items (user_mgr, FALSE);

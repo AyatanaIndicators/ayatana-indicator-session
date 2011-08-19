@@ -789,12 +789,10 @@ user_added (DBusGProxy  *proxy,
 {
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
-  g_debug ("user added in the service dbus");
   priv->count++;
 
   if (priv->count < MAXIMUM_USERS)
     {
-      g_debug ("syncing users");
       sync_users (service);
     }
 
@@ -808,9 +806,7 @@ static void
 user_deleted (DBusGProxy  *proxy,
               const gchar *user_id,
               gpointer     user_data)
-{
-  g_debug ("user deleted in the service dbus");
-  
+{  
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
 

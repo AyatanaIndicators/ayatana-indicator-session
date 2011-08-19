@@ -33,12 +33,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 static GSettings* settings = NULL;
 
-#if 0
 static guint confirmation_notify = 0;
 static guint logout_notify = 0;
 static guint restart_notify = 0;
 static guint shutdown_notify = 0;
-#endif
 
 static void
 build_settings (void) {
@@ -72,14 +70,11 @@ show_shutdown (void) {
 	return !g_settings_get_boolean (settings, SHUTDOWN_KEY) ;
 }
 
-#if 0
-static void update_menu_entries_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {
+static void update_menu_entries_callback (GSettings * settings, const gchar * key, gpointer data) {
 	RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi = (RestartShutdownLogoutMenuItems*) data;
-	GConfValue * value = gconf_entry_get_value (entry);
-	const gchar * key = gconf_entry_get_key (entry);
 
 	if(g_strcmp0 (key, SUPPRESS_KEY) == 0) {
-		if (gconf_value_get_bool (value)) {
+		if (g_settings_get_boolean (settings, key)) {
 			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->logout_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Log Out"));
 			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->restart_mi, RESTART_ITEM_LABEL, _("Restart"));
 			dbusmenu_menuitem_property_set(restart_shutdown_logout_mi->shutdown_mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Shut Down"));
@@ -92,83 +87,66 @@ static void update_menu_entries_callback (GConfClient *client, guint cnxn_id, GC
 }
 
 static void
-update_logout_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {
+update_logout_callback (GSettings * settings, const gchar * key, gpointer data) {
 	DbusmenuMenuitem * mi = (DbusmenuMenuitem*) data;
-	GConfValue * value = gconf_entry_get_value (entry);
-	const gchar * key = gconf_entry_get_key (entry);
 
 	if(g_strcmp0 (key, LOGOUT_KEY) == 0) {
-		dbusmenu_menuitem_property_set_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE, !gconf_value_get_bool(value));
+		dbusmenu_menuitem_property_set_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE, !g_settings_get_boolean(settings, key));
 	}
 }
 
 static void
-update_restart_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {
+update_restart_callback (GSettings * settings, const gchar * key, gpointer data) {
 	DbusmenuMenuitem * mi = (DbusmenuMenuitem*) data;
-	GConfValue * value = gconf_entry_get_value (entry);
-	const gchar * key = gconf_entry_get_key (entry);
 
 	if(g_strcmp0 (key, RESTART_KEY) == 0) {
-		dbusmenu_menuitem_property_set_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE, !gconf_value_get_bool(value));
+		dbusmenu_menuitem_property_set_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE, !g_settings_get_boolean(settings, key));
 	}
 }
 
 static void
-update_shutdown_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {
+update_shutdown_callback (GSettings * settings, const gchar * key, gpointer data) {
 	DbusmenuMenuitem * mi = (DbusmenuMenuitem*) data;
-	GConfValue * value = gconf_entry_get_value (entry);
-	const gchar * key = gconf_entry_get_key (entry);
 
 	if(g_strcmp0 (key, SHUTDOWN_KEY) == 0) {
-		dbusmenu_menuitem_property_set_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE, !gconf_value_get_bool(value));
+		dbusmenu_menuitem_property_set_bool(mi, DBUSMENU_MENUITEM_PROP_VISIBLE, !g_settings_get_boolean(settings, key));
 	}
 }
-#endif
 
 void
 update_menu_entries(RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi) {
-#if 0
 	/* If we don't have a client, build one. */
-	if(!gconf_client) {
-		gconf_client = gconf_client_get_default ();
-	}
-
-	/* If we've not gotten any notifications, then we need
-	   to add the directory for notifications to come from. */
-	if (confirmation_notify == 0 || logout_notify == 0) {
-		gconf_client_add_dir (gconf_client, GLOBAL_DIR,
-		                      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-	}
+	build_settings();
 
 	if (confirmation_notify != 0) {
-		gconf_client_notify_remove (gconf_client, confirmation_notify);
+		g_signal_handler_disconnect (settings, confirmation_notify);
 		confirmation_notify = 0;
 	}
 
 	if (logout_notify != 0) {
-		gconf_client_notify_remove (gconf_client, logout_notify);
+		g_signal_handler_disconnect (settings, logout_notify);
 		logout_notify = 0;
 	}
 
 	if (restart_notify != 0) {
-		gconf_client_notify_remove (gconf_client, restart_notify);
+		g_signal_handler_disconnect (settings, restart_notify);
 		restart_notify = 0;
 	}
 
 	if (shutdown_notify != 0) {
-		gconf_client_notify_remove (gconf_client, shutdown_notify);
+		g_signal_handler_disconnect (settings, shutdown_notify);
 		shutdown_notify = 0;
 	}
 
-	confirmation_notify = gconf_client_notify_add (gconf_client, SUPPRESS_KEY,
-				update_menu_entries_callback, restart_shutdown_logout_mi, NULL, NULL);
-	logout_notify = gconf_client_notify_add (gconf_client, LOGOUT_KEY,
-				update_logout_callback, restart_shutdown_logout_mi->logout_mi, NULL, NULL);
-	restart_notify = gconf_client_notify_add (gconf_client, RESTART_KEY,
-				update_restart_callback, restart_shutdown_logout_mi->restart_mi, NULL, NULL);
-	shutdown_notify = gconf_client_notify_add (gconf_client, SHUTDOWN_KEY,
-				update_shutdown_callback, restart_shutdown_logout_mi->shutdown_mi, NULL, NULL);
-#endif
+	confirmation_notify = g_signal_connect (settings, "changed::" SUPPRESS_KEY,
+				G_CALLBACK(update_menu_entries_callback), restart_shutdown_logout_mi);
+	logout_notify = g_signal_connect (settings, "changed::" LOGOUT_KEY,
+				G_CALLBACK(update_logout_callback), restart_shutdown_logout_mi->logout_mi);
+	restart_notify = g_signal_connect (settings, "changed::" RESTART_KEY,
+				G_CALLBACK(update_restart_callback), restart_shutdown_logout_mi->restart_mi);
+	shutdown_notify = g_signal_connect (settings, "changed::" SHUTDOWN_KEY,
+				G_CALLBACK(update_shutdown_callback), restart_shutdown_logout_mi->shutdown_mi);
+
 	return;
 }
 

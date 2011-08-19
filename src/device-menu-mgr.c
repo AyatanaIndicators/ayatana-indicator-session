@@ -21,7 +21,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-gtk3/menuitem.h>
 
 #include "device-menu-mgr.h"
-#include "gconf-helper.h"
+#include "settings-helper.h"
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"
@@ -44,7 +44,8 @@ struct _DeviceMenuMgr
   UdevMgr* udev_mgr;
 };
 
-static GConfClient       *gconf_client  = NULL;
+static GSettings         *lockdown_settings  = NULL;
+static GSettings         *keybinding_settings  = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *system_settings_menuitem = NULL;
 static DbusmenuMenuitem  *display_settings_menuitem = NULL;
@@ -72,7 +73,7 @@ static gboolean allow_suspend = TRUE;
 static DBusGProxy * up_main_proxy = NULL;
 static DBusGProxy * up_prop_proxy = NULL;
 
-static void device_menu_mgr_ensure_gconf_client (DeviceMenuMgr* self);
+static void device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self);
 static void setup_restart_watch (DeviceMenuMgr* self);
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
@@ -128,21 +129,18 @@ device_menu_mgr_class_init (DeviceMenuMgrClass *klass)
 // TODO
 // Is this needed anymore
 static void
-lockdown_changed (GConfClient *client,
-                  guint        cnxd_id,
-                  GConfEntry  *entry,
+lockdown_changed (GSettings * settings,
+                  const gchar * key,
                   gpointer     user_data)
 {
-  DeviceMenuMgr* self = DEVICE_MENU_MGR (user_data);
-	GConfValue  *value = gconf_entry_get_value (entry);
-	const gchar *key   = gconf_entry_get_key (entry);
+	DeviceMenuMgr* self = DEVICE_MENU_MGR (user_data);
 
-	if (value == NULL || key == NULL) {
+	if (key == NULL) {
 		return;
 	}
 
 	if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0 ||
-      g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
+	      g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
 		device_menu_mgr_rebuild_items(self);
 	}
 
@@ -150,23 +148,19 @@ lockdown_changed (GConfClient *client,
 }
 
 static void
-keybinding_changed (GConfClient *client,
-                    guint        cnxd_id,
-                    GConfEntry  *entry,
+keybinding_changed (GSettings   *settings,
+                    const gchar *key,
                     gpointer     user_data)
 {
-	GConfValue  *value = gconf_entry_get_value (entry);
-	const gchar *key   = gconf_entry_get_key (entry);
-
-	if (value == NULL || key == NULL) {
+	if (key == NULL) {
 		return;
 	}
 
 	if (g_strcmp0 (key, KEY_LOCK_SCREEN) == 0) {
-		g_debug("Keybinding changed to: %s", gconf_value_get_string(value));
+		g_debug("Keybinding changed to: %s", g_settings_get_string(settings, key));
 		if (lock_menuitem != NULL) {
 			dbusmenu_menuitem_property_set_shortcut_string (lock_menuitem,
-                                                      gconf_value_get_string(value));
+                                                      g_settings_get_string(settings, key));
 		}
 	}
 	return;
@@ -176,9 +170,9 @@ keybinding_changed (GConfClient *client,
    locking the screen.  If not, lock it. */
 static void
 lock_if_possible (DeviceMenuMgr* self) {
-	device_menu_mgr_ensure_gconf_client (self);
+	device_menu_mgr_ensure_settings_client (self);
 
-	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
+	if (!g_settings_get_boolean (lockdown_settings, LOCKDOWN_KEY_SCREENSAVER)) {
 		lock_screen (NULL, 0, NULL);
 	}
 	return;
@@ -659,10 +653,9 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 
     /* Make sure we have a valid GConf client, and build one
        if needed */
-    device_menu_mgr_ensure_gconf_client (self);
-    can_lockscreen = !gconf_client_get_bool ( gconf_client,
-                                              LOCKDOWN_KEY_SCREENSAVER,
-                                              NULL);
+    device_menu_mgr_ensure_settings_client (self);
+    can_lockscreen = !g_settings_get_boolean (lockdown_settings,
+                                              LOCKDOWN_KEY_SCREENSAVER);
     /* Lock screen item */
     if (can_lockscreen) {
       lock_menuitem = dbusmenu_menuitem_new();
@@ -670,7 +663,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       _("Lock Screen"));
 
-      gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
+      gchar * shortcut = g_settings_get_string(keybinding_settings, KEY_LOCK_SCREEN);
       if (shortcut != NULL) {
         g_debug("Lock screen shortcut: %s", shortcut);
         dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
@@ -830,26 +823,18 @@ setup_restart_watch (DeviceMenuMgr* self)
 /* Ensures that we have a GConf client and if we build one
    set up the signal handler. */
 static void
-device_menu_mgr_ensure_gconf_client (DeviceMenuMgr* self)
+device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self)
 {
-	if (!gconf_client) {
-		gconf_client = gconf_client_get_default ();
-		gconf_client_add_dir(gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_notify_add (gconf_client,
-                             LOCKDOWN_DIR,
-                             lockdown_changed,
-                             self,
-                             NULL,
-                             NULL);
-
-		gconf_client_add_dir(gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_notify_add (gconf_client,
-                             KEYBINDING_DIR,
-                             keybinding_changed,
-                             self,
-                             NULL,
-                             NULL);
+	if (!lockdown_settings) {
+		lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
+		g_signal_connect(lockdown_settings, "changed", G_CALLBACK(lockdown_changed), self);
 	}
+	if (!keybinding_settings) {
+		keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
+		g_signal_connect(lockdown_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(keybinding_changed), self);
+	}
+
+	return;
 }
 
 DbusmenuMenuitem*

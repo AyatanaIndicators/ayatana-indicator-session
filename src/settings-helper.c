@@ -1,5 +1,5 @@
 /*
-A small wrapper utility for connecting to gconf.
+A small wrapper utility for connecting to GSettings.
 
 Copyright 2009 Canonical Ltd.
 

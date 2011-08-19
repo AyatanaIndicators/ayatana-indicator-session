@@ -711,11 +711,6 @@ sync_users (UsersServiceDbus *self)
   g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
-  if (g_hash_table_size (priv->users) > 0)
-    {
-      return;
-    }
-
   if (priv->count > MINIMUM_USERS && priv->count < MAXIMUM_USERS)
     {
       GPtrArray *users = NULL;
@@ -758,7 +753,13 @@ sync_users (UsersServiceDbus *self)
 
               continue;
             }
-
+            // Double check we havent processed this user already
+          if (users_service_dbus_get_user_by_username (self, 
+                                                       g_value_get_string (g_hash_table_lookup (properties, "UserName"))) != NULL)
+            {
+              continue;                                     
+            }
+            
           user = g_new0 (UserData, 1);
 
           user->uid         = g_value_get_uint64 (g_hash_table_lookup (properties, "Uid"));
@@ -788,13 +789,19 @@ user_added (DBusGProxy  *proxy,
 {
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
-
+  g_debug ("user added in the service dbus");
   priv->count++;
 
   if (priv->count < MAXIMUM_USERS)
     {
+      g_debug ("syncing users");
       sync_users (service);
     }
+
+  g_signal_emit (service,
+                 signals[USER_ADDED],
+                 0,
+                 user_id);   
 }
 
 static void
@@ -802,11 +809,19 @@ user_deleted (DBusGProxy  *proxy,
               const gchar *user_id,
               gpointer     user_data)
 {
+  g_debug ("user deleted in the service dbus");
+  
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
 
   priv->count--;
   g_hash_table_remove (priv->users, user_id);
+
+  g_signal_emit (service,
+                 signals[USER_DELETED],
+                 0,
+                 user_id);   
+  
 }
 
 UserData *

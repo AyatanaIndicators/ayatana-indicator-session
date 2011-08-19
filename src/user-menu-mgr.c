@@ -76,7 +76,7 @@ user_menu_mgr_init (UserMenuMgr *self)
                     G_CALLBACK (user_change),
                     self);
   g_signal_connect (G_OBJECT (self->users_dbus_interface),
-                    "user-removed",
+                    "user-deleted",
                     G_CALLBACK (user_change),
                     self);
 }
@@ -173,6 +173,9 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     if (!greeter_mode){
       user_menu_is_visible = self->user_count > 1;
     }
+    
+    g_debug ("USER COUNT FROM REBUILD PERSPECTIVE : %i",
+             self->user_count);
     
     session_dbus_set_user_menu_visibility (self->session_dbus_interface,
                                            user_menu_is_visible);
@@ -364,9 +367,10 @@ user_change (UsersServiceDbus *service,
              const gchar      *user_id,
              gpointer          user_data)
 {
-	//DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
-  // TODO sort this out.
-	//rebuild_user_items (root, service);
+  g_debug ("user change in the user menu mgr");
+  g_return_if_fail (USER_IS_MENU_MGR (user_data));  
+  UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
+	user_menu_mgr_rebuild_items (user_mgr, FALSE);
 	return;
 }
 

@@ -73,7 +73,7 @@ static gboolean allow_suspend = TRUE;
 static DBusGProxy * up_main_proxy = NULL;
 static DBusGProxy * up_prop_proxy = NULL;
 
-static void device_menu_mgr_ensure_gconf_client (DeviceMenuMgr* self);
+static void device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self);
 static void setup_restart_watch (DeviceMenuMgr* self);
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
@@ -179,7 +179,7 @@ keybinding_changed (GConfClient *client,
    locking the screen.  If not, lock it. */
 static void
 lock_if_possible (DeviceMenuMgr* self) {
-	device_menu_mgr_ensure_gconf_client (self);
+	device_menu_mgr_ensure_settings_client (self);
 
 	if (!g_settings_get_boolean (lockdown_settings, LOCKDOWN_KEY_SCREENSAVER)) {
 		lock_screen (NULL, 0, NULL);
@@ -662,7 +662,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 
     /* Make sure we have a valid GConf client, and build one
        if needed */
-    device_menu_mgr_ensure_gconf_client (self);
+    device_menu_mgr_ensure_settings_client (self);
     can_lockscreen = !g_settings_get_boolean (lockdown_settings,
                                               LOCKDOWN_KEY_SCREENSAVER);
     /* Lock screen item */
@@ -832,7 +832,7 @@ setup_restart_watch (DeviceMenuMgr* self)
 /* Ensures that we have a GConf client and if we build one
    set up the signal handler. */
 static void
-device_menu_mgr_ensure_gconf_client (DeviceMenuMgr* self)
+device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self)
 {
 	if (!lockdown_settings) {
 		lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);

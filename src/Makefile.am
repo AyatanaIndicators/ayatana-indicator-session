@@ -96,7 +96,7 @@ indicator_session_service_SOURCES = \
 	session-dbus.h \
 	gen-session-dbus.xml.c \
 	dbusmenu-shared.h \
-	gconf-helper.c \
+	settings-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \
 	user-menu-mgr.h \
@@ -126,8 +126,8 @@ indicator_session_service_LDADD = \
 
 gtk_logout_helper_SOURCES = \
 	gtk-logout-helper.c \
-	gconf-helper.c \
-	gconf-helper.h \
+	settings-helper.c \
+	settings-helper.h \
 	dialog.c \
 	dialog.h
 

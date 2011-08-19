@@ -20,7 +20,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 
 #include "user-menu-mgr.h"
-#include "gconf-helper.h"
+#include "settings-helper.h"
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"

@@ -1,0 +1,6 @@
+[com.canonical.indicator.session]
+panel_user_name = /system/indicator/me/display
+suppress_logout_restart_shutdown = /apps/indicator-session/suppress_logout_restart_shutdown
+suppress_logout_menuitem = /apps/indicator-session/suppress_logout_menuitem
+suppress_restart_menuitem = /apps/indicator-session/suppress_restart_menuitem
+suppress_shutdown_menuitem = /apps/indicator-session/suppress_shutdown_menuitem

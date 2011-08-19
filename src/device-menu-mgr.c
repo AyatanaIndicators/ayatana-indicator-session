@@ -44,7 +44,8 @@ struct _DeviceMenuMgr
   UdevMgr* udev_mgr;
 };
 
-static GConfClient       *gconf_client  = NULL;
+static GSettings         *lockdown_settings  = NULL;
+static GSettings         *keybinding_settings  = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *system_settings_menuitem = NULL;
 static DbusmenuMenuitem  *display_settings_menuitem = NULL;
@@ -125,6 +126,7 @@ device_menu_mgr_class_init (DeviceMenuMgrClass *klass)
 	object_class->finalize = device_menu_mgr_finalize;
 }
 
+#if 0
 // TODO
 // Is this needed anymore
 static void
@@ -171,6 +173,7 @@ keybinding_changed (GConfClient *client,
 	}
 	return;
 }
+#endif
 
 /* Check to see if the lockdown key is protecting from
    locking the screen.  If not, lock it. */
@@ -178,7 +181,7 @@ static void
 lock_if_possible (DeviceMenuMgr* self) {
 	device_menu_mgr_ensure_gconf_client (self);
 
-	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
+	if (!g_settings_get_boolean (lockdown_settings, LOCKDOWN_KEY_SCREENSAVER)) {
 		lock_screen (NULL, 0, NULL);
 	}
 	return;
@@ -660,9 +663,8 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
     /* Make sure we have a valid GConf client, and build one
        if needed */
     device_menu_mgr_ensure_gconf_client (self);
-    can_lockscreen = !gconf_client_get_bool ( gconf_client,
-                                              LOCKDOWN_KEY_SCREENSAVER,
-                                              NULL);
+    can_lockscreen = !g_settings_get_boolean (lockdown_settings,
+                                              LOCKDOWN_KEY_SCREENSAVER);
     /* Lock screen item */
     if (can_lockscreen) {
       lock_menuitem = dbusmenu_menuitem_new();
@@ -670,7 +672,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       _("Lock Screen"));
 
-      gchar * shortcut = gconf_client_get_string(gconf_client, KEY_LOCK_SCREEN, NULL);
+      gchar * shortcut = g_settings_get_string(keybinding_settings, KEY_LOCK_SCREEN);
       if (shortcut != NULL) {
         g_debug("Lock screen shortcut: %s", shortcut);
         dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
@@ -832,8 +834,13 @@ setup_restart_watch (DeviceMenuMgr* self)
 static void
 device_menu_mgr_ensure_gconf_client (DeviceMenuMgr* self)
 {
-	if (!gconf_client) {
-		gconf_client = gconf_client_get_default ();
+	if (!lockdown_settings) {
+		lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
+	}
+	if (!keybinding_settings) {
+		keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
+	}
+#if 0
 		gconf_client_add_dir(gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 		gconf_client_notify_add (gconf_client,
                              LOCKDOWN_DIR,
@@ -850,6 +857,7 @@ device_menu_mgr_ensure_gconf_client (DeviceMenuMgr* self)
                              NULL,
                              NULL);
 	}
+#endif
 }
 
 DbusmenuMenuitem*

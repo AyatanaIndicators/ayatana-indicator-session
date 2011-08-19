@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lock-helper.h"
 #include "users-service-dbus.h"
 
-static GConfClient * gconf_client = NULL;
+static GSettings* settings = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
 struct _UserMenuMgr
@@ -114,7 +114,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 
   /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (self->users_dbus_interface) &&
-      !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
+      !g_settings_get_boolean (settings, LOCKDOWN_KEY_USER);
 
   /* Remove the old menu items if that makes sense */
   children = dbusmenu_menuitem_take_children (self->root_item);
@@ -290,7 +290,7 @@ static void
 lock_if_possible (void) {
 	ensure_gconf_client ();
 
-	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
+	if (!g_settings_get_boolean (settings, LOCKDOWN_KEY_SCREENSAVER)) {
 		lock_screen(NULL, 0, NULL);
 	}
 
@@ -375,11 +375,10 @@ user_change (UsersServiceDbus *service,
 static void
 ensure_gconf_client ()
 {
-	if (!gconf_client) {
-		gconf_client = gconf_client_get_default ();
-		gconf_client_add_dir (gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_add_dir (gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+	if(!settings) {
+		settings = g_settings_new (SESSION_SCHEMA);
 	}
+	return;
 }
 
 DbusmenuMenuitem*

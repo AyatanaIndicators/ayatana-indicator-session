@@ -56,7 +56,7 @@ static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
 
-static void ensure_gconf_client ();
+static void ensure_settings_client ();
 static gboolean check_guest_session (void);
 static void activate_guest_session (DbusmenuMenuitem * mi,
                                     guint timestamp,
@@ -110,7 +110,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 
   /* Make sure we have a valid GConf client, and build one
      if needed */
-  ensure_gconf_client ();
+  ensure_settings_client ();
 
   /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (self->users_dbus_interface) &&
@@ -288,7 +288,7 @@ check_new_session ()
    locking the screen.  If not, lock it. */
 static void
 lock_if_possible (void) {
-	ensure_gconf_client ();
+	ensure_settings_client ();
 
 	if (!g_settings_get_boolean (settings, LOCKDOWN_KEY_SCREENSAVER)) {
 		lock_screen(NULL, 0, NULL);
@@ -373,7 +373,7 @@ user_change (UsersServiceDbus *service,
 /* Ensures that we have a GConf client and if we build one
    set up the signal handler. */
 static void
-ensure_gconf_client ()
+ensure_settings_client ()
 {
 	if(!settings) {
 		settings = g_settings_new (SESSION_SCHEMA);

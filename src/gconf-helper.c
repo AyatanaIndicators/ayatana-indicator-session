@@ -41,36 +41,36 @@ static guint logout_notify = 0;
 static guint restart_notify = 0;
 static guint shutdown_notify = 0;
 
+static void
+build_settings (void) {
+	if(!settings) {
+		settings = g_settings_new (SESSION_SCHEMA);
+	}
+	return;
+}
+
 gboolean
 supress_confirmations (void) {
-	if(!settings) {
-		settings = g_settings_new ("com.canonical.indicators.sound");
-	}
-	return g_settings_get_boolean (settings, SUPPRESS_KEY, NULL) ;
+	build_settings();
+	return g_settings_get_boolean (settings, SUPPRESS_KEY) ;
 }
 
 gboolean
 show_logout (void) {
-	if(!gconf_client) {
-		gconf_client = gconf_client_get_default ();
-	}
-	return !gconf_client_get_bool (gconf_client, LOGOUT_KEY, NULL) ;
+	build_settings();
+	return !g_settings_get_boolean (settings, LOGOUT_KEY) ;
 }
 
 gboolean
 show_restart (void) {
-	if(!gconf_client) {
-		gconf_client = gconf_client_get_default ();
-	}
-	return !gconf_client_get_bool (gconf_client, RESTART_KEY, NULL) ;
+	build_settings();
+	return !g_settings_get_boolean (settings, RESTART_KEY) ;
 }
 
 gboolean
 show_shutdown (void) {
-	if(!gconf_client) {
-		gconf_client = gconf_client_get_default ();
-	}
-	return !gconf_client_get_bool (gconf_client, SHUTDOWN_KEY, NULL) ;
+	build_settings();
+	return !g_settings_get_boolean (settings, SHUTDOWN_KEY) ;
 }
 
 static void update_menu_entries_callback (GConfClient *client, guint cnxn_id, GConfEntry  *entry, gpointer data) {

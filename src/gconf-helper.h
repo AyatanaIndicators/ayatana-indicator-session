@@ -33,11 +33,11 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 
-#define GLOBAL_DIR      "/apps/indicator-session"
-#define SUPPRESS_KEY    GLOBAL_DIR "/suppress_logout_restart_shutdown"
-#define LOGOUT_KEY      GLOBAL_DIR "/suppress_logout_menuitem"
-#define RESTART_KEY     GLOBAL_DIR "/suppress_restart_menuitem"
-#define SHUTDOWN_KEY    GLOBAL_DIR "/suppress_shutdown_menuitem"
+#define SESSION_SCHEMA      "org.canonical.indicator.session"
+#define SUPPRESS_KEY        "suppress_logout_restart_shutdown"
+#define LOGOUT_KEY          "suppress_logout_menuitem"
+#define RESTART_KEY         "suppress_restart_menuitem"
+#define SHUTDOWN_KEY        "suppress_shutdown_menuitem"
 
 #define LOCKDOWN_DIR              "/desktop/gnome/lockdown"
 #define LOCKDOWN_KEY_USER         LOCKDOWN_DIR "/disable_user_switching"

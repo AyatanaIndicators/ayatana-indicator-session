@@ -48,8 +48,10 @@ struct _SessionDbus {
 
 GType session_dbus_get_type (void);
 SessionDbus * session_dbus_new (void);
-void  session_dbus_set_name (SessionDbus * session, const gchar * name);
-
+void session_dbus_set_name (SessionDbus * session, const gchar * name);
+void session_dbus_set_users_real_name (SessionDbus * session, const gchar * name);
+void session_dbus_set_user_menu_visibility (SessionDbus* session, gboolean visible);
+void session_dbus_restart_required (SessionDbus* session);
 G_END_DECLS
 
 #endif

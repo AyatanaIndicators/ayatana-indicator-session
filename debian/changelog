@@ -1,5 +1,64 @@
-indicator-session (0.2.92-0ubuntu1~ppa1) oneiric; urgency=low
+indicator-session (0.3.2-0ubuntu1) oneiric; urgency=low
 
+  * New upstream release.
+    - Top-right bar shows "nvalid UTF-8]" (LP: #811852)
+    - Don't display 'updates available' when there aren't any (LP: #819495)
+    - guest item in user menu (LP: #827909)
+    - user menu shows all users with active sessions (LP: #827932)
+    - Use ellipsis consistently in the indicator-session strings (LP: #621339)
+    - ftbfs with gcc-4.6 -Werror (LP: #793105)
+    - lightdm asks for password when resuming from suspend even when no one 
+      is logged in (LP: #812804)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 18 Aug 2011 14:30:06 -0400
+
+indicator-session (0.3.1-0ubuntu2) oneiric; urgency=low
+
+  * debian/rules: run intltool-update to update the translations template
+    (lp: #820705)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 11 Aug 2011 17:09:08 +0200
+
+indicator-session (0.3.1-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - restart is missing from SessionMenu (LP: #815077)
+    - Don't allow starting programs via the greeter indicators (LP: #811853)
+    - Printer menu item should launch system-config-printer (LP: #818602)
+    - gudev integration
+    - apt restart required awareness
+  * debian/control
+    - Added build depends on libgudev-1.0-dev
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 10 Aug 2011 16:23:33 -0400
+
+indicator-session (0.3.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - fixed bug where the user menu wouldn't open in unity (LP: #812728)
+    - Include apt, settings and device menus
+  * debian/rules
+    - Updated gtk configure args
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 22 Jul 2011 13:41:08 -0400
+
+indicator-session (0.2.93-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+  * debian/control 
+    - Added Replaces indicator-me
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 14 Jul 2011 14:29:15 -0400
+
+indicator-session (0.2.92-0ubuntu2) oneiric; urgency=low
+
+  * src/session-service.c: drop g_debug leftover which broke the build
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 08 Jul 2011 11:52:43 +0200
+
+indicator-session (0.2.92-0ubuntu1) oneiric; urgency=low
+
+  [ Ted Gould ]
   * New upstream release. (0.2.91)
     * Integrates with LightDM now
     * Moved to libindicator 0.4
@@ -7,7 +66,11 @@ indicator-session (0.2.92-0ubuntu1~ppa1) oneiric; urgency=low
     * Fixed dist'ing the XML files
   * debian/control: Move suggests from gdm to lightdm 
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jul 2011 11:29:48 -0500
+  [ Ken VanDine ]
+  * debian/control
+    - bumped build depends for libindicator to >= 0.3.90
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 07 Jul 2011 14:59:44 -0400
 
 indicator-session (0.2.90-0ubuntu3) oneiric; urgency=low
 

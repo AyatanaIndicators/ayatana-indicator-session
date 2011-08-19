@@ -183,6 +183,8 @@ logout_dialog_new (LogoutDialogType type)
 	                                      "text", _(body_strings[type]),
 	                                      NULL));
 
+	gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
+
 	gboolean allowed = FALSE;
 	if (type == LOGOUT_DIALOG_TYPE_LOG_OUT) {
 		allowed = ck_check_allowed(LOGOUT_DIALOG_TYPE_RESTART);
@@ -223,6 +225,12 @@ logout_dialog_new (LogoutDialogType type)
 		                       button_text, GTK_RESPONSE_OK,
 		                       NULL);
 	}
+  
+  if (type == LOGOUT_DIALOG_TYPE_SHUTDOWN){
+  	const gchar * restart_text;
+		restart_text = g_dpgettext2 (NULL, "button", button_strings[LOGOUT_DIALOG_TYPE_RESTART]);
+		gtk_dialog_add_button (GTK_DIALOG(dialog), restart_text, GTK_RESPONSE_HELP);    
+  }
 
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 

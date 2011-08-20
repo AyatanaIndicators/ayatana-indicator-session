@@ -523,7 +523,7 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
   system_settings_menuitem  = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (system_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("System Settings..."));
+                                  _("System Settings…"));
   g_signal_connect (G_OBJECT(system_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_system_settings_with_context), "");
@@ -534,7 +534,7 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
   display_settings_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (display_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Displays..."));
+                                  _("Displays…"));
   g_signal_connect (G_OBJECT(display_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_system_settings_with_context), "display");
@@ -544,7 +544,7 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
   bluetooth_settings_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (bluetooth_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Bluetooth..."));
+                                  _("Bluetooth…"));
   g_signal_connect (G_OBJECT(bluetooth_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_system_settings_with_context), "bluetooth");
@@ -555,7 +555,7 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
   login_settings_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (login_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Startup Applications..."));
+                                  _("Startup Applications…"));
   g_signal_connect (G_OBJECT(login_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_session_properties),

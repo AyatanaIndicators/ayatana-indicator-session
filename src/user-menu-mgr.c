@@ -273,7 +273,24 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                     G_CALLBACK (activate_online_accounts),
                     NULL);
                                   
-  dbusmenu_menuitem_child_append (self->root_item, online_accounts_item);    
+  dbusmenu_menuitem_child_append (self->root_item, online_accounts_item);
+
+  DbusmenuMenuitem * user_accounts_item = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (user_accounts_item,
+                                  DBUSMENU_MENUITEM_PROP_TYPE,
+                                  DBUSMENU_CLIENT_TYPES_DEFAULT);
+  dbusmenu_menuitem_property_set (user_accounts_item,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("User Accounts…"));
+
+  g_signal_connect (G_OBJECT (user_accounts_item),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK (activate_user_accounts),
+                    NULL);
+                                  
+  dbusmenu_menuitem_child_append (self->root_item, user_accounts_item); 
+
+
 }
 
 /* Checks to see if we can create sessions */
@@ -351,6 +368,19 @@ activate_online_accounts (DbusmenuMenuitem *mi,
 {
   GError * error = NULL;
   if (!g_spawn_command_line_async("gnome-control-center online-accounts", &error))
+  {
+    g_warning("Unable to show control centre: %s", error->message);
+    g_error_free(error);
+  }
+}
+
+static void
+activate_user_accounts (DbusmenuMenuitem *mi,
+                          guint timestamp,
+                          gpointer user_data)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("gnome-control-center user-accounts", &error))
   {
     g_warning("Unable to show control centre: %s", error->message);
     g_error_free(error);

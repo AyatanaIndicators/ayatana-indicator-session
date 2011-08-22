@@ -167,7 +167,7 @@ indicator_session_init (IndicatorSession *self)
   // devices
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
-  self->devices.image = indicator_image_helper ("system-devices-panel");
+  self->devices.image = indicator_image_helper (ICON_DEFAULT);
   
   gtk_widget_show (GTK_WIDGET(self->devices.menu));
   gtk_widget_show (GTK_WIDGET(self->devices.image));
@@ -499,7 +499,7 @@ receive_signal (GDBusProxy * proxy,
   }
   else if (g_strcmp0(signal_name, "RebootRequired") == 0) {
     // TODO waiting on design to give me a name.
-    self->devices.image = indicator_image_helper ("system-devices-alert-panel");        
+    self->devices.image = indicator_image_helper (ICON_RESTART);        
   }  
 }
 

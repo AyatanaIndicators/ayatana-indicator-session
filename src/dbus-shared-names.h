@@ -61,7 +61,7 @@ typedef enum {
 #define RESTART_ITEM_LABEL        "restart-label"
 #define RESTART_ITEM_ICON         "restart-icon"
 
-#define ICON_DEFAULT              "system-shutdown-panel"
-#define ICON_RESTART              "system-shutdown-panel-restart"
+#define ICON_DEFAULT              "system-devices-panel"
+#define ICON_RESTART              "system-devices-panel-alert"
 
 #endif /* __DBUS_SHARED_NAMES_H__ */

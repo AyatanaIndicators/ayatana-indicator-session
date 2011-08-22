@@ -55,7 +55,7 @@ typedef enum {
 #define USER_ITEM_PROP_LOGGED_IN  "user-item-logged-in"
 #define USER_ITEM_PROP_IS_CURRENT_USER "user-item-is-current-user"
 #define USER_ITEM_PROP_ICON       "user-item-icon-path"
-#define USER_ITEM_ICON_DEFAULT    "user-offline"
+#define USER_ITEM_ICON_DEFAULT    "avatar-default"
 
 #define RESTART_ITEM_TYPE         "x-canonical-restart-item"
 #define RESTART_ITEM_LABEL        "restart-label"

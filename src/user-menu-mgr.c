@@ -92,8 +92,6 @@ static void
 user_menu_mgr_class_init (UserMenuMgrClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	//GObjectClass* parent_class = G_OBJECT_CLASS (klass);
-
 	object_class->finalize = user_menu_mgr_finalize;
 }
 
@@ -212,15 +210,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
           dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
           g_free(conflictedname);
         } else {
-          //g_debug ("%i %s", (gint)user->uid, user->real_name);
-          //g_debug ("users uid = %i", (gint)user->uid);
-          //g_debug ("users real name = %s", user->real_name);
-          if (user == NULL){
-            g_debug ("USER pointer is NULL");
-            return;
-          }
-          g_debug ("%p: %s", user, user->real_name);      
-          
+          g_debug ("%p: %s", user, user->real_name);                
           dbusmenu_menuitem_property_set (mi,
                                           USER_ITEM_PROP_NAME,
                                           user->real_name);
@@ -229,9 +219,16 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                                              USER_ITEM_PROP_LOGGED_IN,
                                              user->sessions != NULL);
         if (user->icon_file != NULL && user->icon_file[0] != '\0') {
-          dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_file);
+          g_debug ("user %s has this icon : %s",
+                    user->user_name,
+                    user->icon_file);
+          dbusmenu_menuitem_property_set (mi,
+                                          USER_ITEM_PROP_ICON,
+                                          user->icon_file);
         } else {
-          dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
+          dbusmenu_menuitem_property_set (mi,
+                                          USER_ITEM_PROP_ICON,
+                                          USER_ITEM_ICON_DEFAULT);
         }
         
         gboolean logged_in = g_strcmp0 (user->user_name, g_get_user_name()) == 0;       

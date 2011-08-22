@@ -107,23 +107,6 @@ user_widget_init (UserWidget *self)
   // Create the UI elements.  
   priv->user_image = gtk_image_new ();
   
-  // Just for now set the image to the default avator image
-  GdkPixbuf* pixbuf  = NULL; 
-  GError* error = NULL;
-  pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-                                     "avatar-default",
-                                     32,
-                                     GTK_ICON_LOOKUP_FORCE_SIZE,
-                                     &error);
-  
-  if (pixbuf == NULL || error != NULL) {
-    g_warning ("Could not load the default avatar image for some reason");
-  }
-  else{
-    gtk_image_set_from_pixbuf (GTK_IMAGE(priv->user_image), pixbuf);
-    g_object_unref (pixbuf);
-  }
-
   priv->user_name = gtk_label_new ("");
   priv->container = gtk_hbox_new (FALSE, 0);
 	priv->tick_icon = gtk_image_new_from_icon_name ("account-logged-in",
@@ -325,9 +308,43 @@ user_widget_set_twin_item (UserWidget* self,
     gtk_widget_hide(priv->tick_icon);
 	}
 
-	g_debug("Using user icon for '%s' from file: %s",
-          dbusmenu_menuitem_property_get(twin_item, USER_ITEM_PROP_NAME), icon_name);
+  GdkPixbuf* pixbuf  = NULL; 
+  GError* error = NULL;
+  pixbuf = gdk_pixbuf_new_from_file_at_size(icon_name, 32, 32, NULL);
 
+  if (pixbuf == NULL || error != NULL) {
+    g_warning ("Could not load the user image (%s) for some reason",
+                icon_name);
+    if (pixbuf != NULL){
+      g_object_unref (pixbuf);
+      pixbuf = NULL;
+    }
+    if (error != NULL){
+      g_error_free (error);
+      error = NULL;
+    }
+    
+    pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+                                       USER_ITEM_ICON_DEFAULT,
+                                       32,
+                                       GTK_ICON_LOOKUP_FORCE_SIZE,
+                                       &error);                
+  }
+
+  if (pixbuf == NULL || error != NULL) {
+    g_warning ("Could not load the user image");
+    if (error != NULL){
+      g_error_free (error);
+      error = NULL;
+    }                    
+  }  
+  else{
+    gtk_image_set_from_pixbuf (GTK_IMAGE(priv->user_image), pixbuf);
+  }
+  if (pixbuf != NULL){
+    g_object_unref (pixbuf);  
+    pixbuf = NULL;
+  }
 }
 
  /**

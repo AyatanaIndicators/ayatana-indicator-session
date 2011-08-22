@@ -38,6 +38,7 @@ debian/indicator-sus.substvars
 gtk-logout-helper
 .deps
 .libs
+test-ellipsis
 src/libsession.la
 src/libsession_la-indicator-session.lo
 src/status-provider-pidgin-marshal.c

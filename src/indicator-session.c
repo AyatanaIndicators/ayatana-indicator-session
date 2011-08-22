@@ -527,7 +527,7 @@ switch_property_change (DbusmenuMenuitem * item,
 
   if (variant == NULL || g_variant_get_string(variant, NULL) == NULL ||
       g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
-    finalstring = _("Switch User...");
+    finalstring = _("Switch User…");
     set_ellipsize = FALSE;
   }
 
@@ -554,7 +554,7 @@ switch_property_change (DbusmenuMenuitem * item,
     gdouble ems = width / pixels_per_em;
     g_debug("Username width %fem", ems);
 
-    finalstring = g_strdup_printf(_("Switch From %s..."), username);
+    finalstring = g_strdup_printf(_("Switch From %s…"), username);
     if (ems >= 20.0f) {
       set_ellipsize = TRUE;
     } else {

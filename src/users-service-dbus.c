@@ -58,6 +58,8 @@ static void     user_added                             (DBusGProxy        *proxy
 static void     user_deleted                           (DBusGProxy        *proxy,
                                                         const gchar       *user_id,
                                                         gpointer           user_data);
+static void     user_changed                            (DBusGProxy       *proxy,
+                                                         gpointer          user_data);                                                        
 static void     seat_proxy_session_added               (DBusGProxy        *seat_proxy,
                                                         const gchar       *session_id,
                                                         UsersServiceDbus  *service);
@@ -753,21 +755,37 @@ sync_users (UsersServiceDbus *self)
 
               continue;
             }
+          
+          user = g_hash_table_lookup (priv->users, id);
             // Double check we havent processed this user already
-          if (users_service_dbus_get_user_by_username (self, 
-                                                       g_value_get_string (g_hash_table_lookup (properties, "UserName"))) != NULL)
+          if (user != NULL)
             {
-              continue;                                     
+              g_free(user->user_name);
+              g_free(user->real_name);
+              g_free(user->icon_file);
+              user->real_name_conflict = FALSE;              
+              //continue;                                     
             }
-            
-          user = g_new0 (UserData, 1);
+          else
+            {            
+            user = g_new0 (UserData, 1);
+            }
+          // Can't subscribe to the Changed signal on each individual user path
+          // for some reason.
+          /*dbus_g_proxy_add_signal (proxy,
+                                   "Changed",
+                                   G_TYPE_INVALID);
 
+          dbus_g_proxy_connect_signal (proxy, "Changed",
+                                       G_CALLBACK(user_changed),
+                                       self,
+                                       NULL);*/
           user->uid         = g_value_get_uint64 (g_hash_table_lookup (properties, "Uid"));
           user->user_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "UserName")));
           user->real_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "RealName")));
           user->icon_file    = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "IconFile")));
           user->real_name_conflict = FALSE;
-		  user->menuitem    = NULL;
+		      user->menuitem    = NULL;
 
           g_hash_table_unref (properties);
 
@@ -780,6 +798,15 @@ sync_users (UsersServiceDbus *self)
 
       g_ptr_array_free (users, TRUE);
     }
+}
+
+static void
+user_changed (DBusGProxy  *proxy,
+              gpointer     user_data)
+{
+  g_debug ("JUST RESYNCED THE USERS FROM A USER CHANGE");
+  UsersServiceDbus *service = (UsersServiceDbus *)user_data;
+  sync_users (service);
 }
 
 static void

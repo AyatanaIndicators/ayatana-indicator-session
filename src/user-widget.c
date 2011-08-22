@@ -37,6 +37,7 @@ struct _UserWidgetPrivate
 {
   DbusmenuMenuitem* twin_item;
   GtkWidget* user_image;
+  gboolean using_personal_icon;
   GtkWidget* user_name;
   GtkWidget* container;
   GtkWidget* tick_icon;
@@ -235,8 +236,15 @@ user_widget_draw_usericon_gtk_3 (GtkWidget *widget,
                                  cairo_t* cr,
                                  gpointer user_data)
 {
+  g_return_val_if_fail(IS_USER_WIDGET(user_data), FALSE);
+  UserWidget* meta = USER_WIDGET(user_data);
+  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);  
+
+  if (priv->using_personal_icon == FALSE)
+    return FALSE;
+  
   draw_album_border (widget, FALSE);  
-  return TRUE;
+  return FALSE;
 }
 /**
  * TODO:
@@ -643,12 +651,17 @@ user_widget_set_twin_item (UserWidget* self,
       error = NULL;
     }
     
+    priv->using_personal_icon = FALSE;
+    
     pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
                                        USER_ITEM_ICON_DEFAULT,
                                        32,
                                        GTK_ICON_LOOKUP_FORCE_SIZE,
                                        &error);                
   }
+  else{
+    priv->using_personal_icon = TRUE;
+  }    
 
   if (pixbuf == NULL || error != NULL) {
     g_warning ("Could not load the user image");

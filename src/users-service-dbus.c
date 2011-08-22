@@ -772,14 +772,14 @@ sync_users (UsersServiceDbus *self)
             }
           // Can't subscribe to the Changed signal on each individual user path
           // for some reason.
-          /*dbus_g_proxy_add_signal (proxy,
+          dbus_g_proxy_add_signal (proxy,
                                    "Changed",
                                    G_TYPE_INVALID);
 
           dbus_g_proxy_connect_signal (proxy, "Changed",
                                        G_CALLBACK(user_changed),
                                        self,
-                                       NULL);*/
+                                       NULL);
           user->uid         = g_value_get_uint64 (g_hash_table_lookup (properties, "Uid"));
           user->user_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "UserName")));
           user->real_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "RealName")));

@@ -78,9 +78,6 @@ static void _color_shade (const CairoColorRGB *a,
 static void draw_album_border (GtkWidget *widget, gboolean selected);
                                          
 #if GTK_CHECK_VERSION(3, 0, 0)
-/*static void user_widget_get_preferred_height (GtkWidget* self,
-                                              gint* minimum_height,
-                                              gint* natural_height);*/
 static gboolean user_widget_primitive_draw_cb_gtk_3 (GtkWidget *image,
                                                          cairo_t* cr,
                                                          gpointer user_data);
@@ -103,7 +100,6 @@ user_widget_class_init (UserWidgetClass *klass)
   GtkWidgetClass    *widget_class = GTK_WIDGET_CLASS (klass);
 
   widget_class->button_release_event = user_widget_button_release_event;
-  //widget_class->get_preferred_height = user_widget_get_preferred_height;
   
   g_type_class_add_private (klass, sizeof (UserWidgetPrivate));
 
@@ -183,8 +179,6 @@ user_widget_init (UserWidget *self)
 static void
 user_widget_dispose (GObject *object)
 {
-  //UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(USER_WIDGET(object)); 
-
   G_OBJECT_CLASS (user_widget_parent_class)->dispose (object);
 }
 
@@ -199,15 +193,6 @@ user_widget_finalize (GObject *object)
 /*****************************************************************/
 
 #if GTK_CHECK_VERSION(3, 0, 0)  
-
-/*static void user_widget_get_preferred_height (GtkWidget* self,
-                                              gint* minimum_height,
-                                              gint* natural_height)
-{
-  minimum_height = *natural_height = 60;  
-}
-*/
-
 
 // TODO handle drawing of green check mark
 static gboolean
@@ -250,10 +235,6 @@ user_widget_draw_usericon_gtk_3 (GtkWidget *widget,
                                  cairo_t* cr,
                                  gpointer user_data)
 {
-  /*g_return_val_if_fail(IS_USER_WIDGET(user_data), FALSE);
-  UserWidget* meta = USER_WIDGET(user_data);
-  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);  
-  */
   draw_album_border (widget, FALSE);  
   return TRUE;
 }

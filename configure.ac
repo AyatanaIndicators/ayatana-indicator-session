@@ -8,6 +8,8 @@ AM_INIT_AUTOMAKE(indicator-session, 0.3.2)
 
 AM_MAINTAINER_MODE
 
+GLIB_GSETTINGS
+
 IT_PROG_INTLTOOL([0.35.0])
 
 AC_ISC_POSIX
@@ -88,16 +90,6 @@ AS_IF([test "x$with_gtk" = x3],
 
 AC_SUBST(GTKLOGOUTHELPER_CFLAGS)
 AC_SUBST(GTKLOGOUTHELPER_LIBS)
-
-AC_PATH_PROG(GCONFTOOL, gconftool-2)
-dnl Specify the gconf configuration source,
-dnl default to xml::$(sysconfdir)/gconf/gconf.xml.defaults
-
-AM_GCONF_SOURCE_2
-
-PKG_CHECK_MODULES(GCONF, gconf-2.0 >= 2.0)
-AC_SUBST(GCONF_CFLAGS)
-AC_SUBST(GCONF_LIBS)
 
 ###########################
 # Check to see if we're local

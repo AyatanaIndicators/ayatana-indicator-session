@@ -1,7 +1,7 @@
 [encoding: UTF-8]
-data/indicator-session.schemas.in
+data/com.canonical.indicator.session.gschema.xml.in
 data/extra-sessions/classic-desktop.desktop.in.in
-src/gconf-helper.c
+src/settings-helper.c
 src/lock-helper.c
 src/gtk-logout-helper.c
 src/dialog.c

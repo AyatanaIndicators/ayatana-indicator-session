@@ -20,13 +20,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 
 #include "user-menu-mgr.h"
-#include "gconf-helper.h"
+#include "settings-helper.h"
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"
 #include "users-service-dbus.h"
 
-static GConfClient * gconf_client = NULL;
+static GSettings* settings = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
 struct _UserMenuMgr
@@ -56,7 +56,7 @@ static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
 
-static void ensure_gconf_client ();
+static void ensure_settings_client ();
 static gboolean check_guest_session (void);
 static void activate_guest_session (DbusmenuMenuitem * mi,
                                     guint timestamp,
@@ -110,11 +110,11 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 
   /* Make sure we have a valid GConf client, and build one
      if needed */
-  ensure_gconf_client ();
+  ensure_settings_client ();
 
   /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (self->users_dbus_interface) &&
-      !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
+      !g_settings_get_boolean (settings, LOCKDOWN_KEY_USER);
 
   /* Remove the old menu items if that makes sense */
   children = dbusmenu_menuitem_take_children (self->root_item);
@@ -288,9 +288,9 @@ check_new_session ()
    locking the screen.  If not, lock it. */
 static void
 lock_if_possible (void) {
-	ensure_gconf_client ();
+	ensure_settings_client ();
 
-	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
+	if (!g_settings_get_boolean (settings, LOCKDOWN_KEY_SCREENSAVER)) {
 		lock_screen(NULL, 0, NULL);
 	}
 
@@ -373,13 +373,12 @@ user_change (UsersServiceDbus *service,
 /* Ensures that we have a GConf client and if we build one
    set up the signal handler. */
 static void
-ensure_gconf_client ()
+ensure_settings_client ()
 {
-	if (!gconf_client) {
-		gconf_client = gconf_client_get_default ();
-		gconf_client_add_dir (gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_add_dir (gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+	if(!settings) {
+		settings = g_settings_new (LOCKDOWN_SCHEMA);
 	}
+	return;
 }
 
 DbusmenuMenuitem*

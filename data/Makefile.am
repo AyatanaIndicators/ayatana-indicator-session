@@ -32,6 +32,7 @@ logout_helper_desktop_in_in_files = \
 logout_helperdir = $(datadir)/applications
 logout_helper_desktop_files = \
 	$(logout_helper_desktop_in_in_files:.desktop.in.in=.desktop)
+logout_helper_DATA = $(logout_helper_desktop_files)
 
 EXTRA_DIST =					\
 	$(service_in_files)			\

@@ -58,6 +58,8 @@ static void     user_added                             (DBusGProxy        *proxy
 static void     user_deleted                           (DBusGProxy        *proxy,
                                                         const gchar       *user_id,
                                                         gpointer           user_data);
+static void     user_changed                            (DBusGProxy       *proxy,
+                                                         gpointer          user_data);                                                        
 static void     seat_proxy_session_added               (DBusGProxy        *seat_proxy,
                                                         const gchar       *session_id,
                                                         UsersServiceDbus  *service);
@@ -711,11 +713,6 @@ sync_users (UsersServiceDbus *self)
   g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
-  if (g_hash_table_size (priv->users) > 0)
-    {
-      return;
-    }
-
   if (priv->count > MINIMUM_USERS && priv->count < MAXIMUM_USERS)
     {
       GPtrArray *users = NULL;
@@ -758,15 +755,37 @@ sync_users (UsersServiceDbus *self)
 
               continue;
             }
+          
+          user = g_hash_table_lookup (priv->users, id);
+            // Double check we havent processed this user already
+          if (user != NULL)
+            {
+              g_free(user->user_name);
+              g_free(user->real_name);
+              g_free(user->icon_file);
+              user->real_name_conflict = FALSE;              
+              //continue;                                     
+            }
+          else
+            {            
+            user = g_new0 (UserData, 1);
+            }
+          // Can't subscribe to the Changed signal on each individual user path
+          // for some reason.
+          dbus_g_proxy_add_signal (proxy,
+                                   "Changed",
+                                   G_TYPE_INVALID);
 
-          user = g_new0 (UserData, 1);
-
+          dbus_g_proxy_connect_signal (proxy, "Changed",
+                                       G_CALLBACK(user_changed),
+                                       self,
+                                       NULL);
           user->uid         = g_value_get_uint64 (g_hash_table_lookup (properties, "Uid"));
           user->user_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "UserName")));
           user->real_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "RealName")));
           user->icon_file    = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "IconFile")));
           user->real_name_conflict = FALSE;
-		  user->menuitem    = NULL;
+		      user->menuitem    = NULL;
 
           g_hash_table_unref (properties);
 
@@ -782,31 +801,50 @@ sync_users (UsersServiceDbus *self)
 }
 
 static void
+user_changed (DBusGProxy  *proxy,
+              gpointer     user_data)
+{
+  g_debug ("JUST RESYNCED THE USERS FROM A USER CHANGE");
+  UsersServiceDbus *service = (UsersServiceDbus *)user_data;
+  sync_users (service);
+}
+
+static void
 user_added (DBusGProxy  *proxy,
             const gchar *user_id,
             gpointer     user_data)
 {
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
-
   priv->count++;
 
   if (priv->count < MAXIMUM_USERS)
     {
       sync_users (service);
     }
+
+  g_signal_emit (service,
+                 signals[USER_ADDED],
+                 0,
+                 user_id);   
 }
 
 static void
 user_deleted (DBusGProxy  *proxy,
               const gchar *user_id,
               gpointer     user_data)
-{
+{  
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
 
   priv->count--;
   g_hash_table_remove (priv->users, user_id);
+
+  g_signal_emit (service,
+                 signals[USER_DELETED],
+                 0,
+                 user_id);   
+  
 }
 
 UserData *

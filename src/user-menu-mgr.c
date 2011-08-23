@@ -236,16 +236,22 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
         }
         
         gboolean logged_in = g_strcmp0 (user->user_name, g_get_user_name()) == 0;       
+        
+        g_debug ("user name = %s and g user name = %s",
+                 user->user_name,
+                 g_get_user_name());
+                 
         dbusmenu_menuitem_property_set_bool (mi,
                                              USER_ITEM_PROP_IS_CURRENT_USER,
                                              logged_in);          
         if (logged_in == TRUE){
-          if (check_guest_session() == TRUE){
+          if (check_guest_session()){
             g_debug ("about to set the users real name to %s for user %s",
                       user->real_name, user->user_name);
             session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
           }
           else{
+            g_debug ("about to set the users real name to GUEST");            
             session_dbus_set_users_real_name (self->session_dbus_interface,
                                               _("Guest"));            
           }            
@@ -429,7 +435,7 @@ static gboolean
 check_guest_session (void)
 {
 	if (geteuid() < 500) {
-		/* System users shouldn't have guest account shown.  Mosly
+		/* System users shouldn't have guest account shown.  Mostly
 		   this would be the case of the guest user itself. */
 		return FALSE;
 	}

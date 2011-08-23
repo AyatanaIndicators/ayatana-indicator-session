@@ -49,6 +49,10 @@ static gint compare_users_by_username (const gchar *a,
 static void activate_online_accounts (DbusmenuMenuitem *mi,
                                       guint timestamp,
                                       gpointer user_data);
+static void activate_user_accounts (DbusmenuMenuitem *mi,
+                                    guint timestamp,
+                                    gpointer user_data);
+                                      
 static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
                                          gboolean greeter_mode);
 static gboolean check_new_session ();

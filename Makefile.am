@@ -54,7 +54,7 @@ test-ellipsis: po
 test-space-ellipsis: po
 	@echo "#!/bin/bash" > $@
 	@echo "(cd po && make $(GETTEXT_PACKAGE).pot)" >> $@
-	@echo "grep -c -e \"^msgid.* …\\\"\" po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"Ellipsis found in user visible strings\" >&2 && exit 1" >> $@
+	@echo "grep -c -e \"^msgid.* …\\\"\" po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"Space before ellipsis found in user visible strings\" >&2 && exit 1" >> $@
 	@echo "exit 0" >> $@
 	@chmod +x $@
 

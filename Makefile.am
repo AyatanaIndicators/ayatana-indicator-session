@@ -35,12 +35,26 @@ dist-hook:
 	fi
 
 TESTS = \
-	test-ellipsis
+	test-ellipsis \
+	test-space-ellipsis
 
+#####
+# Tests for there being proper ellipsis instead of three periods in a row
+#####
 test-ellipsis: po
 	@echo "#!/bin/bash" > $@
 	@echo "(cd po && make $(GETTEXT_PACKAGE).pot)" >> $@
 	@echo "grep -c -e \"^msgid.*\.\.\.\\\"\" po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"Ellipsis found in user visible strings\" >&2 && exit 1" >> $@
+	@echo "exit 0" >> $@
+	@chmod +x $@
+
+#####
+# Tests for there being a space before an ellipsis
+#####
+test-space-ellipsis: po
+	@echo "#!/bin/bash" > $@
+	@echo "(cd po && make $(GETTEXT_PACKAGE).pot)" >> $@
+	@echo "grep -c -e \"^msgid.* …\\\"\" po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"Ellipsis found in user visible strings\" >&2 && exit 1" >> $@
 	@echo "exit 0" >> $@
 	@chmod +x $@
 

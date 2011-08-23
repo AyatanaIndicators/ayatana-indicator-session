@@ -44,6 +44,9 @@ static void activate_new_session (DbusmenuMenuitem * mi,
 static void activate_user_session (DbusmenuMenuitem *mi,
                                    guint timestamp,
                                    gpointer user_data);
+static void activate_user_accounts (DbusmenuMenuitem *mi,
+                                    guint timestamp,
+                                    gpointer user_data);
 static gint compare_users_by_username (const gchar *a,
                                        const gchar *b);
 static void activate_online_accounts (DbusmenuMenuitem *mi,

@@ -21,7 +21,10 @@ dist_convert_DATA = indicator-session.convert
 @INTLTOOL_DESKTOP_RULE@
 
 %.desktop.in: %.desktop.in.in
-	sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@
+	sed \
+		-e "s|\@libexecdir\@|$(libexecdir)|" \
+		-e "s|\@bindir\@|$(bindir)|" \
+		$< > $@
 
 logout_helper_desktop_in_in_files = \
 	indicator-session-lock-screen.desktop.in.in \

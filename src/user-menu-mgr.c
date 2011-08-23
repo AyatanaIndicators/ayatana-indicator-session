@@ -173,7 +173,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     gboolean user_menu_is_visible = FALSE;
     
     if (!greeter_mode){
-      user_menu_is_visible = self->user_count > 1;
+      user_menu_is_visible = self->user_count > 1 || check_guest_session();
     }
     
     session_dbus_set_user_menu_visibility (self->session_dbus_interface,
@@ -240,9 +240,15 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                                              USER_ITEM_PROP_IS_CURRENT_USER,
                                              logged_in);          
         if (logged_in == TRUE){
-          g_debug ("about to set the users real name to %s for user %s",
-                    user->real_name, user->user_name);
-          session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+          if (check_guest_session() == TRUE){
+            g_debug ("about to set the users real name to %s for user %s",
+                      user->real_name, user->user_name);
+            session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+          }
+          else{
+            session_dbus_set_users_real_name (self->session_dbus_interface,
+                                              _("Guest"));            
+          }            
         }
         
         dbusmenu_menuitem_child_append (self->root_item, mi);

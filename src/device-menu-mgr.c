@@ -740,7 +740,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   self->udev_mgr = udev_mgr_new (scanners_menuitem, webcam_menuitem);   
 }
 
-
 static void
 device_menu_mgr_rebuild_items (DeviceMenuMgr* self)
 {
@@ -821,7 +820,6 @@ device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self)
 		keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
 		g_signal_connect(lockdown_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(keybinding_changed), self);
 	}
-
 	return;
 }
 

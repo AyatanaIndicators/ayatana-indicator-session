@@ -2,6 +2,8 @@
 data/com.canonical.indicator.session.gschema.xml.in
 data/extra-sessions/classic-desktop.desktop.in.in
 data/indicator-session-shutdown.desktop.in.in
+data/indicator-session-logout.desktop.in.in
+data/indicator-session-restart.desktop.in.in
 src/settings-helper.c
 src/lock-helper.c
 src/gtk-logout-helper.c

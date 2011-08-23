@@ -24,6 +24,8 @@ dist_convert_DATA = indicator-session.convert
 	sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@
 
 logout_helper_desktop_in_in_files = \
+	indicator-session-logout.desktop.in.in \
+	indicator-session-restart.desktop.in.in \
 	indicator-session-shutdown.desktop.in.in
 
 logout_helperdir = $(datadir)/applications

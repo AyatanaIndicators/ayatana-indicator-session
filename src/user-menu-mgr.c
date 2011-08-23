@@ -44,6 +44,9 @@ static void activate_new_session (DbusmenuMenuitem * mi,
 static void activate_user_session (DbusmenuMenuitem *mi,
                                    guint timestamp,
                                    gpointer user_data);
+static void activate_user_accounts (DbusmenuMenuitem *mi,
+                                    guint timestamp,
+                                    gpointer user_data);
 static gint compare_users_by_username (const gchar *a,
                                        const gchar *b);
 static void activate_online_accounts (DbusmenuMenuitem *mi,
@@ -76,7 +79,7 @@ user_menu_mgr_init (UserMenuMgr *self)
                     G_CALLBACK (user_change),
                     self);
   g_signal_connect (G_OBJECT (self->users_dbus_interface),
-                    "user-removed",
+                    "user-deleted",
                     G_CALLBACK (user_change),
                     self);
 }
@@ -92,8 +95,6 @@ static void
 user_menu_mgr_class_init (UserMenuMgrClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	//GObjectClass* parent_class = G_OBJECT_CLASS (klass);
-
 	object_class->finalize = user_menu_mgr_finalize;
 }
 
@@ -212,15 +213,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
           dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
           g_free(conflictedname);
         } else {
-          //g_debug ("%i %s", (gint)user->uid, user->real_name);
-          //g_debug ("users uid = %i", (gint)user->uid);
-          //g_debug ("users real name = %s", user->real_name);
-          if (user == NULL){
-            g_debug ("USER pointer is NULL");
-            return;
-          }
-          g_debug ("%p: %s", user, user->real_name);      
-          
+          g_debug ("%p: %s", user, user->real_name);                
           dbusmenu_menuitem_property_set (mi,
                                           USER_ITEM_PROP_NAME,
                                           user->real_name);
@@ -229,9 +222,16 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                                              USER_ITEM_PROP_LOGGED_IN,
                                              user->sessions != NULL);
         if (user->icon_file != NULL && user->icon_file[0] != '\0') {
-          dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_file);
+          g_debug ("user %s has this icon : %s",
+                    user->user_name,
+                    user->icon_file);
+          dbusmenu_menuitem_property_set (mi,
+                                          USER_ITEM_PROP_ICON,
+                                          user->icon_file);
         } else {
-          dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
+          dbusmenu_menuitem_property_set (mi,
+                                          USER_ITEM_PROP_ICON,
+                                          USER_ITEM_ICON_DEFAULT);
         }
         
         gboolean logged_in = g_strcmp0 (user->user_name, g_get_user_name()) == 0;       
@@ -273,7 +273,24 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                     G_CALLBACK (activate_online_accounts),
                     NULL);
                                   
-  dbusmenu_menuitem_child_append (self->root_item, online_accounts_item);    
+  dbusmenu_menuitem_child_append (self->root_item, online_accounts_item);
+
+  DbusmenuMenuitem * user_accounts_item = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (user_accounts_item,
+                                  DBUSMENU_MENUITEM_PROP_TYPE,
+                                  DBUSMENU_CLIENT_TYPES_DEFAULT);
+  dbusmenu_menuitem_property_set (user_accounts_item,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("User Accounts…"));
+
+  g_signal_connect (G_OBJECT (user_accounts_item),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK (activate_user_accounts),
+                    NULL);
+                                  
+  dbusmenu_menuitem_child_append (self->root_item, user_accounts_item); 
+
+
 }
 
 /* Checks to see if we can create sessions */
@@ -357,6 +374,19 @@ activate_online_accounts (DbusmenuMenuitem *mi,
   }
 }
 
+static void
+activate_user_accounts (DbusmenuMenuitem *mi,
+                          guint timestamp,
+                          gpointer user_data)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("gnome-control-center user-accounts", &error))
+  {
+    g_warning("Unable to show control centre: %s", error->message);
+    g_error_free(error);
+  }
+}
+
 /* Signal called when a user is added.  It updates the count and
    rebuilds the menu */
 static void
@@ -364,9 +394,9 @@ user_change (UsersServiceDbus *service,
              const gchar      *user_id,
              gpointer          user_data)
 {
-	//DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
-  // TODO sort this out.
-	//rebuild_user_items (root, service);
+  g_return_if_fail (USER_IS_MENU_MGR (user_data));  
+  UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
+	user_menu_mgr_rebuild_items (user_mgr, FALSE);
 	return;
 }
 

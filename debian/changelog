@@ -1,3 +1,11 @@
+indicator-session (0.3.2-0ubuntu2~ppa3) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * So much stuff...
+    * Desktop files for system functions
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 23 Aug 2011 11:24:25 -0500
+
 indicator-session (0.3.2-0ubuntu2~ppa2) oneiric; urgency=low
 
   * Upstream Merge

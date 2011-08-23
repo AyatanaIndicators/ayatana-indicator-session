@@ -167,7 +167,7 @@ indicator_session_init (IndicatorSession *self)
   // devices
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
-  self->devices.image = indicator_image_helper ("system-devices-panel");
+  self->devices.image = indicator_image_helper (ICON_DEFAULT);
   
   gtk_widget_show (GTK_WIDGET(self->devices.menu));
   gtk_widget_show (GTK_WIDGET(self->devices.image));
@@ -499,7 +499,7 @@ receive_signal (GDBusProxy * proxy,
   }
   else if (g_strcmp0(signal_name, "RebootRequired") == 0) {
     // TODO waiting on design to give me a name.
-    self->devices.image = indicator_image_helper ("system-devices-alert-panel");        
+    self->devices.image = indicator_image_helper (ICON_RESTART);        
   }  
 }
 
@@ -527,7 +527,7 @@ switch_property_change (DbusmenuMenuitem * item,
 
   if (variant == NULL || g_variant_get_string(variant, NULL) == NULL ||
       g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
-    finalstring = _("Switch User...");
+    finalstring = _("Switch User…");
     set_ellipsize = FALSE;
   }
 
@@ -554,7 +554,7 @@ switch_property_change (DbusmenuMenuitem * item,
     gdouble ems = width / pixels_per_em;
     g_debug("Username width %fem", ems);
 
-    finalstring = g_strdup_printf(_("Switch From %s..."), username);
+    finalstring = g_strdup_printf(_("Switch From %s…"), username);
     if (ems >= 20.0f) {
       set_ellipsize = TRUE;
     } else {

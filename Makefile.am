@@ -33,3 +33,15 @@ dist-hook:
         else \
 			echo Failed to generate AUTHORS: not a branch >&2; \
 	fi
+
+TESTS = \
+	test-ellipsis
+
+test-ellipsis: po
+	@echo "#!/bin/bash" > $@
+	@echo "(cd po && make $(GETTEXT_PACKAGE).pot)" >> $@
+	@echo "grep -c -e \"^msgid.*\.\.\.\\\"\" po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"Ellipsis found in user visible strings\" >&2 && exit 1" >> $@
+	@echo "exit 0" >> $@
+	@chmod +x $@
+
+CLEANFILES = $(TESTS)

@@ -1,0 +1,9 @@
+[Desktop Entry]
+_Name=Lock Screen
+TryExec=@bindir@/xdg-screensaver
+Exec=@bindir@/xdg-screensaver lock
+Icon=system-lock-screen
+Terminal=false
+Type=Application
+OnlyShowIn=Unity;
+Version=1.0

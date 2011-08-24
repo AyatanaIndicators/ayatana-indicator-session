@@ -1,0 +1,9 @@
+[Desktop Entry]
+_Name=Restart
+TryExec=@libexecdir@/gtk-logout-helper
+Exec=@libexecdir@/gtk-logout-helper --restart
+Icon=system-restart
+Terminal=false
+Type=Application
+OnlyShowIn=Unity;
+Version=1.0

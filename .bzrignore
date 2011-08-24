@@ -203,3 +203,11 @@ src/libsession_la-user-widget.lo
 consolekit-seat-client.h
 data/com.canonical.indicator.session.gschema.valid
 data/com.canonical.indicator.session.gschema.xml
+indicator-session-shutdown.desktop
+indicator-session-shutdown.desktop.in
+indicator-session-logout.desktop.in
+indicator-session-logout.desktop
+indicator-session-restart.desktop.in
+indicator-session-restart.desktop
+data/indicator-session-lock-screen.desktop.in
+data/indicator-session-lock-screen.desktop

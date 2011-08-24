@@ -211,3 +211,5 @@ indicator-session-restart.desktop.in
 indicator-session-restart.desktop
 data/indicator-session-lock-screen.desktop.in
 data/indicator-session-lock-screen.desktop
+test-ascii-quotes
+test-space-ellipsis

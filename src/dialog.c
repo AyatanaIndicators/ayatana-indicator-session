@@ -62,7 +62,7 @@ static const gchar * button_auth_strings[LOGOUT_DIALOG_TYPE_CNT] = {
    in place of a log out. */
 static const gchar * restart_updates = N_("Restart Instead");
 static const gchar * restart_auth = N_("Restart Instead…");
-static const gchar * body_logout_update = N_("Some software updates won't apply until the computer next restarts.");
+static const gchar * body_logout_update = N_("Some software updates won’t apply until the computer next restarts.");
 
 static const gchar * icon_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	"system-log-out",

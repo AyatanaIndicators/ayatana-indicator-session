@@ -302,7 +302,7 @@ user_widget_primitive_draw_cb (GtkWidget *widget,
   
   gtk_widget_get_allocation (widget, &allocation);
   x = allocation.x + 13;        
-  y = allocation.height / 2;
+  y = allocation.y + allocation.height/2;
   
   cairo_arc (cr, x, y, 3.0, 0.0, 2 * G_PI);;
   

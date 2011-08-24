@@ -90,6 +90,10 @@ static gboolean user_widget_draw_usericon_gtk_3 (GtkWidget *widget,
 static gboolean user_widget_primitive_draw_cb (GtkWidget *image,
                                                    GdkEventExpose *event,
                                                    gpointer user_data);
+static gboolean user_widget_draw_usericon_gtk_2 (GtkWidget *widget,
+                                                 GdkEventExpose *event,
+                                                 gpointer user_data);
+                                                   
 #endif
 
 G_DEFINE_TYPE (UserWidget, user_widget, GTK_TYPE_MENU_ITEM);
@@ -174,6 +178,9 @@ user_widget_init (UserWidget *self)
   g_signal_connect_after (GTK_WIDGET(self), "expose-event", 
                           G_CALLBACK(user_widget_primitive_draw_cb),
                           GTK_WIDGET(self));  
+  g_signal_connect_after (GTK_WIDGET(priv->user_image), "expose-event", 
+                          G_CALLBACK(user_widget_draw_usericon_gtk_2),
+                          GTK_WIDGET(self));
   #endif  
 }
 
@@ -252,6 +259,23 @@ user_widget_draw_usericon_gtk_3 (GtkWidget *widget,
  */
 // GTK 2 Expose handler
 #else
+
+static gboolean
+user_widget_draw_usericon_gtk_2 (GtkWidget *widget,
+                                 GdkEventExpose *event,
+                                 gpointer user_data)
+{
+  g_return_val_if_fail(IS_USER_WIDGET(user_data), FALSE);
+  UserWidget* meta = USER_WIDGET(user_data);
+  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);  
+
+  if (priv->using_personal_icon == FALSE)
+    return FALSE;
+  
+  draw_album_border (widget, FALSE);  
+  return FALSE;
+}
+
 static gboolean
 user_widget_primitive_draw_cb (GtkWidget *widget,
                                GdkEventExpose *event,
@@ -273,6 +297,8 @@ user_widget_primitive_draw_cb (GtkWidget *widget,
   
   gdouble x, y;  
   style = gtk_widget_get_style (widget);
+
+  GtkAllocation allocation;
   
   gtk_widget_get_allocation (widget, &allocation);
   x = allocation.x + 13;        

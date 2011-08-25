@@ -2,6 +2,34 @@
 
 2011-08-25  Conor Curran  <conor.curran@canonical.com>
 
+	ted's str allocation fixes
+
+2011-08-25  Ted Gould  <ted@gould.cx>
+
+	Change the function to assume nothing about the parameters and always allocate a string
+
+2011-08-25  Conor Curran  <conor.curran@canonical.com>
+
+	bump for next release
+
+2011-08-25  Conor Curran  <conor.curran@canonical.com>
+
+	fixes for the min users and label on panel for guest
+
+2011-08-25  Conor Curran  <conor.curran@canonical.com>
+
+	fix the min users bug plus guest label utf8 issue
+
+2011-08-25  Conor Curran  <conor.curran@canonical.com>
+
+	protection against dodgy vendor ids provided by udev
+
+2011-08-25  Conor Curran  <conor.curran@canonical.com>
+
+	bumped the dbusmenu version depends
+
+2011-08-25  Conor Curran  <conor.curran@canonical.com>
+
 	updated po files and bumped for beta release
 
 2011-08-25  Conor Curran  <conor.curran@canonical.com>

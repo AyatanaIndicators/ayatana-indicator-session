@@ -1,3 +1,10 @@
+indicator-session (0.3.3.1-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - Fixed string displayed for users name on single user systems 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Aug 2011 15:25:40 -0400
+
 indicator-session (0.3.3-0ubuntu2) oneiric; urgency=low
 
   * src/udev-mgr.c

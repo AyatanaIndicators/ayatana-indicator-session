@@ -49,7 +49,6 @@ static GSettings         *keybinding_settings  = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *system_settings_menuitem = NULL;
 static DbusmenuMenuitem  *display_settings_menuitem = NULL;
-static DbusmenuMenuitem  *bluetooth_settings_menuitem = NULL;
 static DbusmenuMenuitem  *login_settings_menuitem = NULL;
 static DbusmenuMenuitem  *software_updates_menuitem = NULL;
 static DbusmenuMenuitem  *printers_menuitem = NULL;
@@ -535,17 +534,6 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        display_settings_menuitem,
                                        1);
-  bluetooth_settings_menuitem = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (bluetooth_settings_menuitem,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Bluetooth…"));
-  g_signal_connect (G_OBJECT(bluetooth_settings_menuitem),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context), "bluetooth");
-  dbusmenu_menuitem_child_add_position(self->root_item,
-                                       bluetooth_settings_menuitem,
-                                       2);
-
   login_settings_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (login_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -556,20 +544,20 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
                     "login");
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        login_settings_menuitem,                                  
-                                       3);
+                                       2);
   software_updates_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (software_updates_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
                                   _("Software Up to Date"));
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        software_updates_menuitem,
-                                       4);
+                                       3);
 
   DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (separator1,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_add_position (self->root_item, separator1, 5);
+  dbusmenu_menuitem_child_add_position (self->root_item, separator1, 4);
 }
 
 static void
@@ -584,7 +572,7 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
                                        FALSE);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         device_heading,
-                                        6);
+                                        5);
 
   printers_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (printers_menuitem,
@@ -596,7 +584,7 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
                     "printers");
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        printers_menuitem,
-                                       7);
+                                       6);
   scanners_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (scanners_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -607,7 +595,7 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
                     NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         scanners_menuitem,
-                                        8);
+                                        7);
   dbusmenu_menuitem_property_set_bool (scanners_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        FALSE);
@@ -622,7 +610,7 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
                     NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         webcam_menuitem,
-                                        10);
+                                        8);
   dbusmenu_menuitem_property_set_bool (webcam_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        FALSE);
@@ -631,7 +619,7 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_property_set (separator3,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_add_position (self->root_item, separator3, 11);
+  dbusmenu_menuitem_child_add_position (self->root_item, separator3, 9);
 }
 
 static void
@@ -752,7 +740,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   self->udev_mgr = udev_mgr_new (scanners_menuitem, webcam_menuitem);   
 }
 
-
 static void
 device_menu_mgr_rebuild_items (DeviceMenuMgr* self)
 {
@@ -833,7 +820,6 @@ device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self)
 		keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
 		g_signal_connect(lockdown_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(keybinding_changed), self);
 	}
-
 	return;
 }
 

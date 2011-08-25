@@ -54,7 +54,8 @@ static void activate_online_accounts (DbusmenuMenuitem *mi,
                                       gpointer user_data);
 static void activate_user_accounts (DbusmenuMenuitem *mi,
                                     guint timestamp,
-                                    gpointer user_data);                                      
+                                    gpointer user_data);
+                                      
 static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
                                          gboolean greeter_mode);
 static gboolean check_new_session ();
@@ -175,7 +176,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     gboolean user_menu_is_visible = FALSE;
     
     if (!greeter_mode){
-      user_menu_is_visible = self->user_count > 1;
+      user_menu_is_visible = self->user_count > 1 || check_guest_session();
     }
     
     session_dbus_set_user_menu_visibility (self->session_dbus_interface,
@@ -238,13 +239,25 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
         }
         
         gboolean logged_in = g_strcmp0 (user->user_name, g_get_user_name()) == 0;       
+        
+        g_debug ("user name = %s and g user name = %s",
+                 user->user_name,
+                 g_get_user_name());
+                 
         dbusmenu_menuitem_property_set_bool (mi,
                                              USER_ITEM_PROP_IS_CURRENT_USER,
                                              logged_in);          
         if (logged_in == TRUE){
-          g_debug ("about to set the users real name to %s for user %s",
-                    user->real_name, user->user_name);
-          session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+          if (check_guest_session()){
+            g_debug ("about to set the users real name to %s for user %s",
+                      user->real_name, user->user_name);
+            session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+          }
+          else{
+            g_debug ("about to set the users real name to GUEST");            
+            session_dbus_set_users_real_name (self->session_dbus_interface,
+                                              _("Guest"));            
+          }            
         }
         
         dbusmenu_menuitem_child_append (self->root_item, mi);
@@ -425,7 +438,7 @@ static gboolean
 check_guest_session (void)
 {
 	if (geteuid() < 500) {
-		/* System users shouldn't have guest account shown.  Mosly
+		/* System users shouldn't have guest account shown.  Mostly
 		   this would be the case of the guest user itself. */
 		return FALSE;
 	}

@@ -40,7 +40,10 @@ libexec_PROGRAMS = indicator-session-service$(EXEEXT) \
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -85,11 +88,11 @@ libsession_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 PROGRAMS = $(libexec_PROGRAMS)
 am_gtk_logout_helper_OBJECTS =  \
 	gtk_logout_helper-gtk-logout-helper.$(OBJEXT) \
-	gtk_logout_helper-gconf-helper.$(OBJEXT) \
+	gtk_logout_helper-settings-helper.$(OBJEXT) \
 	gtk_logout_helper-dialog.$(OBJEXT)
 gtk_logout_helper_OBJECTS = $(am_gtk_logout_helper_OBJECTS)
 gtk_logout_helper_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 gtk_logout_helper_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(gtk_logout_helper_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
@@ -99,7 +102,7 @@ am_indicator_session_service_OBJECTS =  \
 	indicator_session_service-session-service.$(OBJEXT) \
 	indicator_session_service-session-dbus.$(OBJEXT) \
 	indicator_session_service-gen-session-dbus.xml.$(OBJEXT) \
-	indicator_session_service-gconf-helper.$(OBJEXT) \
+	indicator_session_service-settings-helper.$(OBJEXT) \
 	indicator_session_service-users-service-dbus.$(OBJEXT) \
 	indicator_session_service-user-menu-mgr.$(OBJEXT) \
 	indicator_session_service-device-menu-mgr.$(OBJEXT) \
@@ -108,8 +111,7 @@ am_indicator_session_service_OBJECTS =  \
 	indicator_session_service-udev-mgr.$(OBJEXT)
 indicator_session_service_OBJECTS =  \
 	$(am_indicator_session_service_OBJECTS)
-indicator_session_service_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+indicator_session_service_DEPENDENCIES = $(am__DEPENDENCIES_1)
 indicator_session_service_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(indicator_session_service_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -179,16 +181,13 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-GCONFTOOL = @GCONFTOOL@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_LIBS = @GCONF_LIBS@
-GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
-GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_COMPILE_SCHEMAS = @GLIB_COMPILE_SCHEMAS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMELOCALEDIR = @GNOMELOCALEDIR@
 GREP = @GREP@
+GSETTINGS_DISABLE_SCHEMAS_COMPILE = @GSETTINGS_DISABLE_SCHEMAS_COMPILE@
 GTKLOGOUTHELPER_CFLAGS = @GTKLOGOUTHELPER_CFLAGS@
 GTKLOGOUTHELPER_LIBS = @GTKLOGOUTHELPER_LIBS@
 INDICATORDIR = @INDICATORDIR@
@@ -277,6 +276,7 @@ datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+gsettingsschemadir = @gsettingsschemadir@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
@@ -340,7 +340,7 @@ indicator_session_service_SOURCES = \
 	session-dbus.h \
 	gen-session-dbus.xml.c \
 	dbusmenu-shared.h \
-	gconf-helper.c \
+	settings-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \
 	user-menu-mgr.h \
@@ -372,8 +372,8 @@ indicator_session_service_LDADD = \
 #################
 gtk_logout_helper_SOURCES = \
 	gtk-logout-helper.c \
-	gconf-helper.c \
-	gconf-helper.h \
+	settings-helper.c \
+	settings-helper.h \
 	dialog.c \
 	dialog.h
 
@@ -542,16 +542,16 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-dialog.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gconf-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-gtk-logout-helper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtk_logout_helper-settings-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-apt-transaction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-apt-watcher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-device-menu-mgr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gconf-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-lock-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-service.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-settings-helper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-udev-mgr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-user-menu-mgr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-users-service-dbus.Po@am__quote@
@@ -614,21 +614,21 @@ gtk_logout_helper-gtk-logout-helper.obj: gtk-logout-helper.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gtk-logout-helper.obj `if test -f 'gtk-logout-helper.c'; then $(CYGPATH_W) 'gtk-logout-helper.c'; else $(CYGPATH_W) '$(srcdir)/gtk-logout-helper.c'; fi`
 
-gtk_logout_helper-gconf-helper.o: gconf-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gconf-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo -c -o gtk_logout_helper-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo $(DEPDIR)/gtk_logout_helper-gconf-helper.Po
+gtk_logout_helper-settings-helper.o: settings-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-settings-helper.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-settings-helper.Tpo -c -o gtk_logout_helper-settings-helper.o `test -f 'settings-helper.c' || echo '$(srcdir)/'`settings-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-settings-helper.Tpo $(DEPDIR)/gtk_logout_helper-settings-helper.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='gtk_logout_helper-gconf-helper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='settings-helper.c' object='gtk_logout_helper-settings-helper.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-settings-helper.o `test -f 'settings-helper.c' || echo '$(srcdir)/'`settings-helper.c
 
-gtk_logout_helper-gconf-helper.obj: gconf-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-gconf-helper.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo -c -o gtk_logout_helper-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-gconf-helper.Tpo $(DEPDIR)/gtk_logout_helper-gconf-helper.Po
+gtk_logout_helper-settings-helper.obj: settings-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-settings-helper.obj -MD -MP -MF $(DEPDIR)/gtk_logout_helper-settings-helper.Tpo -c -o gtk_logout_helper-settings-helper.obj `if test -f 'settings-helper.c'; then $(CYGPATH_W) 'settings-helper.c'; else $(CYGPATH_W) '$(srcdir)/settings-helper.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/gtk_logout_helper-settings-helper.Tpo $(DEPDIR)/gtk_logout_helper-settings-helper.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='gtk_logout_helper-gconf-helper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='settings-helper.c' object='gtk_logout_helper-settings-helper.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -c -o gtk_logout_helper-settings-helper.obj `if test -f 'settings-helper.c'; then $(CYGPATH_W) 'settings-helper.c'; else $(CYGPATH_W) '$(srcdir)/settings-helper.c'; fi`
 
 gtk_logout_helper-dialog.o: dialog.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gtk_logout_helper_CFLAGS) $(CFLAGS) -MT gtk_logout_helper-dialog.o -MD -MP -MF $(DEPDIR)/gtk_logout_helper-dialog.Tpo -c -o gtk_logout_helper-dialog.o `test -f 'dialog.c' || echo '$(srcdir)/'`dialog.c
@@ -710,21 +710,21 @@ indicator_session_service-gen-session-dbus.xml.obj: gen-session-dbus.xml.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-gen-session-dbus.xml.obj `if test -f 'gen-session-dbus.xml.c'; then $(CYGPATH_W) 'gen-session-dbus.xml.c'; else $(CYGPATH_W) '$(srcdir)/gen-session-dbus.xml.c'; fi`
 
-indicator_session_service-gconf-helper.o: gconf-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-gconf-helper.o -MD -MP -MF $(DEPDIR)/indicator_session_service-gconf-helper.Tpo -c -o indicator_session_service-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-gconf-helper.Tpo $(DEPDIR)/indicator_session_service-gconf-helper.Po
+indicator_session_service-settings-helper.o: settings-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-settings-helper.o -MD -MP -MF $(DEPDIR)/indicator_session_service-settings-helper.Tpo -c -o indicator_session_service-settings-helper.o `test -f 'settings-helper.c' || echo '$(srcdir)/'`settings-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-settings-helper.Tpo $(DEPDIR)/indicator_session_service-settings-helper.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='indicator_session_service-gconf-helper.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='settings-helper.c' object='indicator_session_service-settings-helper.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-gconf-helper.o `test -f 'gconf-helper.c' || echo '$(srcdir)/'`gconf-helper.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-settings-helper.o `test -f 'settings-helper.c' || echo '$(srcdir)/'`settings-helper.c
 
-indicator_session_service-gconf-helper.obj: gconf-helper.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-gconf-helper.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-gconf-helper.Tpo -c -o indicator_session_service-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-gconf-helper.Tpo $(DEPDIR)/indicator_session_service-gconf-helper.Po
+indicator_session_service-settings-helper.obj: settings-helper.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-settings-helper.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-settings-helper.Tpo -c -o indicator_session_service-settings-helper.obj `if test -f 'settings-helper.c'; then $(CYGPATH_W) 'settings-helper.c'; else $(CYGPATH_W) '$(srcdir)/settings-helper.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-settings-helper.Tpo $(DEPDIR)/indicator_session_service-settings-helper.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gconf-helper.c' object='indicator_session_service-gconf-helper.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='settings-helper.c' object='indicator_session_service-settings-helper.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-gconf-helper.obj `if test -f 'gconf-helper.c'; then $(CYGPATH_W) 'gconf-helper.c'; else $(CYGPATH_W) '$(srcdir)/gconf-helper.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-settings-helper.obj `if test -f 'settings-helper.c'; then $(CYGPATH_W) 'settings-helper.c'; else $(CYGPATH_W) '$(srcdir)/settings-helper.c'; fi`
 
 indicator_session_service-users-service-dbus.o: users-service-dbus.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-users-service-dbus.o -MD -MP -MF $(DEPDIR)/indicator_session_service-users-service-dbus.Tpo -c -o indicator_session_service-users-service-dbus.o `test -f 'users-service-dbus.c' || echo '$(srcdir)/'`users-service-dbus.c

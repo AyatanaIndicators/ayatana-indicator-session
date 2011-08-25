@@ -9,37 +9,42 @@ dbus_services_DATA = $(service_in_files:.service.in=.service)
 %.service: %.service.in
 	sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@
 
-##############################
-# GConf Schema
-##############################
-
-schemadir =					\
-	$(GCONF_SCHEMA_FILE_DIR)
-
-schema_in_files =				\
-	indicator-session.schemas.in
-
-schema_DATA =					\
-	$(schema_in_files:.schemas.in=.schemas)
-
 @INTLTOOL_SCHEMAS_RULE@
+@INTLTOOL_XML_NOMERGE_RULE@
 
+@GSETTINGS_RULES@
+gsettings_SCHEMAS = com.canonical.indicator.session.gschema.xml
 
-#$(dbus_services_DATA): $(service_in_files) Makefile
-#	sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@
+convertdir = $(datadir)/GConf/gsettings
+dist_convert_DATA = indicator-session.convert
+
+@INTLTOOL_DESKTOP_RULE@
+
+%.desktop.in: %.desktop.in.in
+	sed \
+		-e "s|\@libexecdir\@|$(libexecdir)|" \
+		-e "s|\@bindir\@|$(bindir)|" \
+		$< > $@
+
+logout_helper_desktop_in_in_files = \
+	indicator-session-lock-screen.desktop.in.in \
+	indicator-session-logout.desktop.in.in \
+	indicator-session-restart.desktop.in.in \
+	indicator-session-shutdown.desktop.in.in
+
+logout_helperdir = $(datadir)/applications
+logout_helper_desktop_files = \
+	$(logout_helper_desktop_in_in_files:.desktop.in.in=.desktop)
+logout_helper_DATA = $(logout_helper_desktop_files)
 
 EXTRA_DIST =					\
 	$(service_in_files)			\
-	$(schema_in_files)
+	$(gsettings_SCHEMAS:.xml=.xml.in) \
+	$(logout_helper_desktop_in_in_files)
+
 
 CLEANFILES =					\
 	$(dbus_services_DATA)			\
-	$(schema_DATA)
+	$(gsettings_SCHEMAS) \
+	$(logout_helper_desktop_files)
 
-if GCONF_SCHEMAS_INSTALL
-install-data-local:
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
-		gconftool-2 --makefile-install-rule $(schema_DATA)
-else
-install-data-local:
-endif

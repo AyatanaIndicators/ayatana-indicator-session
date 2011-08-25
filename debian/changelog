@@ -1,3 +1,16 @@
+indicator-session (0.3.3-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - User menu should still show even if there is only 1 user (LP: #831758)
+    - Bluetooth item in menu not needed (LP: #825111)
+    - Newly created users are not added to the menu until next 
+      login (LP: #552048)
+    - Users list in shutdown menu is not updated on user 
+      deletion (LP: #557608)
+    - should use gsettings rather than gconf (LP: #656323)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Aug 2011 08:58:56 -0400
+
 indicator-session (0.3.2-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.

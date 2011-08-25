@@ -1,4 +1,4 @@
-indicator-session (0.3.3-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (0.3.3-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.
     - User menu should still show even if there is only 1 user (LP: #831758)
@@ -8,6 +8,8 @@ indicator-session (0.3.3-0ubuntu1) UNRELEASED; urgency=low
     - Users list in shutdown menu is not updated on user 
       deletion (LP: #557608)
     - should use gsettings rather than gconf (LP: #656323)
+  * debian/control
+    - Bump dbusmenu build dep to >= 0.4.92
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Aug 2011 08:58:56 -0400
 

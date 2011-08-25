@@ -14,3 +14,4 @@ src/session-service.c
 src/apt-watcher.c
 src/device-menu-mgr.c
 src/user-menu-mgr.c
+src/udev-mgr.c

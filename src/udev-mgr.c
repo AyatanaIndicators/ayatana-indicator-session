@@ -49,7 +49,9 @@ static void debug_device (UdevMgr* self,
                           GUdevDevice* device,
                           UdevMgrDeviceAction action);
                           
-
+static gchar* format_device_name (UdevMgr* self,
+                                  gchar* brand,
+                                  gchar* type);
 struct _UdevMgr
 {
 	GObject parent_instance;
@@ -233,7 +235,7 @@ udev_mgr_handle_webcam (UdevMgr* self,
                          product);
     dbusmenu_menuitem_property_set (self->webcam_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Webcams"));                            
+                                    _("Webcam"));                            
   }
   else {
     if (g_hash_table_lookup (self->webcams_present, product) != NULL){
@@ -245,13 +247,11 @@ udev_mgr_handle_webcam (UdevMgr* self,
     manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
     
     if (manufacturer != NULL){
-      gchar* lowered = g_ascii_strdown (manufacturer, -1);
-      lowered[0] = g_ascii_toupper (lowered[0]);
-      gchar* label = g_strdup_printf(_("%s Webcam"), lowered);
-      g_free (lowered);
       dbusmenu_menuitem_property_set (self->webcam_item,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      label);
+                                      format_device_name (self,
+                                                          g_strdup(manufacturer),
+                                                          "Webcam"));
     }
     
     g_hash_table_insert (self->webcams_present,
@@ -307,7 +307,8 @@ debug_device (UdevMgr* self,
     g_debug("%s", propstr);
   }*/ 
 }
-
+// TODO SCSI is not dynamic right ?
+// i.e. just need to handle startup scan.
 static void udev_mgr_handle_scsi_device (UdevMgr* self,
                                          GUdevDevice* device,
                                          UdevMgrDeviceAction action)
@@ -315,7 +316,19 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
   const gchar* type = NULL;
 	type = g_udev_device_get_property (device, "TYPE");
   // apparently anything thats type 3 and SCSI is a Scanner
-  if (g_strcmp0 (type, "6") == 0){
+  if (g_strcmp0 (type, "6") == 0 && action == ADD){
+    
+    const gchar* manufacturer = NULL;        
+    manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
+    
+    if (manufacturer != NULL){
+      dbusmenu_menuitem_property_set (self->scanner_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      format_device_name (self,
+                                                          g_strdup(manufacturer),
+                                                          "Scanner"));
+    }
+    
     gchar* random_scanner_name = 	g_strdup_printf("%p--scanner", self);
     g_hash_table_insert (self->scanners_present,
                          random_scanner_name,
@@ -361,7 +374,7 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
         g_hash_table_remove (self->scanners_present, vendor);
         dbusmenu_menuitem_property_set (self->scanner_item,
                                         DBUSMENU_MENUITEM_PROP_LABEL,
-                                        _("Scanners"));
+                                        _("Scanner"));
         
       }
     }
@@ -374,13 +387,11 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
         manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
         
         if (manufacturer != NULL){
-          gchar* lowered = g_ascii_strdown (manufacturer, -1);
-          lowered[0] = g_ascii_toupper (lowered[0]);
-          gchar* label = g_strdup_printf(_("%s Scanner"), lowered);
-          g_free (lowered);
           dbusmenu_menuitem_property_set (self->scanner_item,
                                           DBUSMENU_MENUITEM_PROP_LABEL,
-                                          label);
+                                          format_device_name (self,
+                                                              g_strdup(manufacturer),
+                                                              "Scanner"));
         }
         g_hash_table_insert (self->scanners_present,
                              g_strdup(vendor),
@@ -397,7 +408,7 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
                                            UdevMgrDeviceAction action)
 {
   const gchar* vendor = NULL;
-  debug_device (self, device, action);    
+  //debug_device (self, device, action);    
   
 	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
   
@@ -430,7 +441,7 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
         g_hash_table_remove (self->scanners_present, vendor);
         dbusmenu_menuitem_property_set (self->scanner_item, 
                                         DBUSMENU_MENUITEM_PROP_LABEL,
-                                        _("Scanners"));        
+                                        _("Scanner"));        
       }
     }
     else{      
@@ -442,14 +453,12 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
         
         manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
         if (manufacturer != NULL){
-        
-          gchar* lowered = g_ascii_strdown (manufacturer, -1);
-          lowered[0] = g_ascii_toupper (lowered[0]);
-          gchar* label = g_strdup_printf(_("%s Scanner"), lowered);
-          g_free (lowered);
+          
           dbusmenu_menuitem_property_set (self->scanner_item, 
                                           DBUSMENU_MENUITEM_PROP_LABEL,
-                                          label);
+                                          format_device_name (self,
+                                                              g_strdup(manufacturer),
+                                                              "Scanner"));
         }
                                         
         g_hash_table_insert (self->scanners_present,
@@ -501,4 +510,27 @@ UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner,
     g_list_free (scsi_devices_available);
   }
   return mgr;
+}
+
+static gchar* format_device_name (UdevMgr* self,
+                                  gchar* brand,
+                                  gchar* type)
+{
+  // We don't want to accommodate long names
+  if (strlen(brand) > 7)
+    return type;
+
+  gint i = 0;
+
+  // If it contains something other than an alphabetic entry ignore it.
+  for(i = 0; i < sizeof(brand); i++){
+    if ( !g_ascii_isalpha (brand[i]) )
+      return type;
+  }
+
+  gchar* lowered = g_ascii_strdown (brand, -1);
+  lowered[0] = g_ascii_toupper (lowered[0]);
+  gchar* label = g_strdup_printf(_("%s %s"), lowered, type);
+  g_free (lowered);  
+  return label;
 }

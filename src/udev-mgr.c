@@ -50,8 +50,9 @@ static void debug_device (UdevMgr* self,
                           UdevMgrDeviceAction action);
                           
 static gchar* format_device_name (UdevMgr* self,
-                                  gchar* brand,
-                                  gchar* type);
+                                  const gchar* brand,
+                                  const gchar* generic,
+                                  const gchar* branded) G_GNUC_WARN_UNUSED_RESULT;
 struct _UdevMgr
 {
 	GObject parent_instance;
@@ -247,11 +248,11 @@ udev_mgr_handle_webcam (UdevMgr* self,
     manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
     
     if (manufacturer != NULL){
+	  gchar * label = format_device_name(self, manufacturer, _("Webcam"), _("%s Webcam"));
       dbusmenu_menuitem_property_set (self->webcam_item,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      format_device_name (self,
-                                                          g_strdup(manufacturer),
-                                                          "Webcam"));
+                                      label);
+	  g_free(label);
     }
     
     g_hash_table_insert (self->webcams_present,
@@ -322,11 +323,11 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
     manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
     
     if (manufacturer != NULL){
+	  gchar * label = format_device_name(self, manufacturer, _("Scanner"), _("%s Scanner"));
       dbusmenu_menuitem_property_set (self->scanner_item,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      format_device_name (self,
-                                                          g_strdup(manufacturer),
-                                                          "Scanner"));
+                                      label);
+	  g_free(label);
     }
     
     gchar* random_scanner_name = 	g_strdup_printf("%p--scanner", self);
@@ -387,11 +388,11 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
         manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
         
         if (manufacturer != NULL){
+          gchar * label = format_device_name(self, manufacturer, _("Scanner"), _("%s Scanner"));
           dbusmenu_menuitem_property_set (self->scanner_item,
                                           DBUSMENU_MENUITEM_PROP_LABEL,
-                                          format_device_name (self,
-                                                              g_strdup(manufacturer),
-                                                              "Scanner"));
+                                          label);
+          g_free(label);
         }
         g_hash_table_insert (self->scanners_present,
                              g_strdup(vendor),
@@ -453,12 +454,11 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
         
         manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
         if (manufacturer != NULL){
-          
+          gchar * label = format_device_name(self, manufacturer, _("Scanner"), _("%s Scanner"));
           dbusmenu_menuitem_property_set (self->scanner_item, 
                                           DBUSMENU_MENUITEM_PROP_LABEL,
-                                          format_device_name (self,
-                                                              g_strdup(manufacturer),
-                                                              "Scanner"));
+                                          label);
+          g_free(label);
         }
                                         
         g_hash_table_insert (self->scanners_present,
@@ -513,24 +513,25 @@ UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner,
 }
 
 static gchar* format_device_name (UdevMgr* self,
-                                  gchar* brand,
-                                  gchar* type)
+                                  const gchar* brand,
+                                  const gchar* generic,
+                                  const gchar* branded)
 {
   // We don't want to accommodate long names
   if (strlen(brand) > 7)
-    return type;
+    return g_strdup(generic);
 
   gint i = 0;
 
   // If it contains something other than an alphabetic entry ignore it.
   for(i = 0; i < sizeof(brand); i++){
     if ( !g_ascii_isalpha (brand[i]) )
-      return type;
+      return g_strdup(generic);
   }
 
   gchar* lowered = g_ascii_strdown (brand, -1);
   lowered[0] = g_ascii_toupper (lowered[0]);
-  gchar* label = g_strdup_printf(_("%s %s"), lowered, type);
+  gchar* label = g_strdup_printf(branded, lowered);
   g_free (lowered);  
   return label;
 }

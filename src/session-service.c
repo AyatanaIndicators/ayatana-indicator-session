@@ -97,7 +97,7 @@ main (int argc, char ** argv)
 
 	/* Setting up i18n and gettext.  Apparently, we need
 	   all of these. */
-	setlocale (LC_ALL, "");
+	setlocale (LC_ALL, "C");
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
 

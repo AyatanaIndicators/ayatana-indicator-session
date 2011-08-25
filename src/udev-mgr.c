@@ -19,9 +19,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <gudev/gudev.h>
 
-// TEMP
-#include <stdio.h>
-#include <string.h>
 #include <glib/gi18n.h>
 
 #include "udev-mgr.h"
@@ -250,11 +247,11 @@ udev_mgr_handle_webcam (UdevMgr* self,
     if (manufacturer != NULL){
       gchar* lowered = g_ascii_strdown (manufacturer, -1);
       lowered[0] = g_ascii_toupper (lowered[0]);
-      gchar* label = g_strdup_printf("%s Webcam", lowered);
+      gchar* label = g_strdup_printf(_("%s Webcam"), lowered);
       g_free (lowered);
       dbusmenu_menuitem_property_set (self->webcam_item,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
-                                      _(label));
+                                      label);
     }
     
     g_hash_table_insert (self->webcams_present,
@@ -379,11 +376,11 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
         if (manufacturer != NULL){
           gchar* lowered = g_ascii_strdown (manufacturer, -1);
           lowered[0] = g_ascii_toupper (lowered[0]);
-          gchar* label = g_strdup_printf("%s Scanner", lowered);
+          gchar* label = g_strdup_printf(_("%s Scanner"), lowered);
           g_free (lowered);
           dbusmenu_menuitem_property_set (self->scanner_item,
                                           DBUSMENU_MENUITEM_PROP_LABEL,
-                                          _(label));
+                                          label);
         }
         g_hash_table_insert (self->scanners_present,
                              g_strdup(vendor),
@@ -448,11 +445,11 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
         
           gchar* lowered = g_ascii_strdown (manufacturer, -1);
           lowered[0] = g_ascii_toupper (lowered[0]);
-          gchar* label = g_strdup_printf("%s Scanner", lowered);
+          gchar* label = g_strdup_printf(_("%s Scanner"), lowered);
           g_free (lowered);
           dbusmenu_menuitem_property_set (self->scanner_item, 
                                           DBUSMENU_MENUITEM_PROP_LABEL,
-                                          _(label));
+                                          label);
         }
                                         
         g_hash_table_insert (self->scanners_present,

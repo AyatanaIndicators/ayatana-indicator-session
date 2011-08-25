@@ -1,0 +1,9 @@
+[Desktop Entry]
+_Name=Log Out
+TryExec=@libexecdir@/gtk-logout-helper
+Exec=@libexecdir@/gtk-logout-helper --logout
+Icon=system-log-out
+Terminal=false
+Type=Application
+OnlyShowIn=Unity;
+Version=1.0

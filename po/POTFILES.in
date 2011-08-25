@@ -1,7 +1,11 @@
 [encoding: UTF-8]
-data/indicator-session.schemas.in
+data/com.canonical.indicator.session.gschema.xml.in
 data/extra-sessions/classic-desktop.desktop.in.in
-src/gconf-helper.c
+data/indicator-session-lock-screen.desktop.in.in
+data/indicator-session-shutdown.desktop.in.in
+data/indicator-session-logout.desktop.in.in
+data/indicator-session-restart.desktop.in.in
+src/settings-helper.c
 src/lock-helper.c
 src/gtk-logout-helper.c
 src/dialog.c
@@ -10,3 +14,4 @@ src/session-service.c
 src/apt-watcher.c
 src/device-menu-mgr.c
 src/user-menu-mgr.c
+src/udev-mgr.c

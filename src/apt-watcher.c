@@ -279,6 +279,9 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
       dbusmenu_menuitem_property_set (self->apt_item,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       _("Reboot Required"));
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_DISPOSITION,
+                                      DBUSMENU_MENUITEM_DISPOSITION_ALERT);                                       
       session_dbus_restart_required (self->session_dbus_interface);
     }
     g_debug ("Finished with a reboot value of %i", reboot); 

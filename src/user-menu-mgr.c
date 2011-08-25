@@ -20,13 +20,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 
 #include "user-menu-mgr.h"
-#include "gconf-helper.h"
+#include "settings-helper.h"
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"
 #include "users-service-dbus.h"
 
-static GConfClient * gconf_client = NULL;
+static GSettings* settings = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
 
 struct _UserMenuMgr
@@ -44,11 +44,18 @@ static void activate_new_session (DbusmenuMenuitem * mi,
 static void activate_user_session (DbusmenuMenuitem *mi,
                                    guint timestamp,
                                    gpointer user_data);
+static void activate_user_accounts (DbusmenuMenuitem *mi,
+                                    guint timestamp,
+                                    gpointer user_data);
 static gint compare_users_by_username (const gchar *a,
                                        const gchar *b);
 static void activate_online_accounts (DbusmenuMenuitem *mi,
                                       guint timestamp,
                                       gpointer user_data);
+static void activate_user_accounts (DbusmenuMenuitem *mi,
+                                    guint timestamp,
+                                    gpointer user_data);
+                                      
 static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
                                          gboolean greeter_mode);
 static gboolean check_new_session ();
@@ -56,7 +63,7 @@ static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
 
-static void ensure_gconf_client ();
+static void ensure_settings_client ();
 static gboolean check_guest_session (void);
 static void activate_guest_session (DbusmenuMenuitem * mi,
                                     guint timestamp,
@@ -76,7 +83,7 @@ user_menu_mgr_init (UserMenuMgr *self)
                     G_CALLBACK (user_change),
                     self);
   g_signal_connect (G_OBJECT (self->users_dbus_interface),
-                    "user-removed",
+                    "user-deleted",
                     G_CALLBACK (user_change),
                     self);
 }
@@ -92,8 +99,6 @@ static void
 user_menu_mgr_class_init (UserMenuMgrClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	//GObjectClass* parent_class = G_OBJECT_CLASS (klass);
-
 	object_class->finalize = user_menu_mgr_finalize;
 }
 
@@ -110,11 +115,11 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 
   /* Make sure we have a valid GConf client, and build one
      if needed */
-  ensure_gconf_client ();
+  ensure_settings_client ();
 
   /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (self->users_dbus_interface) &&
-      !gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_USER, NULL);
+      !g_settings_get_boolean (settings, LOCKDOWN_KEY_USER);
 
   /* Remove the old menu items if that makes sense */
   children = dbusmenu_menuitem_take_children (self->root_item);
@@ -171,7 +176,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     gboolean user_menu_is_visible = FALSE;
     
     if (!greeter_mode){
-      user_menu_is_visible = self->user_count > 1;
+      user_menu_is_visible = self->user_count > 1 || check_guest_session();
     }
     
     session_dbus_set_user_menu_visibility (self->session_dbus_interface,
@@ -212,15 +217,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
           dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
           g_free(conflictedname);
         } else {
-          //g_debug ("%i %s", (gint)user->uid, user->real_name);
-          //g_debug ("users uid = %i", (gint)user->uid);
-          //g_debug ("users real name = %s", user->real_name);
-          if (user == NULL){
-            g_debug ("USER pointer is NULL");
-            return;
-          }
-          g_debug ("%p: %s", user, user->real_name);      
-          
+          g_debug ("%p: %s", user, user->real_name);                
           dbusmenu_menuitem_property_set (mi,
                                           USER_ITEM_PROP_NAME,
                                           user->real_name);
@@ -229,19 +226,38 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                                              USER_ITEM_PROP_LOGGED_IN,
                                              user->sessions != NULL);
         if (user->icon_file != NULL && user->icon_file[0] != '\0') {
-          dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, user->icon_file);
+          g_debug ("user %s has this icon : %s",
+                    user->user_name,
+                    user->icon_file);
+          dbusmenu_menuitem_property_set (mi,
+                                          USER_ITEM_PROP_ICON,
+                                          user->icon_file);
         } else {
-          dbusmenu_menuitem_property_set(mi, USER_ITEM_PROP_ICON, USER_ITEM_ICON_DEFAULT);
+          dbusmenu_menuitem_property_set (mi,
+                                          USER_ITEM_PROP_ICON,
+                                          USER_ITEM_ICON_DEFAULT);
         }
         
         gboolean logged_in = g_strcmp0 (user->user_name, g_get_user_name()) == 0;       
+        
+        g_debug ("user name = %s and g user name = %s",
+                 user->user_name,
+                 g_get_user_name());
+                 
         dbusmenu_menuitem_property_set_bool (mi,
                                              USER_ITEM_PROP_IS_CURRENT_USER,
                                              logged_in);          
         if (logged_in == TRUE){
-          g_debug ("about to set the users real name to %s for user %s",
-                    user->real_name, user->user_name);
-          session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+          if (check_guest_session()){
+            g_debug ("about to set the users real name to %s for user %s",
+                      user->real_name, user->user_name);
+            session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+          }
+          else{
+            g_debug ("about to set the users real name to GUEST");            
+            session_dbus_set_users_real_name (self->session_dbus_interface,
+                                              _("Guest"));            
+          }            
         }
         
         dbusmenu_menuitem_child_append (self->root_item, mi);
@@ -273,7 +289,24 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                     G_CALLBACK (activate_online_accounts),
                     NULL);
                                   
-  dbusmenu_menuitem_child_append (self->root_item, online_accounts_item);    
+  dbusmenu_menuitem_child_append (self->root_item, online_accounts_item);
+
+  DbusmenuMenuitem * user_accounts_item = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (user_accounts_item,
+                                  DBUSMENU_MENUITEM_PROP_TYPE,
+                                  DBUSMENU_CLIENT_TYPES_DEFAULT);
+  dbusmenu_menuitem_property_set (user_accounts_item,
+                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                  _("User Accounts…"));
+
+  g_signal_connect (G_OBJECT (user_accounts_item),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK (activate_user_accounts),
+                    NULL);
+                                  
+  dbusmenu_menuitem_child_append (self->root_item, user_accounts_item); 
+
+
 }
 
 /* Checks to see if we can create sessions */
@@ -288,9 +321,9 @@ check_new_session ()
    locking the screen.  If not, lock it. */
 static void
 lock_if_possible (void) {
-	ensure_gconf_client ();
+	ensure_settings_client ();
 
-	if (!gconf_client_get_bool (gconf_client, LOCKDOWN_KEY_SCREENSAVER, NULL)) {
+	if (!g_settings_get_boolean (settings, LOCKDOWN_KEY_SCREENSAVER)) {
 		lock_screen(NULL, 0, NULL);
 	}
 
@@ -357,6 +390,19 @@ activate_online_accounts (DbusmenuMenuitem *mi,
   }
 }
 
+static void
+activate_user_accounts (DbusmenuMenuitem *mi,
+                          guint timestamp,
+                          gpointer user_data)
+{
+  GError * error = NULL;
+  if (!g_spawn_command_line_async("gnome-control-center user-accounts", &error))
+  {
+    g_warning("Unable to show control centre: %s", error->message);
+    g_error_free(error);
+  }
+}
+
 /* Signal called when a user is added.  It updates the count and
    rebuilds the menu */
 static void
@@ -364,22 +410,21 @@ user_change (UsersServiceDbus *service,
              const gchar      *user_id,
              gpointer          user_data)
 {
-	//DbusmenuMenuitem *root = (DbusmenuMenuitem *)user_data;
-  // TODO sort this out.
-	//rebuild_user_items (root, service);
+  g_return_if_fail (USER_IS_MENU_MGR (user_data));  
+  UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
+	user_menu_mgr_rebuild_items (user_mgr, FALSE);
 	return;
 }
 
 /* Ensures that we have a GConf client and if we build one
    set up the signal handler. */
 static void
-ensure_gconf_client ()
+ensure_settings_client ()
 {
-	if (!gconf_client) {
-		gconf_client = gconf_client_get_default ();
-		gconf_client_add_dir (gconf_client, LOCKDOWN_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_add_dir (gconf_client, KEYBINDING_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+	if(!settings) {
+		settings = g_settings_new (LOCKDOWN_SCHEMA);
 	}
+	return;
 }
 
 DbusmenuMenuitem*
@@ -393,7 +438,7 @@ static gboolean
 check_guest_session (void)
 {
 	if (geteuid() < 500) {
-		/* System users shouldn't have guest account shown.  Mosly
+		/* System users shouldn't have guest account shown.  Mostly
 		   this would be the case of the guest user itself. */
 		return FALSE;
 	}

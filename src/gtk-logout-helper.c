@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gtk/gtk.h>
 #include <dbus/dbus-glib.h>
 #include "dialog.h"
-#include "gconf-helper.h"
+#include "settings-helper.h"
 
 static void
 consolekit_fallback (LogoutDialogType action)

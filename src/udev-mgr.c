@@ -19,11 +19,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <gudev/gudev.h>
 
-// TEMP
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#include <glib/gi18n.h>
 
 #include "udev-mgr.h"
 #include "sane-rules.h"
@@ -235,13 +231,29 @@ udev_mgr_handle_webcam (UdevMgr* self,
     }
     g_hash_table_remove (self->webcams_present,
                          product);
-    
+    dbusmenu_menuitem_property_set (self->webcam_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Webcams"));                            
   }
   else {
     if (g_hash_table_lookup (self->webcams_present, product) != NULL){
       g_warning ("Got an ADD event on a webcam device but we already have that device in our webcam cache");
       return;                     
     }
+    
+    const gchar* manufacturer = NULL;        
+    manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
+    
+    if (manufacturer != NULL){
+      gchar* lowered = g_ascii_strdown (manufacturer, -1);
+      lowered[0] = g_ascii_toupper (lowered[0]);
+      gchar* label = g_strdup_printf(_("%s Webcam"), lowered);
+      g_free (lowered);
+      dbusmenu_menuitem_property_set (self->webcam_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      label);
+    }
+    
     g_hash_table_insert (self->webcams_present,
                          g_strdup (product),
                          g_strdup (vendor));                               
@@ -254,23 +266,26 @@ debug_device (UdevMgr* self,
               GUdevDevice* device,
               UdevMgrDeviceAction action)
 {
-  /*const gchar* vendor;
+  const gchar* vendor;
   const gchar* product;
   const gchar* number;
   const gchar* name;
+  const gchar* manufacturer;
   
 	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
+	manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
 	product = g_udev_device_get_property (device, "ID_MODEL_ID");
   number = g_udev_device_get_number (device);
   name = g_udev_device_get_name (device);
   
-  g_debug ("device vendor id %s , product id of %s , number of %s and name of %s",
+  g_debug ("%s device vendor id %s , product id of %s , number of %s and name of %s",
+           g_strdup(manufacturer),
            g_strdup(vendor),
            g_strdup(product),
            g_strdup(number),
            g_strdup(name));
          
-  const gchar *const *list;
+  /*const gchar *const *list;
   const gchar *const *iter;  
   char propstr[500];
   guint32 namelen = 0, i;  
@@ -290,7 +305,7 @@ debug_device (UdevMgr* self,
            strcat(propstr, " ");
     strcat(propstr, g_udev_device_get_property(device, *iter));
     g_debug("%s", propstr);
-  }*/  
+  }*/ 
 }
 
 static void udev_mgr_handle_scsi_device (UdevMgr* self,
@@ -344,6 +359,10 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
       }
       else{
         g_hash_table_remove (self->scanners_present, vendor);
+        dbusmenu_menuitem_property_set (self->scanner_item,
+                                        DBUSMENU_MENUITEM_PROP_LABEL,
+                                        _("Scanners"));
+        
       }
     }
     else{      
@@ -351,6 +370,18 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
         g_warning ("Got an ADD event on a scanner device but we already have that device in our scanners cache");
       }
       else{
+        const gchar* manufacturer = NULL;        
+        manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
+        
+        if (manufacturer != NULL){
+          gchar* lowered = g_ascii_strdown (manufacturer, -1);
+          lowered[0] = g_ascii_toupper (lowered[0]);
+          gchar* label = g_strdup_printf(_("%s Scanner"), lowered);
+          g_free (lowered);
+          dbusmenu_menuitem_property_set (self->scanner_item,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          label);
+        }
         g_hash_table_insert (self->scanners_present,
                              g_strdup(vendor),
                              g_strdup(model_id)); 
@@ -397,6 +428,9 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
       }
       else{
         g_hash_table_remove (self->scanners_present, vendor);
+        dbusmenu_menuitem_property_set (self->scanner_item, 
+                                        DBUSMENU_MENUITEM_PROP_LABEL,
+                                        _("Scanners"));        
       }
     }
     else{      
@@ -404,6 +438,20 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
         g_warning ("Got an ADD event on a scanner device but we already have that device in our scanners cache");
       }
       else{
+        const gchar* manufacturer = NULL;
+        
+        manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
+        if (manufacturer != NULL){
+        
+          gchar* lowered = g_ascii_strdown (manufacturer, -1);
+          lowered[0] = g_ascii_toupper (lowered[0]);
+          gchar* label = g_strdup_printf(_("%s Scanner"), lowered);
+          g_free (lowered);
+          dbusmenu_menuitem_property_set (self->scanner_item, 
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          label);
+        }
+                                        
         g_hash_table_insert (self->scanners_present,
                              g_strdup(vendor),
                              g_strdup(model_id)); 

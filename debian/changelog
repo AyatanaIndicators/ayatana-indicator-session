@@ -1,3 +1,10 @@
+indicator-session (0.3.3-0ubuntu2) oneiric; urgency=low
+
+  * src/udev-mgr.c
+    - Cherry picked fix for (LP: #833795)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 25 Aug 2011 12:56:17 -0400
+
 indicator-session (0.3.3-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.

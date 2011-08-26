@@ -1,3 +1,12 @@
+indicator-session (0.3.3.2-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - Don't set LC_ALL to C
+  * debian/rules
+    - dh_translations doesn't handle multibuilds, so manually add the domain
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 26 Aug 2011 09:49:37 -0400
+
 indicator-session (0.3.3.1-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.

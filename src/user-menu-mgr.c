@@ -168,6 +168,10 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
       users_service_dbus_set_guest_item (self->users_dbus_interface,
                                          guest_mi);
     }
+    else{
+      session_dbus_set_users_real_name (self->session_dbus_interface,
+                                        _("Guest"));      
+    }
     
     GList * users = NULL;
     users = users_service_dbus_get_user_list (self->users_dbus_interface);
@@ -176,7 +180,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     gboolean user_menu_is_visible = FALSE;
     
     if (!greeter_mode){
-      user_menu_is_visible = self->user_count > 1 || check_guest_session();
+      user_menu_is_visible = TRUE;
     }
     
     session_dbus_set_user_menu_visibility (self->session_dbus_interface,
@@ -188,37 +192,15 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 
     for (u = users; u != NULL; u = g_list_next (u)) {
       user = u->data;
-      //g_debug ("%p: %s", user, user->real_name);      
+      g_debug ("%s: %s", user->user_name, user->real_name);      
       user->service = self->users_dbus_interface;
       gboolean current_user = g_strcmp0 (user->user_name, g_get_user_name()) == 0;  
       if (current_user == TRUE){
-        if (check_guest_session()){
-          g_debug ("about to set the users real name to %s for user %s",
-                    user->real_name, user->user_name);
-          session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
-        }
-        else{
-          g_debug ("about to set the users real name to GUEST");            
-          session_dbus_set_users_real_name (self->session_dbus_interface,
-                                            _("Guest"));            
-        }            
+        g_debug ("about to set the users real name to %s for user %s",
+                  user->real_name, user->user_name);
+        session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
       }
            
-      
-      if (g_strcmp0(user->user_name, "guest") == 0) {
-        /* Check to see if the guest has sessions and so therefore should
-           get a check mark. */
-        dbusmenu_menuitem_property_set_bool (guest_mi,
-                                             USER_ITEM_PROP_LOGGED_IN,
-                                             user->sessions != NULL);
-        /* If we're showing user accounts, keep going through the list */
-        if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
-          continue;
-        }
-        /* If not, we can stop here */
-        break;
-      }
-
       if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
         mi = dbusmenu_menuitem_new ();
         dbusmenu_menuitem_property_set (mi,

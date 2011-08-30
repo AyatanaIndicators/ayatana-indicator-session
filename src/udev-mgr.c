@@ -226,7 +226,11 @@ udev_mgr_handle_webcam (UdevMgr* self,
   
   vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
   product = g_udev_device_get_property (device, "ID_MODEL_ID");
-  
+
+  if (!vendor || !product) {
+    return;
+  }  
+
   if (action == REMOVE){
     if (g_hash_table_lookup (self->webcams_present, product) == NULL){
       g_warning ("Got a remove event on a webcam device but we don't have that device in our webcam cache");
@@ -316,18 +320,23 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
 {
   const gchar* type = NULL;
 	type = g_udev_device_get_property (device, "TYPE");
-  // apparently anything thats type 3 and SCSI is a Scanner
+  
+  if (!type) {
+    return;
+  }  
+  
+  // apparently anything thats type 6 and SCSI is a Scanner
   if (g_strcmp0 (type, "6") == 0 && action == ADD){
     
     const gchar* manufacturer = NULL;        
     manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
     
     if (manufacturer != NULL){
-	  gchar * label = format_device_name(self, manufacturer, _("Scanner"), _("%s Scanner"));
+	    gchar * label = format_device_name(self, manufacturer, _("Scanner"), _("%s Scanner"));
       dbusmenu_menuitem_property_set (self->scanner_item,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       label);
-	  g_free(label);
+	    g_free(label);
     }
     
     gchar* random_scanner_name = 	g_strdup_printf("%p--scanner", self);

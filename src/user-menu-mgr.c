@@ -179,9 +179,8 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     
     gboolean user_menu_is_visible = FALSE;
     
-    // question for Ted, how to detect guest session is enabled.
     if (!greeter_mode){
-      user_menu_is_visible = TRUE;//self->user_count > 1 || check_guest_session();
+      user_menu_is_visible = TRUE;
     }
     
     session_dbus_set_user_menu_visibility (self->session_dbus_interface,

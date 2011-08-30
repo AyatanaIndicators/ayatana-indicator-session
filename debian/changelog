@@ -1,6 +1,8 @@
 indicator-session (0.3.4-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release.
+    - in a Guest session user menu is not visible (LP: #834948)
+    - User name shown as [Invalid UTF-8] in live session (LP: #837246)
 
  -- Ken VanDine <ken.vandine@canonical.com>  Tue, 30 Aug 2011 15:29:35 -0400
 

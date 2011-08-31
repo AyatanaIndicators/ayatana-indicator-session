@@ -56,7 +56,7 @@ static void apt_watcher_upgrade_system_cb (GObject * obj,
                 
 static void apt_watcher_show_apt_dialog (DbusmenuMenuitem* mi,
                                          guint timestamp,
-                                         gchar * type);
+                                         gpointer userdata);
 
 static void apt_watcher_signal_cb (GDBusProxy* proxy,
                                    gchar* sender_name,
@@ -216,14 +216,35 @@ apt_watcher_upgrade_system_cb (GObject * obj,
 static void
 apt_watcher_show_apt_dialog (DbusmenuMenuitem * mi,
                              guint timestamp,
-                             gchar * type)
+                             gpointer userdata)
 {
   GError * error = NULL;
-  if (!g_spawn_command_line_async("update-manager", &error))
-  {
-    g_warning("Unable to show update-manager: %s", error->message);
-    g_error_free(error);
-  }  
+  g_return_if_fail (APT_IS_WATCHER (userdata));
+  AptWatcher* self = APT_WATCHER (userdata);
+  
+  gchar* disposition =   dbusmenu_menuitem_property_get (self->apt_item,
+                                                         DBUSMENU_MENUITEM_PROP_DISPOSITION);
+                                    
+  if (g_strcmp0 (disposition, DBUSMENU_MENUITEM_DISPOSITION_ALERT) == 0){  	
+    gchar * helper = g_build_filename (LIBEXECDIR, "gtk-logout-helper", NULL);
+	  gchar * dialog_line = g_strdup_printf ("%s --%s", helper, "Restart");
+  	g_free(helper);
+	  g_debug("Showing dialog '%s'", dialog_line);
+	  GError * error = NULL;
+    
+	  if (!g_spawn_command_line_async(dialog_line, &error)) {
+		  g_warning("Unable to show dialog: %s", error->message);
+		  g_error_free(error);
+	  }
+	  g_free(dialog_line);
+  } 
+  else{
+    if (!g_spawn_command_line_async("update-manager", &error))
+    {
+      g_warning("Unable to show update-manager: %s", error->message);
+      g_error_free(error);
+    }
+  }   
 }
 
 static void

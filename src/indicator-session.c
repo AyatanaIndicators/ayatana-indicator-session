@@ -497,8 +497,7 @@ receive_signal (GDBusProxy * proxy,
                              &self->users);       
     }
   }
-  else if (g_strcmp0(signal_name, "RebootRequired") == 0) {
-    // TODO waiting on design to give me a name.
+  else if (g_strcmp0(signal_name, "RestartRequired") == 0) {
     g_debug ("Reboot required, icon changed to %s", ICON_RESTART);
     self->devices.image = indicator_image_helper (ICON_RESTART);        
   }  

@@ -144,11 +144,7 @@ fetch_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	g_signal_connect (self->proxy,
                     "g-signal",
                     G_CALLBACK(apt_watcher_signal_cb),
-                    self); 
-  
-  /*self->reboot_query = g_timeout_add_seconds (5,
-                                              apt_watcher_query_reboot_status,
-                                              self);*/                        
+                    self);   
 }
 
 

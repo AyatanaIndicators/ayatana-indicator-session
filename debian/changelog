@@ -1,9 +1,9 @@
-indicator-session (0.3.3.2-0ubuntu2~ppa1) UNRELEASED; urgency=low
+indicator-session (0.3.3.2-0ubuntu2~ppa1) oneiric; urgency=low
 
   * debian/control: Adding a depend on gnome-settings-daemon to ensure that
     the required schemas are available.  (LP: #833965)
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 31 Aug 2011 13:42:01 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 31 Aug 2011 13:45:22 -0500
 
 indicator-session (0.3.3.2-0ubuntu1) oneiric; urgency=low
 

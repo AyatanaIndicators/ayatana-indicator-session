@@ -8,7 +8,7 @@
     <method name="GetUserMenuVisibility">
       <arg name="update" direction="out" type="b"/>
     </method>
-    <method name="IsUpdateNeeded">
+    <method name="IsRestartNeeded">
       <arg name="update" direction="out" type="b"/>
     </method>
     <signal name="UserRealNameUpdated">

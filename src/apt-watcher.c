@@ -27,6 +27,7 @@ static guint watcher_id;
 struct _AptWatcher
 {
 	GObject parent_instance;
+  guint reboot_query;
 	GCancellable * proxy_cancel;
 	GDBusProxy * proxy;  
   SessionDbus* session_dbus_interface;
@@ -64,6 +65,7 @@ static void apt_watcher_signal_cb (GDBusProxy* proxy,
                                    gpointer user_data);
 static void  apt_watcher_manage_transactions (AptWatcher* self,
                                               gchar* transaction_id);
+static gboolean apt_watcher_query_reboot_status (gpointer self);
                                    
 
 
@@ -75,6 +77,7 @@ apt_watcher_init (AptWatcher *self)
   self->current_state = UP_TO_DATE;
   self->proxy_cancel = g_cancellable_new();
   self->proxy = NULL;
+  self->reboot_query = 0;
   self->current_transaction = NULL;
   g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                             G_DBUS_PROXY_FLAGS_NONE,
@@ -141,7 +144,11 @@ fetch_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	g_signal_connect (self->proxy,
                     "g-signal",
                     G_CALLBACK(apt_watcher_signal_cb),
-                    self);  
+                    self); 
+  
+  /*self->reboot_query = g_timeout_add_seconds (5,
+                                              apt_watcher_query_reboot_status,
+                                              self);*/                        
 }
 
 
@@ -245,7 +252,16 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
         == SIMULATION){
       g_object_unref (G_OBJECT(self->current_transaction));
       self->current_transaction = NULL;
-    }                                                                   
+    }  
+    if (self->reboot_query != 0){
+      g_source_remove (self->reboot_query);
+      self->reboot_query = 0;
+    }
+    // Wait a sec before querying for reboot status, 
+    // race condition with Apt has been observed.
+    self->reboot_query = g_timeout_add_seconds (1,
+                                                apt_watcher_query_reboot_status,
+                                                self); 
   }
   else if (state == UPDATES_AVAILABLE){
     dbusmenu_menuitem_property_set (self->apt_item,
@@ -266,27 +282,20 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
                                     _("Updates Installing…"));    
   }  
   else if (state == FINISHED){
-    GVariant* reboot_result = g_dbus_proxy_get_cached_property (self->proxy,
-                                                               "RebootRequired");
-    gboolean reboot;
-    g_variant_get (reboot_result, "b", &reboot);
-    if (reboot == FALSE){
-      dbusmenu_menuitem_property_set (self->apt_item,
-                                      DBUSMENU_MENUITEM_PROP_LABEL,
-                                      _("Software Up to Date"));
-    }
-    else{
-      dbusmenu_menuitem_property_set (self->apt_item,
-                                      DBUSMENU_MENUITEM_PROP_LABEL,
-                                      _("Reboot Required"));
-      dbusmenu_menuitem_property_set (self->apt_item,
-                                      DBUSMENU_MENUITEM_PROP_DISPOSITION,
-                                      DBUSMENU_MENUITEM_DISPOSITION_ALERT);                                       
-      session_dbus_restart_required (self->session_dbus_interface);
-    }
-    g_debug ("Finished with a reboot value of %i", reboot); 
     g_object_unref (G_OBJECT(self->current_transaction));
-    self->current_transaction = NULL;                                    
+    self->current_transaction = NULL;   
+    if (self->reboot_query != 0){
+      g_source_remove (self->reboot_query);
+      self->reboot_query = 0;
+    }
+    // Wait a sec before querying for reboot status, 
+    // race condition with Apt has been observed.
+    self->reboot_query = g_timeout_add_seconds (1,
+                                                apt_watcher_query_reboot_status,
+                                                self); 
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Finished Updating…"));                                                                            
   }
   self->current_state = state;
 } 
@@ -302,8 +311,38 @@ apt_watcher_manage_transactions (AptWatcher* self, gchar* transaction_id)
     }
 }
 
+static gboolean
+apt_watcher_query_reboot_status (gpointer data)
+{
+  g_return_val_if_fail (APT_IS_WATCHER (data), FALSE);
+  AptWatcher* self = APT_WATCHER (data);
+  
+  GVariant* reboot_result = g_dbus_proxy_get_cached_property (self->proxy,
+                                                             "RebootRequired");
+  gboolean reboot;
+  g_variant_get (reboot_result, "b", &reboot);
+  g_debug ("apt_watcher_query_reboot_status: reboot prop = %i", reboot);
+  
+  if (reboot == FALSE){
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Software Up to Date"));
+  }
+  else{
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Reboot Required"));
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_DISPOSITION,
+                                    DBUSMENU_MENUITEM_DISPOSITION_ALERT);
+    session_dbus_restart_required (self->session_dbus_interface);
+  }
+  self->reboot_query = 0;
+  return FALSE;
+}
+
 // TODO - Ask MVO about this.
-// Signal is of type s not sas which is on d-feet !!!
+// Signal is of type s not sas which is on d-feet.
 static void apt_watcher_signal_cb ( GDBusProxy* proxy,
                                     gchar* sender_name,
                                     gchar* signal_name,

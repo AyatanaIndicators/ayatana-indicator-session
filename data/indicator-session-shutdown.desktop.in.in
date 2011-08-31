@@ -1,8 +1,9 @@
 [Desktop Entry]
 _Name=Shut Down
-Try-Exec=@libexecdir@/gtk-logout-helper
+TryExec=@libexecdir@/gtk-logout-helper
 Exec=@libexecdir@/gtk-logout-helper --shutdown
 Icon=system-shutdown
 Terminal=false
 Type=Application
 OnlyShowIn=Unity;
+Version=1.0

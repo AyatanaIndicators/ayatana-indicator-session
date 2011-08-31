@@ -19,11 +19,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <gudev/gudev.h>
 
-// TEMP
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#include <glib/gi18n.h>
 
 #include "udev-mgr.h"
 #include "sane-rules.h"
@@ -53,7 +49,10 @@ static void debug_device (UdevMgr* self,
                           GUdevDevice* device,
                           UdevMgrDeviceAction action);
                           
-
+static gchar* format_device_name (UdevMgr* self,
+                                  const gchar* brand,
+                                  const gchar* generic,
+                                  const gchar* branded) G_GNUC_WARN_UNUSED_RESULT;
 struct _UdevMgr
 {
 	GObject parent_instance;
@@ -235,13 +234,27 @@ udev_mgr_handle_webcam (UdevMgr* self,
     }
     g_hash_table_remove (self->webcams_present,
                          product);
-    
+    dbusmenu_menuitem_property_set (self->webcam_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Webcam"));                            
   }
   else {
     if (g_hash_table_lookup (self->webcams_present, product) != NULL){
       g_warning ("Got an ADD event on a webcam device but we already have that device in our webcam cache");
       return;                     
     }
+    
+    const gchar* manufacturer = NULL;        
+    manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
+    
+    if (manufacturer != NULL){
+	  gchar * label = format_device_name(self, manufacturer, _("Webcam"), _("%s Webcam"));
+      dbusmenu_menuitem_property_set (self->webcam_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      label);
+	  g_free(label);
+    }
+    
     g_hash_table_insert (self->webcams_present,
                          g_strdup (product),
                          g_strdup (vendor));                               
@@ -254,23 +267,26 @@ debug_device (UdevMgr* self,
               GUdevDevice* device,
               UdevMgrDeviceAction action)
 {
-  /*const gchar* vendor;
+  const gchar* vendor;
   const gchar* product;
   const gchar* number;
   const gchar* name;
+  const gchar* manufacturer;
   
 	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
+	manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
 	product = g_udev_device_get_property (device, "ID_MODEL_ID");
   number = g_udev_device_get_number (device);
   name = g_udev_device_get_name (device);
   
-  g_debug ("device vendor id %s , product id of %s , number of %s and name of %s",
+  g_debug ("%s device vendor id %s , product id of %s , number of %s and name of %s",
+           g_strdup(manufacturer),
            g_strdup(vendor),
            g_strdup(product),
            g_strdup(number),
            g_strdup(name));
          
-  const gchar *const *list;
+  /*const gchar *const *list;
   const gchar *const *iter;  
   char propstr[500];
   guint32 namelen = 0, i;  
@@ -290,9 +306,10 @@ debug_device (UdevMgr* self,
            strcat(propstr, " ");
     strcat(propstr, g_udev_device_get_property(device, *iter));
     g_debug("%s", propstr);
-  }*/  
+  }*/ 
 }
-
+// TODO SCSI is not dynamic right ?
+// i.e. just need to handle startup scan.
 static void udev_mgr_handle_scsi_device (UdevMgr* self,
                                          GUdevDevice* device,
                                          UdevMgrDeviceAction action)
@@ -300,7 +317,19 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
   const gchar* type = NULL;
 	type = g_udev_device_get_property (device, "TYPE");
   // apparently anything thats type 3 and SCSI is a Scanner
-  if (g_strcmp0 (type, "6") == 0){
+  if (g_strcmp0 (type, "6") == 0 && action == ADD){
+    
+    const gchar* manufacturer = NULL;        
+    manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
+    
+    if (manufacturer != NULL){
+	  gchar * label = format_device_name(self, manufacturer, _("Scanner"), _("%s Scanner"));
+      dbusmenu_menuitem_property_set (self->scanner_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      label);
+	  g_free(label);
+    }
+    
     gchar* random_scanner_name = 	g_strdup_printf("%p--scanner", self);
     g_hash_table_insert (self->scanners_present,
                          random_scanner_name,
@@ -344,6 +373,10 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
       }
       else{
         g_hash_table_remove (self->scanners_present, vendor);
+        dbusmenu_menuitem_property_set (self->scanner_item,
+                                        DBUSMENU_MENUITEM_PROP_LABEL,
+                                        _("Scanner"));
+        
       }
     }
     else{      
@@ -351,6 +384,16 @@ static void udev_mgr_handle_scsi_device (UdevMgr* self,
         g_warning ("Got an ADD event on a scanner device but we already have that device in our scanners cache");
       }
       else{
+        const gchar* manufacturer = NULL;        
+        manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
+        
+        if (manufacturer != NULL){
+          gchar * label = format_device_name(self, manufacturer, _("Scanner"), _("%s Scanner"));
+          dbusmenu_menuitem_property_set (self->scanner_item,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          label);
+          g_free(label);
+        }
         g_hash_table_insert (self->scanners_present,
                              g_strdup(vendor),
                              g_strdup(model_id)); 
@@ -366,7 +409,7 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
                                            UdevMgrDeviceAction action)
 {
   const gchar* vendor = NULL;
-  debug_device (self, device, action);    
+  //debug_device (self, device, action);    
   
 	vendor = g_udev_device_get_property (device, "ID_VENDOR_ID");
   
@@ -397,6 +440,9 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
       }
       else{
         g_hash_table_remove (self->scanners_present, vendor);
+        dbusmenu_menuitem_property_set (self->scanner_item, 
+                                        DBUSMENU_MENUITEM_PROP_LABEL,
+                                        _("Scanner"));        
       }
     }
     else{      
@@ -404,6 +450,17 @@ udev_mgr_check_if_usb_device_is_supported (UdevMgr* self,
         g_warning ("Got an ADD event on a scanner device but we already have that device in our scanners cache");
       }
       else{
+        const gchar* manufacturer = NULL;
+        
+        manufacturer = g_udev_device_get_property (device, "ID_VENDOR");
+        if (manufacturer != NULL){
+          gchar * label = format_device_name(self, manufacturer, _("Scanner"), _("%s Scanner"));
+          dbusmenu_menuitem_property_set (self->scanner_item, 
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          label);
+          g_free(label);
+        }
+                                        
         g_hash_table_insert (self->scanners_present,
                              g_strdup(vendor),
                              g_strdup(model_id)); 
@@ -453,4 +510,28 @@ UdevMgr* udev_mgr_new (DbusmenuMenuitem* scanner,
     g_list_free (scsi_devices_available);
   }
   return mgr;
+}
+
+static gchar* format_device_name (UdevMgr* self,
+                                  const gchar* brand,
+                                  const gchar* generic,
+                                  const gchar* branded)
+{
+  // We don't want to accommodate long names
+  if (strlen(brand) > 7)
+    return g_strdup(generic);
+
+  gint i = 0;
+
+  // If it contains something other than an alphabetic entry ignore it.
+  for(i = 0; i < sizeof(brand); i++){
+    if ( !g_ascii_isalpha (brand[i]) )
+      return g_strdup(generic);
+  }
+
+  gchar* lowered = g_ascii_strdown (brand, -1);
+  lowered[0] = g_ascii_toupper (lowered[0]);
+  gchar* label = g_strdup_printf(branded, lowered);
+  g_free (lowered);  
+  return label;
 }

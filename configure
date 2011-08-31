@@ -629,13 +629,6 @@ GETTEXT_PACKAGE
 DBUSSERVICEDIR
 INDICATORICONSDIR
 INDICATORDIR
-GCONF_LIBS
-GCONF_CFLAGS
-GCONF_SCHEMAS_INSTALL_FALSE
-GCONF_SCHEMAS_INSTALL_TRUE
-GCONF_SCHEMA_FILE_DIR
-GCONF_SCHEMA_CONFIG_SOURCE
-GCONFTOOL
 GTKLOGOUTHELPER_LIBS
 GTKLOGOUTHELPER_CFLAGS
 SESSIONERVICE_LIBS
@@ -644,9 +637,6 @@ SESSIONSERVICE_LIBS
 SESSIONSERVICE_CFLAGS
 APPLET_LIBS
 APPLET_CFLAGS
-PKG_CONFIG_LIBDIR
-PKG_CONFIG_PATH
-PKG_CONFIG
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 OTOOL64
@@ -725,6 +715,13 @@ INTLTOOL_EXTRACT
 INTLTOOL_MERGE
 INTLTOOL_UPDATE
 USE_NLS
+GSETTINGS_RULES
+GLIB_COMPILE_SCHEMAS
+gsettingsschemadir
+PKG_CONFIG_LIBDIR
+PKG_CONFIG_PATH
+PKG_CONFIG
+GSETTINGS_DISABLE_SCHEMAS_COMPILE
 MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
@@ -793,6 +790,7 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_maintainer_mode
+enable_schemas_compile
 enable_nls
 enable_dependency_tracking
 enable_shared
@@ -804,31 +802,26 @@ with_sysroot
 enable_libtool_lock
 enable_silent_rules
 with_gtk
-with_gconf_source
-with_gconf_schema_file_dir
-enable_schemas_install
 enable_localinstall
 '
       ac_precious_vars='build_alias
 host_alias
 target_alias
+PKG_CONFIG
+PKG_CONFIG_PATH
+PKG_CONFIG_LIBDIR
 CC
 CFLAGS
 LDFLAGS
 LIBS
 CPPFLAGS
 CPP
-PKG_CONFIG
-PKG_CONFIG_PATH
-PKG_CONFIG_LIBDIR
 APPLET_CFLAGS
 APPLET_LIBS
 SESSIONSERVICE_CFLAGS
 SESSIONSERVICE_LIBS
 GTKLOGOUTHELPER_CFLAGS
-GTKLOGOUTHELPER_LIBS
-GCONF_CFLAGS
-GCONF_LIBS'
+GTKLOGOUTHELPER_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1449,6 +1442,8 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-maintainer-mode  enable make rules and dependencies not useful
 			  (and sometimes confusing) to the casual installer
+  --disable-schemas-compile
+                          Disable regeneration of gschemas.compiled on install
   --disable-nls           do not use Native Language Support
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
@@ -1459,8 +1454,6 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-silent-rules          less verbose build output (undo: `make V=1')
   --disable-silent-rules         verbose build output (undo: `make V=0')
-  --disable-schemas-install
-                          Disable the schemas installation
   --enable-localinstall   install all of the files localy instead of system
                           directories (for distcheck)
 
@@ -1474,12 +1467,13 @@ Optional Packages:
                         (or the compiler's sysroot if not specified).
   --with-gtk              Which version of gtk to use for the indicator
                           [default=3]
-  --with-gconf-source=sourceaddress
-                          Config database for installing schema files.
-  --with-gconf-schema-file-dir=dir
-                          Directory for installing schema files.
 
 Some influential environment variables:
+  PKG_CONFIG  path to pkg-config utility
+  PKG_CONFIG_PATH
+              directories to add to pkg-config's search path
+  PKG_CONFIG_LIBDIR
+              path overriding pkg-config's built-in search path
   CC          C compiler command
   CFLAGS      C compiler flags
   LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
@@ -1488,11 +1482,6 @@ Some influential environment variables:
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
               you have headers in a nonstandard directory <include dir>
   CPP         C preprocessor
-  PKG_CONFIG  path to pkg-config utility
-  PKG_CONFIG_PATH
-              directories to add to pkg-config's search path
-  PKG_CONFIG_LIBDIR
-              path overriding pkg-config's built-in search path
   APPLET_CFLAGS
               C compiler flags for APPLET, overriding pkg-config
   APPLET_LIBS linker flags for APPLET, overriding pkg-config
@@ -1504,9 +1493,6 @@ Some influential environment variables:
               C compiler flags for GTKLOGOUTHELPER, overriding pkg-config
   GTKLOGOUTHELPER_LIBS
               linker flags for GTKLOGOUTHELPER, overriding pkg-config
-  GCONF_CFLAGS
-              C compiler flags for GCONF, overriding pkg-config
-  GCONF_LIBS  linker flags for GCONF, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2759,7 +2745,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=indicator-session
- VERSION=0.3.2
+ VERSION=0.3.3.2
 
 
 cat >>confdefs.h <<_ACEOF
@@ -2821,6 +2807,239 @@ else
 fi
 
   MAINT=$MAINTAINER_MODE_TRUE
+
+
+
+
+
+  # Check whether --enable-schemas-compile was given.
+if test "${enable_schemas_compile+set}" = set; then :
+  enableval=$enable_schemas_compile; case ${enableval} in
+                  yes) GSETTINGS_DISABLE_SCHEMAS_COMPILE=""  ;;
+                  no)  GSETTINGS_DISABLE_SCHEMAS_COMPILE="1" ;;
+                  *) as_fn_error $? "bad value ${enableval} for --enable-schemas-compile" "$LINENO" 5 ;;
+                 esac
+fi
+
+
+
+
+
+
+
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.16
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+fi
+  gsettingsschemadir=${datadir}/glib-2.0/schemas
+
+  if test x$cross_compiling != xyes; then
+    GLIB_COMPILE_SCHEMAS=`$PKG_CONFIG --variable glib_compile_schemas gio-2.0`
+  else
+    # Extract the first word of "glib-compile-schemas", so it can be a program name with args.
+set dummy glib-compile-schemas; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_GLIB_COMPILE_SCHEMAS+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $GLIB_COMPILE_SCHEMAS in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_GLIB_COMPILE_SCHEMAS="$GLIB_COMPILE_SCHEMAS" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_GLIB_COMPILE_SCHEMAS="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+GLIB_COMPILE_SCHEMAS=$ac_cv_path_GLIB_COMPILE_SCHEMAS
+if test -n "$GLIB_COMPILE_SCHEMAS"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GLIB_COMPILE_SCHEMAS" >&5
+$as_echo "$GLIB_COMPILE_SCHEMAS" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  fi
+
+  if test "x$GLIB_COMPILE_SCHEMAS" = "x"; then
+    as_fn_error $? "glib-compile-schemas not found." "$LINENO" 5
+  else
+    :
+  fi
+
+  GSETTINGS_RULES='
+.PHONY : uninstall-gsettings-schemas install-gsettings-schemas clean-gsettings-schemas
+
+mostlyclean-am: clean-gsettings-schemas
+
+gsettings__enum_file = $(addsuffix .enums.xml,$(gsettings_ENUM_NAMESPACE))
+
+%.gschema.valid: %.gschema.xml $(gsettings__enum_file)
+	$(AM_V_GEN) if test -f "$<"; then d=; else d="$(srcdir)/"; fi; $(GLIB_COMPILE_SCHEMAS) --strict --dry-run $(addprefix --schema-file=,$(gsettings__enum_file)) --schema-file=$${d}$< && touch $@
+
+all-am: $(gsettings_SCHEMAS:.xml=.valid)
+uninstall-am: uninstall-gsettings-schemas
+install-data-am: install-gsettings-schemas
+
+.SECONDARY: $(gsettings_SCHEMAS)
+
+install-gsettings-schemas: $(gsettings_SCHEMAS) $(gsettings__enum_file)
+	@$(NORMAL_INSTALL)
+	if test -n "$^"; then \
+		test -z "$(gsettingsschemadir)" || $(MKDIR_P) "$(DESTDIR)$(gsettingsschemadir)"; \
+		$(INSTALL_DATA) $^ "$(DESTDIR)$(gsettingsschemadir)"; \
+		test -n "$(GSETTINGS_DISABLE_SCHEMAS_COMPILE)$(DESTDIR)" || $(GLIB_COMPILE_SCHEMAS) $(gsettingsschemadir); \
+	fi
+
+uninstall-gsettings-schemas:
+	@$(NORMAL_UNINSTALL)
+	@list='\''$(gsettings_SCHEMAS) $(gsettings__enum_file)'\''; test -n "$(gsettingsschemadir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e '\''s|^.*/||'\''`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '\''$(DESTDIR)$(gsettingsschemadir)'\'' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(gsettingsschemadir)" && rm -f $$files
+	test -n "$(GSETTINGS_DISABLE_SCHEMAS_COMPILE)$(DESTDIR)" || $(GLIB_COMPILE_SCHEMAS) $(gsettingsschemadir)
+
+clean-gsettings-schemas:
+	rm -f $(gsettings_SCHEMAS:.xml=.valid) $(gsettings__enum_file)
+
+ifdef gsettings_ENUM_NAMESPACE
+$(gsettings__enum_file): $(gsettings_ENUM_FILES)
+	$(AM_V_GEN) glib-mkenums --comments '\''<!-- @comment@ -->'\'' --fhead "<schemalist>" --vhead "  <@type@ id='\''$(gsettings_ENUM_NAMESPACE).@EnumName@'\''>" --vprod "    <value nick='\''@valuenick@'\'' value='\''@valuenum@'\''/>" --vtail "  </@type@>" --ftail "</schemalist>" $^ > $@.tmp && mv $@.tmp $@
+endif
+'
+
+
+
+
 
 
 
@@ -12776,7 +12995,7 @@ AM_BACKSLASH='\'
 GTK_REQUIRED_VERSION=2.12
 GTK3_REQUIRED_VERSION=3.0
 INDICATOR_REQUIRED_VERSION=0.3.19
-DBUSMENUGTK_REQUIRED_VERSION=0.3.91
+DBUSMENUGTK_REQUIRED_VERSION=0.4.92
 POLKIT_REQUIRED_VERSION=0.92
 
 
@@ -12788,126 +13007,6 @@ else
 fi
 
 
-
-
-
-
-
-
-
-if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
-	if test -n "$ac_tool_prefix"; then
-  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
-set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_PKG_CONFIG+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $PKG_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-PKG_CONFIG=$ac_cv_path_PKG_CONFIG
-if test -n "$PKG_CONFIG"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
-$as_echo "$PKG_CONFIG" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-fi
-if test -z "$ac_cv_path_PKG_CONFIG"; then
-  ac_pt_PKG_CONFIG=$PKG_CONFIG
-  # Extract the first word of "pkg-config", so it can be a program name with args.
-set dummy pkg-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_ac_pt_PKG_CONFIG+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $ac_pt_PKG_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
-if test -n "$ac_pt_PKG_CONFIG"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
-$as_echo "$ac_pt_PKG_CONFIG" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-  if test "x$ac_pt_PKG_CONFIG" = x; then
-    PKG_CONFIG=""
-  else
-    case $cross_compiling:$ac_tool_warned in
-yes:)
-{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
-$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
-ac_tool_warned=yes ;;
-esac
-    PKG_CONFIG=$ac_pt_PKG_CONFIG
-  fi
-else
-  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
-fi
-
-fi
-if test -n "$PKG_CONFIG"; then
-	_pkg_min_version=0.9.0
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
-$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
-	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	else
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-		PKG_CONFIG=""
-	fi
-fi
 if test "x$with_gtk" = x3; then :
 
 pkg_failed=no
@@ -13632,192 +13731,6 @@ fi
 fi
 
 
-
-
-
-# Extract the first word of "gconftool-2", so it can be a program name with args.
-set dummy gconftool-2; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_GCONFTOOL+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $GCONFTOOL in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_GCONFTOOL="$GCONFTOOL" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_GCONFTOOL="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-GCONFTOOL=$ac_cv_path_GCONFTOOL
-if test -n "$GCONFTOOL"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GCONFTOOL" >&5
-$as_echo "$GCONFTOOL" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-
-
-  if test "x$GCONF_SCHEMA_INSTALL_SOURCE" = "x"; then
-    GCONF_SCHEMA_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-  else
-    GCONF_SCHEMA_CONFIG_SOURCE=$GCONF_SCHEMA_INSTALL_SOURCE
-  fi
-
-
-# Check whether --with-gconf-source was given.
-if test "${with_gconf_source+set}" = set; then :
-  withval=$with_gconf_source; GCONF_SCHEMA_CONFIG_SOURCE="$withval"
-fi
-
-
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation" >&5
-$as_echo "Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation" >&6; }
-
-  if test "x$GCONF_SCHEMA_FILE_DIR" = "x"; then
-    GCONF_SCHEMA_FILE_DIR='$(sysconfdir)/gconf/schemas'
-  fi
-
-
-# Check whether --with-gconf-schema-file-dir was given.
-if test "${with_gconf_schema_file_dir+set}" = set; then :
-  withval=$with_gconf_schema_file_dir; GCONF_SCHEMA_FILE_DIR="$withval"
-fi
-
-
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: Using $GCONF_SCHEMA_FILE_DIR as install directory for schema files" >&5
-$as_echo "Using $GCONF_SCHEMA_FILE_DIR as install directory for schema files" >&6; }
-
-  # Check whether --enable-schemas-install was given.
-if test "${enable_schemas_install+set}" = set; then :
-  enableval=$enable_schemas_install; case ${enableval} in
-       yes|no) ;;
-       *) as_fn_error $? "bad value ${enableval} for --enable-schemas-install" "$LINENO" 5 ;;
-      esac
-fi
-
-   if test "$enable_schemas_install" != no; then
-  GCONF_SCHEMAS_INSTALL_TRUE=
-  GCONF_SCHEMAS_INSTALL_FALSE='#'
-else
-  GCONF_SCHEMAS_INSTALL_TRUE='#'
-  GCONF_SCHEMAS_INSTALL_FALSE=
-fi
-
-
-
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GCONF" >&5
-$as_echo_n "checking for GCONF... " >&6; }
-
-if test -n "$GCONF_CFLAGS"; then
-    pkg_cv_GCONF_CFLAGS="$GCONF_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gconf-2.0 >= 2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gconf-2.0 >= 2.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GCONF_CFLAGS=`$PKG_CONFIG --cflags "gconf-2.0 >= 2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$GCONF_LIBS"; then
-    pkg_cv_GCONF_LIBS="$GCONF_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gconf-2.0 >= 2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gconf-2.0 >= 2.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GCONF_LIBS=`$PKG_CONFIG --libs "gconf-2.0 >= 2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        GCONF_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gconf-2.0 >= 2.0" 2>&1`
-        else
-	        GCONF_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gconf-2.0 >= 2.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GCONF_PKG_ERRORS" >&5
-
-	as_fn_error $? "Package requirements (gconf-2.0 >= 2.0) were not met:
-
-$GCONF_PKG_ERRORS
-
-Consider adjusting the PKG_CONFIG_PATH environment variable if you
-installed software in a non-standard prefix.
-
-Alternatively, you may set the environment variables GCONF_CFLAGS
-and GCONF_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details." "$LINENO" 5
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
-is in your PATH or set the PKG_CONFIG environment variable to the full
-path to pkg-config.
-
-Alternatively, you may set the environment variables GCONF_CFLAGS
-and GCONF_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-
-To get pkg-config, see <http://pkg-config.freedesktop.org/>.
-See \`config.log' for more details" "$LINENO" 5; }
-else
-	GCONF_CFLAGS=$pkg_cv_GCONF_CFLAGS
-	GCONF_LIBS=$pkg_cv_GCONF_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
 
 
 
@@ -14739,10 +14652,6 @@ fi
 
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${GCONF_SCHEMAS_INSTALL_TRUE}" && test -z "${GCONF_SCHEMAS_INSTALL_FALSE}"; then
-  as_fn_error $? "conditional \"GCONF_SCHEMAS_INSTALL\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

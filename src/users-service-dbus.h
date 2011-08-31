@@ -57,7 +57,7 @@ struct _UserData
 /* XXX - MAXIMUM_USERS should be set to 7 once we've
  *       got some gdm issues worked out.
  */
-#define MINIMUM_USERS           1
+#define MINIMUM_USERS           0
 #define MAXIMUM_USERS           7
 
 struct _UsersServiceDbus {

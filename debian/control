@@ -12,9 +12,9 @@ Build-Depends: debhelper (>= 5.0),
                gnome-doc-utils,
                libindicator-dev (>= 0.3.90),
                libindicator3-dev (>= 0.3.90),
-               libdbusmenu-glib-dev (>= 0.3.90),
-               libdbusmenu-gtk-dev (>= 0.3.94),
-               libdbusmenu-gtk3-dev (>= 0.3.94),
+               libdbusmenu-glib-dev (>= 0.4.92),
+               libdbusmenu-gtk-dev (>= 0.4.92),
+               libdbusmenu-gtk3-dev (>= 0.4.92),
                libpolkit-gobject-1-dev,
                intltool
 Standards-Version: 3.9.2

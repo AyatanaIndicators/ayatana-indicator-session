@@ -24,7 +24,10 @@ Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubunt
 
 Package: indicator-session
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, upower
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         upower,
+         gnome-settings-daemon
 Recommends: indicator-applet (>= 0.2) | indicator-renderer
 Suggests: lightdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus

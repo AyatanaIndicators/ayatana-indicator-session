@@ -341,6 +341,10 @@ apt_watcher_query_reboot_status (gpointer data)
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Software Up to Date"));
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_DISPOSITION,
+                                    DBUSMENU_MENUITEM_DISPOSITION_NORMAL);
+                                    
   }
   else{
     dbusmenu_menuitem_property_set (self->apt_item,

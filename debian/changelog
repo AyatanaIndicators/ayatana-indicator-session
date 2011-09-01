@@ -1,4 +1,4 @@
-indicator-session (0.3.4.1-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (0.3.4.1-0ubuntu1) oneiric; urgency=low
 
   [Ken VanDine]
   * New upstream release.

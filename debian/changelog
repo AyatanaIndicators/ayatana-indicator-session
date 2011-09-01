@@ -4,6 +4,15 @@ indicator-session (0.3.4.1-0ubuntu1) UNRELEASED; urgency=low
   * New upstream release.
     - in a Guest session user menu is not visible (LP: #834948)
     - User name shown as [Invalid UTF-8] in live session (LP: #837246)
+    - "Reboot Required" menu opens Update Manager, doesn't reboot (LP: #837658)
+    - indicator-session-service crashed with SIGSEGV in 
+      g_str_hash() (LP: #824243)
+    - indicator-session-service crashed with SIGSEGV in 
+      g_variant_unref() (LP: #833965)
+  * +debian/patches/revert_icon_change.patch
+    - revert the icon change in greeter mode until a UIF exception is 
+      approved
+  * +debian/source/format
 
   [Ted Gould]
   * debian/control: Adding a depend on gnome-settings-daemon to ensure that

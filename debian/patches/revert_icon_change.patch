@@ -1,0 +1,12 @@
+=== modified file 'src/dbus-shared-names.h'
+--- old/src/dbus-shared-names.h	2011-09-01 17:23:35 +0000
++++ new/src/dbus-shared-names.h	2011-09-01 18:38:01 +0000
+@@ -63,6 +63,6 @@
+ 
+ #define ICON_DEFAULT              "system-devices-panel"
+ #define ICON_RESTART              "system-devices-panel-alert"
+-#define GREETER_ICON_DEFAULT      "system-shutdown-panel"
++#define GREETER_ICON_DEFAULT      "system-devices-panel"
+ 
+ #endif /* __DBUS_SHARED_NAMES_H__ */
+

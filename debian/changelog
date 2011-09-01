@@ -1,5 +1,6 @@
-indicator-session (0.3.4-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (0.3.4.1-0ubuntu1) UNRELEASED; urgency=low
 
+  [Ken VanDine]
   * New upstream release.
     - in a Guest session user menu is not visible (LP: #834948)
     - User name shown as [Invalid UTF-8] in live session (LP: #837246)
@@ -8,7 +9,7 @@ indicator-session (0.3.4-0ubuntu1) UNRELEASED; urgency=low
   * debian/control: Adding a depend on gnome-settings-daemon to ensure that
     the required schemas are available.  (LP: #833965)
 
- -- Ken VanDine <ken.vandine@canonical.com>  Thu, 01 Sep 2011 13:52:10 -0400
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 01 Sep 2011 13:53:50 -0400
 
 indicator-session (0.3.3.2-0ubuntu1) oneiric; urgency=low
 

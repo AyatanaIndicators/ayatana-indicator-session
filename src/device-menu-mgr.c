@@ -61,7 +61,6 @@ static DBusGProxyCall * hibernate_call = NULL;
 static DbusmenuMenuitem * hibernate_mi = NULL;
 static DbusmenuMenuitem * suspend_mi = NULL;
 static DbusmenuMenuitem * logout_mi = NULL;
-static DbusmenuMenuitem * restart_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
 
 static gboolean can_hibernate = TRUE;
@@ -73,7 +72,6 @@ static DBusGProxy * up_main_proxy = NULL;
 static DBusGProxy * up_prop_proxy = NULL;
 
 static void device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self);
-static void setup_restart_watch (DeviceMenuMgr* self);
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
 static void lock_if_possible (DeviceMenuMgr* self);
@@ -106,7 +104,6 @@ device_menu_mgr_init (DeviceMenuMgr *self)
 {
   self->apt_watcher = NULL;
   self->root_item = dbusmenu_menuitem_new ();  
-  setup_restart_watch(self);
 	setup_up(self);  
 	g_idle_add(lock_screen_setup, NULL);  
 }
@@ -750,62 +747,6 @@ device_menu_mgr_rebuild_items (DeviceMenuMgr* self)
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        can_suspend && allow_suspend);
 }                                       
-
-/* When the directory changes we need to figure out how our menu
-   item should look. */
-static void
-restart_dir_changed (gpointer userdata)
-{
-  DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
-	gboolean restart_required = g_file_test("/var/run/reboot-required", G_FILE_TEST_EXISTS);
-
-	if (restart_required) {
-		if (supress_confirmations()) {
-			dbusmenu_menuitem_property_set (restart_mi,
-                                      RESTART_ITEM_LABEL,
-                                      _("Restart to Complete Update"));
-		} else {
-			dbusmenu_menuitem_property_set (restart_mi,
-                                      RESTART_ITEM_LABEL,
-                                      _("Restart to Complete Update\342\200\246"));
-		}
-		dbusmenu_menuitem_property_set (restart_mi,
-                                    RESTART_ITEM_ICON,
-                                    "system-restart-panel");
-		if (self->session_dbus_interface != NULL) {
-			session_dbus_set_name (self->session_dbus_interface, ICON_RESTART);
-		}
-	} else {	
-		if (supress_confirmations()) {
-			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart"));
-		} else {
-			dbusmenu_menuitem_property_set(restart_mi, RESTART_ITEM_LABEL, _("Restart\342\200\246"));
-		}
-		dbusmenu_menuitem_property_remove(restart_mi, RESTART_ITEM_ICON);
-		if (self->session_dbus_interface != NULL) {
-			session_dbus_set_name(self->session_dbus_interface, ICON_DEFAULT);
-		}
-	}
-	return;
-}
-
-/* Buids a file watcher for the directory so that when it
-   changes we can check to see if our reboot-required is
-   there. */
-static void
-setup_restart_watch (DeviceMenuMgr* self)
-{
-	GFile * filedir = g_file_new_for_path("/var/run");
-	GFileMonitor * filemon = g_file_monitor_directory(filedir, G_FILE_MONITOR_NONE, NULL, NULL);
-	if (filemon != NULL) {
-		g_signal_connect (G_OBJECT(filemon),
-                      "changed",
-                      G_CALLBACK(restart_dir_changed),
-                      self);
-	}
-	restart_dir_changed(self);
-	return;
-}
 
 /* Ensures that we have a GConf client and if we build one
    set up the signal handler. */

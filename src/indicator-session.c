@@ -164,10 +164,19 @@ indicator_session_init (IndicatorSession *self)
                                                       
   self->users.label = GTK_LABEL (gtk_label_new (NULL));
 
+  const gchar *greeter_var;
+  greeter_var = g_getenv("INDICATOR_GREETER_MODE");
+
   // devices
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
-  self->devices.image = indicator_image_helper (ICON_DEFAULT);
+  if (g_strcmp0(greeter_var, "1") == 0){
+    self->devices.image = indicator_image_helper (GREETER_ICON_DEFAULT);
+  }
+  else{
+    self->devices.image = indicator_image_helper (ICON_DEFAULT);
+  }
+
   
   gtk_widget_show (GTK_WIDGET(self->devices.menu));
   gtk_widget_show (GTK_WIDGET(self->devices.image));

@@ -213,7 +213,7 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
     if (g_variant_is_of_type (role, G_VARIANT_TYPE_STRING) == TRUE){
       gchar* current_role = NULL;
       g_variant_get (role, "s", &current_role);
-      g_debug ("Current transaction role = %s", current_role);
+      //g_debug ("Current transaction role = %s", current_role);
       if (g_strcmp0 (current_role, "role-commit-packages") == 0 ||
           g_strcmp0 (current_role, "role-upgrade-system") == 0){
         g_debug ("UPGRADE IN PROGRESS");

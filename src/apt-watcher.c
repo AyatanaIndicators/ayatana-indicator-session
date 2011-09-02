@@ -298,6 +298,11 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
   else if (state == FINISHED){
     g_object_unref (G_OBJECT(self->current_transaction));
     self->current_transaction = NULL;   
+
+    if (self->current_state == UPDATES_AVAILABLE){
+      return;    
+    }
+    
     if (self->reboot_query != 0){
       g_source_remove (self->reboot_query);
       self->reboot_query = 0;
@@ -359,8 +364,6 @@ apt_watcher_query_reboot_status (gpointer data)
   return FALSE;
 }
 
-// TODO - Ask MVO about this.
-// Signal is of type s not sas which is on d-feet.
 static void apt_watcher_signal_cb ( GDBusProxy* proxy,
                                     gchar* sender_name,
                                     gchar* signal_name,
@@ -374,10 +377,13 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
   GVariant *value = g_variant_get_child_value (parameters, 0);
 
   if (g_strcmp0(signal_name, "ActiveTransactionsChanged") == 0){
-    gchar* input = NULL;
-    g_variant_get(value, "s", & input);
-    if (g_str_has_prefix (input, "/org/debian/apt/transaction/") == TRUE){
-      g_debug ("Active Transactions signal - input is null = %i", input == NULL);
+    gchar* current = NULL;
+    g_debug ("ActiveTransactionsChanged");
+
+    //gchar** queued = NULL;
+    g_variant_get(value, "s", &current);
+    if (g_str_has_prefix (current, "/org/debian/apt/transaction/") == TRUE){
+      g_debug ("ActiveTransactionsChanged - current is %s", current);
       
       if (self->current_transaction != NULL)
       {
@@ -385,7 +391,7 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
         self->current_transaction = NULL;
       }
 
-      self->current_transaction = apt_transaction_new (input, REAL);
+      self->current_transaction = apt_transaction_new (current, REAL);
       g_signal_connect (G_OBJECT(self->current_transaction),
                         "state-update",
                         G_CALLBACK(apt_watcher_transaction_state_update_cb), self);              

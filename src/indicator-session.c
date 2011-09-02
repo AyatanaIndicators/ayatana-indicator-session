@@ -70,6 +70,8 @@ struct _IndicatorSession {
 	GDBusProxy * service_proxy;
 };
 
+static gboolean greeter_mode;
+
 GType indicator_session_get_type (void);
 
 /* Indicator stuff */
@@ -166,11 +168,11 @@ indicator_session_init (IndicatorSession *self)
 
   const gchar *greeter_var;
   greeter_var = g_getenv("INDICATOR_GREETER_MODE");
-
+  greeter_mode = g_strcmp0(greeter_var, "1") == 0;
   // devices
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
-  if (g_strcmp0(greeter_var, "1") == 0){
+  if (greeter_mode){
     self->devices.image = indicator_image_helper (GREETER_ICON_DEFAULT);
   }
   else{
@@ -507,7 +509,12 @@ receive_signal (GDBusProxy * proxy,
     }
   }
   else if (g_strcmp0(signal_name, "RestartRequired") == 0) {
-    self->devices.image = indicator_image_helper (ICON_RESTART);        
+    if (greeter_mode == TRUE){
+      self->devices.image = indicator_image_helper (GREETER_ICON_RESTART);
+    }
+    else{
+      self->devices.image = indicator_image_helper (ICON_RESTART);      
+    }
   }  
 }
 

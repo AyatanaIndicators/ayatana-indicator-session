@@ -1,3 +1,12 @@
+indicator-session (0.3.4.2-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release.
+    - states 'software up-to-date' although there're updates 
+      available" (LP: #831650)
+  * -debian/patches/revert_icon_change.patch
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 02 Sep 2011 12:22:03 -0400
+
 indicator-session (0.3.4.1-0ubuntu1) oneiric; urgency=low
 
   [Ken VanDine]

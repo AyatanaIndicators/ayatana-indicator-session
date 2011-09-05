@@ -931,9 +931,11 @@ users_service_dbus_can_activate_session (UsersServiceDbus *self)
                           G_TYPE_BOOLEAN, &can_activate,
                           G_TYPE_INVALID))
     {
-      g_warning ("Failed to determine if seat can activate sessions: %s", error->message);
-      g_error_free (error);
-
+      if (error != NULL){
+        g_warning ("Failed to determine if seat can activate sessions: %s",
+                    error->message);
+        g_error_free (error);
+      }
       return FALSE;
     }
 

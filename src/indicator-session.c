@@ -507,11 +507,12 @@ receive_signal (GDBusProxy * proxy,
                              &self->users);       
     }
   }
-  else if (g_strcmp0(signal_name, "RestartRequired") == 0) {
+  else if (g_strcmp0(signal_name, "RestartRequired") == 0) {    
     if (greeter_mode == TRUE){
       self->devices.image = indicator_image_helper (GREETER_ICON_RESTART);
     }
     else{
+      g_debug ("reboot required");
       self->devices.image = indicator_image_helper (ICON_RESTART);      
     }
   }  

@@ -380,11 +380,17 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
     gchar* current = NULL;
     g_debug ("ActiveTransactionsChanged");
 
-    //gchar** queued = NULL;
     g_variant_get(value, "s", &current);
+
     if (g_str_has_prefix (current, "/org/debian/apt/transaction/") == TRUE){
       g_debug ("ActiveTransactionsChanged - current is %s", current);
       
+      // Cancel all existing operations.
+      if (self->reboot_query != 0){
+        g_source_remove (self->reboot_query);
+        self->reboot_query = 0;
+      }
+
       if (self->current_transaction != NULL)
       {
         g_object_unref (G_OBJECT(self->current_transaction));

@@ -18,7 +18,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <libdbusmenu-glib/client.h>
-
 #include "user-menu-mgr.h"
 #include "settings-helper.h"
 #include "dbus-shared-names.h"
@@ -54,21 +53,18 @@ static void activate_online_accounts (DbusmenuMenuitem *mi,
                                       gpointer user_data);
 static void activate_user_accounts (DbusmenuMenuitem *mi,
                                     guint timestamp,
-                                    gpointer user_data);
-                                      
+                                    gpointer user_data);                                      
 static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
                                          gboolean greeter_mode);
 static gboolean check_new_session ();
 static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
-
 static void ensure_settings_client ();
-static gboolean check_guest_session (void);
+static gboolean is_this_guest_session (void);
 static void activate_guest_session (DbusmenuMenuitem * mi,
                                     guint timestamp,
                                     gpointer user_data);
-
 
 G_DEFINE_TYPE (UserMenuMgr, user_menu_mgr, G_TYPE_OBJECT);
 
@@ -148,7 +144,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                         self->users_dbus_interface);
     }    
     
-    if (check_guest_session ())
+    if (is_this_guest_session ())
     {
       guest_mi = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (guest_mi,
@@ -177,14 +173,18 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     users = users_service_dbus_get_user_list (self->users_dbus_interface);
     self->user_count = g_list_length(users);
     
-    gboolean user_menu_is_visible = FALSE;
+    gboolean user_menu_is_visible = should_show_user_menu();
     
-    if (!greeter_mode){
-      user_menu_is_visible = TRUE;
+    if (user_menu_is_visible == FALSE || greeter_mode == TRUE){
+      session_dbus_set_user_menu_visibility (self->session_dbus_interface,
+                                             FALSE);
+    }
+    else{
+      // This needs to be updated once the ability to query guest session support is available
+      session_dbus_set_user_menu_visibility (self->session_dbus_interface,
+                                             user_menu_is_visible);
     }
     
-    session_dbus_set_user_menu_visibility (self->session_dbus_interface,
-                                           user_menu_is_visible);
 
     if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
       users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
@@ -415,7 +415,7 @@ user_mgr_get_root_item (UserMenuMgr* self)
 
 /* Checks to see if we should show the guest suession item */
 static gboolean
-check_guest_session (void)
+is_this_guest_session (void)
 {
 	if (geteuid() < 500) {
 		/* System users shouldn't have guest account shown.  Mostly

@@ -53,6 +53,12 @@ supress_confirmations (void) {
 }
 
 gboolean
+should_show_user_menu (void) {
+	build_settings();
+	return g_settings_get_boolean (settings, SHOW_USER_MENU) ;
+}
+
+gboolean
 show_logout (void) {
 	build_settings();
 	return !g_settings_get_boolean (settings, LOGOUT_KEY) ;

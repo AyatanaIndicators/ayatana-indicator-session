@@ -20,5 +20,11 @@
       <_summary>Remove the shutdown item from the session menu</_summary>
       <_description>Makes it so that the shutdown button doesn’t show in the session menu.</_description>
     </key>
+    <key type="b" name="user-show-menu">
+      <default>true</default>
+      <summary>Determine the visibility of the User Menu</summary>
+      <description>Allow for the user menu to be hidden by the user.</description>
+    </key>
   </schema>
+  
 </schemalist>

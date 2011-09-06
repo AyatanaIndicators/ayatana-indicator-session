@@ -64,7 +64,7 @@ static void user_change (UsersServiceDbus *service,
                          gpointer          user_data);
 
 static void ensure_settings_client ();
-static gboolean check_guest_session (void);
+static gboolean is_this_guest_session (void);
 static void activate_guest_session (DbusmenuMenuitem * mi,
                                     guint timestamp,
                                     gpointer user_data);
@@ -148,7 +148,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                         self->users_dbus_interface);
     }    
     
-    if (check_guest_session ())
+    if (is_this_guest_session ())
     {
       guest_mi = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (guest_mi,
@@ -415,7 +415,7 @@ user_mgr_get_root_item (UserMenuMgr* self)
 
 /* Checks to see if we should show the guest suession item */
 static gboolean
-check_guest_session (void)
+is_this_guest_session (void)
 {
 	if (geteuid() < 500) {
 		/* System users shouldn't have guest account shown.  Mostly

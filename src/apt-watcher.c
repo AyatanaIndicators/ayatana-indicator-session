@@ -272,18 +272,23 @@ apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
     self->reboot_query = g_timeout_add_seconds (2,
                                                 apt_watcher_query_reboot_status,
                                                 self); 
+    self->current_state = state;                                                
   }
   else if (state == UPDATES_AVAILABLE){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Updates Available…"));    
+    self->current_state = state;                                    
   }
   else if (state == UPGRADE_IN_PROGRESS){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Updates Installing…"));    
+    self->current_state = state;                                    
   }  
   else if (state == FINISHED){
+    gboolean query_again = FALSE;
+    
     // Only query if the previous state was an upgrade.
     if (self->current_state == UPGRADE_IN_PROGRESS){
       if (self->reboot_query != 0){
@@ -296,14 +301,30 @@ apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
                                                   apt_watcher_query_reboot_status,
                                                   self); 
     }
-  }  
-  // Set the current state
-  self->current_state = state;
-  
-  if (self->current_state != UPGRADE_IN_PROGRESS){
+    else{
+      query_again = TRUE;      
+    }    
+    self->current_state = state;
+
     g_object_unref (G_OBJECT(self->current_transaction));
     self->current_transaction = NULL;
-  }  
+    // Mental ah yes, because a real transaction (like one which is manually triggered by the user
+    // by hitting check on update-mgr) does not return a 'dependency' prop update which means
+    // I cannot figure out from that transaction if an update is available. 
+    // Only when it finishes and I'm confident it was not an transaction concerned with actually updating should i then fire off another transaction,
+    // this time being a simulation which 'should' figure out if an update is available. 
+    // The Reality is all APT transactions behave differently, an obsolutely nightmare of an API to use.     
+    if (query_again){
+      g_dbus_proxy_call (self->proxy,
+                         "UpgradeSystem",
+                         g_variant_new("(b)", TRUE),
+                         G_DBUS_CALL_FLAGS_NONE,
+                         -1,
+                         NULL,
+                         apt_watcher_upgrade_system_cb,
+                         self);
+    }      
+  }
 }                                              
 
 

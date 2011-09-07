@@ -261,17 +261,11 @@ apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
   AptWatcher* self = APT_WATCHER (user_data);
   
   AptState state = (AptState)update;
+  
   if (state == UP_TO_DATE){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Software Up to Date"));   
-    if (self->reboot_query != 0){
-      g_source_remove (self->reboot_query);
-      self->reboot_query = 0;
-    }
-    self->reboot_query = g_timeout_add_seconds (2,
-                                                apt_watcher_query_reboot_status,
-                                                self); 
     self->current_state = state;                                                
   }
   else if (state == UPDATES_AVAILABLE){

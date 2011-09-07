@@ -269,7 +269,7 @@ apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
       g_source_remove (self->reboot_query);
       self->reboot_query = 0;
     }
-    self->reboot_query = g_timeout_add_seconds (1,
+    self->reboot_query = g_timeout_add_seconds (2,
                                                 apt_watcher_query_reboot_status,
                                                 self); 
   }
@@ -277,27 +277,27 @@ apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Updates Available…"));    
-    self->current_state = state;                                    
   }
   else if (state == UPGRADE_IN_PROGRESS){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Updates Installing…"));    
-    self->current_state = state;                                  
   }  
   else if (state == FINISHED){
-    
-    if (self->reboot_query != 0){
-      g_source_remove (self->reboot_query);
-      self->reboot_query = 0;
+    // Only query if the previous state was an upgrade.
+    if (self->current_state == UPGRADE_IN_PROGRESS){
+      if (self->reboot_query != 0){
+        g_source_remove (self->reboot_query);
+        self->reboot_query = 0;
+      }
+      // Wait a sec before querying for reboot status, 
+      // race condition with Apt has been observed.
+      self->reboot_query = g_timeout_add_seconds (2,
+                                                  apt_watcher_query_reboot_status,
+                                                  self); 
     }
-    // Wait a sec before querying for reboot status, 
-    // race condition with Apt has been observed.
-    self->reboot_query = g_timeout_add_seconds (1,
-                                                apt_watcher_query_reboot_status,
-                                                self); 
   }  
-
+  // Set the current state
   self->current_state = state;
   
   if (self->current_state != UPGRADE_IN_PROGRESS){
@@ -326,7 +326,7 @@ apt_watcher_transaction_state_simulation_update_cb (AptTransaction* trans,
       g_source_remove (self->reboot_query);
       self->reboot_query = 0;
     }
-    self->reboot_query = g_timeout_add_seconds (1,
+    self->reboot_query = g_timeout_add_seconds (2,
                                                 apt_watcher_query_reboot_status,
                                                 self); 
   }

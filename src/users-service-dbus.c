@@ -280,7 +280,7 @@ create_display_manager_proxy (UsersServiceDbus *self)
       g_error_free (error);      
       return;      
     }
-    g_debug ("HAS GUEST ACCOUNT = %i", g_value_get_boolean (&has_guest_session));
+    g_debug ("Does seat have a guest account = %i", g_value_get_boolean (&has_guest_session));
     priv->guest_session_enabled = g_value_get_boolean (&has_guest_session);                                                        
 }
 

@@ -302,12 +302,9 @@ apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
 
     g_object_unref (G_OBJECT(self->current_transaction));
     self->current_transaction = NULL;
-    // Mental ah yes, because a real transaction (like one which is manually triggered by the user
-    // by hitting check on update-mgr) does not return a 'dependency' prop update which means
-    // I cannot figure out from that transaction if an update is available. 
-    // Only when it finishes and I'm confident it was not an transaction concerned with actually updating should i then fire off another transaction,
-    // this time being a simulation which 'should' figure out if an update is available. 
-    // The Reality is all APT transactions behave differently, an obsolutely nightmare of an API to use.     
+
+    // It is impossible to determine from a 'real' transaction whether
+    // updates are available ?
     if (query_again){
       g_dbus_proxy_call (self->proxy,
                          "UpgradeSystem",

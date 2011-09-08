@@ -31,6 +31,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 static void
 consolekit_fallback (LogoutDialogType action)
 {
+	g_debug("Falling back to using ConsoleKit for action");
+
 	DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
 	g_return_if_fail(sbus != NULL); /* worst case */
 	DBusGProxy * proxy = dbus_g_proxy_new_for_name(sbus, "org.freedesktop.ConsoleKit",
@@ -49,12 +51,14 @@ consolekit_fallback (LogoutDialogType action)
 			g_warning("Unable to fallback to ConsoleKit for logout as it's a session issue.  We need some sort of session handler.");
 			break;
 		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
+			g_debug("Telling ConsoleKit to 'Stop'");
 			dbus_g_proxy_call(proxy,
 			                  "Stop",
 			                  &error,
 			                  G_TYPE_INVALID);
 			break;
 		case LOGOUT_DIALOG_TYPE_RESTART:
+			g_debug("Telling ConsoleKit to 'Restart'");
 			dbus_g_proxy_call(proxy,
 			                  "Restart",
 			                  &error,
@@ -104,12 +108,15 @@ session_action (LogoutDialogType action)
 	g_clear_error (&error);
 	
 	if (action == LOGOUT_DIALOG_TYPE_LOG_OUT) {
+		g_debug("Asking Session manager to 'Logout'");
 		res = dbus_g_proxy_call_with_timeout (sm_proxy, "Logout", INT_MAX, &error, 
 											  G_TYPE_UINT, 1, G_TYPE_INVALID, G_TYPE_INVALID);
 	} else if (action == LOGOUT_DIALOG_TYPE_SHUTDOWN) {
+		g_debug("Asking Session manager to 'RequestShutdown'");
 		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestShutdown", INT_MAX, &error, 
 											  G_TYPE_INVALID, G_TYPE_INVALID);
 	} else if (action == LOGOUT_DIALOG_TYPE_RESTART) {
+		g_debug("Asking Session manager to 'RequestReboot'");
 		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestReboot", INT_MAX, &error, 
 											  G_TYPE_INVALID, G_TYPE_INVALID);
 	} else {
@@ -122,6 +129,8 @@ session_action (LogoutDialogType action)
 		} else {
 			g_warning ("SessionManager action failed: unknown error");
 		}
+
+		consolekit_fallback(action);
 	}
 	
 	g_object_unref(sm_proxy);
@@ -139,6 +148,7 @@ static gboolean
 option_logout (const gchar * arg, const gchar * value, gpointer data, GError * error)
 {
 	type = LOGOUT_DIALOG_TYPE_LOG_OUT;
+	g_debug("Dialog type: logout");
 	return TRUE;
 }
 
@@ -146,6 +156,7 @@ static gboolean
 option_shutdown (const gchar * arg, const gchar * value, gpointer data, GError * error)
 {
 	type = LOGOUT_DIALOG_TYPE_SHUTDOWN;
+	g_debug("Dialog type: shutdown");
 	return TRUE;
 }
 
@@ -153,6 +164,7 @@ static gboolean
 option_restart (const gchar * arg, const gchar * value, gpointer data, GError * error)
 {
 	type = LOGOUT_DIALOG_TYPE_RESTART;
+	g_debug("Dialog type: restart");
 	return TRUE;
 }
 
@@ -193,6 +205,7 @@ main (int argc, char * argv[])
 
 	GtkWidget * dialog = NULL;
 	if (!supress_confirmations()) {
+		g_debug("Showing dialog to ask for user confirmation");
 		dialog = GTK_WIDGET(logout_dialog_new(type));
 	}
 
@@ -200,17 +213,27 @@ main (int argc, char * argv[])
 		GtkResponseType response = gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_hide(dialog);
 
+		if (response == GTK_RESPONSE_OK) {
+			g_debug("Dialog return response: 'okay'");
+		} else if (response == GTK_RESPONSE_HELP) {
+			g_debug("Dialog return response: 'help'");
+		} else {
+			g_debug("Dialog return response: %d", response);
+		}
+
 		if (response == GTK_RESPONSE_HELP) {
 			type = LOGOUT_DIALOG_TYPE_RESTART;
 			response = GTK_RESPONSE_OK;
 		}
 
 		if (response != GTK_RESPONSE_OK) {
+			g_debug("Final response was not okay, quiting");
 			return 0;
 		}
 	}
 
 	session_action(type);
+	g_debug("Finished action, quiting");
 
 	return 0;
 }

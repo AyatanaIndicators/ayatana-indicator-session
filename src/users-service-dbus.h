@@ -85,6 +85,8 @@ gboolean  users_service_dbus_activate_guest_session (UsersServiceDbus *self);
 void      users_service_dbus_set_guest_item        (UsersServiceDbus * self,
                                                     DbusmenuMenuitem * mi);
 
+gboolean users_service_dbus_guest_session_enabled (UsersServiceDbus * self);
+
 G_END_DECLS
 
 #endif

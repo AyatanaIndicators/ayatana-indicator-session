@@ -86,6 +86,7 @@ struct _UsersServiceDbusPrivate
 
   DBusGProxy *accounts_service_proxy;
   DBusGProxy *display_manager_proxy;
+  DBusGProxy *display_manager_props_proxy;
   DBusGProxy *ck_proxy;
   DBusGProxy *seat_proxy;
   DBusGProxy *session_proxy;
@@ -95,6 +96,7 @@ struct _UsersServiceDbusPrivate
 
   DbusmenuMenuitem * guest_item;
   gchar * guest_session_id;
+  gboolean guest_session_enabled;
 };
 
 #define USERS_SERVICE_DBUS_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbusPrivate))
@@ -148,6 +150,8 @@ users_service_dbus_init (UsersServiceDbus *self)
   priv->count = 0;
   priv->guest_item = NULL;
   priv->guest_session_id = NULL;
+  
+  priv->guest_session_enabled = FALSE;
 
   /* Get the system bus */
   priv->system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
@@ -194,6 +198,7 @@ users_service_dbus_finalize (GObject *object)
   G_OBJECT_CLASS (users_service_dbus_parent_class)->finalize (object);
 }
 
+
 static void
 create_display_manager_proxy (UsersServiceDbus *self)
 {
@@ -202,7 +207,7 @@ create_display_manager_proxy (UsersServiceDbus *self)
   GError *error = NULL;
   const gchar *cookie = NULL;
   gchar *seat = NULL;
-
+  
   cookie = g_getenv ("XDG_SESSION_COOKIE");
   if (cookie == NULL || cookie[0] == 0)
     {
@@ -232,11 +237,18 @@ create_display_manager_proxy (UsersServiceDbus *self)
       return;
     }
   g_object_unref (dm_proxy);
-
+  g_debug ("CREATING DM PROXIES WITH %s", seat);
   priv->display_manager_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
                                                            "org.freedesktop.DisplayManager",
                                                            seat,
                                                            "org.freedesktop.DisplayManager.Seat");
+
+  priv->display_manager_props_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
+                                                                 "org.freedesktop.DisplayManager",
+                                                                 seat,
+                                                                 "org.freedesktop.DBus.Properties");
+
+
   g_free (seat);
 
   if (!priv->display_manager_proxy)
@@ -244,6 +256,32 @@ create_display_manager_proxy (UsersServiceDbus *self)
       g_warning ("Failed to get DisplayManager seat proxy.");
       return;
     }
+  if (!priv->display_manager_props_proxy)
+    {
+      g_warning ("Failed to get DisplayManager Properties seat proxy.");
+      return;
+    }
+  
+  GValue has_guest_session = {0};
+  g_value_init (&has_guest_session, G_TYPE_BOOLEAN);
+  if (!dbus_g_proxy_call (priv->display_manager_props_proxy,
+                          "Get",
+                          &error,
+                          G_TYPE_STRING,
+                          "org.freedesktop.DisplayManager.Seat",
+                          G_TYPE_STRING,
+                          "HasGuestAccount",
+                          G_TYPE_INVALID,
+                          G_TYPE_VALUE,
+                          &has_guest_session,
+                          G_TYPE_INVALID))
+    {
+      g_warning ("Failed to get the HasGuestSession property from the DisplayManager Properties seat proxy. error: %s", error->message);
+      g_error_free (error);      
+      return;      
+    }
+    g_debug ("Does seat have a guest account = %i", g_value_get_boolean (&has_guest_session));
+    priv->guest_session_enabled = g_value_get_boolean (&has_guest_session);                                                        
 }
 
 static void
@@ -956,3 +994,12 @@ users_service_dbus_set_guest_item (UsersServiceDbus * self, DbusmenuMenuitem * m
 
 	return;
 }
+
+gboolean users_service_dbus_guest_session_enabled (UsersServiceDbus * self)
+{
+	g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), FALSE);
+	UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
+
+  return priv->guest_session_enabled;
+}                                                    
+

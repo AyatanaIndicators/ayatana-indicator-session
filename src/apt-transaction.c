@@ -160,7 +160,7 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
   AptTransaction* self = APT_TRANSACTION(user_data);
   AptState current_state = DONT_KNOW;
   
-  if (g_strcmp0(signal_name, "PropertyChanged") == 0 && self->type == SIMULATION) 
+  if (g_strcmp0(signal_name, "PropertyChanged") == 0) 
   {
     gchar* prop_name= NULL;
     GVariant* value = NULL;
@@ -204,23 +204,22 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
         current_state = UP_TO_DATE;
       }
     }
-  }
-  else if (g_strcmp0(signal_name, "PropertyChanged") == 0 &&
-           self->type == REAL)
-  {
-    GVariant* role = g_dbus_proxy_get_cached_property (self->proxy,
-                                                       "Role");
-    if (g_variant_is_of_type (role, G_VARIANT_TYPE_STRING) == TRUE){
-      gchar* current_role = NULL;
-      g_variant_get (role, "s", &current_role);
-      //g_debug ("Current transaction role = %s", current_role);
-      if (g_strcmp0 (current_role, "role-commit-packages") == 0 ||
-          g_strcmp0 (current_role, "role-upgrade-system") == 0){
-        g_debug ("UPGRADE IN PROGRESS");
-        current_state = UPGRADE_IN_PROGRESS;                        
+    if (self->type == REAL)
+    {
+      GVariant* role = g_dbus_proxy_get_cached_property (self->proxy,
+                                                         "Role");
+      if (g_variant_is_of_type (role, G_VARIANT_TYPE_STRING) == TRUE){
+        gchar* current_role = NULL;
+        g_variant_get (role, "s", &current_role);
+        //g_debug ("Current transaction role = %s", current_role);
+        if (g_strcmp0 (current_role, "role-commit-packages") == 0 ||
+            g_strcmp0 (current_role, "role-upgrade-system") == 0){
+          g_debug ("UPGRADE IN PROGRESS");
+          current_state = UPGRADE_IN_PROGRESS;                        
+        }
       }
-    }
-  } 
+    } 
+  }
   else if (g_strcmp0(signal_name, "Finished") == 0) 
   {
     g_debug ("TRANSACTION Finished");

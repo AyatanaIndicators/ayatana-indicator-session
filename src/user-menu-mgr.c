@@ -65,6 +65,7 @@ static gboolean is_this_guest_session (void);
 static void activate_guest_session (DbusmenuMenuitem * mi,
                                     guint timestamp,
                                     gpointer user_data);
+                                    
 
 G_DEFINE_TYPE (UserMenuMgr, user_menu_mgr, G_TYPE_OBJECT);
 
@@ -129,6 +130,25 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
   if (can_activate == TRUE)
   {
     
+    gboolean guest_enabled = users_service_dbus_guest_session_enabled (self->users_dbus_interface);
+    GList * users = NULL;
+    users = users_service_dbus_get_user_list (self->users_dbus_interface);
+    self->user_count = g_list_length(users);
+    
+    gboolean gsettings_user_menu_is_visible = should_show_user_menu();
+    
+    if (gsettings_user_menu_is_visible == FALSE || greeter_mode == TRUE){
+      session_dbus_set_user_menu_visibility (self->session_dbus_interface,
+                                             FALSE);
+    }
+    else{
+      // This needs to be updated once the ability to query guest session support is available
+      session_dbus_set_user_menu_visibility (self->session_dbus_interface,
+                                             guest_enabled || self->user_count > 1);
+    }
+    
+    // TODO we should really return here if the menu is not going to be shown.
+    
     if (check_new_session ()){
       switch_menuitem = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (switch_menuitem,
@@ -144,7 +164,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                         self->users_dbus_interface);
     }    
     
-    if (is_this_guest_session ())
+    if ( !is_this_guest_session () && guest_enabled)
     {
       guest_mi = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (guest_mi,
@@ -169,21 +189,6 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                                         _("Guest"));      
     }
     
-    GList * users = NULL;
-    users = users_service_dbus_get_user_list (self->users_dbus_interface);
-    self->user_count = g_list_length(users);
-    
-    gboolean user_menu_is_visible = should_show_user_menu();
-    
-    if (user_menu_is_visible == FALSE || greeter_mode == TRUE){
-      session_dbus_set_user_menu_visibility (self->session_dbus_interface,
-                                             FALSE);
-    }
-    else{
-      // This needs to be updated once the ability to query guest session support is available
-      session_dbus_set_user_menu_visibility (self->session_dbus_interface,
-                                             user_menu_is_visible);
-    }
     
 
     if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
@@ -420,10 +425,10 @@ is_this_guest_session (void)
 	if (geteuid() < 500) {
 		/* System users shouldn't have guest account shown.  Mostly
 		   this would be the case of the guest user itself. */
-		return FALSE;
+		return TRUE;
 	}
 
-	return TRUE;
+	return FALSE;
 }
 
 /* Called when someone clicks on the guest session item. */

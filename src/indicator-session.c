@@ -705,6 +705,7 @@ indicator_session_update_users_label (IndicatorSession* self,
     gtk_widget_hide(GTK_WIDGET(self->users.label));
     return;
   }  
+  
   gtk_label_set_text (self->users.label, g_strdup(name));
   gtk_widget_show(GTK_WIDGET(self->users.label));
 }

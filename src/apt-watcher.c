@@ -66,6 +66,13 @@ static void apt_watcher_signal_cb (GDBusProxy* proxy,
 static void  apt_watcher_manage_transactions (AptWatcher* self,
                                               gchar* transaction_id);
 static gboolean apt_watcher_query_reboot_status (gpointer self);
+static void apt_watcher_transaction_state_simulation_update_cb (AptTransaction* trans,
+                                                                gint update,
+                                                                gpointer user_data);
+static void apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
+                                                          gint update,
+                                                          gpointer user_data);
+
                                    
 
 
@@ -245,9 +252,9 @@ apt_watcher_show_apt_dialog (DbusmenuMenuitem * mi,
 }
 
 static void
-apt_watcher_transaction_state_update_cb (AptTransaction* trans,
-                                         gint update,
-                                         gpointer user_data)
+apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
+                                              gint update,
+                                              gpointer user_data)
 {
   g_debug ("apt-watcher -transaction update %i", update);
   g_return_if_fail (APT_IS_WATCHER (user_data));
@@ -259,21 +266,79 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Software Up to Date"));   
-    // Simulations don't send a finished signal for some reason
-    // Anyway from a simulation we just need one state update 
-    // (updates available or not)
-    if (apt_transaction_get_transaction_type (self->current_transaction)
-        == SIMULATION){
-      g_object_unref (G_OBJECT(self->current_transaction));
-      self->current_transaction = NULL;
-    }  
+    self->current_state = state;                                                
+  }
+  else if (state == UPDATES_AVAILABLE){
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Updates Available…"));    
+    self->current_state = state;                                    
+  }
+  else if (state == UPGRADE_IN_PROGRESS){
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Updates Installing…"));    
+    self->current_state = state;                                    
+  }  
+  else if (state == FINISHED){
+    gboolean query_again = FALSE;
+    
+    // Only query if the previous state was an upgrade.
+    if (self->current_state == UPGRADE_IN_PROGRESS){
+      if (self->reboot_query != 0){
+        g_source_remove (self->reboot_query);
+        self->reboot_query = 0;
+      }
+      // Wait a sec before querying for reboot status, 
+      // race condition with Apt has been observed.
+      self->reboot_query = g_timeout_add_seconds (2,
+                                                  apt_watcher_query_reboot_status,
+                                                  self); 
+    }
+    else{
+      query_again = TRUE;      
+    }    
+    self->current_state = state;
+
+    g_object_unref (G_OBJECT(self->current_transaction));
+    self->current_transaction = NULL;
+
+    // It is impossible to determine from a 'real' transaction whether
+    // updates are available ?
+    if (query_again){
+      g_dbus_proxy_call (self->proxy,
+                         "UpgradeSystem",
+                         g_variant_new("(b)", TRUE),
+                         G_DBUS_CALL_FLAGS_NONE,
+                         -1,
+                         NULL,
+                         apt_watcher_upgrade_system_cb,
+                         self);
+    }      
+  }
+}                                              
+
+
+static void
+apt_watcher_transaction_state_simulation_update_cb (AptTransaction* trans,
+                                                    gint update,
+                                                    gpointer user_data)
+{
+  g_debug ("apt-watcher -transaction update %i", update);
+  g_return_if_fail (APT_IS_WATCHER (user_data));
+  AptWatcher* self = APT_WATCHER (user_data);
+  
+  AptState state = (AptState)update;
+  
+  if (state == UP_TO_DATE){
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Software Up to Date"));   
     if (self->reboot_query != 0){
       g_source_remove (self->reboot_query);
       self->reboot_query = 0;
     }
-    // Wait a sec before querying for reboot status, 
-    // race condition with Apt has been observed.
-    self->reboot_query = g_timeout_add_seconds (1,
+    self->reboot_query = g_timeout_add_seconds (2,
                                                 apt_watcher_query_reboot_status,
                                                 self); 
   }
@@ -281,42 +346,19 @@ apt_watcher_transaction_state_update_cb (AptTransaction* trans,
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Updates Available…"));    
-    // Simulations don't send a finished signal for some reason
-    // Anyway from a simulation we just need one state update 
-    // (updates available or not)
-    if (apt_transaction_get_transaction_type (self->current_transaction)
-        == SIMULATION){
-      g_object_unref (G_OBJECT(self->current_transaction));
-      self->current_transaction = NULL;
-    }                              
   }
   else if (state == UPGRADE_IN_PROGRESS){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Updates Installing…"));    
   }  
-  else if (state == FINISHED){
-    g_object_unref (G_OBJECT(self->current_transaction));
-    self->current_transaction = NULL;   
-
-    if (self->current_state == UPDATES_AVAILABLE){
-      return;    
-    }
-    
-    if (self->reboot_query != 0){
-      g_source_remove (self->reboot_query);
-      self->reboot_query = 0;
-    }
-    // Wait a sec before querying for reboot status, 
-    // race condition with Apt has been observed.
-    self->reboot_query = g_timeout_add_seconds (1,
-                                                apt_watcher_query_reboot_status,
-                                                self); 
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Finished Updating…"));                                                                            
-  }
+  
   self->current_state = state;
+  
+  if (self->current_state != UPGRADE_IN_PROGRESS){
+    g_object_unref (G_OBJECT(self->current_transaction));
+    self->current_transaction = NULL;
+  }
 } 
  
 static void
@@ -326,7 +368,7 @@ apt_watcher_manage_transactions (AptWatcher* self, gchar* transaction_id)
       self->current_transaction = apt_transaction_new (transaction_id, SIMULATION);
       g_signal_connect (G_OBJECT(self->current_transaction),
                         "state-update",
-                        G_CALLBACK(apt_watcher_transaction_state_update_cb), self);
+                        G_CALLBACK(apt_watcher_transaction_state_simulation_update_cb), self);
     }
 }
 
@@ -359,6 +401,7 @@ apt_watcher_query_reboot_status (gpointer data)
                                     DBUSMENU_MENUITEM_PROP_DISPOSITION,
                                     DBUSMENU_MENUITEM_DISPOSITION_ALERT);
     session_dbus_restart_required (self->session_dbus_interface);
+    self->current_state = RESTART_NEEDED;
   }
   self->reboot_query = 0;
   return FALSE;
@@ -380,11 +423,17 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
     gchar* current = NULL;
     g_debug ("ActiveTransactionsChanged");
 
-    //gchar** queued = NULL;
     g_variant_get(value, "s", &current);
+
     if (g_str_has_prefix (current, "/org/debian/apt/transaction/") == TRUE){
       g_debug ("ActiveTransactionsChanged - current is %s", current);
-      
+     
+      // Cancel all existing operations.
+      if (self->reboot_query != 0){
+        g_source_remove (self->reboot_query);
+        self->reboot_query = 0;
+      }
+
       if (self->current_transaction != NULL)
       {
         g_object_unref (G_OBJECT(self->current_transaction));
@@ -394,7 +443,7 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
       self->current_transaction = apt_transaction_new (current, REAL);
       g_signal_connect (G_OBJECT(self->current_transaction),
                         "state-update",
-                        G_CALLBACK(apt_watcher_transaction_state_update_cb), self);              
+                        G_CALLBACK(apt_watcher_transaction_state_real_update_cb), self);              
     }
   }
   g_variant_unref (parameters);

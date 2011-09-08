@@ -539,10 +539,16 @@ switch_property_change (DbusmenuMenuitem * item,
   if (g_strcmp0(translate, "1") != 0) {
     no_name_in_lang = TRUE;
   }
+  
+  GSettings* settings = g_settings_new ("com.canonical.indicator.session");
+  gboolean use_username = g_settings_get_boolean (settings,
+                                                  "use-username-in-switch-item");    
+  g_object_unref (settings);
 
   if (variant == NULL || g_variant_get_string(variant, NULL) == NULL ||
-      g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
-    finalstring = _("Switch User…");
+      g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang 
+      || use_username == FALSE) {
+    finalstring = _("Switch User Account…");
     set_ellipsize = FALSE;
   }
 
@@ -587,7 +593,6 @@ switch_property_change (DbusmenuMenuitem * item,
       gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
     }
   }
-
 	return;
 }
 

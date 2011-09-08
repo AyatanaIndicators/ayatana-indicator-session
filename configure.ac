@@ -4,7 +4,7 @@ AC_INIT(src/indicator-session.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 0.3.4.3)
+AM_INIT_AUTOMAKE(indicator-session, 0.3.5.0)
 
 AM_MAINTAINER_MODE
 

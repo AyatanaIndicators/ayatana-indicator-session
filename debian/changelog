@@ -1,3 +1,15 @@
+indicator-session (0.3.5.0-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release:
+    - fix the updates menu items randomly working (lp: #842946)
+    - "Guest Session should not show if guest session was disabled in 
+       the display manager" (lp: #835084)
+    - segfault fix (lp: #840660)
+    - don't display temporary guest user generated username (lp: #844272)
+    - respect "show-real-name-on-panel" to hide the username (lp: #812728)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 08 Sep 2011 21:40:04 +0200
+
 indicator-session (0.3.4.3-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.

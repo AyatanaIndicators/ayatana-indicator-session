@@ -1,3 +1,9 @@
+indicator-session (0.3.5.1-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release.
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 15 Sep 2011 09:25:11 +0200
+
 indicator-session (0.3.5.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release:

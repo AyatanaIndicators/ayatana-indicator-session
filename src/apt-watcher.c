@@ -71,10 +71,8 @@ static void apt_watcher_transaction_state_simulation_update_cb (AptTransaction* 
                                                                 gpointer user_data);
 static void apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
                                                           gint update,
-                                                          gpointer user_data);
-
-                                   
-
+                                                          gpointer user_data);                                   
+static gboolean apt_watcher_start_apt_interaction (gpointer data);
 
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
 
@@ -85,7 +83,17 @@ apt_watcher_init (AptWatcher *self)
   self->proxy_cancel = g_cancellable_new();
   self->proxy = NULL;
   self->reboot_query = 0;
-  self->current_transaction = NULL;
+  self->current_transaction = NULL;  
+  g_timeout_add_seconds (60,
+                         apt_watcher_start_apt_interaction,
+                         self);   
+}
+
+static gboolean 
+apt_watcher_start_apt_interaction (gpointer data)
+{
+  g_return_val_if_fail (APT_IS_WATCHER (data), FALSE);
+  AptWatcher* self = APT_WATCHER (data);
   g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                             G_DBUS_PROXY_FLAGS_NONE,
                             NULL,
@@ -95,6 +103,7 @@ apt_watcher_init (AptWatcher *self)
                             self->proxy_cancel,
                             fetch_proxy_cb,
                             self);
+  return FALSE;    
 }
 
 static void
@@ -154,7 +163,6 @@ fetch_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
                     self);   
 }
 
-
 static void
 apt_watcher_on_name_appeared (GDBusConnection *connection,
                               const gchar     *name,
@@ -169,6 +177,8 @@ apt_watcher_on_name_appeared (GDBusConnection *connection,
            "the system bus",
            name_owner);
 
+  apt_watcher_query_reboot_status (user_data); 
+
   g_dbus_proxy_call (watcher->proxy,
                      "UpgradeSystem",
                      g_variant_new("(b)", TRUE),
@@ -176,8 +186,9 @@ apt_watcher_on_name_appeared (GDBusConnection *connection,
                      -1,
                      NULL,
                      apt_watcher_upgrade_system_cb,
-                     user_data);
+                     user_data);                  
 }
+
 
 static void
 apt_watcher_on_name_vanished (GDBusConnection *connection,
@@ -261,60 +272,52 @@ apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
   AptWatcher* self = APT_WATCHER (user_data);
   
   AptState state = (AptState)update;
-  
-  if (state == UP_TO_DATE){
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Software Up to Date"));   
-    self->current_state = state;                                                
-  }
-  else if (state == UPDATES_AVAILABLE){
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Updates Available…"));    
-    self->current_state = state;                                    
-  }
-  else if (state == UPGRADE_IN_PROGRESS){
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Updates Installing…"));    
-    self->current_state = state;                                    
-  }  
-  else if (state == FINISHED){
-    gboolean query_again = FALSE;
-    
-    // Only query if the previous state was an upgrade.
-    if (self->current_state == UPGRADE_IN_PROGRESS){
-      if (self->reboot_query != 0){
-        g_source_remove (self->reboot_query);
-        self->reboot_query = 0;
-      }
-      // Wait a sec before querying for reboot status, 
-      // race condition with Apt has been observed.
-      self->reboot_query = g_timeout_add_seconds (2,
-                                                  apt_watcher_query_reboot_status,
-                                                  self); 
+  if (self->current_state != RESTART_NEEDED)
+  {
+    if (state == UP_TO_DATE){
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Software Up to Date"));   
+      self->current_state = state;                                                
     }
-    else{
-      query_again = TRUE;      
-    }    
-    self->current_state = state;
+    else if (state == UPDATES_AVAILABLE){
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Updates Available…"));    
+      self->current_state = state;                                    
+    }
+    else if (state == UPGRADE_IN_PROGRESS){
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Updates Installing…"));    
+      self->current_state = state;                                    
+    }  
+    else if (state == FINISHED){
+      gboolean query_again = FALSE;
+      
+      // Only query if the previous state was an upgrade.
+      if (self->current_state != UPGRADE_IN_PROGRESS){
+        query_again = TRUE;      
+      }    
+      self->current_state = state;
 
-    g_object_unref (G_OBJECT(self->current_transaction));
-    self->current_transaction = NULL;
+      g_object_unref (G_OBJECT(self->current_transaction));
+      self->current_transaction = NULL;
 
-    // It is impossible to determine from a 'real' transaction whether
-    // updates are available ?
-    if (query_again){
-      g_dbus_proxy_call (self->proxy,
-                         "UpgradeSystem",
-                         g_variant_new("(b)", TRUE),
-                         G_DBUS_CALL_FLAGS_NONE,
-                         -1,
-                         NULL,
-                         apt_watcher_upgrade_system_cb,
-                         self);
-    }      
+      // It is impossible to determine from a 'real' transaction whether
+      // updates are available therefore it is necessary to check again via a 
+      // simulation whether there are updates available. 
+      if (query_again){
+        g_dbus_proxy_call (self->proxy,
+                           "UpgradeSystem",
+                           g_variant_new("(b)", TRUE),
+                           G_DBUS_CALL_FLAGS_NONE,
+                           -1,
+                           NULL,
+                           apt_watcher_upgrade_system_cb,
+                           self);
+      }      
+    }
   }
 }                                              
 
@@ -329,32 +332,32 @@ apt_watcher_transaction_state_simulation_update_cb (AptTransaction* trans,
   AptWatcher* self = APT_WATCHER (user_data);
   
   AptState state = (AptState)update;
-  
-  if (state == UP_TO_DATE){
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Software Up to Date"));   
-    if (self->reboot_query != 0){
-      g_source_remove (self->reboot_query);
-      self->reboot_query = 0;
+  if (self->current_state != RESTART_NEEDED)
+  {
+    if (state == UP_TO_DATE){
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Software Up to Date"));   
+      if (self->reboot_query != 0){
+        g_source_remove (self->reboot_query);
+        self->reboot_query = 0;
+      }
+      self->reboot_query = g_timeout_add_seconds (1,
+                                                  apt_watcher_query_reboot_status,
+                                                  self); 
     }
-    self->reboot_query = g_timeout_add_seconds (2,
-                                                apt_watcher_query_reboot_status,
-                                                self); 
-  }
-  else if (state == UPDATES_AVAILABLE){
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Updates Available…"));    
-  }
-  else if (state == UPGRADE_IN_PROGRESS){
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Updates Installing…"));    
+    else if (state == UPDATES_AVAILABLE){
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Updates Available…"));    
+    }
+    else if (state == UPGRADE_IN_PROGRESS){
+      dbusmenu_menuitem_property_set (self->apt_item,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      _("Updates Installing…"));    
+    }  
+    self->current_state = state;
   }  
-  
-  self->current_state = state;
-  
   if (self->current_state != UPGRADE_IN_PROGRESS){
     g_object_unref (G_OBJECT(self->current_transaction));
     self->current_transaction = NULL;
@@ -383,7 +386,6 @@ apt_watcher_query_reboot_status (gpointer data)
   gboolean reboot;
   g_variant_get (reboot_result, "b", &reboot);
   g_debug ("apt_watcher_query_reboot_status: reboot prop = %i", reboot);
-  
   if (reboot == FALSE){
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
@@ -396,7 +398,7 @@ apt_watcher_query_reboot_status (gpointer data)
   else{
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Reboot Required"));
+                                    _("Restart to complete updates…"));
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_DISPOSITION,
                                     DBUSMENU_MENUITEM_DISPOSITION_ALERT);
@@ -446,6 +448,28 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
                         G_CALLBACK(apt_watcher_transaction_state_real_update_cb), self);              
     }
   }
+  else if (g_strcmp0(signal_name, "PropertyChanged") == 0) 
+  {
+    gchar* prop_name= NULL;
+    GVariant* value = NULL;
+    g_variant_get (parameters, "(sv)", &prop_name, &value);    
+    g_debug ("transaction prop update - prop = %s", prop_name);    
+    
+    if (g_strcmp0 (prop_name, "RebootRequired") == 0){
+      gboolean reboot_required = FALSE;
+      g_variant_get (value, "(b)", &reboot_required); 
+      if (reboot_required){
+        dbusmenu_menuitem_property_set (self->apt_item,
+                                        DBUSMENU_MENUITEM_PROP_LABEL,
+                                        _("Restart to complete updates…"));
+        dbusmenu_menuitem_property_set (self->apt_item,
+                                        DBUSMENU_MENUITEM_PROP_DISPOSITION,
+                                        DBUSMENU_MENUITEM_DISPOSITION_ALERT); 
+        self->current_state = RESTART_NEEDED;                                            
+      }   
+    }    
+  } 
+
   g_variant_unref (parameters);
 }
 

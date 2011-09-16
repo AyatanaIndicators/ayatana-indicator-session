@@ -398,7 +398,7 @@ apt_watcher_query_reboot_status (gpointer data)
   else{
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Restart to complete updates…"));
+                                    _("Restart to Complete Updates…"));
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_DISPOSITION,
                                     DBUSMENU_MENUITEM_DISPOSITION_ALERT);
@@ -461,7 +461,7 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
       if (reboot_required){
         dbusmenu_menuitem_property_set (self->apt_item,
                                         DBUSMENU_MENUITEM_PROP_LABEL,
-                                        _("Restart to complete updates…"));
+                                        _("Restart to Complete Updates…"));
         dbusmenu_menuitem_property_set (self->apt_item,
                                         DBUSMENU_MENUITEM_PROP_DISPOSITION,
                                         DBUSMENU_MENUITEM_DISPOSITION_ALERT); 

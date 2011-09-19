@@ -177,8 +177,6 @@ apt_watcher_on_name_appeared (GDBusConnection *connection,
            "the system bus",
            name_owner);
 
-  apt_watcher_query_reboot_status (user_data); 
-
   g_dbus_proxy_call (watcher->proxy,
                      "UpgradeSystem",
                      g_variant_new("(b)", TRUE),
@@ -299,6 +297,15 @@ apt_watcher_transaction_state_real_update_cb (AptTransaction* trans,
       if (self->current_state != UPGRADE_IN_PROGRESS){
         query_again = TRUE;      
       }    
+      else{
+        if (self->reboot_query != 0){
+          g_source_remove (self->reboot_query);
+          self->reboot_query = 0;
+        }
+        self->reboot_query = g_timeout_add_seconds (1,
+                                                    apt_watcher_query_reboot_status,
+                                                    self);         
+      }
       self->current_state = state;
 
       g_object_unref (G_OBJECT(self->current_transaction));
@@ -383,7 +390,7 @@ apt_watcher_query_reboot_status (gpointer data)
   
   GVariant* reboot_result = g_dbus_proxy_get_cached_property (self->proxy,
                                                              "RebootRequired");
-  gboolean reboot;
+  gboolean reboot = FALSE;
   g_variant_get (reboot_result, "b", &reboot);
   g_debug ("apt_watcher_query_reboot_status: reboot prop = %i", reboot);
   if (reboot == FALSE){

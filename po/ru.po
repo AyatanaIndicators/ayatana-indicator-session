@@ -217,7 +217,7 @@ msgid "Updates Installing…"
 msgstr "Установка обновлений..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Перезагрузите компьютер для завершения обновления..."
 
 #: ../src/device-menu-mgr.c:516

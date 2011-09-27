@@ -215,7 +215,7 @@ msgid "Updates Installing…"
 msgstr "يېڭىلانمىلار ئورنىتىلىۋاتىدۇ…"
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "يېڭىلاشنى تاماملاش ئۈچۈن قايتا باشلاش…"
 
 #: ../src/device-menu-mgr.c:516

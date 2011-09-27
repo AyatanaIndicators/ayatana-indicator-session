@@ -221,7 +221,7 @@ msgid "Updates Installing…"
 msgstr "হালনাগাদ ইনস্টল করা হচ্ছে..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "হালনাগাদ সম্পন্ন করতে পুনরায় শুরু করুন..."
 
 #: ../src/device-menu-mgr.c:516

@@ -210,7 +210,7 @@ msgid "Updates Installing…"
 msgstr "ማሻሻያውን በመግጠም ላይ…"
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "እንደገና ያስጀምሩ ማሻሻያውን ለመፈጸም..."
 
 #: ../src/device-menu-mgr.c:516

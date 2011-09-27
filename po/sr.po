@@ -228,7 +228,7 @@ msgid "Updates Installing…"
 msgstr "Инсталација ажурирања..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Поново покрени да довршиш ажурирања..."
 
 #: ../src/device-menu-mgr.c:516

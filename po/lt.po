@@ -217,7 +217,7 @@ msgid "Updates Installing…"
 msgstr "Įdiegiami atnaujinimai..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Paleisti iš naujo atnaujinimams užbaigti..."
 
 #: ../src/device-menu-mgr.c:516

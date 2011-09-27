@@ -218,8 +218,8 @@ msgid "Updates Installing…"
 msgstr "Updates Installing…"
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
-msgstr "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
+msgstr "Restart to Complete Updates…"
 
 #: ../src/device-menu-mgr.c:516
 msgid "System Settings…"

@@ -213,7 +213,7 @@ msgid "Updates Installing…"
 msgstr "Instalují se aktualizace"
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Restartovat pro dokončení aktualizace..."
 
 #: ../src/device-menu-mgr.c:516

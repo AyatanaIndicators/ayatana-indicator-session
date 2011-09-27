@@ -217,7 +217,7 @@ msgid "Updates Installing…"
 msgstr "Uuenduste paigaldamine..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Taaskäivita uuendamise lõpetamiseks..."
 
 #: ../src/device-menu-mgr.c:516

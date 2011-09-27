@@ -210,7 +210,7 @@ msgid "Updates Installing…"
 msgstr "업데이트 설치중..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "업데이트를 다하기 위해 다시 시작..."
 
 #: ../src/device-menu-mgr.c:516

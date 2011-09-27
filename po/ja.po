@@ -210,7 +210,7 @@ msgid "Updates Installing…"
 msgstr "アップデートのインストール中..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "再起動（アップデートの完全な適用に必須）…"
 
 #: ../src/device-menu-mgr.c:516

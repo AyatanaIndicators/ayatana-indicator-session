@@ -221,7 +221,7 @@ msgid "Updates Installing…"
 msgstr "Aktualisierungen werden installiert …"
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Neustarten, um Aktualisierungen abzuschließen …"
 
 #: ../src/device-menu-mgr.c:516

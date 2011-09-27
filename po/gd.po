@@ -224,7 +224,7 @@ msgid "Updates Installing…"
 msgstr "Ùrachaidhean stàlachadh..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Ath-tòisich gu crìochnaich ùrachaidhean..."
 
 #: ../src/device-menu-mgr.c:516

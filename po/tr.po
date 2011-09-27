@@ -220,7 +220,7 @@ msgid "Updates Installing…"
 msgstr "Güncellemeler Yükleniyor..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Güncellemeyi tamamlamak için yeniden başlatın..."
 
 #: ../src/device-menu-mgr.c:516

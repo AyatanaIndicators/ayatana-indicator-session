@@ -225,7 +225,7 @@ msgid "Updates Installing…"
 msgstr "Mesas a jorn en cors d'installacion..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Reamodar per acabar las mesas a jorn..."
 
 #: ../src/device-menu-mgr.c:516

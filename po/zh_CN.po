@@ -210,7 +210,7 @@ msgid "Updates Installing…"
 msgstr "正在安装更新…"
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "重启以完成更新..."
 
 #: ../src/device-menu-mgr.c:516

@@ -221,7 +221,7 @@ msgid "Updates Installing…"
 msgstr "Përditësimet po Instalohen..."
 
 #: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
-msgid "Restart to complete updates…"
+msgid "Restart to Complete Updates…"
 msgstr "Rindize për të kompletuar përditësimet..."
 
 #: ../src/device-menu-mgr.c:516

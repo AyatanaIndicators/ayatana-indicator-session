@@ -7,32 +7,48 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-17 10:48-0500\n"
-"PO-Revision-Date: 2010-03-16 16:27+0000\n"
+"POT-Creation-Date: 2011-09-15 08:37+0000\n"
+"PO-Revision-Date: 2011-09-15 16:33+0000\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-03-17 19:48+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
+"X-Generator: Launchpad (build 14041)\n"
 
-#: ../data/indicator-session.schemas.in.h:1
-msgid "Makes it so that the logout button doesn't show in the session menu."
-msgstr ""
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:1
+msgid "Makes it so that the logout button doesn’t show in the session menu."
+msgstr "A kijelentkezés gomb elrejtése a munkamenet-menüben."
 
-#: ../data/indicator-session.schemas.in.h:2
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:2
+msgid "Makes it so that the restart button doesn’t show in the session menu."
+msgstr "Az újraindítás gomb elrejtése a munkamenet-menüben."
+
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:3
+msgid ""
+"Makes it so that the shutdown button doesn’t show in the session menu."
+msgstr "A leállítás gomb elrejtése a munkamenet-menüben."
+
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:4
 msgid "Remove the Log Out item from the session menu"
-msgstr ""
+msgstr "A Kijelentkezés elem eltávolítása a munkamenet menüből"
 
-#: ../data/indicator-session.schemas.in.h:3
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:5
+msgid "Remove the Restart item from the session menu"
+msgstr "Az újraindítás elem eltávolítása a munkamenet menüből"
+
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:6
+msgid "Remove the shutdown item from the session menu"
+msgstr "A leállítás elem eltávolítása a munkamenet menüből"
+
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:7
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Kijelentkezés, újraindítás és leállítás megerősítő párbeszédpaneljének "
 "letiltása"
 
-#: ../data/indicator-session.schemas.in.h:4
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:8
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
@@ -40,31 +56,45 @@ msgstr ""
 "Megjelenjen párbeszédpanel a kijelentkezés, újraindítás és leállítás "
 "megerősítésére?"
 
-#: ../src/gconf-helper.c:63 ../src/session-service.c:613
+#: ../data/extra-sessions/classic-desktop.desktop.in.in.h:1
+msgid "Classic Guest Session"
+msgstr "Klasszikus vendég munkamenet"
+
+#: ../data/extra-sessions/classic-desktop.desktop.in.in.h:2
+msgid "Start a guest session using the classic desktop"
+msgstr "Vendég munkamenet indítása a klasszikus munkamenet használatával"
+
+#: ../data/indicator-session-lock-screen.desktop.in.in.h:1
+#: ../src/device-menu-mgr.c:649
+msgid "Lock Screen"
+msgstr "Képernyő zárolása"
+
+#: ../data/indicator-session-shutdown.desktop.in.in.h:1
+#: ../src/settings-helper.c:86 ../src/device-menu-mgr.c:716
+msgid "Shut Down"
+msgstr "Leállítás"
+
+#: ../data/indicator-session-logout.desktop.in.in.h:1
+#: ../src/settings-helper.c:84 ../src/device-menu-mgr.c:672
 msgid "Log Out"
 msgstr "Kijelentkezés"
 
-#: ../src/gconf-helper.c:64 ../src/session-service.c:638
-#: ../src/session-service.c:722
+#: ../data/indicator-session-restart.desktop.in.in.h:1
+#: ../src/settings-helper.c:85
 msgid "Restart"
 msgstr "Újraindítás"
 
-#: ../src/gconf-helper.c:65 ../src/session-service.c:647
-msgid "Switch Off"
-msgstr "Kikapcsolás"
-
-#: ../src/gconf-helper.c:67 ../src/session-service.c:615
-msgid "Log Out..."
+#: ../src/settings-helper.c:88 ../src/device-menu-mgr.c:677
+msgid "Log Out…"
 msgstr "Kijelentkezés…"
 
-#: ../src/gconf-helper.c:68 ../src/session-service.c:640
-#: ../src/session-service.c:724
-msgid "Restart..."
-msgstr "Újraindítás..."
+#: ../src/settings-helper.c:89
+msgid "Restart…"
+msgstr "Újraindítás…"
 
-#: ../src/gconf-helper.c:69 ../src/session-service.c:649
-msgid "Switch Off..."
-msgstr "Kikapcsolás..."
+#: ../src/settings-helper.c:90 ../src/device-menu-mgr.c:721
+msgid "Shut Down…"
+msgstr "Leállítás…"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:35
@@ -81,8 +111,8 @@ msgstr "Újraindítás"
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:37
 msgctxt "title"
-msgid "Switch Off"
-msgstr "Kikapcsolás"
+msgid "Shut Down"
+msgstr "Leállítás"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:41
@@ -98,7 +128,8 @@ msgstr ""
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:43
-msgid "Are you sure you want to close all programs and shut down the computer?"
+msgid ""
+"Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
 "Biztos, hogy bezárja az összes programot, és kikapcsolja a számítógépet?"
 
@@ -117,8 +148,8 @@ msgstr "Újraindítás"
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:49
 msgctxt "button"
-msgid "Switch Off"
-msgstr "Kikapcsolás"
+msgid "Shut Down"
+msgstr "Leállítás"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:55
@@ -129,14 +160,14 @@ msgstr "Kijelentkezés"
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:56
 msgctxt "button auth"
-msgid "Restart..."
+msgid "Restart…"
 msgstr "Újraindítás…"
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:57
 msgctxt "button auth"
-msgid "Switch Off..."
-msgstr "Kikapcsolás…"
+msgid "Shut Down…"
+msgstr "Leállítás…"
 
 #. TRANSLATORS: This button appears on the logout dialog when
 #. there are updates that require restart.  It will do a restart
@@ -146,73 +177,164 @@ msgid "Restart Instead"
 msgstr "Inkább újraindítom"
 
 #: ../src/dialog.c:64
-msgid "Restart Instead..."
-msgstr "Inkább újraindítom…"
+msgid "Restart Instead…"
+msgstr "Inkább újraindítás…"
 
 #: ../src/dialog.c:65
-msgid "Some software updates won't apply until the computer next restarts."
+msgid "Some software updates won’t apply until the computer next restarts."
 msgstr ""
 "Néhány szoftverfrissítés nem kerül alkalmazásra a számítógép következő "
 "újraindításáig."
 
-#: ../src/dialog.c:217 ../src/dialog.c:222
+#: ../src/dialog.c:219 ../src/dialog.c:224
 msgid "Cancel"
 msgstr "Mégse"
 
-#: ../src/indicator-session.c:272
-msgid "Switch User..."
-msgstr "Felhasználóváltás..."
+#: ../src/indicator-session.c:538
+msgctxt "session_menu:switchfrom"
+msgid "1"
+msgstr "emiatt van az hogy felhasználóváltás, ne fordítsd 1-re!"
 
-#. TODO: We need some way to remove the elipsis from appearing
-#. twice in the label.  Not sure how to do that yet.
-#: ../src/indicator-session.c:301
+#: ../src/indicator-session.c:551
+msgid "Switch User Account…"
+msgstr "Felhasználóváltás…"
+
+#: ../src/indicator-session.c:578
 #, c-format
-msgid "Switch From %s..."
-msgstr "Váltás róla: %s..."
+msgid "Switch From %s…"
+msgstr "Váltás róla: %s…"
 
-#: ../src/session-service.c:512
-msgid "Lock Screen"
-msgstr "Képernyő zárolása"
+#: ../src/apt-watcher.c:280 ../src/apt-watcher.c:340 ../src/apt-watcher.c:392
+#: ../src/device-menu-mgr.c:548
+msgid "Software Up to Date"
+msgstr "A szoftverek naprakészek"
 
-#: ../src/session-service.c:535
-msgid "Guest Session"
-msgstr "Vendég-munkamenet"
+#: ../src/apt-watcher.c:286 ../src/apt-watcher.c:352
+msgid "Updates Available…"
+msgstr "Frissítések érhetők el…"
 
-#: ../src/session-service.c:623
-msgid "Sleep"
-msgstr "Alvó állapot"
+#: ../src/apt-watcher.c:292 ../src/apt-watcher.c:357
+msgid "Updates Installing…"
+msgstr "Frissítések telepítése…"
 
-#: ../src/session-service.c:630
+#: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
+msgid "Restart to Complete Updates…"
+msgstr "Újraindítás a frissítés befejezéséhez…"
+
+#: ../src/device-menu-mgr.c:516
+msgid "System Settings…"
+msgstr "Rendszerbeállítások…"
+
+#: ../src/device-menu-mgr.c:527
+msgid "Displays…"
+msgstr "Kijelzők…"
+
+#: ../src/device-menu-mgr.c:537
+msgid "Startup Applications…"
+msgstr "Indítópult…"
+
+#: ../src/device-menu-mgr.c:566
+msgid "Attached Devices"
+msgstr "Csatlakoztatott eszközök"
+
+#: ../src/device-menu-mgr.c:577
+msgid "Printers"
+msgstr "Nyomtatók"
+
+#: ../src/device-menu-mgr.c:588
+msgid "Scanners"
+msgstr "Szkennerek"
+
+#: ../src/device-menu-mgr.c:603 ../src/udev-mgr.c:243 ../src/udev-mgr.c:255
+msgid "Webcam"
+msgstr "Webkamera"
+
+#: ../src/device-menu-mgr.c:692
+msgid "Suspend"
+msgstr "Felfüggesztés"
+
+#: ../src/device-menu-mgr.c:704
 msgid "Hibernate"
 msgstr "Hibernálás"
 
-#: ../src/session-service.c:712
-msgid "Restart Required"
-msgstr "Újraindítás szükséges"
+#: ../src/user-menu-mgr.c:175
+msgid "Guest Session"
+msgstr "Vendég-munkamenet"
 
-#: ../src/session-service.c:714
-msgid "Restart Required..."
-msgstr "Újraindítás szükséges…"
+#: ../src/user-menu-mgr.c:189
+msgid "Guest"
+msgstr "Vendég"
+
+#: ../src/user-menu-mgr.c:270
+msgid "Online Accounts…"
+msgstr "Online fiókok…"
+
+#: ../src/user-menu-mgr.c:285
+msgid "User Accounts…"
+msgstr "Felhasználói fiókok…"
+
+#: ../src/udev-mgr.c:255
+#, c-format
+msgid "%s Webcam"
+msgstr "%s webkamera"
+
+#: ../src/udev-mgr.c:335 ../src/udev-mgr.c:387 ../src/udev-mgr.c:400
+#: ../src/udev-mgr.c:454 ../src/udev-mgr.c:466
+msgid "Scanner"
+msgstr "Szkenner"
+
+#: ../src/udev-mgr.c:335 ../src/udev-mgr.c:400 ../src/udev-mgr.c:466
+#, c-format
+msgid "%s Scanner"
+msgstr "%s szkenner"
+
+#~ msgid "Restart..."
+#~ msgstr "Újraindítás…"
+
+#~ msgid "Switch User..."
+#~ msgstr "Felhasználóváltás…"
+
+#~ msgid "Shut Down..."
+#~ msgstr "Leállítás…"
+
+#~ msgid "Log Out..."
+#~ msgstr "Kijelentkezés…"
+
+#~ msgctxt "button auth"
+#~ msgid "Restart..."
+#~ msgstr "Újraindítás…"
+
+#~ msgid "Some software updates won't apply until the computer next restarts."
+#~ msgstr ""
+#~ "Néhány szoftverfrissítés nem kerül alkalmazásra a számítógép következő "
+#~ "újraindításáig."
+
+#~ msgid "Restart Instead..."
+#~ msgstr "Inkább újraindítom…"
+
+#~ msgid "Makes it so that the logout button doesn't show in the session menu."
+#~ msgstr "A kijelentkezés gomb ne jelenjen meg a munkamenet menüben."
+
+#~ msgctxt "button auth"
+#~ msgid "Shut Down..."
+#~ msgstr "Leállítás…"
+
+#~ msgid "Restart to Complete Update…"
+#~ msgstr "Újraindítás a frissítés befejezéséhez…"
+
+#~ msgid "Restart to Complete Update"
+#~ msgstr "Újraindítás a frissítés befejezéséhez"
+
+#, c-format
+#~ msgid "Switch From %s..."
+#~ msgstr "Váltás róla: %s…"
+
+#~ msgid "Session"
+#~ msgstr "Munkamenet"
+
+#~ msgid "Makes it so that the restart button doesn't show in the session menu."
+#~ msgstr "Az újraindítás gomb nem jelenik meg a munkamenet menüben."
 
 #~ msgid ""
-#~ "You recently installed updates which will only take effect after a "
-#~ "restart.  Restart to apply software updates."
-#~ msgstr ""
-#~ "A legutóbb telepített frissítések csak az újraindítás után lépnek "
-#~ "érvénybe.  A szoftverfrissítések érvénybe léptetéséhez indítsa újra a "
-#~ "rendszert."
-
-#~ msgid "You will be logged out in %d second."
-#~ msgid_plural "You will be logged out in %d seconds."
-#~ msgstr[0] "%d másodperc múlva kijelentkezik."
-#~ msgstr[1] "%d másodperc múlva kijelentkezik."
-
-#~ msgid "The computer will restart in %d second."
-#~ msgid_plural "The computer will restart in %d seconds."
-#~ msgstr[0] "A számítógép %d másodperc múlva újraindul."
-#~ msgstr[1] "A számítógép %d másodperc múlva újraindul."
-
-#~ msgid "The computer will switch off in %d second."
-#~ msgid_plural "The computer will switch off in %d seconds."
-#~ msgstr[0] "A számítógép %d másodperc múlva kikapcsol."
-#~ msgstr[1] "A számítógép %d másodperc múlva kikapcsol."
+#~ "Makes it so that the shutdown button doesn't show in the session menu."
+#~ msgstr "A leállítás gomb nem jelenik meg a munkamenet menüben."

@@ -6,4 +6,5 @@ Icon=system-restart
 Terminal=false
 Type=Application
 OnlyShowIn=Unity;
+Categories=System;
 Version=1.0

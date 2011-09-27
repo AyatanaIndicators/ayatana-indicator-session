@@ -21,7 +21,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #ifndef __GCONF_HELPER_H__
-#define __GCONF_HELPER_H__ 1
+#define __GCONF_HELPER_H__ 
 
 #include <glib/gi18n.h>
 
@@ -31,11 +31,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 
-#define SESSION_SCHEMA      "com.canonical.indicator.session"
-#define SUPPRESS_KEY        "suppress-logout-restart-shutdown"
-#define LOGOUT_KEY          "suppress-logout-menuitem"
-#define RESTART_KEY         "suppress-restart-menuitem"
-#define SHUTDOWN_KEY        "suppress-shutdown-menuitem"
+#define SESSION_SCHEMA                "com.canonical.indicator.session"
+#define SUPPRESS_KEY                  "suppress-logout-restart-shutdown"
+#define LOGOUT_KEY                    "suppress-logout-menuitem"
+#define RESTART_KEY                   "suppress-restart-menuitem"
+#define SHUTDOWN_KEY                  "suppress-shutdown-menuitem"
+#define SHOW_USER_MENU                "user-show-menu"
+#define USER_USERNAME_IN_SWITCH_ITEM  "use-username-in-switch-item"
 
 #define LOCKDOWN_SCHEMA           "org.gnome.desktop.lockdown"
 #define LOCKDOWN_KEY_USER         "disable-user-switching"
@@ -56,5 +58,7 @@ gboolean supress_confirmations (void);
 gboolean show_logout (void);
 gboolean show_restart (void);
 gboolean show_shutdown (void);
+gboolean should_show_user_menu (void);
+
 
 #endif /* __GCONF_HELPER__ */

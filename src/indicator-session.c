@@ -70,6 +70,8 @@ struct _IndicatorSession {
 	GDBusProxy * service_proxy;
 };
 
+static gboolean greeter_mode;
+
 GType indicator_session_get_type (void);
 
 /* Indicator stuff */
@@ -164,10 +166,18 @@ indicator_session_init (IndicatorSession *self)
                                                       
   self->users.label = GTK_LABEL (gtk_label_new (NULL));
 
+  const gchar *greeter_var;
+  greeter_var = g_getenv("INDICATOR_GREETER_MODE");
+  greeter_mode = g_strcmp0(greeter_var, "1") == 0;
   // devices
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
-  self->devices.image = indicator_image_helper (ICON_DEFAULT);
+  if (greeter_mode){
+    self->devices.image = indicator_image_helper (GREETER_ICON_DEFAULT);
+  }
+  else{
+    self->devices.image = indicator_image_helper (ICON_DEFAULT);
+  }
   
   gtk_widget_show (GTK_WIDGET(self->devices.menu));
   gtk_widget_show (GTK_WIDGET(self->devices.image));
@@ -497,9 +507,14 @@ receive_signal (GDBusProxy * proxy,
                              &self->users);       
     }
   }
-  else if (g_strcmp0(signal_name, "RebootRequired") == 0) {
-    // TODO waiting on design to give me a name.
-    self->devices.image = indicator_image_helper (ICON_RESTART);        
+  else if (g_strcmp0(signal_name, "RestartRequired") == 0) {    
+    if (greeter_mode == TRUE){
+      self->devices.image = indicator_image_helper (GREETER_ICON_RESTART);
+    }
+    else{
+      g_debug ("reboot required");
+      self->devices.image = indicator_image_helper (ICON_RESTART);      
+    }
   }  
 }
 
@@ -524,10 +539,16 @@ switch_property_change (DbusmenuMenuitem * item,
   if (g_strcmp0(translate, "1") != 0) {
     no_name_in_lang = TRUE;
   }
+  
+  GSettings* settings = g_settings_new ("com.canonical.indicator.session");
+  gboolean use_username = g_settings_get_boolean (settings,
+                                                  "use-username-in-switch-item");    
+  g_object_unref (settings);
 
   if (variant == NULL || g_variant_get_string(variant, NULL) == NULL ||
-      g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang) {
-    finalstring = _("Switch User…");
+      g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang 
+      || use_username == FALSE) {
+    finalstring = _("Switch User Account…");
     set_ellipsize = FALSE;
   }
 
@@ -572,7 +593,6 @@ switch_property_change (DbusmenuMenuitem * item,
       gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
     }
   }
-
 	return;
 }
 
@@ -683,13 +703,21 @@ build_menu_switch (DbusmenuMenuitem * newitem,
 static void
 indicator_session_update_users_label (IndicatorSession* self, 
                                       const gchar* name)
-{
-  g_debug ("update users label");
-  
+{  
   if (name == NULL){
     gtk_widget_hide(GTK_WIDGET(self->users.label));
     return;
   }  
+
+  GSettings* settings = g_settings_new ("com.canonical.indicator.session");
+  gboolean use_name = g_settings_get_boolean (settings,
+                                              "show-real-name-on-panel");    
+  g_object_unref (settings);
   gtk_label_set_text (self->users.label, g_strdup(name));
-  gtk_widget_show(GTK_WIDGET(self->users.label));
+  if (use_name){ 
+    gtk_widget_show(GTK_WIDGET(self->users.label));
+  }
+  else{
+    gtk_widget_hide(GTK_WIDGET(self->users.label));
+  }
 }

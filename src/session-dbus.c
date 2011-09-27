@@ -300,11 +300,13 @@ void session_dbus_restart_required (SessionDbus* session)
 	GError * error = NULL;
     
 	if (priv->bus != NULL) {
+    g_debug("About to send RebootRequired signal");
+
 		g_dbus_connection_emit_signal (priv->bus,
                                    NULL,
                                    INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
                                    INDICATOR_SESSION_SERVICE_DBUS_IFACE,
-                                   "RebootRequired",
+                                   "RestartRequired",
                                    NULL,
                                    &error);
 

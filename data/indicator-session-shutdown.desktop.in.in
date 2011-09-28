@@ -6,4 +6,5 @@ Icon=system-shutdown
 Terminal=false
 Type=Application
 OnlyShowIn=Unity;
+Categories=System;
 Version=1.0

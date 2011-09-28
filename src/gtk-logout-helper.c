@@ -55,6 +55,7 @@ consolekit_fallback (LogoutDialogType action)
 			dbus_g_proxy_call(proxy,
 			                  "Stop",
 			                  &error,
+			                  G_TYPE_INVALID,
 			                  G_TYPE_INVALID);
 			break;
 		case LOGOUT_DIALOG_TYPE_RESTART:
@@ -62,6 +63,7 @@ consolekit_fallback (LogoutDialogType action)
 			dbus_g_proxy_call(proxy,
 			                  "Restart",
 			                  &error,
+			                  G_TYPE_INVALID,
 			                  G_TYPE_INVALID);
 			break;
 		default:
@@ -72,7 +74,7 @@ consolekit_fallback (LogoutDialogType action)
 	g_object_unref(proxy);
 
 	if (error != NULL) {
-		g_error("Unable to signal ConsoleKit");
+		g_warning("Unable to signal ConsoleKit");
 		g_error_free(error);
 	}
 

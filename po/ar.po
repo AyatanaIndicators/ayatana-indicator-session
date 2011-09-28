@@ -7,60 +7,89 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-17 10:48-0500\n"
-"PO-Revision-Date: 2010-03-14 04:57+0000\n"
+"POT-Creation-Date: 2011-09-15 08:37+0000\n"
+"PO-Revision-Date: 2011-09-15 09:58+0000\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n % 100 >= "
-"3 && n % 100 <= 10 ? 3 : n % 100 >= 11 && n % 100 <= 99 ? 4 : 5;\n"
-"X-Launchpad-Export-Date: 2010-03-17 19:48+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
+"X-Generator: Launchpad (build 14041)\n"
 
-#: ../data/indicator-session.schemas.in.h:1
-msgid "Makes it so that the logout button doesn't show in the session menu."
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:1
+msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 
-#: ../data/indicator-session.schemas.in.h:2
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:2
+msgid "Makes it so that the restart button doesn’t show in the session menu."
+msgstr ""
+
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:3
+msgid ""
+"Makes it so that the shutdown button doesn’t show in the session menu."
+msgstr ""
+
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:4
 msgid "Remove the Log Out item from the session menu"
-msgstr ""
+msgstr "أزل عنصر الخروج من قائمة الجلسة"
 
-#: ../data/indicator-session.schemas.in.h:3
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:5
+msgid "Remove the Restart item from the session menu"
+msgstr "أزل عنصر إعادة التشغيل من قائمة الجلسة"
+
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:6
+msgid "Remove the shutdown item from the session menu"
+msgstr "أزل عنصر الإطفاء من قائمة الجلسة"
+
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:7
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr "أخفِ حوار تأكيد الخروج وإعادة التشغيل والإيقاف"
 
-#: ../data/indicator-session.schemas.in.h:4
+#: ../data/com.canonical.indicator.session.gschema.xml.in.h:8
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr "ما إذا ستظهر حوارات تأكيد الخروج وإعادة التشغيل والإيقاف ."
 
-#: ../src/gconf-helper.c:63 ../src/session-service.c:613
+#: ../data/extra-sessions/classic-desktop.desktop.in.in.h:1
+msgid "Classic Guest Session"
+msgstr ""
+
+#: ../data/extra-sessions/classic-desktop.desktop.in.in.h:2
+msgid "Start a guest session using the classic desktop"
+msgstr ""
+
+#: ../data/indicator-session-lock-screen.desktop.in.in.h:1
+#: ../src/device-menu-mgr.c:649
+msgid "Lock Screen"
+msgstr "أوصِد الشاشة"
+
+#: ../data/indicator-session-shutdown.desktop.in.in.h:1
+#: ../src/settings-helper.c:86 ../src/device-menu-mgr.c:716
+msgid "Shut Down"
+msgstr "أطفئ"
+
+#: ../data/indicator-session-logout.desktop.in.in.h:1
+#: ../src/settings-helper.c:84 ../src/device-menu-mgr.c:672
 msgid "Log Out"
 msgstr "اخرج"
 
-#: ../src/gconf-helper.c:64 ../src/session-service.c:638
-#: ../src/session-service.c:722
+#: ../data/indicator-session-restart.desktop.in.in.h:1
+#: ../src/settings-helper.c:85
 msgid "Restart"
 msgstr "أعِد التشغيل"
 
-#: ../src/gconf-helper.c:65 ../src/session-service.c:647
-msgid "Switch Off"
-msgstr "أطفئ"
-
-#: ../src/gconf-helper.c:67 ../src/session-service.c:615
-msgid "Log Out..."
+#: ../src/settings-helper.c:88 ../src/device-menu-mgr.c:677
+msgid "Log Out…"
 msgstr "اخرج..."
 
-#: ../src/gconf-helper.c:68 ../src/session-service.c:640
-#: ../src/session-service.c:724
-msgid "Restart..."
-msgstr "أعِد التشغيل..."
+#: ../src/settings-helper.c:89
+msgid "Restart…"
+msgstr "أعد التشغيل..."
 
-#: ../src/gconf-helper.c:69 ../src/session-service.c:649
-msgid "Switch Off..."
+#: ../src/settings-helper.c:90 ../src/device-menu-mgr.c:721
+msgid "Shut Down…"
 msgstr "أطفئ..."
 
 #. LOGOUT_DIALOG_LOGOUT,
@@ -78,7 +107,7 @@ msgstr "أعِد التشغيل"
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:37
 msgctxt "title"
-msgid "Switch Off"
+msgid "Shut Down"
 msgstr "أطفئ"
 
 #. LOGOUT_DIALOG_LOGOUT,
@@ -94,7 +123,8 @@ msgstr "أمتأكد أنك ترغب في إغلاق كل البرامج وإع�
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:43
-msgid "Are you sure you want to close all programs and shut down the computer?"
+msgid ""
+"Are you sure you want to close all programs and shut down the computer?"
 msgstr "أمتأكد أنك ترغب في إغلاق كل البرامج وإطفاء الحاسوب؟"
 
 #. LOGOUT_DIALOG_LOGOUT,
@@ -112,7 +142,7 @@ msgstr "أعِد التشغيل"
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:49
 msgctxt "button"
-msgid "Switch Off"
+msgid "Shut Down"
 msgstr "أطفئ"
 
 #. LOGOUT_DIALOG_LOGOUT,
@@ -124,14 +154,14 @@ msgstr "اخرج"
 #. LOGOUT_DIALOG_RESTART,
 #: ../src/dialog.c:56
 msgctxt "button auth"
-msgid "Restart..."
-msgstr "أعِد التشغيل..."
+msgid "Restart…"
+msgstr ""
 
 #. LOGOUT_DIALOG_SHUTDOWN,
 #: ../src/dialog.c:57
 msgctxt "button auth"
-msgid "Switch Off..."
-msgstr "أطفئ..."
+msgid "Shut Down…"
+msgstr ""
 
 #. TRANSLATORS: This button appears on the logout dialog when
 #. there are updates that require restart.  It will do a restart
@@ -141,82 +171,160 @@ msgid "Restart Instead"
 msgstr "أعِد التشغيل"
 
 #: ../src/dialog.c:64
-msgid "Restart Instead..."
-msgstr "أعِد التشغيل..."
+msgid "Restart Instead…"
+msgstr ""
 
 #: ../src/dialog.c:65
-msgid "Some software updates won't apply until the computer next restarts."
-msgstr "بعض تحديثات البرمجيات لن تصبح فاعلة إلا بعد تشغيل الحاسوب."
+msgid "Some software updates won’t apply until the computer next restarts."
+msgstr ""
 
-#: ../src/dialog.c:217 ../src/dialog.c:222
+#: ../src/dialog.c:219 ../src/dialog.c:224
 msgid "Cancel"
 msgstr "ألغِ"
 
-#: ../src/indicator-session.c:272
-msgid "Switch User..."
-msgstr "بدّل المستخدم..."
+#: ../src/indicator-session.c:538
+msgctxt "session_menu:switchfrom"
+msgid "1"
+msgstr "0"
 
-#. TODO: We need some way to remove the elipsis from appearing
-#. twice in the label.  Not sure how to do that yet.
-#: ../src/indicator-session.c:301
+#: ../src/indicator-session.c:551
+msgid "Switch User Account…"
+msgstr ""
+
+#: ../src/indicator-session.c:578
 #, c-format
-msgid "Switch From %s..."
-msgstr "تحوّل من %s..."
+msgid "Switch From %s…"
+msgstr ""
 
-#: ../src/session-service.c:512
-msgid "Lock Screen"
-msgstr "أوصِد الشاشة"
+#: ../src/apt-watcher.c:280 ../src/apt-watcher.c:340 ../src/apt-watcher.c:392
+#: ../src/device-menu-mgr.c:548
+msgid "Software Up to Date"
+msgstr ""
 
-#: ../src/session-service.c:535
-msgid "Guest Session"
-msgstr "جلسة ضيف"
+#: ../src/apt-watcher.c:286 ../src/apt-watcher.c:352
+msgid "Updates Available…"
+msgstr ""
 
-#: ../src/session-service.c:623
-msgid "Sleep"
-msgstr "نم"
+#: ../src/apt-watcher.c:292 ../src/apt-watcher.c:357
+msgid "Updates Installing…"
+msgstr ""
 
-#: ../src/session-service.c:630
+#: ../src/apt-watcher.c:401 ../src/apt-watcher.c:464
+msgid "Restart to Complete Updates…"
+msgstr ""
+
+#: ../src/device-menu-mgr.c:516
+msgid "System Settings…"
+msgstr ""
+
+#: ../src/device-menu-mgr.c:527
+msgid "Displays…"
+msgstr ""
+
+#: ../src/device-menu-mgr.c:537
+msgid "Startup Applications…"
+msgstr ""
+
+#: ../src/device-menu-mgr.c:566
+msgid "Attached Devices"
+msgstr ""
+
+#: ../src/device-menu-mgr.c:577
+msgid "Printers"
+msgstr ""
+
+#: ../src/device-menu-mgr.c:588
+msgid "Scanners"
+msgstr ""
+
+#: ../src/device-menu-mgr.c:603 ../src/udev-mgr.c:243 ../src/udev-mgr.c:255
+msgid "Webcam"
+msgstr ""
+
+#: ../src/device-menu-mgr.c:692
+msgid "Suspend"
+msgstr "علّق"
+
+#: ../src/device-menu-mgr.c:704
 msgid "Hibernate"
 msgstr "أسبِت"
 
-#: ../src/session-service.c:712
-msgid "Restart Required"
-msgstr "إعادة التشغيل مطلوبة"
+#: ../src/user-menu-mgr.c:175
+msgid "Guest Session"
+msgstr "جلسة ضيف"
 
-#: ../src/session-service.c:714
-msgid "Restart Required..."
-msgstr "إعادة التشغيل مطلوبة..."
+#: ../src/user-menu-mgr.c:189
+msgid "Guest"
+msgstr ""
+
+#: ../src/user-menu-mgr.c:270
+msgid "Online Accounts…"
+msgstr ""
+
+#: ../src/user-menu-mgr.c:285
+msgid "User Accounts…"
+msgstr ""
+
+#: ../src/udev-mgr.c:255
+#, c-format
+msgid "%s Webcam"
+msgstr ""
+
+#: ../src/udev-mgr.c:335 ../src/udev-mgr.c:387 ../src/udev-mgr.c:400
+#: ../src/udev-mgr.c:454 ../src/udev-mgr.c:466
+msgid "Scanner"
+msgstr ""
+
+#: ../src/udev-mgr.c:335 ../src/udev-mgr.c:400 ../src/udev-mgr.c:466
+#, c-format
+msgid "%s Scanner"
+msgstr ""
+
+#~ msgid "Restart..."
+#~ msgstr "أعِد التشغيل..."
+
+#~ msgid "Log Out..."
+#~ msgstr "اخرج..."
+
+#~ msgid "Shut Down..."
+#~ msgstr "أطفئ..."
+
+#~ msgid "Switch User..."
+#~ msgstr "بدّل المستخدم..."
+
+#~ msgctxt "button auth"
+#~ msgid "Restart..."
+#~ msgstr "أعِد التشغيل..."
+
+#~ msgid "Some software updates won't apply until the computer next restarts."
+#~ msgstr "بعض تحديثات البرمجيات لن تصبح فاعلة إلا بعد تشغيل الحاسوب."
+
+#~ msgid "Restart Instead..."
+#~ msgstr "أعِد التشغيل..."
+
+#, c-format
+#~ msgid "Switch From %s..."
+#~ msgstr "تحوّل من %s..."
+
+#~ msgctxt "button auth"
+#~ msgid "Shut Down..."
+#~ msgstr "أطفئ..."
+
+#~ msgid "Makes it so that the logout button doesn't show in the session menu."
+#~ msgstr "يجعل زر الخروج لا يظهر في قائمة الجلسة."
+
+#~ msgid "Makes it so that the restart button doesn't show in the session menu."
+#~ msgstr "يجعل زر إعادة التشغيل لا يظهر في قائمة الجلسة."
 
 #~ msgid ""
-#~ "You recently installed updates which will only take effect after a "
-#~ "restart.  Restart to apply software updates."
-#~ msgstr ""
-#~ "قمت مؤخرا بتثبيت تحديثات لن تنفذ إلا بعد إعادة التشغيل.  قم بإعادة "
-#~ "التشغيل لتطبيق تحديثات البرامج."
+#~ "Makes it so that the shutdown button doesn't show in the session menu."
+#~ msgstr "يجعل زر الإطفاء لا يظهر في قائمة الجلسة."
 
-#~ msgid "You will be logged out in %d second."
-#~ msgid_plural "You will be logged out in %d seconds."
-#~ msgstr[0] "سيتم تسجيل خروجك خلال %d ثانية."
-#~ msgstr[1] "سيتم تسجيل خروجك خلال %d ثانية."
-#~ msgstr[2] "سيتم تسجيل خروجك خلال %d ثانية."
-#~ msgstr[3] "سيتم تسجيل خروجك خلال %d ثانية."
-#~ msgstr[4] "سيتم تسجيل خروجك خلال %d ثانية."
-#~ msgstr[5] "سيتم تسجيل خروجك خلال %d ثانية."
+#~ msgid "Restart to Complete Update…"
+#~ msgstr "أعد التشغيل لإكمال التحديث..."
 
-#~ msgid "The computer will restart in %d second."
-#~ msgid_plural "The computer will restart in %d seconds."
-#~ msgstr[0] "سيتم إعادة تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[1] "سيتم إعادة تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[2] "سيتم إعادة تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[3] "سيتم إعادة تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[4] "سيتم إعادة تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[5] "سيتم إعادة تشغيل الكمبيوتر خلال %d ثانية."
+#~ msgid "Restart to Complete Update"
+#~ msgstr "أعد التشغيل لإكمال التحديث"
 
-#~ msgid "The computer will switch off in %d second."
-#~ msgid_plural "The computer will switch off in %d seconds."
-#~ msgstr[0] "سيتم إيقاف تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[1] "سيتم إيقاف تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[2] "سيتم إيقاف تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[3] "سيتم إيقاف تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[4] "سيتم إيقاف تشغيل الكمبيوتر خلال %d ثانية."
-#~ msgstr[5] "سيتم إيقاف تشغيل الكمبيوتر خلال %d ثانية."
+#~ msgid "Session"
+#~ msgstr "الجلسة"

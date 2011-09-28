@@ -203,40 +203,10 @@ static void
 create_display_manager_proxy (UsersServiceDbus *self)
 {
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
-  DBusGProxy *dm_proxy = NULL;
   GError *error = NULL;
-  const gchar *cookie = NULL;
-  gchar *seat = NULL;
+  const gchar *seat = NULL;
   
-  cookie = g_getenv ("XDG_SESSION_COOKIE");
-  if (cookie == NULL || cookie[0] == 0)
-    {
-      g_warning ("Failed to get DisplayManager proxy: XDG_SESSION_COOKIE undefined.");
-      return;
-    }
-
-  dm_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
-                                        "org.freedesktop.DisplayManager",
-                                        "/org/freedesktop/DisplayManager",
-                                        "org.freedesktop.DisplayManager");
-
-  if (!dm_proxy)
-    {
-      g_warning ("Failed to get DisplayManager proxy.");
-      return;
-    }
-
-  /* Now request the proper seat */
-  if (!dbus_g_proxy_call (dm_proxy, "GetSeatForCookie", &error,
-                          G_TYPE_STRING, cookie, G_TYPE_INVALID,
-                          DBUS_TYPE_G_OBJECT_PATH, &seat, G_TYPE_INVALID))
-    {
-      g_warning ("Failed to get DisplayManager seat proxy: %s", error->message);
-      g_object_unref (dm_proxy);
-      g_error_free (error);
-      return;
-    }
-  g_object_unref (dm_proxy);
+  seat = g_getenv ("XDG_SEAT_PATH");
   g_debug ("CREATING DM PROXIES WITH %s", seat);
   priv->display_manager_proxy = dbus_g_proxy_new_for_name (priv->system_bus,
                                                            "org.freedesktop.DisplayManager",
@@ -248,8 +218,6 @@ create_display_manager_proxy (UsersServiceDbus *self)
                                                                  seat,
                                                                  "org.freedesktop.DBus.Properties");
 
-
-  g_free (seat);
 
   if (!priv->display_manager_proxy)
     {

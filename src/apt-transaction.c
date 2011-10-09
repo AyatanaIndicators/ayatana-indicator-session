@@ -232,7 +232,6 @@ apt_transaction_receive_signal (GDBusProxy * proxy,
                    0,
                    current_state);
   }
-  g_variant_unref (parameters);
 }
 
 static void

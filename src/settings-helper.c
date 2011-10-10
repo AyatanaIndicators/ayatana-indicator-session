@@ -51,31 +51,36 @@ build_settings (void) {
 
 gboolean
 supress_confirmations (void) {
-	g_return_val_if_fail(build_settings(), FALSE);
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, FALSE);
 	return g_settings_get_boolean (settings, SUPPRESS_KEY) ;
 }
 
 gboolean
 should_show_user_menu (void) {
-	g_return_val_if_fail(build_settings(), TRUE);
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, TRUE);
 	return g_settings_get_boolean (settings, SHOW_USER_MENU) ;
 }
 
 gboolean
 show_logout (void) {
-	g_return_val_if_fail(build_settings(), TRUE);
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, TRUE);
 	return !g_settings_get_boolean (settings, LOGOUT_KEY) ;
 }
 
 gboolean
 show_restart (void) {
-	g_return_val_if_fail(build_settings(), TRUE);
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, TRUE);
 	return !g_settings_get_boolean (settings, RESTART_KEY) ;
 }
 
 gboolean
 show_shutdown (void) {
-	g_return_val_if_fail(build_settings(), TRUE);
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, TRUE);
 	return !g_settings_get_boolean (settings, SHUTDOWN_KEY) ;
 }
 

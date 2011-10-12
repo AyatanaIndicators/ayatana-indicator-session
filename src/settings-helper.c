@@ -130,7 +130,8 @@ update_shutdown_callback (GSettings * settings, const gchar * key, gpointer data
 void
 update_menu_entries(RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi) {
 	/* If we don't have a client, build one. */
-	g_return_if_fail(build_settings());
+	gboolean settings_built = build_settings();
+	g_return_if_fail(settings_built);
 
 	if (confirmation_notify != 0) {
 		g_signal_handler_disconnect (settings, confirmation_notify);

@@ -1,5 +1,5 @@
 [com.canonical.indicator.session]
-suppress_logout_restart_shutdown = /apps/indicator-session/suppress-logout-restart-shutdown
-suppress_logout_menuitem = /apps/indicator-session/suppress-logout-menuitem
-suppress_restart_menuitem = /apps/indicator-session/suppress-restart-menuitem
-suppress_shutdown_menuitem = /apps/indicator-session/suppress-shutdown-menuitem
+suppress-logout-restart-shutdown = /apps/indicator-session/suppress_logout_restart_shutdown
+suppress-logout-menuitem = /apps/indicator-session/suppress_logout_menuitem
+suppress-restart-menuitem = /apps/indicator-session/suppress_restart_menuitem
+suppress-shutdown-menuitem = /apps/indicator-session/suppress_shutdown_menuitem

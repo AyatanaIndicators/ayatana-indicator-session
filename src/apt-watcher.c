@@ -425,7 +425,7 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
   g_return_if_fail (APT_IS_WATCHER (user_data));
   AptWatcher* self = APT_WATCHER (user_data);
 
-  g_variant_ref (parameters);
+  g_variant_ref_sink (parameters);
   GVariant *value = g_variant_get_child_value (parameters, 0);
 
   if (g_strcmp0(signal_name, "ActiveTransactionsChanged") == 0){
@@ -477,6 +477,7 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
     }    
   } 
 
+  g_variant_unref (value);
   g_variant_unref (parameters);
 }
 

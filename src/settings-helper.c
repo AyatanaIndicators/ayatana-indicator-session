@@ -38,41 +38,49 @@ static guint logout_notify = 0;
 static guint restart_notify = 0;
 static guint shutdown_notify = 0;
 
-static void
+static gboolean
 build_settings (void) {
-	if(!settings) {
+	if (settings == NULL) {
 		settings = g_settings_new (SESSION_SCHEMA);
 	}
-	return;
+	if (settings == NULL) {
+		return FALSE;
+	}
+	return TRUE;
 }
 
 gboolean
 supress_confirmations (void) {
-	build_settings();
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, FALSE);
 	return g_settings_get_boolean (settings, SUPPRESS_KEY) ;
 }
 
 gboolean
 should_show_user_menu (void) {
-	build_settings();
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, TRUE);
 	return g_settings_get_boolean (settings, SHOW_USER_MENU) ;
 }
 
 gboolean
 show_logout (void) {
-	build_settings();
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, TRUE);
 	return !g_settings_get_boolean (settings, LOGOUT_KEY) ;
 }
 
 gboolean
 show_restart (void) {
-	build_settings();
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, TRUE);
 	return !g_settings_get_boolean (settings, RESTART_KEY) ;
 }
 
 gboolean
 show_shutdown (void) {
-	build_settings();
+	gboolean settings_built = build_settings();
+	g_return_val_if_fail(settings_built, TRUE);
 	return !g_settings_get_boolean (settings, SHUTDOWN_KEY) ;
 }
 
@@ -122,7 +130,8 @@ update_shutdown_callback (GSettings * settings, const gchar * key, gpointer data
 void
 update_menu_entries(RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi) {
 	/* If we don't have a client, build one. */
-	build_settings();
+	gboolean settings_built = build_settings();
+	g_return_if_fail(settings_built);
 
 	if (confirmation_notify != 0) {
 		g_signal_handler_disconnect (settings, confirmation_notify);

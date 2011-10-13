@@ -1,4 +1,11 @@
-indicator-session (0.3.6-0ubuntu1~ppa1) oneiric; urgency=low
+indicator-session (0.3.6-0ubuntu2) oneiric; urgency=low
+
+  * data/indicator-session.convert
+    - Fixed improperly mapped gconf to gsettings keys (LP: #858798)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 03 Oct 2011 10:26:54 -0400
+
+indicator-session (0.3.6-0ubuntu1) oneiric; urgency=low
 
   * New upstream release.
     * Fix convert file key naming (LP: #847807)

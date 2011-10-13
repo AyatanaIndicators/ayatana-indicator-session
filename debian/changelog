@@ -1,9 +1,8 @@
-indicator-session (0.3.7-0ubuntu1~ppa1) oneiric; urgency=low
+indicator-session (0.3.7-0ubuntu1) oneiric-proposed; urgency=low
 
   * New upstream release.
     * Fix some variant ref issues causing crashes (LP: #863930)
     * Handle cases of returned dbus messages from ConsoleKit (LP: #864085)
-    * Fixed improperly mapped gconf to gsettings keys (LP: #858798)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 13 Oct 2011 13:19:13 -0500
 

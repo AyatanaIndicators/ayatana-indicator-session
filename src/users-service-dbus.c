@@ -303,7 +303,6 @@ create_accounts_service_proxy (UsersServiceDbus *self)
 
   priv->count = users->len;
   g_ptr_array_free (users, TRUE);
-
   sync_users (self);
 }
 

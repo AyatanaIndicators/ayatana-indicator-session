@@ -303,7 +303,6 @@ create_accounts_service_proxy (UsersServiceDbus *self)
 
   priv->count = users->len;
   g_ptr_array_free (users, TRUE);
-
   sync_users (self);
 }
 
@@ -719,7 +718,7 @@ sync_users (UsersServiceDbus *self)
   g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
-  if (priv->count > MINIMUM_USERS && priv->count < MAXIMUM_USERS)
+  if (priv->count > MINIMUM_USERS)
     {
       GPtrArray *users = NULL;
       GError *error = NULL;
@@ -823,12 +822,7 @@ user_added (DBusGProxy  *proxy,
   UsersServiceDbus *service = (UsersServiceDbus *)user_data;
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (service);
   priv->count++;
-
-  if (priv->count < MAXIMUM_USERS)
-    {
-      sync_users (service);
-    }
-
+  sync_users (service);
   g_signal_emit (service,
                  signals[USER_ADDED],
                  0,

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <config.h>
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-gtk3/menuitem.h>
 
@@ -410,7 +411,11 @@ static void
 show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 {
 
+#ifdef HAVE_GTKLOGOUTHELPER
 	gchar * helper = g_build_filename(LIBEXECDIR, "gtk-logout-helper", NULL);
+#else
+	gchar * helper = g_build_filename("gnome-session-quit", NULL);
+#endif  /* HAVE_GTKLOGOUTHELPER */
 	gchar * dialog_line = g_strdup_printf("%s --%s", helper, type);
 	g_free(helper);
 
@@ -726,7 +731,11 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 	dbusmenu_menuitem_child_append (self->root_item, shutdown_mi);
 	g_signal_connect (G_OBJECT(shutdown_mi),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+#ifdef HAVE_GTKLOGOUTHELPER
                     G_CALLBACK(show_dialog), "shutdown");
+#else
+                    G_CALLBACK(show_dialog), "power-off");
+#endif  /* HAVE_GTKLOGOUTHELPER */
 
 	RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi = g_new0 (RestartShutdownLogoutMenuItems, 1);
 	restart_shutdown_logout_mi->logout_mi = logout_mi;

@@ -1,7 +1,11 @@
 
 libexec_PROGRAMS = \
-	indicator-session-service \
+	indicator-session-service
+
+if BUILD_GTKLOGOUTHELPER
+libexec_PROGRAMS += \
 	gtk-logout-helper
+endif
 
 ###################
 # Indicator Stuff
@@ -124,6 +128,7 @@ indicator_session_service_LDADD = \
 # GTK Logout Stuff
 #################
 
+if BUILD_GTKLOGOUTHELPER
 gtk_logout_helper_SOURCES = \
 	gtk-logout-helper.c \
 	settings-helper.c \
@@ -142,6 +147,7 @@ gtk_logout_helper_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
 	$(GTKLOGOUTHELPER_LIBS) \
 	$(GCONF_LIBS)
+endif
 
 
 ###############

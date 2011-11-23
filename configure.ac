@@ -114,6 +114,18 @@ AC_SUBST(GTKLOGOUTHELPER_CFLAGS)
 AC_SUBST(GTKLOGOUTHELPER_LIBS)
 
 ###########################
+# APT support
+###########################
+AC_ARG_ENABLE([apt],
+	AC_HELP_STRING([--disable-apt], [disable APT support]),,
+	[enable_apt=yes])
+AM_CONDITIONAL([BUILD_APT], [test "x$enable_apt" != "xno"])
+
+if test "x$enable_apt" != "xno"; then
+   AC_DEFINE(HAVE_APT, 1, [Define to 1 to enable APT support])
+fi
+
+###########################
 # Check to see if we're local
 ###########################
 
@@ -215,4 +227,5 @@ SUS Indicator Configuration:
 	Indicator Dir: $INDICATORDIR
 	Indicator GTK: $with_gtk
 	Logout Helper: $have_gtklogouthelper
+	APT support:   $enable_apt
 ])

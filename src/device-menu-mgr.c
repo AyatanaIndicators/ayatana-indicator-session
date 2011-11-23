@@ -27,7 +27,11 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"
 #include "upower-client.h"
+
+#ifdef HAVE_APT
 #include "apt-watcher.h"
+#endif  /* HAVE_APT */
+
 #include "udev-mgr.h"
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
@@ -41,7 +45,9 @@ struct _DeviceMenuMgr
 	GObject parent_instance;
   DbusmenuMenuitem* root_item;
   SessionDbus* session_dbus_interface;  
+#ifdef HAVE_APT
   AptWatcher* apt_watcher;                              
+#endif  /* HAVE_APT */
   UdevMgr* udev_mgr;
 };
 
@@ -51,7 +57,9 @@ static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *system_settings_menuitem = NULL;
 static DbusmenuMenuitem  *display_settings_menuitem = NULL;
 static DbusmenuMenuitem  *login_settings_menuitem = NULL;
+#ifdef HAVE_APT
 static DbusmenuMenuitem  *software_updates_menuitem = NULL;
+#endif  /* HAVE_APT */
 static DbusmenuMenuitem  *printers_menuitem = NULL;
 static DbusmenuMenuitem  *scanners_menuitem = NULL;
 static DbusmenuMenuitem  *webcam_menuitem = NULL;
@@ -103,7 +111,9 @@ G_DEFINE_TYPE (DeviceMenuMgr, device_menu_mgr, G_TYPE_OBJECT);
 static void
 device_menu_mgr_init (DeviceMenuMgr *self)
 {
+#ifdef HAVE_APT
   self->apt_watcher = NULL;
+#endif  /* HAVE_APT */
   self->root_item = dbusmenu_menuitem_new ();  
 	setup_up(self);  
 	g_idle_add(lock_screen_setup, NULL);  
@@ -485,12 +495,14 @@ static void device_menu_mgr_show_simple_scan (DbusmenuMenuitem * mi,
   {
     g_warning("Unable to launch simple-scan: %s", error->message);
     g_error_free(error);
+#ifdef HAVE_APT
     if (!g_spawn_command_line_async("software-center simple-scan", &error))
     {
       g_warning ("Unable to launch software-centre simple-scan: %s",
                  error->message);
       g_error_free(error);
     }    
+#endif  /* HAVE_APT */
   }  
 }                              
 
@@ -503,12 +515,14 @@ static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
   {
     g_warning("Unable to launch cheese: %s", error->message);
     g_error_free(error);
+#ifdef HAVE_APT
     if (!g_spawn_command_line_async("software-center cheese", &error))
     {
       g_warning ("Unable to launch software-centre cheese: %s",
                  error->message);
       g_error_free(error);
     }    
+#endif  /* HAVE_APT */
   }  
 }                              
 
@@ -547,6 +561,7 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        login_settings_menuitem,                                  
                                        2);
+#ifdef HAVE_APT
   software_updates_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (software_updates_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -554,6 +569,7 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        software_updates_menuitem,
                                        3);
+#endif  /* HAVE_APT */
 
   DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (separator1,
@@ -787,9 +803,11 @@ DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_
   DeviceMenuMgr* device_mgr = g_object_new (DEVICE_TYPE_MENU_MGR, NULL);
   device_mgr->session_dbus_interface = session_dbus;
   device_menu_mgr_build_static_items (device_mgr, greeter_mode);
+#ifdef HAVE_APT
   if (software_updates_menuitem != NULL) {
     device_mgr->apt_watcher = apt_watcher_new (session_dbus,
                                                software_updates_menuitem);
   }
+#endif  /* HAVE_APT */
   return device_mgr;
 }

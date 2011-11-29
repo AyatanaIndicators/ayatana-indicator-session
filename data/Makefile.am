@@ -18,6 +18,15 @@ gsettings_SCHEMAS = com.canonical.indicator.session.gschema.xml
 convertdir = $(datadir)/GConf/gsettings
 dist_convert_DATA = indicator-session.convert
 
+EXTRA_DIST =					\
+	$(service_in_files)			\
+	$(gsettings_SCHEMAS:.xml=.xml.in)
+
+CLEANFILES =					\
+	$(dbus_services_DATA)			\
+	$(gsettings_SCHEMAS)
+
+if BUILD_GTKLOGOUTHELPER
 @INTLTOOL_DESKTOP_RULE@
 
 %.desktop.in: %.desktop.in.in
@@ -37,14 +46,9 @@ logout_helper_desktop_files = \
 	$(logout_helper_desktop_in_in_files:.desktop.in.in=.desktop)
 logout_helper_DATA = $(logout_helper_desktop_files)
 
-EXTRA_DIST =					\
-	$(service_in_files)			\
-	$(gsettings_SCHEMAS:.xml=.xml.in) \
+EXTRA_DIST +=					\
 	$(logout_helper_desktop_in_in_files)
 
-
-CLEANFILES =					\
-	$(dbus_services_DATA)			\
-	$(gsettings_SCHEMAS) \
+CLEANFILES +=					\
 	$(logout_helper_desktop_files)
-
+endif

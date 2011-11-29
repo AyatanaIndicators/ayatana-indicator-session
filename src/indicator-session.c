@@ -118,8 +118,8 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 	object_class->finalize = indicator_session_finalize;
 
 	IndicatorObjectClass * io_class = INDICATOR_OBJECT_CLASS(klass);
-  io_class->get_entries = indicator_session_get_entries;
-  io_class->get_location = indicator_session_get_location;
+	io_class->get_entries = indicator_session_get_entries;
+	io_class->get_location = indicator_session_get_location;
 	return;
 }
 
@@ -140,6 +140,7 @@ indicator_session_init (IndicatorSession *self)
 
   GtkWidget* avatar_icon = NULL;
   // users
+  self->users.name_hint = PACKAGE"-users";
   self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new (INDICATOR_USERS_DBUS_NAME,
                                                       INDICATOR_USERS_DBUS_OBJECT));
   // Set the image to the default avator image
@@ -169,7 +170,9 @@ indicator_session_init (IndicatorSession *self)
   const gchar *greeter_var;
   greeter_var = g_getenv("INDICATOR_GREETER_MODE");
   greeter_mode = g_strcmp0(greeter_var, "1") == 0;
+
   // devices
+  self->devices.name_hint = PACKAGE"-devices";
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
   if (greeter_mode){

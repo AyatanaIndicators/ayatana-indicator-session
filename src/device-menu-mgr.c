@@ -83,7 +83,6 @@ static DBusGProxy * up_prop_proxy = NULL;
 static void device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self);
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
-static void lock_if_possible (DeviceMenuMgr* self);
 static void machine_sleep_with_context (DeviceMenuMgr* self,
                                         gchar* type);
 static void show_system_settings_with_context (DbusmenuMenuitem * mi,
@@ -173,27 +172,6 @@ keybinding_changed (GSettings   *settings,
 	return;
 }
 
-/* Check to see if the lockdown key is protecting from
-   locking the screen.  If not, lock it. */
-static void
-lock_if_possible (DeviceMenuMgr* self) {
-	device_menu_mgr_ensure_settings_client (self);
-
-	if (!g_settings_get_boolean (lockdown_settings, LOCKDOWN_KEY_SCREENSAVER)) {
-		lock_screen (NULL, 0, NULL);
-	}
-	return;
-}
-
-/* A return from the command to sleep the system.  Make sure
-   that we unthrottle the screensaver. */
-static void
-sleep_response (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
-{
-	screensaver_unthrottle();
-	return;
-}
-
 static void
 machine_sleep_from_suspend (DbusmenuMenuitem * mi,
                             guint timestamp,
@@ -221,11 +199,9 @@ machine_sleep_with_context (DeviceMenuMgr* self, gchar* type)
 		g_warning("Can not %s as no upower proxy", type);
 	}
 
-	screensaver_throttle(type);
-	lock_if_possible (self);
 	dbus_g_proxy_begin_call(up_main_proxy,
 	                        type,
-	                        sleep_response,
+	                        NULL,
 	                        NULL,
 	                        NULL,
 	                        G_TYPE_INVALID);

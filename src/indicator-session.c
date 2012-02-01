@@ -31,11 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-#if GTK_CHECK_VERSION(3, 0, 0)
-#include <libdbusmenu-gtk3/menu.h>
-#else
 #include <libdbusmenu-gtk/menu.h>
-#endif
 
 #include <libindicator/indicator.h>
 #include <libindicator/indicator-object.h>

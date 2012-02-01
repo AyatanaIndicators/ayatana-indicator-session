@@ -19,7 +19,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <config.h>
 #include <libdbusmenu-glib/client.h>
-#include <libdbusmenu-gtk3/menuitem.h>
 
 #include "device-menu-mgr.h"
 #include "settings-helper.h"

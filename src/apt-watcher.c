@@ -37,38 +37,121 @@ struct _AptWatcher
   DbusmenuMenuitem* apt_item;
   AptState current_state;
   PkClient* pkclient;  
+  GCancellable * proxy_cancel;
+  GDBusProxy * proxy;    
 };
                                                                 
 static void apt_watcher_show_apt_dialog (DbusmenuMenuitem* mi,
                                          guint timestamp,
                                          gpointer userdata);
+//static gboolean apt_watcher_start_apt_interaction (gpointer data);
 
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
 
-static void
-apt_watcher_init (AptWatcher *self)
+static void apt_watcher_signal_cb ( GDBusProxy* proxy,
+                                    gchar* sender_name,
+                                    gchar* signal_name,
+                                    GVariant* parameters,
+                                    gpointer user_data)
 {
-  self->current_state = UP_TO_DATE;
-  self->pkclient = pk_client_new ();
-  /*g_timeout_add_seconds (60,
-                         apt_watcher_start_apt_interaction,
-                         self); */
+  g_return_if_fail (APT_IS_WATCHER (user_data));
+  //AptWatcher* self = APT_WATCHER (user_data);
+
+  g_variant_ref_sink (parameters);
+  GVariant *value = g_variant_get_child_value (parameters, 0);
+
+  if (g_strcmp0(signal_name, "UpdatesChanged") == 0){
+    g_debug ("UpdatesChanged signal received");
+
+  }
+  else if (g_strcmp0(signal_name, "RestartScheduled") == 0) {
+    g_debug ("RestartScheduled signal received");
+  } 
+
+  g_variant_unref (value);
+  g_variant_unref (parameters);
 }
 
 static void
-apt_watcher_finalize (GObject *object)
+apt_watcher_on_name_appeared (GDBusConnection *connection,
+                              const gchar     *name,
+                              const gchar     *name_owner,
+                              gpointer         user_data)
 {
-  g_bus_unwatch_name (watcher_id);  
-  //AptWatcher* self = APT_WATCHER (object);
-           
-	G_OBJECT_CLASS (apt_watcher_parent_class)->finalize (object);
+  g_return_if_fail (APT_IS_WATCHER (user_data));
+ // AptWatcher* watcher = APT_WATCHER (user_data);
+  
+  g_print ("Name %s on %s is owned by %s\n",
+           name,
+           "the system bus",
+           name_owner);
+}
+
+
+static void
+apt_watcher_on_name_vanished (GDBusConnection *connection,
+                              const gchar     *name,
+                              gpointer         user_data)
+{
+  g_debug ("Name %s does not exist or has just vanished",
+           name);
+  g_return_if_fail (APT_IS_WATCHER (user_data));
 }
 
 static void
-apt_watcher_class_init (AptWatcherClass *klass)
+fetch_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 {
-	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	object_class->finalize = apt_watcher_finalize;
+  GError * error = NULL;
+
+  AptWatcher* self = APT_WATCHER(user_data);
+  g_return_if_fail(self != NULL);
+
+  GDBusProxy * proxy = g_dbus_proxy_new_for_bus_finish(res, &error);
+
+  if (self->proxy_cancel != NULL) {
+    g_object_unref(self->proxy_cancel);
+    self->proxy_cancel = NULL;
+  }
+
+  if (error != NULL) {
+    g_warning("Could not grab DBus proxy for %s: %s",
+               "org.debian.apt", error->message);
+    g_error_free(error);
+    return;
+  }
+
+  self->proxy = proxy;
+  // Set up the watch.
+  watcher_id = g_bus_watch_name (G_BUS_TYPE_SYSTEM,
+                                 "org.freedesktop.PackageKit",
+                                 G_BUS_NAME_WATCHER_FLAGS_NONE,
+                                 apt_watcher_on_name_appeared,
+                                 apt_watcher_on_name_vanished,
+                                 self,
+                                 NULL);
+  
+  g_signal_connect (self->proxy,
+                    "g-signal",
+                    G_CALLBACK(apt_watcher_signal_cb),
+                    self);   
+}
+
+
+static gboolean 
+apt_watcher_start_apt_interaction (gpointer data)
+{
+  g_return_val_if_fail (APT_IS_WATCHER (data), FALSE);
+  AptWatcher* self = APT_WATCHER (data);
+  g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+                            G_DBUS_PROXY_FLAGS_NONE,
+                            NULL,
+                            "org.freedesktop.PackageKit",
+                            "/org/freedesktop/PackageKit",
+                            "org.freedesktop.PackageKit",
+                            self->proxy_cancel,
+                            fetch_proxy_cb,
+                            self);
+  return FALSE;    
 }
 
 
@@ -101,6 +184,35 @@ apt_watcher_show_apt_dialog (DbusmenuMenuitem * mi,
       g_error_free(error);
     }
   }   
+}
+
+static void
+apt_watcher_init (AptWatcher *self)
+{
+  self->current_state = UP_TO_DATE;
+  self->pkclient = pk_client_new ();
+  g_timeout_add_seconds (60,
+                         apt_watcher_start_apt_interaction,
+                         self); 
+}
+
+static void
+apt_watcher_finalize (GObject *object)
+{
+  g_bus_unwatch_name (watcher_id);  
+  AptWatcher* self = APT_WATCHER (object);
+           
+  if (self->proxy != NULL)
+    g_object_unref (self->proxy);
+         
+  G_OBJECT_CLASS (apt_watcher_parent_class)->finalize (object);
+}
+
+static void
+apt_watcher_class_init (AptWatcherClass *klass)
+{
+  GObjectClass* object_class = G_OBJECT_CLASS (klass);
+  object_class->finalize = apt_watcher_finalize;
 }
 
 AptWatcher* apt_watcher_new (SessionDbus* session_dbus,

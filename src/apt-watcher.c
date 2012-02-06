@@ -41,12 +41,15 @@ struct _AptWatcher
   GDBusProxy * proxy;    
 };
                                                                 
-static void apt_watcher_show_apt_dialog (DbusmenuMenuitem* mi,
-                                         guint timestamp,
-                                         gpointer userdata);
-//static gboolean apt_watcher_start_apt_interaction (gpointer data);
-
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
+
+static void
+get_updates_complete (GObject *source_object,
+                      GAsyncResult *res,
+                      gpointer user_data)
+{
+  
+}
 
 static void apt_watcher_signal_cb ( GDBusProxy* proxy,
                                     gchar* sender_name,
@@ -55,14 +58,19 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
                                     gpointer user_data)
 {
   g_return_if_fail (APT_IS_WATCHER (user_data));
-  //AptWatcher* self = APT_WATCHER (user_data);
+  AptWatcher* self = APT_WATCHER (user_data);
 
   g_variant_ref_sink (parameters);
   GVariant *value = g_variant_get_child_value (parameters, 0);
 
   if (g_strcmp0(signal_name, "UpdatesChanged") == 0){
     g_debug ("UpdatesChanged signal received");
-
+    self->pkclient = pk_client_new ();
+    pk_client_get_updates_async (self->pkclient, 
+                                 PK_FILTER_ENUM_NONE,
+                                 NULL, NULL, NULL,
+                                 get_updates_complete,
+                                 self);
   }
   else if (g_strcmp0(signal_name, "RestartScheduled") == 0) {
     g_debug ("RestartScheduled signal received");
@@ -190,7 +198,6 @@ static void
 apt_watcher_init (AptWatcher *self)
 {
   self->current_state = UP_TO_DATE;
-  self->pkclient = pk_client_new ();
   g_timeout_add_seconds (60,
                          apt_watcher_start_apt_interaction,
                          self); 

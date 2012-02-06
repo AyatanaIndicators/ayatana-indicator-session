@@ -28,6 +28,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-gtk/menuitem.h>
 
 #include "session-dbus.h"
+#include "dbus-shared-names.h"
 
 G_BEGIN_DECLS
 
@@ -50,7 +51,6 @@ GType apt_watcher_get_type (void) G_GNUC_CONST;
 
 AptWatcher* apt_watcher_new (SessionDbus* session_dbus,
                              DbusmenuMenuitem* apt_item);
-
 G_END_DECLS
 
 #endif /* _APT_WATCHER_H_ */

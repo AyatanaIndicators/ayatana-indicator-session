@@ -30,6 +30,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 static guint watcher_id;
 
+// TODO 
+// Get it working and then remove the pkclient pointer in the priv 
+// it's not needed. 
+
 struct _AptWatcher
 {
 	GObject parent_instance;
@@ -38,7 +42,7 @@ struct _AptWatcher
   AptState current_state;
   PkClient* pkclient;  
   GCancellable * proxy_cancel;
-  GDBusProxy * proxy;    
+  GDBusProxy * proxy;
 };
                                                                 
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
@@ -48,7 +52,23 @@ get_updates_complete (GObject *source_object,
                       GAsyncResult *res,
                       gpointer user_data)
 {
+  g_return_if_fail (APT_IS_WATCHER (user_data));
+  //AptWatcher* self = APT_WATCHER (user_data);
+
+  g_print ("Get updates complete");
+  PkResults * results;
   
+  results = pk_client_generic_finish (PK_CLIENT(source_object), res, NULL);
+  
+  if (results == NULL){
+    g_warning ("Unable to query for updates - results were NULL ?");
+    return;
+  }
+
+  GPtrArray *packages;
+  packages = pk_results_get_package_array (results);
+  g_ptr_array_unref (packages);
+  g_object_unref (results);
 }
 
 static void apt_watcher_signal_cb ( GDBusProxy* proxy,
@@ -65,11 +85,12 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
 
   if (g_strcmp0(signal_name, "UpdatesChanged") == 0){
     g_debug ("UpdatesChanged signal received");
-    self->pkclient = pk_client_new ();
+    if (self->pkclient == NULL)
+      self->pkclient = pk_client_new ();
     pk_client_get_updates_async (self->pkclient, 
                                  PK_FILTER_ENUM_NONE,
                                  NULL, NULL, NULL,
-                                 get_updates_complete,
+                                 (GAsyncReadyCallback)get_updates_complete,
                                  self);
   }
   else if (g_strcmp0(signal_name, "RestartScheduled") == 0) {
@@ -198,7 +219,7 @@ static void
 apt_watcher_init (AptWatcher *self)
 {
   self->current_state = UP_TO_DATE;
-  g_timeout_add_seconds (60,
+  g_timeout_add_seconds (1,
                          apt_watcher_start_apt_interaction,
                          self); 
 }
@@ -211,6 +232,8 @@ apt_watcher_finalize (GObject *object)
            
   if (self->proxy != NULL)
     g_object_unref (self->proxy);
+  if (self->pkclient != NULL)
+    g_object_unref (self->pkclient);
          
   G_OBJECT_CLASS (apt_watcher_parent_class)->finalize (object);
 }

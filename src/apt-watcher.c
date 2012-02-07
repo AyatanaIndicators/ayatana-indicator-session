@@ -40,12 +40,12 @@ struct _AptWatcher
   SessionDbus* session_dbus_interface;
   DbusmenuMenuitem* apt_item;
   AptState current_state;
-  PkClient* pkclient;  
   GCancellable * proxy_cancel;
   GDBusProxy * proxy;
 };
                                                                 
 G_DEFINE_TYPE (AptWatcher, apt_watcher, G_TYPE_OBJECT);
+
 
 static void
 get_updates_complete (GObject *source_object,
@@ -56,7 +56,7 @@ get_updates_complete (GObject *source_object,
   //AptWatcher* self = APT_WATCHER (user_data);
 
   g_print ("Get updates complete");
-  PkResults * results;
+  PkResults *results;
   
   results = pk_client_generic_finish (PK_CLIENT(source_object), res, NULL);
   
@@ -70,10 +70,25 @@ get_updates_complete (GObject *source_object,
   g_print ("Packages count = %i",
             packages->len);
   if (packages->len > 0){
-    
+    g_print ("Apparently we have updates available");    
   }
   g_ptr_array_unref (packages);
   g_object_unref (results);
+  g_object_unref (source_object);
+}
+
+static void
+apt_watcher_check_for_updates (AptWatcher* self)
+{
+    g_debug ("UpdatesChanged signal received");
+    PkClient* client;
+    client = pk_client_new ();
+
+    pk_client_get_updates_async (client, 
+                                 PK_FILTER_ENUM_NONE,
+                                 NULL, NULL, NULL,
+                                 (GAsyncReadyCallback)get_updates_complete,
+                                 self);  
 }
 
 static void apt_watcher_signal_cb ( GDBusProxy* proxy,
@@ -89,14 +104,8 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
   GVariant *value = g_variant_get_child_value (parameters, 0);
 
   if (g_strcmp0(signal_name, "UpdatesChanged") == 0){
-    g_debug ("UpdatesChanged signal received");
-    if (self->pkclient == NULL)
-      self->pkclient = pk_client_new ();
-    pk_client_get_updates_async (self->pkclient, 
-                                 PK_FILTER_ENUM_NONE,
-                                 NULL, NULL, NULL,
-                                 (GAsyncReadyCallback)get_updates_complete,
-                                 self);
+    g_print ("updates changed signal received");
+    apt_watcher_check_for_updates (self);
   }
   else if (g_strcmp0(signal_name, "RestartScheduled") == 0) {
     g_debug ("RestartScheduled signal received");
@@ -162,8 +171,7 @@ fetch_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
                                  apt_watcher_on_name_appeared,
                                  apt_watcher_on_name_vanished,
                                  self,
-                                 NULL);
-  
+                                 NULL);  
   g_signal_connect (self->proxy,
                     "g-signal",
                     G_CALLBACK(apt_watcher_signal_cb),
@@ -184,6 +192,7 @@ apt_watcher_start_apt_interaction (gpointer data)
                             self->proxy_cancel,
                             fetch_proxy_cb,
                             self);
+  apt_watcher_check_for_updates (self);
   return FALSE;    
 }
 
@@ -236,8 +245,6 @@ apt_watcher_finalize (GObject *object)
            
   if (self->proxy != NULL)
     g_object_unref (self->proxy);
-  if (self->pkclient != NULL)
-    g_object_unref (self->pkclient);
          
   G_OBJECT_CLASS (apt_watcher_parent_class)->finalize (object);
 }

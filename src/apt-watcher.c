@@ -67,6 +67,11 @@ get_updates_complete (GObject *source_object,
 
   GPtrArray *packages;
   packages = pk_results_get_package_array (results);
+  g_print ("Packages count = %i",
+            packages->len);
+  if (packages->len > 0){
+    
+  }
   g_ptr_array_unref (packages);
   g_object_unref (results);
 }
@@ -135,10 +140,10 @@ fetch_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
   AptWatcher* self = APT_WATCHER(user_data);
   g_return_if_fail(self != NULL);
 
-  GDBusProxy * proxy = g_dbus_proxy_new_for_bus_finish(res, &error);
+  GDBusProxy * proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 
   if (self->proxy_cancel != NULL) {
-    g_object_unref(self->proxy_cancel);
+    g_object_unref (self->proxy_cancel);
     self->proxy_cancel = NULL;
   }
 
@@ -164,7 +169,6 @@ fetch_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
                     G_CALLBACK(apt_watcher_signal_cb),
                     self);   
 }
-
 
 static gboolean 
 apt_watcher_start_apt_interaction (gpointer data)

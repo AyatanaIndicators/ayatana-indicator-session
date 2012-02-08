@@ -52,11 +52,11 @@ get_updates_complete (GObject *source_object,
   AptWatcher* self = APT_WATCHER (user_data);
 
   PkResults *results;
+  GError *error = NULL;
+  results = pk_client_generic_finish (PK_CLIENT(source_object), res, &error);
   
-  results = pk_client_generic_finish (PK_CLIENT(source_object), res, NULL);
-  
-  if (results == NULL){
-    g_warning ("Unable to query for updates - results were NULL ?");
+  if (error != NULL){
+    g_warning ("Unable to query for updates - error - %s", error->message);
     return;
   }
 
@@ -110,7 +110,6 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
   g_return_if_fail (APT_IS_WATCHER (user_data));
   AptWatcher* self = APT_WATCHER (user_data);
 
-  g_variant_ref_sink (parameters);
   g_debug ("apt-watcher-signal cb signal name - %s", signal_name);
   if (g_strcmp0(signal_name, "UpdatesChanged") == 0){
     g_debug ("updates changed signal received");
@@ -125,12 +124,6 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
                                     DBUSMENU_MENUITEM_PROP_DISPOSITION,
                                     DBUSMENU_MENUITEM_DISPOSITION_ALERT);     
   } 
-  else if (g_strcmp0(signal_name, "TransactionListChanged") == 0) {
-    GVariant *value = g_variant_get_child_value (parameters, 0);
-    g_variant_unref (value);
-
-  }  
-  g_variant_unref (parameters);
 }
 
 static void

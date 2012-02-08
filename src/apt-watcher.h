@@ -28,7 +28,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-gtk/menuitem.h>
 
 #include "session-dbus.h"
-#include "dbus-shared-names.h"
 
 G_BEGIN_DECLS
 

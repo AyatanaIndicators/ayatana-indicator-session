@@ -1,7 +1,8 @@
 Source: indicator-session
 Section: gnome
 Priority: optional
-Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Maintainer: The Ayatana Packagers <pkg-ayatana-devel@lists.alioth.debian.org>
+Uploaders: Evgeni Golov <evgeni@debian.org>
 Build-Depends: debhelper (>= 5.0),
                cdbs (>= 0.4.41),
                libgtk2.0-dev (>= 2.12.0),
@@ -19,8 +20,8 @@ Build-Depends: debhelper (>= 5.0),
                intltool
 Standards-Version: 3.9.2
 Homepage: https://launchpad.net/indicator-session
-Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubuntu
-Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-session/ubuntu
+Vcs-Bzr: http://bzr.debian.org/bzr/pkg-ayatana/indicator-session/debian
+Vcs-Browser: http://bzr.debian.org/loggerhead/pkg-ayatana/indicator-session/debian
 
 Package: indicator-session
 Architecture: any
@@ -33,7 +34,7 @@ Suggests: lightdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
 Replaces: indicator-sus, indicator-me
 Breaks: indicator-me
-Description: Indicator showing session management, status and user switching.
+Description: indicator showing session management, status and user switching
  This indicator is designed to be placed on the right side of a panel and
  give the user easy control for changing their instant message status.  
  Switching to another user.  Starting a guest session.  Or controlling the
@@ -52,11 +53,11 @@ Recommends: indicator-applet (>= 0.2) | indicator-renderer
 Suggests: lightdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
 Replaces: indicator-session (<< 0.2.90)
-Description: Indicator showing session management, status and user switching.
+Description: indicator showing session management, status and user switching
  This indicator is designed to be placed on the right side of a panel and
- give the user easy control for changing their instant message status.  
- Switching to another user.  Starting a guest session.  Or controlling the
+ give the user easy control for changing their instant message status,
+ switching to another user, starting a guest session or controlling the
  status of their own session.
  .
- It requires some way to be hosted into a panel.  For the GNOME Panel the
+ It requires some way to be hosted into a panel. For the GNOME Panel the
  appropriate package is indicator-applet-session.

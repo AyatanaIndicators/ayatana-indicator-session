@@ -33,7 +33,6 @@ static guint watcher_id;
 // TODO 
 // Get it working and then remove the pkclient pointer in the priv 
 // it's not needed. 
-
 struct _AptWatcher
 {
 	GObject parent_instance;
@@ -53,9 +52,8 @@ get_updates_complete (GObject *source_object,
                       gpointer user_data)
 {
   g_return_if_fail (APT_IS_WATCHER (user_data));
-  //AptWatcher* self = APT_WATCHER (user_data);
+  AptWatcher* self = APT_WATCHER (user_data);
 
-  g_print ("Get updates complete");
   PkResults *results;
   
   results = pk_client_generic_finish (PK_CLIENT(source_object), res, NULL);
@@ -67,10 +65,26 @@ get_updates_complete (GObject *source_object,
 
   GPtrArray *packages;
   packages = pk_results_get_package_array (results);
-  g_print ("Packages count = %i",
-            packages->len);
+
+  const gchar* disposition;
+  disposition = dbusmenu_menuitem_property_get (self->apt_item,
+                                                DBUSMENU_MENUITEM_PROP_DISPOSITION);
+  gboolean do_update;
+  do_update = g_strcmp0 (disposition, DBUSMENU_MENUITEM_DISPOSITION_ALERT) != 0;                                       
+
   if (packages->len > 0){
-    g_print ("Apparently we have updates available");    
+    g_print ("Apparently we have updates available - change dbmitem %i", do_update);   
+      if (do_update) 
+        dbusmenu_menuitem_property_set (self->apt_item,
+                                        DBUSMENU_MENUITEM_PROP_LABEL,
+                                        _("Updates Available…"));    
+  }
+  else{
+    g_print ("No updates available - change dbmitem - %i", do_update);   
+      if (do_update)
+        dbusmenu_menuitem_property_set (self->apt_item,
+                                        DBUSMENU_MENUITEM_PROP_LABEL,
+                                        _("Software Up to Date"));       
   }
   g_ptr_array_unref (packages);
   g_object_unref (results);
@@ -80,7 +94,6 @@ get_updates_complete (GObject *source_object,
 static void
 apt_watcher_check_for_updates (AptWatcher* self)
 {
-    g_debug ("UpdatesChanged signal received");
     PkClient* client;
     client = pk_client_new ();
 
@@ -102,13 +115,19 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
 
   g_variant_ref_sink (parameters);
   GVariant *value = g_variant_get_child_value (parameters, 0);
-
+  g_debug ("apt-watcher-signal cb signal name - %s", signal_name);
   if (g_strcmp0(signal_name, "UpdatesChanged") == 0){
-    g_print ("updates changed signal received");
+    g_debug ("updates changed signal received");
     apt_watcher_check_for_updates (self);
   }
   else if (g_strcmp0(signal_name, "RestartScheduled") == 0) {
     g_debug ("RestartScheduled signal received");
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_LABEL,
+                                    _("Restart to Complete Updates…"));
+    dbusmenu_menuitem_property_set (self->apt_item,
+                                    DBUSMENU_MENUITEM_PROP_DISPOSITION,
+                                    DBUSMENU_MENUITEM_DISPOSITION_ALERT);     
   } 
 
   g_variant_unref (value);

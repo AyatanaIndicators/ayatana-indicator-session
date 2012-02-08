@@ -1,3 +1,11 @@
+indicator-session (0.3.7.1-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+    - indicator-session shows name as "[Invalid UTF-8]" if there are 
+      more than 6 user accounts (LP: #874194)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 28 Oct 2011 11:55:38 -0400
+
 indicator-session (0.3.7-0ubuntu1) oneiric-proposed; urgency=low
 
   * New upstream release.

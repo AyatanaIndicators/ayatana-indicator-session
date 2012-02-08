@@ -250,7 +250,7 @@ static void
 apt_watcher_init (AptWatcher *self)
 {
   self->current_state = UP_TO_DATE;
-  g_timeout_add_seconds (1,
+  g_timeout_add_seconds (60,
                          apt_watcher_start_apt_interaction,
                          self); 
 }

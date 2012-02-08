@@ -4,7 +4,7 @@ AC_INIT(src/indicator-session.c)
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 0.3.7.1)
+AM_INIT_AUTOMAKE(indicator-session, 0.3.90)
 
 AM_MAINTAINER_MODE
 
@@ -51,6 +51,7 @@ AS_IF([test "x$with_gtk" = x3],
         ],
       [AC_MSG_FAILURE([Value for --with-indicator-gtk was neither 2 nor 3])]
 )
+
 AC_SUBST(APPLET_CFLAGS)
 AC_SUBST(APPLET_LIBS)
 
@@ -78,6 +79,11 @@ AS_IF([test "x$with_gtk" = x3],
 
 AC_SUBST(SESSIONERVICE_CFLAGS)
 AC_SUBST(SESSIONERVICE_LIBS)
+
+AM_CONDITIONAL([USE_GTK3], [test "x$with_gtk" = "x3"])
+AS_IF([test "x$with_gtk" = x3], [
+       AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
+     ])
 
 ###########################
 # GTK Logout Helper

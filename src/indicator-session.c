@@ -276,10 +276,10 @@ indicator_session_get_location (IndicatorObject * io,
 {  
 	IndicatorSession * self = INDICATOR_SESSION (io);
   if (entry == &self->users){
-    return 1;
+    return 0;
   }
   else if (entry == &self->devices){
-    return 0;
+    return 1;
   }
   g_warning ("IOEntry handed to us to position but we don't own it!");
   return 0;

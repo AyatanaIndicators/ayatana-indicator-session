@@ -191,7 +191,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     
     
 
-    if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
+    if (self->user_count > MINIMUM_USERS) {
       users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
     }
 
@@ -206,7 +206,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
         session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
       }
            
-      if (self->user_count > MINIMUM_USERS && self->user_count < MAXIMUM_USERS) {
+      if (self->user_count > MINIMUM_USERS) {
         mi = dbusmenu_menuitem_new ();
         dbusmenu_menuitem_property_set (mi,
                                         DBUSMENU_MENUITEM_PROP_TYPE,

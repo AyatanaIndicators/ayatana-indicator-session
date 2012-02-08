@@ -1,9 +1,45 @@
-indicator-session (0.3.7-0ubuntu1~ppa1) oneiric; urgency=low
+indicator-session (0.3.7.1-1ubuntu2) precise; urgency=low
+
+  * debian/patches/01-remove-dead-gss-handling.patch: Remove dead GSS
+    throttling code. Let gnome-settings-daemon handle locking the screen
+    when UPower requests it.
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Sat, 28 Jan 2012 16:56:41 -0500
+
+indicator-session (0.3.7.1-1ubuntu1) precise; urgency=low
+
+  * rebuild for libindicator7
+  * debian/rules
+    - build with no-error=deprecated-declarations
+  * debian/control
+    - set ubuntu-desktop VCS and maintainer
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 25 Jan 2012 09:59:06 -0500
+
+indicator-session (0.3.7.1-1) experimental; urgency=low
+
+  * Merge from Ubuntu.
+    + Doesn't FTBFS with -Werror.
+      Closes: #625356
+  * Update debian/copyright.
+  * Add lintian override for desktop-command-not-in-package,
+    we need an own xdg-screensaver .desktop file.
+
+ -- Evgeni Golov <evgeni@debian.org>  Sat, 05 Nov 2011 19:02:56 +0100
+
+indicator-session (0.3.7.1-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+    - indicator-session shows name as "[Invalid UTF-8]" if there are 
+      more than 6 user accounts (LP: #874194)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 28 Oct 2011 11:55:38 -0400
+
+indicator-session (0.3.7-0ubuntu1) oneiric-proposed; urgency=low
 
   * New upstream release.
     * Fix some variant ref issues causing crashes (LP: #863930)
     * Handle cases of returned dbus messages from ConsoleKit (LP: #864085)
-    * Fixed improperly mapped gconf to gsettings keys (LP: #858798)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 13 Oct 2011 13:19:13 -0500
 
@@ -231,6 +267,13 @@ indicator-session (0.2.90-0ubuntu1) oneiric; urgency=low
 
  -- Ken VanDine <ken.vandine@canonical.com>  Wed, 22 Jun 2011 12:18:18 -0400
 
+indicator-session (0.2.17-1) unstable; urgency=low
+
+  * Merge new upstream release from Ubuntu.
+  * Standards-Version: 3.9.2
+
+ -- Evgeni Golov <evgeni@debian.org>  Sun, 05 Jun 2011 13:28:54 +0200
+
 indicator-session (0.2.17-0ubuntu1) natty; urgency=low
 
   * New upstream release.
@@ -244,6 +287,16 @@ indicator-session (0.2.16-0ubuntu1) natty; urgency=low
     * Don't error and crash Unity (LP: #745323)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 07 Apr 2011 12:46:00 -0500
+
+indicator-session (0.2.15-1) unstable; urgency=low
+
+  * Merge from Ubuntu.
+    Closes: #620671
+  * Standards-Version: 3.9.1
+  * Improve package descriptions.
+  * Update debian/copyright to DEP5 rev173.
+
+ -- Evgeni Golov <evgeni@debian.org>  Sun, 03 Apr 2011 14:16:17 +0200
 
 indicator-session (0.2.15-0ubuntu1) natty; urgency=low
 

@@ -1,0 +1,175 @@
+Description: Remove dead GSS throttling code. Let gnome-settings-daemon
+ handle locking the screen when UPower requests it.
+Author: Marc Deslauriers <marc.deslauriers@canonical.com>
+
+Index: indicator-session-0.3.7.1/src/device-menu-mgr.c
+===================================================================
+--- indicator-session-0.3.7.1.orig/src/device-menu-mgr.c	2012-01-28 17:19:05.650929258 -0500
++++ indicator-session-0.3.7.1/src/device-menu-mgr.c	2012-01-28 17:29:47.274923139 -0500
+@@ -74,7 +74,6 @@
+ static void device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self);
+ static void setup_up (DeviceMenuMgr* self);
+ static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
+-static void lock_if_possible (DeviceMenuMgr* self);
+ static void machine_sleep_with_context (DeviceMenuMgr* self,
+                                         gchar* type);
+ static void show_system_settings_with_context (DbusmenuMenuitem * mi,
+@@ -162,27 +161,6 @@
+ 	return;
+ }
+ 
+-/* Check to see if the lockdown key is protecting from
+-   locking the screen.  If not, lock it. */
+-static void
+-lock_if_possible (DeviceMenuMgr* self) {
+-	device_menu_mgr_ensure_settings_client (self);
+-
+-	if (!g_settings_get_boolean (lockdown_settings, LOCKDOWN_KEY_SCREENSAVER)) {
+-		lock_screen (NULL, 0, NULL);
+-	}
+-	return;
+-}
+-
+-/* A return from the command to sleep the system.  Make sure
+-   that we unthrottle the screensaver. */
+-static void
+-sleep_response (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
+-{
+-	screensaver_unthrottle();
+-	return;
+-}
+-
+ static void
+ machine_sleep_from_suspend (DbusmenuMenuitem * mi,
+                             guint timestamp,
+@@ -210,11 +188,9 @@
+ 		g_warning("Can not %s as no upower proxy", type);
+ 	}
+ 
+-	screensaver_throttle(type);
+-	lock_if_possible (self);
+ 	dbus_g_proxy_begin_call(up_main_proxy,
+ 	                        type,
+-	                        sleep_response,
++	                        NULL,
+ 	                        NULL,
+ 	                        NULL,
+ 	                        G_TYPE_INVALID);
+Index: indicator-session-0.3.7.1/src/lock-helper.c
+===================================================================
+--- indicator-session-0.3.7.1.orig/src/lock-helper.c	2012-01-28 17:19:05.634929258 -0500
++++ indicator-session-0.3.7.1/src/lock-helper.c	2012-01-28 17:19:07.142929243 -0500
+@@ -29,8 +29,6 @@
+ 
+ static DBusGProxy * gss_proxy = NULL;
+ static GMainLoop * gss_mainloop = NULL;
+-static guint cookie = 0;
+-static DBusGProxyCall * cookie_call = NULL;
+ 
+ static gboolean is_guest = FALSE;
+ 
+@@ -38,90 +36,6 @@
+ 
+ void build_gss_proxy (void);
+ 
+-/* Checks to see if there is an error and reports
+-   it.  Not much else we can do. */
+-static void
+-unthrottle_return (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
+-{
+-	GError * error = NULL;
+-	dbus_g_proxy_end_call(proxy, call, &error,
+-	                      G_TYPE_INVALID);
+-
+-	if (error != NULL) {
+-		g_warning("Unable to unthrottle: %s", error->message);
+-	}
+-	return;
+-}
+-
+-/* Sends an unthrottle if we're throttled. */
+-void
+-screensaver_unthrottle (void)
+-{
+-	g_return_if_fail(cookie != 0);
+-
+-	build_gss_proxy();
+-	g_return_if_fail(gss_proxy != NULL);
+-
+-	dbus_g_proxy_begin_call(gss_proxy, "UnThrottle",
+-	                        unthrottle_return, NULL,
+-	                        NULL,
+-	                        G_TYPE_UINT, cookie,
+-	                        G_TYPE_INVALID);
+-
+-	cookie = 0;
+-	return;
+-}
+-
+-/* Gets there return cookie from the throttle command
+-   and sets things valid */
+-static void
+-throttle_return (DBusGProxy * proxy, DBusGProxyCall * call, gpointer data)
+-{
+-	GError * error = NULL;
+-	cookie_call = NULL;
+-
+-	dbus_g_proxy_end_call(proxy, call, &error,
+-	                      G_TYPE_UINT, &cookie,
+-	                      G_TYPE_INVALID);
+-
+-	if (error != NULL) {
+-		g_warning("Unable to throttle the screensaver: %s", error->message);
+-		return;
+-	}
+-
+-
+-	if (cookie == 0) {
+-		g_warning("We didn't get a throttle cookie!");
+-	}
+-
+-	return;
+-}
+-
+-/* Throttling the screensaver by using the screen saver
+-   command. */
+-void
+-screensaver_throttle (gchar * reason)
+-{
+-	g_return_if_fail(cookie_call == NULL);
+-	g_return_if_fail(will_lock_screen());
+-
+-	if (cookie != 0) {
+-		screensaver_unthrottle();
+-	}
+-
+-	build_gss_proxy();
+-	g_return_if_fail(gss_proxy != NULL);
+-
+-	cookie_call = dbus_g_proxy_begin_call(gss_proxy, "Throttle",
+-	                                      throttle_return, NULL,
+-	                                      NULL,
+-	                                      G_TYPE_STRING, "Session Menu",
+-	                                      G_TYPE_STRING, reason,
+-	                                      G_TYPE_INVALID);
+-
+-	return;
+-}
+-
+ /* This is our logic on whether the screen should be locked
+    or not.  It effects everything else. */
+ gboolean
+Index: indicator-session-0.3.7.1/src/lock-helper.h
+===================================================================
+--- indicator-session-0.3.7.1.orig/src/lock-helper.h	2012-01-28 17:19:05.666929258 -0500
++++ indicator-session-0.3.7.1/src/lock-helper.h	2012-01-28 17:19:07.142929243 -0500
+@@ -24,9 +24,6 @@
+ 
+ #include <libdbusmenu-glib/menuitem.h>
+ 
+-void screensaver_throttle (gchar * reason);
+-void screensaver_unthrottle (void);
+-
+ gboolean will_lock_screen (void);
+ void lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data);
+ gboolean lock_screen_setup (gpointer data);

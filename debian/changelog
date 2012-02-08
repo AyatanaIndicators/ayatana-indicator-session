@@ -1,9 +1,12 @@
 indicator-session (0.3.7.1-1ubuntu1) UNRELEASED; urgency=low
 
+  * rebuild for libindicator7
+  * debian/rules
+    - build with no-error=deprecated-declarations
   * debian/control
     - set ubuntu-desktop VCS and maintainer
 
- -- Ken VanDine <ken.vandine@canonical.com>  Tue, 22 Nov 2011 14:55:06 -0500
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 24 Jan 2012 12:58:33 -0500
 
 indicator-session (0.3.7.1-1) experimental; urgency=low
 

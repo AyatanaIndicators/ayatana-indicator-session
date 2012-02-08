@@ -30,9 +30,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 static guint watcher_id;
 
-// TODO 
-// Get it working and then remove the pkclient pointer in the priv 
-// it's not needed. 
 struct _AptWatcher
 {
 	GObject parent_instance;
@@ -114,7 +111,6 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
   AptWatcher* self = APT_WATCHER (user_data);
 
   g_variant_ref_sink (parameters);
-  GVariant *value = g_variant_get_child_value (parameters, 0);
   g_debug ("apt-watcher-signal cb signal name - %s", signal_name);
   if (g_strcmp0(signal_name, "UpdatesChanged") == 0){
     g_debug ("updates changed signal received");
@@ -129,8 +125,11 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
                                     DBUSMENU_MENUITEM_PROP_DISPOSITION,
                                     DBUSMENU_MENUITEM_DISPOSITION_ALERT);     
   } 
+  else if (g_strcmp0(signal_name, "TransactionListChanged") == 0) {
+    GVariant *value = g_variant_get_child_value (parameters, 0);
+    g_variant_unref (value);
 
-  g_variant_unref (value);
+  }  
   g_variant_unref (parameters);
 }
 

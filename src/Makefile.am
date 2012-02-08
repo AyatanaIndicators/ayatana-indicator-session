@@ -114,9 +114,7 @@ indicator_session_service_SOURCES = \
 if BUILD_APT
 indicator_session_service_SOURCES += \
 	apt-watcher.h \
-	apt-watcher.c \
-	apt-transaction.h \
-	apt-transaction.c
+	apt-watcher.c 
 endif
 
 indicator_session_service_CFLAGS = \

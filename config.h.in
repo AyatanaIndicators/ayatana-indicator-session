@@ -9,6 +9,9 @@
 /* locale directory */
 #undef GNOMELOCALEDIR
 
+/* Define to 1 to enable APT support */
+#undef HAVE_APT
+
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
 
@@ -20,6 +23,12 @@
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
+
+/* whether gtk3 is available */
+#undef HAVE_GTK3
+
+/* Define to 1 to enable GTK Logout Helper */
+#undef HAVE_GTKLOGOUTHELPER
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H

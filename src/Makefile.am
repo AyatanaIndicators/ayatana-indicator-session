@@ -1,7 +1,11 @@
 
 libexec_PROGRAMS = \
-	indicator-session-service \
+	indicator-session-service
+
+if BUILD_GTKLOGOUTHELPER
+libexec_PROGRAMS += \
 	gtk-logout-helper
+endif
 
 ###################
 # Indicator Stuff
@@ -103,13 +107,18 @@ indicator_session_service_SOURCES = \
 	user-menu-mgr.c \
 	device-menu-mgr.h \
 	device-menu-mgr.c \
-	apt-watcher.h \
-	apt-watcher.c \
-	apt-transaction.h \
-	apt-transaction.c \
 	udev-mgr.h \
 	udev-mgr.c \
 	sane-rules.h
+
+if BUILD_APT
+indicator_session_service_SOURCES += \
+	apt-watcher.h \
+	apt-watcher.c \
+	apt-transaction.h \
+	apt-transaction.c
+endif
+
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
 	$(GCONF_CFLAGS) \
@@ -124,6 +133,7 @@ indicator_session_service_LDADD = \
 # GTK Logout Stuff
 #################
 
+if BUILD_GTKLOGOUTHELPER
 gtk_logout_helper_SOURCES = \
 	gtk-logout-helper.c \
 	settings-helper.c \
@@ -142,6 +152,7 @@ gtk_logout_helper_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
 	$(GTKLOGOUTHELPER_LIBS) \
 	$(GCONF_LIBS)
+endif
 
 
 ###############

@@ -1,3 +1,17 @@
+indicator-session (0.3.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Screensaver code cleanup
+    * Fix ordering of items on request
+    * Removing GOA support
+    * Fix GTK3 Box Deprecation
+    * Updating to dbusmenu 0.5.90
+    * Making the gtk logout helper and apt optional build time choices
+    * Add name hints to the indicators
+    * bump version for release
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 07 Feb 2012 21:13:59 -0600
+
 indicator-session (0.3.7.1-1ubuntu2) precise; urgency=low
 
   * debian/patches/01-remove-dead-gss-handling.patch: Remove dead GSS

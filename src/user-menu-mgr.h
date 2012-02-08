@@ -23,7 +23,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <glib-object.h>
-#include <libdbusmenu-gtk3/menuitem.h>
+#include <libdbusmenu-gtk/menuitem.h>
 
 #include "session-dbus.h"
 

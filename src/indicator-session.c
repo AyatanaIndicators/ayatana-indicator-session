@@ -31,11 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-#if GTK_CHECK_VERSION(3, 0, 0)
-#include <libdbusmenu-gtk3/menu.h>
-#else
 #include <libdbusmenu-gtk/menu.h>
-#endif
 
 #include <libindicator/indicator.h>
 #include <libindicator/indicator-object.h>
@@ -118,8 +114,8 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 	object_class->finalize = indicator_session_finalize;
 
 	IndicatorObjectClass * io_class = INDICATOR_OBJECT_CLASS(klass);
-  io_class->get_entries = indicator_session_get_entries;
-  io_class->get_location = indicator_session_get_location;
+	io_class->get_entries = indicator_session_get_entries;
+	io_class->get_location = indicator_session_get_location;
 	return;
 }
 
@@ -140,6 +136,7 @@ indicator_session_init (IndicatorSession *self)
 
   GtkWidget* avatar_icon = NULL;
   // users
+  self->users.name_hint = PACKAGE"-users";
   self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new (INDICATOR_USERS_DBUS_NAME,
                                                       INDICATOR_USERS_DBUS_OBJECT));
   // Set the image to the default avator image
@@ -169,7 +166,9 @@ indicator_session_init (IndicatorSession *self)
   const gchar *greeter_var;
   greeter_var = g_getenv("INDICATOR_GREETER_MODE");
   greeter_mode = g_strcmp0(greeter_var, "1") == 0;
+
   // devices
+  self->devices.name_hint = PACKAGE"-devices";
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
   if (greeter_mode){
@@ -277,10 +276,10 @@ indicator_session_get_location (IndicatorObject * io,
 {  
 	IndicatorSession * self = INDICATOR_SESSION (io);
   if (entry == &self->users){
-    return 1;
+    return 0;
   }
   else if (entry == &self->devices){
-    return 0;
+    return 1;
   }
   g_warning ("IOEntry handed to us to position but we don't own it!");
   return 0;

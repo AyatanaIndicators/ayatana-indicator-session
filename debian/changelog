@@ -9,8 +9,9 @@ indicator-session (0.3.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Making the gtk logout helper and apt optional build time choices
     * Add name hints to the indicators
     * bump version for release
+  * Drop debian/patches/01-remove-dead-gss-handling.patch: Upstream
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 07 Feb 2012 21:13:59 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 07 Feb 2012 21:15:00 -0600
 
 indicator-session (0.3.7.1-1ubuntu2) precise; urgency=low
 

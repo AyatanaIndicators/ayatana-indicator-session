@@ -644,7 +644,8 @@ SESSIONSERVICE_CFLAGS
 APPLET_LIBS
 APPLET_CFLAGS
 AM_BACKSLASH
-AM_DEFAULT_VERBOSITY
+AM_DEFAULT_V
+AM_V
 OTOOL64
 OTOOL
 LIPO
@@ -679,6 +680,7 @@ DATADIRNAME
 am__fastdepCC_FALSE
 am__fastdepCC_TRUE
 CCDEPMODE
+am__nodep
 AMDEPBACKSLASH
 AMDEP_FALSE
 AMDEP_TRUE
@@ -717,6 +719,13 @@ INTLTOOL_PROP_RULE
 INTLTOOL_KEYS_RULE
 INTLTOOL_DIRECTORY_RULE
 INTLTOOL_DESKTOP_RULE
+intltool__v_merge_options_0
+intltool__v_merge_options_
+INTLTOOL_V_MERGE_OPTIONS
+INTLTOOL__v_MERGE_0
+INTLTOOL__v_MERGE_
+INTLTOOL_V_MERGE
+AM_DEFAULT_VERBOSITY
 INTLTOOL_EXTRACT
 INTLTOOL_MERGE
 INTLTOOL_UPDATE
@@ -2756,7 +2765,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=indicator-session
- VERSION=0.3.90
+ VERSION=0.3.91
 
 
 cat >>confdefs.h <<_ACEOF
@@ -2786,11 +2795,11 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 
 # We need awk for the "check" target.  The system "awk" is bad on
 # some platforms.
-# Always define AMTAR for backward compatibility.
+# Always define AMTAR for backward compatibility.  Yes, it's still used
+# in the wild :-(  We should find a proper way to deprecate it ...
+AMTAR='$${TAR-tar}'
 
-AMTAR=${AMTAR-"${am_missing_run}tar"}
-
-am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
+am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 
@@ -3120,6 +3129,7 @@ fi
 if test "x$enable_dependency_tracking" != xno; then
   am_depcomp="$ac_aux_dir/depcomp"
   AMDEPBACKSLASH='\'
+  am__nodep='_no'
 fi
  if test "x$enable_dependency_tracking" != xno; then
   AMDEP_TRUE=
@@ -3933,6 +3943,7 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
+  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -3992,7 +4003,7 @@ else
 	break
       fi
       ;;
-    msvisualcpp | msvcmsys)
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -4196,25 +4207,44 @@ if test -z "$INTLTOOL_UPDATE" -o -z "$INTLTOOL_MERGE" -o -z "$INTLTOOL_EXTRACT";
     as_fn_error $? "The intltool scripts were not found. Please install intltool." "$LINENO" 5
 fi
 
-  INTLTOOL_DESKTOP_RULE='%.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-INTLTOOL_DIRECTORY_RULE='%.directory: %.directory.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-     INTLTOOL_KEYS_RULE='%.keys:      %.keys.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -k -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-     INTLTOOL_PROP_RULE='%.prop:      %.prop.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-      INTLTOOL_OAF_RULE='%.oaf:       %.oaf.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -o -p $(top_srcdir)/po $< $@'
-     INTLTOOL_PONG_RULE='%.pong:      %.pong.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-   INTLTOOL_SERVER_RULE='%.server:    %.server.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -o -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-    INTLTOOL_SHEET_RULE='%.sheet:     %.sheet.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-INTLTOOL_SOUNDLIST_RULE='%.soundlist: %.soundlist.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-       INTLTOOL_UI_RULE='%.ui:        %.ui.in        $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-      INTLTOOL_XML_RULE='%.xml:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-      INTLTOOL_XML_NOMERGE_RULE='%.xml:       %.xml.in       $(INTLTOOL_MERGE) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u --no-translations $< $@'
-      INTLTOOL_XAM_RULE='%.xam:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-      INTLTOOL_KBD_RULE='%.kbd:       %.kbd.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -m -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-    INTLTOOL_CAVES_RULE='%.caves:     %.caves.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-  INTLTOOL_SCHEMAS_RULE='%.schemas:   %.schemas.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -s -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-    INTLTOOL_THEME_RULE='%.theme:     %.theme.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-    INTLTOOL_SERVICE_RULE='%.service: %.service.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
-   INTLTOOL_POLICY_RULE='%.policy:    %.policy.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+if test -z "$AM_DEFAULT_VERBOSITY"; then
+  AM_DEFAULT_VERBOSITY=1
+fi
+
+
+INTLTOOL_V_MERGE='$(INTLTOOL__v_MERGE_$(V))'
+INTLTOOL__v_MERGE_='$(INTLTOOL__v_MERGE_$(AM_DEFAULT_VERBOSITY))'
+INTLTOOL__v_MERGE_0='@echo "  ITMRG " $@;'
+
+
+
+
+INTLTOOL_V_MERGE_OPTIONS='$(intltool__v_merge_options_$(V))'
+intltool__v_merge_options_='$(intltool__v_merge_options_$(AM_DEFAULT_VERBOSITY))'
+intltool__v_merge_options_0='-q'
+
+
+
+
+  INTLTOOL_DESKTOP_RULE='%.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+INTLTOOL_DIRECTORY_RULE='%.directory: %.directory.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+     INTLTOOL_KEYS_RULE='%.keys:      %.keys.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -k -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+     INTLTOOL_PROP_RULE='%.prop:      %.prop.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+      INTLTOOL_OAF_RULE='%.oaf:       %.oaf.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -o -p $(top_srcdir)/po $< $@'
+     INTLTOOL_PONG_RULE='%.pong:      %.pong.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+   INTLTOOL_SERVER_RULE='%.server:    %.server.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -o -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+    INTLTOOL_SHEET_RULE='%.sheet:     %.sheet.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+INTLTOOL_SOUNDLIST_RULE='%.soundlist: %.soundlist.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+       INTLTOOL_UI_RULE='%.ui:        %.ui.in        $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+      INTLTOOL_XML_RULE='%.xml:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+      INTLTOOL_XML_NOMERGE_RULE='%.xml:       %.xml.in       $(INTLTOOL_MERGE) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -x -u --no-translations $< $@'
+      INTLTOOL_XAM_RULE='%.xam:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+      INTLTOOL_KBD_RULE='%.kbd:       %.kbd.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -x -u -m -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+    INTLTOOL_CAVES_RULE='%.caves:     %.caves.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+  INTLTOOL_SCHEMAS_RULE='%.schemas:   %.schemas.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -s -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+    INTLTOOL_THEME_RULE='%.theme:     %.theme.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+    INTLTOOL_SERVICE_RULE='%.service: %.service.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+   INTLTOOL_POLICY_RULE='%.policy:    %.policy.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_V_MERGE)LC_ALL=C $(INTLTOOL_MERGE) $(INTLTOOL_V_MERGE_OPTIONS) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
 
 
 
@@ -5202,6 +5232,7 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
+  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -5261,7 +5292,7 @@ else
 	break
       fi
       ;;
-    msvisualcpp | msvcmsys)
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -9480,6 +9511,10 @@ _lt_linker_boilerplate=`cat conftest.err`
 $RM -r conftest*
 
 
+## CAVEAT EMPTOR:
+## There is no encapsulation within the following macros, do not change
+## the running order or otherwise move them around unless you know exactly
+## what you are doing...
 if test -n "$compiler"; then
 
 lt_prog_compiler_no_builtin_flag=
@@ -13049,6 +13084,33 @@ yes) AM_DEFAULT_VERBOSITY=0;;
 no)  AM_DEFAULT_VERBOSITY=1;;
 *)   AM_DEFAULT_VERBOSITY=0;;
 esac
+am_make=${MAKE-make}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $am_make supports nested variables" >&5
+$as_echo_n "checking whether $am_make supports nested variables... " >&6; }
+if ${am_cv_make_support_nested_variables+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if $as_echo 'TRUE=$(BAR$(V))
+BAR0=false
+BAR1=true
+V=1
+am__doit:
+	@$(TRUE)
+.PHONY: am__doit' | $am_make -f - >/dev/null 2>&1; then
+  am_cv_make_support_nested_variables=yes
+else
+  am_cv_make_support_nested_variables=no
+fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $am_cv_make_support_nested_variables" >&5
+$as_echo "$am_cv_make_support_nested_variables" >&6; }
+if test $am_cv_make_support_nested_variables = yes; then
+    AM_V='$(V)'
+  AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
+else
+  AM_V=$AM_DEFAULT_VERBOSITY
+  AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
+fi
 AM_BACKSLASH='\'
 
 
@@ -13321,13 +13383,15 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
                                        dbus-glib-1
                                        gudev-1.0
                                        gio-unix-2.0
-                                       indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
+                                       indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
                                        gudev-1.0
                                        gio-unix-2.0
-                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION") 2>&5
+                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
@@ -13336,7 +13400,8 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
                                        dbus-glib-1
                                        gudev-1.0
                                        gio-unix-2.0
-                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
+                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -13353,13 +13418,15 @@ if test -n "$SESSIONSERVICE_LIBS"; then
                                        dbus-glib-1
                                        gudev-1.0
                                        gio-unix-2.0
-                                       indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
+                                       indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
                                        gudev-1.0
                                        gio-unix-2.0
-                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION") 2>&5
+                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
@@ -13368,7 +13435,8 @@ if test -n "$SESSIONSERVICE_LIBS"; then
                                        dbus-glib-1
                                        gudev-1.0
                                        gio-unix-2.0
-                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
+                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -13394,14 +13462,16 @@ fi
                                        dbus-glib-1
                                        gudev-1.0
                                        gio-unix-2.0
-                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>&1`
+                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2" 2>&1`
         else
 	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
                                        gudev-1.0
                                        gio-unix-2.0
-                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>&1`
+                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$SESSIONSERVICE_PKG_ERRORS" >&5
@@ -13411,7 +13481,8 @@ fi
                                        dbus-glib-1
                                        gudev-1.0
                                        gio-unix-2.0
-                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION) were not met:
+                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2) were not met:
 
 $SESSIONSERVICE_PKG_ERRORS
 
@@ -13459,13 +13530,15 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
                                        gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
-                                       indicator-0.4 >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
+                                       indicator-0.4 >= \$INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
-                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION") 2>&5
+                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
@@ -13474,7 +13547,8 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
                                        gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
-                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
+                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -13491,13 +13565,15 @@ if test -n "$SESSIONSERVICE_LIBS"; then
                                        gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
-                                       indicator-0.4 >= \$INDICATOR_REQUIRED_VERSION\""; } >&5
+                                       indicator-0.4 >= \$INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2\""; } >&5
   ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
-                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION") 2>&5
+                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
@@ -13506,7 +13582,8 @@ if test -n "$SESSIONSERVICE_LIBS"; then
                                        gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
-                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>/dev/null`
+                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -13532,14 +13609,16 @@ fi
                                        gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
-                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>&1`
+                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2" 2>&1`
         else
 	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
-                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION" 2>&1`
+                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$SESSIONSERVICE_PKG_ERRORS" >&5
@@ -13549,7 +13628,8 @@ fi
                                        gudev-1.0
                                        dbus-glib-1
                                        gio-unix-2.0
-                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION) were not met:
+                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                       packagekit-glib2) were not met:
 
 $SESSIONSERVICE_PKG_ERRORS
 

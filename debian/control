@@ -29,7 +29,7 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          upower,
          gnome-settings-daemon
-Recommends: indicator-applet (>= 0.2) | indicator-renderer
+Recommends: indicator-applet (>= 0.2) | indicator-renderer, python-aptdaemon.pkcompat
 Suggests: lightdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
 Replaces: indicator-sus, indicator-me

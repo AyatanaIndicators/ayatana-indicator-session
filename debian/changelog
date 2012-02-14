@@ -1,4 +1,4 @@
-indicator-session (0.3.91-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (0.3.91-0ubuntu1) precise; urgency=low
   
   * Backport "Don't lock the session when switching to another one"
     work from Robert Ancell, the screen locking is already done by 
@@ -14,7 +14,7 @@ indicator-session (0.3.91-0ubuntu1) UNRELEASED; urgency=low
   * debian/control
     - added new build depends on libpackagekit-glib2-dev
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 14 Feb 2012 18:41:26 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 14 Feb 2012 18:49:02 +0100
 
 indicator-session (0.3.90-0ubuntu1) precise; urgency=low
 

@@ -1,6 +1,8 @@
 indicator-session (0.3.91-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release.
+  * debian/control
+    - added new build depends on libpackagekit-glib2-dev
 
  -- Ken VanDine <ken.vandine@canonical.com>  Fri, 10 Feb 2012 14:50:37 -0500
 

@@ -285,29 +285,11 @@ check_new_session ()
 	return TRUE;
 }
 
-/* Check to see if the lockdown key is protecting from
-   locking the screen.  If not, lock it. */
-static void
-lock_if_possible (void) {
-	ensure_settings_client ();
-
-	if (!g_settings_get_boolean (settings, LOCKDOWN_KEY_SCREENSAVER)) {
-		lock_screen(NULL, 0, NULL);
-	}
-
-	return;
-}
-
-
 /* Starts a new generic session */
 static void
 activate_new_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
-	lock_if_possible();
-
-  users_service_dbus_show_greeter (USERS_SERVICE_DBUS(user_data));
-
-	return;
+	users_service_dbus_show_greeter (USERS_SERVICE_DBUS(user_data));
 }
 
 /* Activates a session for a particular user. */
@@ -316,8 +298,6 @@ activate_user_session (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data
 {
   UserData *user = (UserData *)user_data;
   UsersServiceDbus *service = user->service;
-
-  lock_if_possible();
 
   users_service_dbus_activate_user_session (service, user);
 }
@@ -406,11 +386,7 @@ activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_da
   UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
   UsersServiceDbus *service = user_mgr->users_dbus_interface;
 
-	lock_if_possible();
-  
-  if (users_service_dbus_activate_guest_session(service)) {
-    return;
-  }
+  users_service_dbus_activate_guest_session(service);
 }
 
 

@@ -733,8 +733,10 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
 
 	update_menu_entries(restart_shutdown_logout_mi);
+#ifdef HAS_GUDEV
   // Time to create the udev mgr and hand it the static relevant items.
   self->udev_mgr = udev_mgr_new (scanners_menuitem, webcam_menuitem);   
+#endif
 }
 
 static void

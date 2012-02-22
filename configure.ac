@@ -61,7 +61,6 @@ AS_IF([test "x$with_gtk" = x3],
     [PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                        dbus-glib-1
-                                       gudev-1.0                                       
                                        gio-unix-2.0
                                        indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                                        packagekit-glib2)
@@ -69,7 +68,6 @@ AS_IF([test "x$with_gtk" = x3],
     [test "x$with_gtk" = x2],
     [PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                        dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
-                                       gudev-1.0                                       
                                        dbus-glib-1
                                        gio-unix-2.0
                                        indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
@@ -79,6 +77,10 @@ AS_IF([test "x$with_gtk" = x3],
 
 AC_SUBST(SESSIONERVICE_CFLAGS)
 AC_SUBST(SESSIONERVICE_LIBS)
+
+PKG_CHECK_MODULES(GUDEV, gudev-1.0, has_gudev=true, has_gudev=false)
+AC_SUBST(GUDEV_CFLAGS)
+AC_SUBST(GUDEV_LIBS)
 
 AM_CONDITIONAL([USE_GTK3], [test "x$with_gtk" = "x3"])
 AS_IF([test "x$with_gtk" = x3], [
@@ -199,7 +201,9 @@ AM_GLIB_GNU_GETTEXT
 # Files
 ###########################
 
-AC_OUTPUT([
+AM_CONDITIONAL([HAS_GUDEV], [test "x$has_gudev" = "xtrue"])
+
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 data/Makefile
@@ -222,6 +226,8 @@ data/icons/scalable/status/Makefile
 data/extra-sessions/Makefile
 po/Makefile.in
 ])
+
+AC_OUTPUT
 
 ###########################
 # Results

@@ -107,14 +107,18 @@ indicator_session_service_SOURCES = \
 	user-menu-mgr.c \
 	device-menu-mgr.h \
 	device-menu-mgr.c \
-	udev-mgr.h \
-	udev-mgr.c \
 	sane-rules.h
 
 if BUILD_APT
 indicator_session_service_SOURCES += \
 	apt-watcher.h \
 	apt-watcher.c 
+endif
+
+if HAS_GUDEV
+indicator_session_service_SOURCES += \
+	udev-mgr.h \
+	udev-mgr.c
 endif
 
 indicator_session_service_CFLAGS = \
@@ -126,6 +130,13 @@ indicator_session_service_CFLAGS = \
 indicator_session_service_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
 	$(GCONF_LIBS)
+
+if HAS_GUDEV
+indicator_session_service_CFLAGS += \
+	$(GUDEV_CFLAGS)
+indicator_session_service_LDADD += \
+	$(GUDEV_LIBS)
+endif
 
 #################
 # GTK Logout Stuff

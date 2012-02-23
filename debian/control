@@ -15,6 +15,7 @@ Build-Depends: debhelper (>= 5.0),
                libdbusmenu-glib-dev (>= 0.5.90),
                libdbusmenu-gtk-dev (>= 0.5.90),
                libdbusmenu-gtk3-dev (>= 0.5.90),
+               libpackagekit-glib2-dev,
                libpolkit-gobject-1-dev,
                intltool
 Standards-Version: 3.9.2
@@ -28,7 +29,7 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          upower,
          gnome-settings-daemon
-Recommends: indicator-applet (>= 0.2) | indicator-renderer
+Recommends: indicator-applet (>= 0.2) | indicator-renderer, python-aptdaemon.pkcompat | packagekit
 Suggests: lightdm
 Conflicts: gdm (<= 2.27.4-0ubuntu9), indicator-sus
 Replaces: indicator-sus, indicator-me

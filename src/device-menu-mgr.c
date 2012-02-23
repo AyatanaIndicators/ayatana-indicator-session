@@ -31,7 +31,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "apt-watcher.h"
 #endif  /* HAVE_APT */
 
+#ifdef HAS_GUDEV
 #include "udev-mgr.h"
+#endif  /* HAS_GUDEV */
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
@@ -47,7 +49,9 @@ struct _DeviceMenuMgr
 #ifdef HAVE_APT
   AptWatcher* apt_watcher;                              
 #endif  /* HAVE_APT */
+#ifdef HAS_GUDEV
   UdevMgr* udev_mgr;
+#endif  /* HAS_GUDEV */
 };
 
 static GSettings         *lockdown_settings  = NULL;

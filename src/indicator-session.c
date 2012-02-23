@@ -516,6 +516,8 @@ receive_signal (GDBusProxy * proxy,
       g_debug ("reboot required");
       indicator_image_helper_update(self->devices.image, ICON_RESTART);
     }
+    self->devices.accessible_desc = _("Device Menu (reboot required)");
+    g_signal_emit(G_OBJECT(self), INDICATOR_OBJECT_SIGNAL_ACCESSIBLE_DESC_UPDATE_ID, 0, &(self->devices));
   }  
 }
 

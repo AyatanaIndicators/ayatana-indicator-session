@@ -162,6 +162,7 @@ indicator_session_init (IndicatorSession *self)
   }
                                                       
   self->users.label = GTK_LABEL (gtk_label_new (NULL));
+  self->users.accessible_desc = _("User Menu");
 
   const gchar *greeter_var;
   greeter_var = g_getenv("INDICATOR_GREETER_MODE");
@@ -169,6 +170,7 @@ indicator_session_init (IndicatorSession *self)
 
   // devices
   self->devices.name_hint = PACKAGE"-devices";
+  self->devices.accessible_desc = _("Device Menu");
   self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                       INDICATOR_SESSION_DBUS_OBJECT));
   if (greeter_mode){

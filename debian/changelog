@@ -1,5 +1,9 @@
 indicator-session (0.3.92-0ubuntu1) UNRELEASED; urgency=low
 
+  * debian/patches/restore_session_lock.patch, debian/rules:
+    - get the indicator to enforce locking again since we still have cases
+      where locking is not done otherwise (lp: #939518)
+
   [ Martin Pitt ]
   * debian/control: Add alternative packagekit dependency, since this ought to
     work with either the aptdaemon pkcompat or packagekit itself.
@@ -9,7 +13,7 @@ indicator-session (0.3.92-0ubuntu1) UNRELEASED; urgency=low
     * Make GUDev dependency optional for non-Linux kernels
     * Add accessibility strings on the icons (LP: #891861)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 23 Feb 2012 09:18:34 -0600
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 23 Feb 2012 19:27:24 +0100
 
 indicator-session (0.3.91-0ubuntu1) precise; urgency=low
   

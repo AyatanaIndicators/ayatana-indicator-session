@@ -1,9 +1,15 @@
-indicator-session (0.3.91-0ubuntu2) UNRELEASED; urgency=low
+indicator-session (0.3.92-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
+  [ Martin Pitt ]
   * debian/control: Add alternative packagekit dependency, since this ought to
     work with either the aptdaemon pkcompat or packagekit itself.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 15 Feb 2012 07:26:43 +0100
+  [ Ted Gould ]
+  * New upstream release.
+    * Make GUDev dependency optional for non-Linux kernels
+    * Add accessibility strings on the icons (LP: #891861)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 23 Feb 2012 09:12:05 -0600
 
 indicator-session (0.3.91-0ubuntu1) precise; urgency=low
   

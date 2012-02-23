@@ -43,13 +43,22 @@ libexec_PROGRAMS = indicator-session-service$(EXEEXT) $(am__EXEEXT_1)
 @BUILD_APT_TRUE@	apt-watcher.h \
 @BUILD_APT_TRUE@	apt-watcher.c 
 
+@BUILD_APT_FALSE@am__append_3 = \
+@BUILD_APT_FALSE@	apt-watcher.h \
+@BUILD_APT_FALSE@	apt-watcher.c 
+
+@HAS_GUDEV_TRUE@am__append_4 = \
+@HAS_GUDEV_TRUE@	udev-mgr.h \
+@HAS_GUDEV_TRUE@	udev-mgr.c
+
+@HAS_GUDEV_FALSE@am__append_5 = \
+@HAS_GUDEV_FALSE@	udev-mgr.h \
+@HAS_GUDEV_FALSE@	udev-mgr.c
+
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -116,9 +125,11 @@ am__indicator_session_service_SOURCES_DIST = lock-helper.c \
 	lock-helper.h session-service.c session-dbus.c session-dbus.h \
 	gen-session-dbus.xml.c dbusmenu-shared.h settings-helper.c \
 	users-service-dbus.h users-service-dbus.c user-menu-mgr.h \
-	user-menu-mgr.c device-menu-mgr.h device-menu-mgr.c udev-mgr.h \
-	udev-mgr.c sane-rules.h apt-watcher.h apt-watcher.c
+	user-menu-mgr.c device-menu-mgr.h device-menu-mgr.c \
+	sane-rules.h apt-watcher.h apt-watcher.c udev-mgr.h udev-mgr.c
 @BUILD_APT_TRUE@am__objects_1 = indicator_session_service-apt-watcher.$(OBJEXT)
+@HAS_GUDEV_TRUE@am__objects_2 =  \
+@HAS_GUDEV_TRUE@	indicator_session_service-udev-mgr.$(OBJEXT)
 am_indicator_session_service_OBJECTS =  \
 	indicator_session_service-lock-helper.$(OBJEXT) \
 	indicator_session_service-session-service.$(OBJEXT) \
@@ -128,10 +139,11 @@ am_indicator_session_service_OBJECTS =  \
 	indicator_session_service-users-service-dbus.$(OBJEXT) \
 	indicator_session_service-user-menu-mgr.$(OBJEXT) \
 	indicator_session_service-device-menu-mgr.$(OBJEXT) \
-	indicator_session_service-udev-mgr.$(OBJEXT) $(am__objects_1)
+	$(am__objects_1) $(am__objects_2)
 indicator_session_service_OBJECTS =  \
 	$(am_indicator_session_service_OBJECTS)
-indicator_session_service_DEPENDENCIES = $(am__DEPENDENCIES_1)
+indicator_session_service_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 indicator_session_service_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(indicator_session_service_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
@@ -211,6 +223,8 @@ GREP = @GREP@
 GSETTINGS_DISABLE_SCHEMAS_COMPILE = @GSETTINGS_DISABLE_SCHEMAS_COMPILE@
 GTKLOGOUTHELPER_CFLAGS = @GTKLOGOUTHELPER_CFLAGS@
 GTKLOGOUTHELPER_LIBS = @GTKLOGOUTHELPER_LIBS@
+GUDEV_CFLAGS = @GUDEV_CFLAGS@
+GUDEV_LIBS = @GUDEV_LIBS@
 INDICATORDIR = @INDICATORDIR@
 INDICATORICONSDIR = @INDICATORICONSDIR@
 INSTALL = @INSTALL@
@@ -332,6 +346,12 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+EXTRA_DIST = $(am__append_3) $(am__append_5) \
+	org.freedesktop.ConsoleKit.Manager.xml \
+	org.freedesktop.ConsoleKit.Seat.xml \
+	org.freedesktop.ConsoleKit.Session.xml display-manager.xml \
+	session-dbus.xml upower.xml accounts-service.xml \
+	accounts-service-user.xml
 
 ###################
 # Indicator Stuff
@@ -363,18 +383,20 @@ indicator_session_service_SOURCES = lock-helper.c lock-helper.h \
 	session-service.c session-dbus.c session-dbus.h \
 	gen-session-dbus.xml.c dbusmenu-shared.h settings-helper.c \
 	users-service-dbus.h users-service-dbus.c user-menu-mgr.h \
-	user-menu-mgr.c device-menu-mgr.h device-menu-mgr.c udev-mgr.h \
-	udev-mgr.c sane-rules.h $(am__append_2)
+	user-menu-mgr.c device-menu-mgr.h device-menu-mgr.c \
+	sane-rules.h $(am__append_2) $(am__append_4)
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-Wall -Werror \
-	-DG_LOG_DOMAIN=\"Indicator-Session\"
+	-DG_LOG_DOMAIN=\"Indicator-Session\" \
+	$(GUDEV_CFLAGS)
 
 indicator_session_service_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
-	$(GCONF_LIBS)
+	$(GCONF_LIBS) \
+	$(GUDEV_LIBS)
 
 
 #################
@@ -413,16 +435,6 @@ BUILT_SOURCES = \
 	upower-client.h \
 	accounts-service-client.h \
 	accounts-service-user-client.h
-
-EXTRA_DIST = \
-	org.freedesktop.ConsoleKit.Manager.xml \
-	org.freedesktop.ConsoleKit.Seat.xml \
-	org.freedesktop.ConsoleKit.Session.xml \
-	display-manager.xml \
-	session-dbus.xml \
-	upower.xml \
-	accounts-service.xml \
-	accounts-service-user.xml
 
 CLEANFILES = \
 	$(BUILT_SOURCES)
@@ -756,20 +768,6 @@ indicator_session_service-device-menu-mgr.obj: device-menu-mgr.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-device-menu-mgr.obj `if test -f 'device-menu-mgr.c'; then $(CYGPATH_W) 'device-menu-mgr.c'; else $(CYGPATH_W) '$(srcdir)/device-menu-mgr.c'; fi`
 
-indicator_session_service-udev-mgr.o: udev-mgr.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-udev-mgr.o -MD -MP -MF $(DEPDIR)/indicator_session_service-udev-mgr.Tpo -c -o indicator_session_service-udev-mgr.o `test -f 'udev-mgr.c' || echo '$(srcdir)/'`udev-mgr.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-udev-mgr.Tpo $(DEPDIR)/indicator_session_service-udev-mgr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='udev-mgr.c' object='indicator_session_service-udev-mgr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-udev-mgr.o `test -f 'udev-mgr.c' || echo '$(srcdir)/'`udev-mgr.c
-
-indicator_session_service-udev-mgr.obj: udev-mgr.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-udev-mgr.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-udev-mgr.Tpo -c -o indicator_session_service-udev-mgr.obj `if test -f 'udev-mgr.c'; then $(CYGPATH_W) 'udev-mgr.c'; else $(CYGPATH_W) '$(srcdir)/udev-mgr.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-udev-mgr.Tpo $(DEPDIR)/indicator_session_service-udev-mgr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='udev-mgr.c' object='indicator_session_service-udev-mgr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-udev-mgr.obj `if test -f 'udev-mgr.c'; then $(CYGPATH_W) 'udev-mgr.c'; else $(CYGPATH_W) '$(srcdir)/udev-mgr.c'; fi`
-
 indicator_session_service-apt-watcher.o: apt-watcher.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-apt-watcher.o -MD -MP -MF $(DEPDIR)/indicator_session_service-apt-watcher.Tpo -c -o indicator_session_service-apt-watcher.o `test -f 'apt-watcher.c' || echo '$(srcdir)/'`apt-watcher.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-apt-watcher.Tpo $(DEPDIR)/indicator_session_service-apt-watcher.Po
@@ -783,6 +781,20 @@ indicator_session_service-apt-watcher.obj: apt-watcher.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='apt-watcher.c' object='indicator_session_service-apt-watcher.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-apt-watcher.obj `if test -f 'apt-watcher.c'; then $(CYGPATH_W) 'apt-watcher.c'; else $(CYGPATH_W) '$(srcdir)/apt-watcher.c'; fi`
+
+indicator_session_service-udev-mgr.o: udev-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-udev-mgr.o -MD -MP -MF $(DEPDIR)/indicator_session_service-udev-mgr.Tpo -c -o indicator_session_service-udev-mgr.o `test -f 'udev-mgr.c' || echo '$(srcdir)/'`udev-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-udev-mgr.Tpo $(DEPDIR)/indicator_session_service-udev-mgr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='udev-mgr.c' object='indicator_session_service-udev-mgr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-udev-mgr.o `test -f 'udev-mgr.c' || echo '$(srcdir)/'`udev-mgr.c
+
+indicator_session_service-udev-mgr.obj: udev-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-udev-mgr.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-udev-mgr.Tpo -c -o indicator_session_service-udev-mgr.obj `if test -f 'udev-mgr.c'; then $(CYGPATH_W) 'udev-mgr.c'; else $(CYGPATH_W) '$(srcdir)/udev-mgr.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-udev-mgr.Tpo $(DEPDIR)/indicator_session_service-udev-mgr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='udev-mgr.c' object='indicator_session_service-udev-mgr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-udev-mgr.obj `if test -f 'udev-mgr.c'; then $(CYGPATH_W) 'udev-mgr.c'; else $(CYGPATH_W) '$(srcdir)/udev-mgr.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

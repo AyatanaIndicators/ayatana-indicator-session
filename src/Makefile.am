@@ -136,17 +136,12 @@ indicator_session_service_CFLAGS = \
 	$(GCONF_CFLAGS) \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-Wall -Werror \
-	-DG_LOG_DOMAIN=\"Indicator-Session\"
+	-DG_LOG_DOMAIN=\"Indicator-Session\" \
+	$(GUDEV_CFLAGS)
 indicator_session_service_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
-	$(GCONF_LIBS)
-
-if HAS_GUDEV
-indicator_session_service_CFLAGS += \
-	$(GUDEV_CFLAGS)
-indicator_session_service_LDADD += \
+	$(GCONF_LIBS) \
 	$(GUDEV_LIBS)
-endif
 
 #################
 # GTK Logout Stuff

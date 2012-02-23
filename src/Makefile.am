@@ -1,4 +1,6 @@
 
+EXTRA_DIST =
+
 libexec_PROGRAMS = \
 	indicator-session-service
 
@@ -113,10 +115,18 @@ if BUILD_APT
 indicator_session_service_SOURCES += \
 	apt-watcher.h \
 	apt-watcher.c 
+else
+EXTRA_DIST += \
+	apt-watcher.h \
+	apt-watcher.c 
 endif
 
 if HAS_GUDEV
 indicator_session_service_SOURCES += \
+	udev-mgr.h \
+	udev-mgr.c
+else
+EXTRA_DIST += \
 	udev-mgr.h \
 	udev-mgr.c
 endif
@@ -179,7 +189,7 @@ BUILT_SOURCES = \
 	accounts-service-client.h \
 	accounts-service-user-client.h
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	org.freedesktop.ConsoleKit.Manager.xml \
 	org.freedesktop.ConsoleKit.Seat.xml \
 	org.freedesktop.ConsoleKit.Session.xml \

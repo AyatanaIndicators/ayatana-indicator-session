@@ -1,4 +1,6 @@
 
+EXTRA_DIST =
+
 libexec_PROGRAMS = \
 	indicator-session-service
 
@@ -107,14 +109,26 @@ indicator_session_service_SOURCES = \
 	user-menu-mgr.c \
 	device-menu-mgr.h \
 	device-menu-mgr.c \
-	udev-mgr.h \
-	udev-mgr.c \
 	sane-rules.h
 
 if BUILD_APT
 indicator_session_service_SOURCES += \
 	apt-watcher.h \
 	apt-watcher.c 
+else
+EXTRA_DIST += \
+	apt-watcher.h \
+	apt-watcher.c 
+endif
+
+if HAS_GUDEV
+indicator_session_service_SOURCES += \
+	udev-mgr.h \
+	udev-mgr.c
+else
+EXTRA_DIST += \
+	udev-mgr.h \
+	udev-mgr.c
 endif
 
 indicator_session_service_CFLAGS = \
@@ -122,10 +136,12 @@ indicator_session_service_CFLAGS = \
 	$(GCONF_CFLAGS) \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-Wall -Werror \
-	-DG_LOG_DOMAIN=\"Indicator-Session\"
+	-DG_LOG_DOMAIN=\"Indicator-Session\" \
+	$(GUDEV_CFLAGS)
 indicator_session_service_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
-	$(GCONF_LIBS)
+	$(GCONF_LIBS) \
+	$(GUDEV_LIBS)
 
 #################
 # GTK Logout Stuff
@@ -168,7 +184,7 @@ BUILT_SOURCES = \
 	accounts-service-client.h \
 	accounts-service-user-client.h
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	org.freedesktop.ConsoleKit.Manager.xml \
 	org.freedesktop.ConsoleKit.Seat.xml \
 	org.freedesktop.ConsoleKit.Session.xml \

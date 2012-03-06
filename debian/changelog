@@ -1,11 +1,11 @@
-indicator-session (0.3.92-0ubuntu2) UNRELEASED; urgency=low
+indicator-session (0.3.92-0ubuntu2) precise; urgency=low
 
   * Backport r243 and r244, should fix the restart required status update
     once aptdaemon is fixed to correctly emit signals (lp: #942104)
   * debian/patches/restore_session_lock.patch, debian/rules:
     - replace by a backport of the official commit
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 06 Mar 2012 11:12:37 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 06 Mar 2012 16:06:57 +0100
 
 indicator-session (0.3.92-0ubuntu1) precise; urgency=low
 

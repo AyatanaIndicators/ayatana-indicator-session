@@ -24,6 +24,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"
 #include "users-service-dbus.h"
+#include "webcredentials-mgr.h"
 
 static GSettings* settings = NULL;
 static DbusmenuMenuitem  *switch_menuitem = NULL;
@@ -32,6 +33,7 @@ struct _UserMenuMgr
 {
 	GObject parent_instance;
   UsersServiceDbus* users_dbus_interface;
+  WebcredentialsMgr *webcredentials_mgr;
   DbusmenuMenuitem* root_item;
   gint user_count;
   SessionDbus* session_dbus_interface;  
@@ -71,6 +73,7 @@ static void
 user_menu_mgr_init (UserMenuMgr *self)
 {
   self->users_dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
+  self->webcredentials_mgr = webcredentials_mgr_new ();
   self->root_item = dbusmenu_menuitem_new ();
   g_signal_connect (G_OBJECT (self->users_dbus_interface),
                     "user-added",
@@ -258,6 +261,10 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
   dbusmenu_menuitem_child_append (self->root_item, separator1);
+
+  DbusmenuMenuitem *webcredentials_item =
+      webcredentials_mgr_get_menu_item (self->webcredentials_mgr);
+  dbusmenu_menuitem_child_append (self->root_item, webcredentials_item);
 
   DbusmenuMenuitem * user_accounts_item = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (user_accounts_item,

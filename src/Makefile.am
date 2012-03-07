@@ -109,7 +109,9 @@ indicator_session_service_SOURCES = \
 	user-menu-mgr.c \
 	device-menu-mgr.h \
 	device-menu-mgr.c \
-	sane-rules.h
+	sane-rules.h \
+	webcredentials-mgr.c \
+	webcredentials-mgr.h
 
 if BUILD_APT
 indicator_session_service_SOURCES += \

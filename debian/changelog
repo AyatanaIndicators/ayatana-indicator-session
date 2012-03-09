@@ -1,3 +1,11 @@
+indicator-session (0.3.93-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Reverting locking change from earlier releases
+    * Working with PackageKit restart signals better
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 09 Mar 2012 15:28:58 -0600
+
 indicator-session (0.3.92-0ubuntu3) precise; urgency=low
 
   * Backport mvo's restart required fix, with the new aptdaemon that 

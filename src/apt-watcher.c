@@ -52,6 +52,7 @@ get_updates_complete (GObject *source_object,
   AptWatcher* self = APT_WATCHER (user_data);
 
   PkResults *results;
+  PkRestartEnum restart_required;
   GError *error = NULL;
   results = pk_client_generic_finish (PK_CLIENT(source_object), res, &error);
   
@@ -83,6 +84,20 @@ get_updates_complete (GObject *source_object,
                                         DBUSMENU_MENUITEM_PROP_LABEL,
                                         _("Software Up to Date"));       
   }
+
+  /* check if there was a restart required info in the signal */
+  restart_required = pk_results_get_require_restart_worst (results);
+  if (restart_required == PK_RESTART_ENUM_SYSTEM ||
+      restart_required == PK_RESTART_ENUM_SECURITY_SYSTEM) {
+     dbusmenu_menuitem_property_set (self->apt_item,
+                                     DBUSMENU_MENUITEM_PROP_LABEL,
+                                     _("Restart to Complete Updates…"));
+     dbusmenu_menuitem_property_set (self->apt_item,
+                                     DBUSMENU_MENUITEM_PROP_DISPOSITION,
+                                     DBUSMENU_MENUITEM_DISPOSITION_ALERT); 
+     session_dbus_restart_required (self->session_dbus_interface);
+  }
+
   g_ptr_array_unref (packages);
   g_object_unref (results);
   g_object_unref (source_object);
@@ -115,15 +130,6 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
     g_debug ("updates changed signal received");
     apt_watcher_check_for_updates (self);
   }
-  else if (g_strcmp0(signal_name, "RestartScheduled") == 0) {
-    g_debug ("RestartScheduled signal received");
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_LABEL,
-                                    _("Restart to Complete Updates…"));
-    dbusmenu_menuitem_property_set (self->apt_item,
-                                    DBUSMENU_MENUITEM_PROP_DISPOSITION,
-                                    DBUSMENU_MENUITEM_DISPOSITION_ALERT);     
-  } 
 }
 
 static void

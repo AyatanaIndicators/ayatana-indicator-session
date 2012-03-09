@@ -1,4 +1,24 @@
-indicator-session (0.3.92-0ubuntu1~ppa1) precise; urgency=low
+indicator-session (0.3.92-0ubuntu3) precise; urgency=low
+
+  * Backport mvo's restart required fix, with the new aptdaemon that 
+    should fix the issue for good (lp: #942104)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 13:39:43 +0100
+
+indicator-session (0.3.92-0ubuntu2) precise; urgency=low
+
+  * Backport r243 and r244, should fix the restart required status update
+    once aptdaemon is fixed to correctly emit signals (lp: #942104)
+  * debian/patches/restore_session_lock.patch, debian/rules:
+    - replace by a backport of the official commit
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 06 Mar 2012 16:06:57 +0100
+
+indicator-session (0.3.92-0ubuntu1) precise; urgency=low
+
+  * debian/patches/restore_session_lock.patch, debian/rules:
+    - get the indicator to enforce locking again since we still have cases
+      where locking is not done otherwise (lp: #939518)
 
   [ Martin Pitt ]
   * debian/control: Add alternative packagekit dependency, since this ought to
@@ -9,7 +29,7 @@ indicator-session (0.3.92-0ubuntu1~ppa1) precise; urgency=low
     * Make GUDev dependency optional for non-Linux kernels
     * Add accessibility strings on the icons (LP: #891861)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 23 Feb 2012 09:18:34 -0600
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 23 Feb 2012 19:42:06 +0100
 
 indicator-session (0.3.91-0ubuntu1) precise; urgency=low
   

@@ -115,15 +115,16 @@ static void apt_watcher_signal_cb ( GDBusProxy* proxy,
     g_debug ("updates changed signal received");
     apt_watcher_check_for_updates (self);
   }
-  else if (g_strcmp0(signal_name, "RestartScheduled") == 0) {
+  else if (g_strcmp0(signal_name, "RestartSchedule") == 0) {
     g_debug ("RestartScheduled signal received");
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Restart to Complete Updates…"));
     dbusmenu_menuitem_property_set (self->apt_item,
                                     DBUSMENU_MENUITEM_PROP_DISPOSITION,
-                                    DBUSMENU_MENUITEM_DISPOSITION_ALERT);     
-  } 
+                                    DBUSMENU_MENUITEM_DISPOSITION_ALERT); 
+    session_dbus_restart_required (self->session_dbus_interface);
+  }
 }
 
 static void

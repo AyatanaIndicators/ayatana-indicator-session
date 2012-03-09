@@ -1,3 +1,10 @@
+indicator-session (0.3.92-0ubuntu3) UNRELEASED; urgency=low
+
+  * Backport mvo's restart required fix, with the new aptdaemon that 
+    should fix the issue for good (lp: #942104)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 13:38:37 +0100
+
 indicator-session (0.3.92-0ubuntu2) precise; urgency=low
 
   * Backport r243 and r244, should fix the restart required status update

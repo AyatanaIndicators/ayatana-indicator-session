@@ -428,7 +428,7 @@ user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 	}
   
   const gchar* username = NULL;
-  g_variant_get (result, "(s)", &username);
+  g_variant_get (result, "(&s)", &username);
   indicator_session_update_users_label (self, username);
 	return;
 }
@@ -481,7 +481,7 @@ receive_signal (GDBusProxy * proxy,
 
 	if (g_strcmp0(signal_name, "UserRealNameUpdated") == 0) {
     const gchar* username = NULL;
-    g_variant_get (parameters, "(s)", &username);
+    g_variant_get (parameters, "(&s)", &username);
     indicator_session_update_users_label (self, username);	
   }
   else if (g_strcmp0(signal_name, "UserMenuIsVisible") == 0) {

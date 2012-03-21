@@ -2774,7 +2774,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=indicator-session
- VERSION=0.3.94
+ VERSION=0.3.95
 
 
 cat >>confdefs.h <<_ACEOF

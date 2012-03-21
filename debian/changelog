@@ -1,4 +1,10 @@
-indicator-session (0.3.93-0ubuntu1~ppa1) precise; urgency=low
+indicator-session (0.3.94-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 14 Mar 2012 19:38:25 +0100
+
+indicator-session (0.3.93-0ubuntu1) precise; urgency=low
 
   * New upstream release.
     * Reverting locking change from earlier releases

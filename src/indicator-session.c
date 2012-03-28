@@ -428,7 +428,7 @@ user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 	}
   
   const gchar* username = NULL;
-  g_variant_get (result, "(s)", &username);
+  g_variant_get (result, "(&s)", &username);
   indicator_session_update_users_label (self, username);
 	return;
 }
@@ -481,7 +481,7 @@ receive_signal (GDBusProxy * proxy,
 
 	if (g_strcmp0(signal_name, "UserRealNameUpdated") == 0) {
     const gchar* username = NULL;
-    g_variant_get (parameters, "(s)", &username);
+    g_variant_get (parameters, "(&s)", &username);
     indicator_session_update_users_label (self, username);	
   }
   else if (g_strcmp0(signal_name, "UserMenuIsVisible") == 0) {
@@ -713,14 +713,8 @@ indicator_session_update_users_label (IndicatorSession* self,
   }  
 
   GSettings* settings = g_settings_new ("com.canonical.indicator.session");
-  gboolean use_name = g_settings_get_boolean (settings,
-                                              "show-real-name-on-panel");    
+  const gboolean use_name = g_settings_get_boolean (settings, "show-real-name-on-panel");    
+  gtk_label_set_text (self->users.label, name);
+  gtk_widget_set_visible (GTK_WIDGET(self->users.label), use_name);
   g_object_unref (settings);
-  gtk_label_set_text (self->users.label, g_strdup(name));
-  if (use_name){ 
-    gtk_widget_show(GTK_WIDGET(self->users.label));
-  }
-  else{
-    gtk_widget_hide(GTK_WIDGET(self->users.label));
-  }
 }

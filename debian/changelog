@@ -1,3 +1,11 @@
+indicator-session (0.3.96-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Remove desktop files so they don't appear in the dash. (LP: #973181)
+    * Add gcov to the build for coverage statistics
+
+ -- Charles Kerr <charles.kerr@canonical.com>  Thu, 05 Apr 2012 12:48:12 -0500
+
 indicator-session (0.3.95-0ubuntu1) precise; urgency=low
 
   * New upstream release.

@@ -615,6 +615,18 @@ LTLIBOBJS
 LIBOBJS
 HAS_GUDEV_FALSE
 HAS_GUDEV_TRUE
+COVERAGE_LDFLAGS
+COVERAGE_CFLAGS
+HAVE_GCOVR_FALSE
+HAVE_GCOVR_TRUE
+HAVE_LCOV_FALSE
+HAVE_LCOV_TRUE
+HAVE_GCOV_FALSE
+HAVE_GCOV_TRUE
+GCOVR
+GENHTML
+LCOV
+SHTOOL
 MKINSTALLDIRS
 POSUB
 POFILES
@@ -824,6 +836,7 @@ with_gtk
 enable_gtklogouthelper
 enable_apt
 enable_localinstall
+enable_gcov
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1482,6 +1495,7 @@ Optional Features:
   --disable-apt           disable APT support
   --enable-localinstall   install all of the files localy instead of system
                           directories (for distcheck)
+  --enable-gcov           enable coverage testing with gcov
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -2774,7 +2788,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=indicator-session
- VERSION=0.3.95
+ VERSION=0.3.96
 
 
 cat >>confdefs.h <<_ACEOF
@@ -14758,6 +14772,279 @@ $as_echo "$LINGUAS" >&6; }
 
 
 ###########################
+# gcov coverage reporting
+###########################
+
+# Checks for existence of coverage tools:
+#  * gcov
+#  * lcov
+#  * genhtml
+#  * gcovr
+#
+# Sets ac_cv_check_gcov to yes if tooling is present
+# and reports the executables to the variables LCOV, GCOVR and GENHTML.
+ # AC_TDD_GCOV
+
+
+  # Check whether --enable-gcov was given.
+if test "${enable_gcov+set}" = set; then :
+  enableval=$enable_gcov; use_gcov=$enableval
+else
+  use_gcov=no
+fi
+
+
+  if test "x$use_gcov" = "xyes"; then
+  # we need gcc:
+  if test "$GCC" != "yes"; then
+    as_fn_error $? "GCC is required for --enable-gcov" "$LINENO" 5
+  fi
+
+  # Check if ccache is being used
+  # Extract the first word of "shtool", so it can be a program name with args.
+set dummy shtool; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_SHTOOL+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$SHTOOL"; then
+  ac_cv_prog_SHTOOL="$SHTOOL" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_SHTOOL="shtool"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+SHTOOL=$ac_cv_prog_SHTOOL
+if test -n "$SHTOOL"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $SHTOOL" >&5
+$as_echo "$SHTOOL" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  case `$SHTOOL path $CC` in
+    *ccache*) gcc_ccache=yes;;
+    *) gcc_ccache=no;;
+  esac
+
+  if test "$gcc_ccache" = "yes" && (test -z "$CCACHE_DISABLE" || test "$CCACHE_DISABLE" != "1"); then
+    as_fn_error $? "ccache must be disabled when --enable-gcov option is used. You can disable ccache by setting environment variable CCACHE_DISABLE=1." "$LINENO" 5
+  fi
+
+  lcov_version_list="1.6 1.7 1.8 1.9"
+  # Extract the first word of "lcov", so it can be a program name with args.
+set dummy lcov; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_LCOV+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$LCOV"; then
+  ac_cv_prog_LCOV="$LCOV" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_LCOV="lcov"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+LCOV=$ac_cv_prog_LCOV
+if test -n "$LCOV"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LCOV" >&5
+$as_echo "$LCOV" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  # Extract the first word of "genhtml", so it can be a program name with args.
+set dummy genhtml; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_GENHTML+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$GENHTML"; then
+  ac_cv_prog_GENHTML="$GENHTML" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_GENHTML="genhtml"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+GENHTML=$ac_cv_prog_GENHTML
+if test -n "$GENHTML"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GENHTML" >&5
+$as_echo "$GENHTML" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+
+  if test "$LCOV"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for lcov version" >&5
+$as_echo_n "checking for lcov version... " >&6; }
+if ${glib_cv_lcov_version+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+      glib_cv_lcov_version=invalid
+      lcov_version=`$LCOV -v 2>/dev/null | $SED -e 's/^.* //'`
+      for lcov_check_version in $lcov_version_list; do
+        if test "$lcov_version" = "$lcov_check_version"; then
+          glib_cv_lcov_version="$lcov_check_version (ok)"
+        fi
+      done
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $glib_cv_lcov_version" >&5
+$as_echo "$glib_cv_lcov_version" >&6; }
+  else
+    lcov_msg="To enable code coverage reporting you must have one of the following lcov versions installed: $lcov_version_list"
+    as_fn_error $? "$lcov_msg" "$LINENO" 5
+  fi
+
+  case $glib_cv_lcov_version in
+    ""|invalid)
+      lcov_msg="You must have one of the following versions of lcov: $lcov_version_list (found: $lcov_version)."
+      as_fn_error $? "$lcov_msg" "$LINENO" 5
+      LCOV="exit 0;"
+      ;;
+  esac
+
+  if test -z "$GENHTML"; then
+    as_fn_error $? "Could not find genhtml from the lcov package" "$LINENO" 5
+  fi
+
+  ac_cv_check_gcov=yes
+  ac_cv_check_lcov=yes
+
+  # Remove all optimization flags from CFLAGS
+
+  CFLAGS=`echo "$CFLAGS" | $SED -e 's/-O[0-9]*//g'`
+
+
+  # Add the special gcc flags
+  COVERAGE_CFLAGS="-O0 -fprofile-arcs -ftest-coverage"
+  COVERAGE_CXXFLAGS="-O0 -fprofile-arcs -ftest-coverage"
+  COVERAGE_LDFLAGS="-lgcov"
+
+  # Check availability of gcovr
+  # Extract the first word of "gcovr", so it can be a program name with args.
+set dummy gcovr; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_GCOVR+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$GCOVR"; then
+  ac_cv_prog_GCOVR="$GCOVR" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_GCOVR="gcovr"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+GCOVR=$ac_cv_prog_GCOVR
+if test -n "$GCOVR"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GCOVR" >&5
+$as_echo "$GCOVR" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  if test -z "$GCOVR"; then
+    ac_cv_check_gcovr=no
+  else
+    ac_cv_check_gcovr=yes
+  fi
+
+fi
+
+ if test "x$ac_cv_check_gcov" = xyes; then
+  HAVE_GCOV_TRUE=
+  HAVE_GCOV_FALSE='#'
+else
+  HAVE_GCOV_TRUE='#'
+  HAVE_GCOV_FALSE=
+fi
+
+ if test "x$ac_cv_check_lcov" = xyes; then
+  HAVE_LCOV_TRUE=
+  HAVE_LCOV_FALSE='#'
+else
+  HAVE_LCOV_TRUE='#'
+  HAVE_LCOV_FALSE=
+fi
+
+ if test "x$ac_cv_check_gcovr" = xyes; then
+  HAVE_GCOVR_TRUE=
+  HAVE_GCOVR_FALSE='#'
+else
+  HAVE_GCOVR_TRUE='#'
+  HAVE_GCOVR_FALSE=
+fi
+
+
+
+
+###########################
 # Files
 ###########################
 
@@ -14920,6 +15207,18 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BUILD_APT_TRUE}" && test -z "${BUILD_APT_FALSE}"; then
   as_fn_error $? "conditional \"BUILD_APT\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_GCOV_TRUE}" && test -z "${HAVE_GCOV_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_GCOV\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_LCOV_TRUE}" && test -z "${HAVE_LCOV_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_LCOV\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_GCOVR_TRUE}" && test -z "${HAVE_GCOVR_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_GCOVR\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAS_GUDEV_TRUE}" && test -z "${HAS_GUDEV_FALSE}"; then
@@ -17224,19 +17523,21 @@ fi
 
 SUS Indicator Configuration:
 
-	Prefix:        $prefix
-	Indicator Dir: $INDICATORDIR
-	Indicator GTK: $with_gtk
-	Logout Helper: $have_gtklogouthelper
-	APT support:   $enable_apt
+	Prefix:             $prefix
+	Indicator Dir:      $INDICATORDIR
+	Indicator GTK:      $with_gtk
+	Logout Helper:      $have_gtklogouthelper
+	APT support:        $enable_apt
+	Coverage reporting: $use_gcov
 " >&5
 $as_echo "$as_me:
 
 SUS Indicator Configuration:
 
-	Prefix:        $prefix
-	Indicator Dir: $INDICATORDIR
-	Indicator GTK: $with_gtk
-	Logout Helper: $have_gtklogouthelper
-	APT support:   $enable_apt
+	Prefix:             $prefix
+	Indicator Dir:      $INDICATORDIR
+	Indicator GTK:      $with_gtk
+	Logout Helper:      $have_gtklogouthelper
+	APT support:        $enable_apt
+	Coverage reporting: $use_gcov
 " >&6;}

@@ -61,7 +61,8 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/gcov.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -122,8 +123,8 @@ gtk_logout_helper_OBJECTS = $(am_gtk_logout_helper_OBJECTS)
 @BUILD_GTKLOGOUTHELPER_TRUE@	$(am__DEPENDENCIES_1)
 gtk_logout_helper_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(gtk_logout_helper_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
-	-o $@
+	$(gtk_logout_helper_CFLAGS) $(CFLAGS) \
+	$(gtk_logout_helper_LDFLAGS) $(LDFLAGS) -o $@
 am__indicator_session_service_SOURCES_DIST = lock-helper.c \
 	lock-helper.h session-service.c session-dbus.c session-dbus.h \
 	gen-session-dbus.xml.c dbusmenu-shared.h settings-helper.c \
@@ -149,8 +150,8 @@ indicator_session_service_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 indicator_session_service_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(indicator_session_service_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+	$(indicator_session_service_CFLAGS) $(CFLAGS) \
+	$(indicator_session_service_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -201,6 +202,8 @@ CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+COVERAGE_CFLAGS = @COVERAGE_CFLAGS@
+COVERAGE_LDFLAGS = @COVERAGE_LDFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -217,6 +220,8 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GCOVR = @GCOVR@
+GENHTML = @GENHTML@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_COMPILE_SCHEMAS = @GLIB_COMPILE_SCHEMAS@
 GMOFILES = @GMOFILES@
@@ -245,6 +250,7 @@ INTLTOOL_V_MERGE = @INTLTOOL_V_MERGE@
 INTLTOOL_V_MERGE_OPTIONS = @INTLTOOL_V_MERGE_OPTIONS@
 INTLTOOL__v_MERGE_ = @INTLTOOL__v_MERGE_@
 INTLTOOL__v_MERGE_0 = @INTLTOOL__v_MERGE_0@
+LCOV = @LCOV@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
@@ -290,6 +296,7 @@ SESSIONSERVICE_CFLAGS = @SESSIONSERVICE_CFLAGS@
 SESSIONSERVICE_LIBS = @SESSIONSERVICE_LIBS@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SHTOOL = @SHTOOL@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -373,11 +380,15 @@ libsession_la_SOURCES = \
 
 libsession_la_CFLAGS = \
 	$(APPLET_CFLAGS) \
+	$(COVERAGE_CFLAGS) \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"Indicator-Session\"
 
 libsession_la_LIBADD = $(APPLET_LIBS)
-libsession_la_LDFLAGS = -module -avoid-version
+libsession_la_LDFLAGS = \
+	$(COVERAGE_LDFLAGS) \
+	-module -avoid-version
+
 
 #################
 # Session Stuff
@@ -394,12 +405,16 @@ indicator_session_service_CFLAGS = \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"Indicator-Session\" \
-	$(GUDEV_CFLAGS)
+	$(GUDEV_CFLAGS) \
+	$(COVERAGE_CFLAGS)
 
 indicator_session_service_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
 	$(GCONF_LIBS) \
 	$(GUDEV_LIBS)
+
+indicator_session_service_LDFLAGS = \
+	$(COVERAGE_LDFLAGS)
 
 
 #################
@@ -416,6 +431,7 @@ indicator_session_service_LDADD = \
 @BUILD_GTKLOGOUTHELPER_TRUE@	$(SESSIONSERVICE_CFLAGS) \
 @BUILD_GTKLOGOUTHELPER_TRUE@	$(GTKLOGOUTHELPER_CFLAGS) \
 @BUILD_GTKLOGOUTHELPER_TRUE@	$(GCONF_CFLAGS) \
+@BUILD_GTKLOGOUTHELPER_TRUE@	$(COVERAGE_CFLAGS) \
 @BUILD_GTKLOGOUTHELPER_TRUE@	-Wall -Werror \
 @BUILD_GTKLOGOUTHELPER_TRUE@	-DINDICATOR_ICONS_DIR="\"$(INDICATORICONSDIR)\""
 
@@ -423,6 +439,9 @@ indicator_session_service_LDADD = \
 @BUILD_GTKLOGOUTHELPER_TRUE@	$(SESSIONSERVICE_LIBS) \
 @BUILD_GTKLOGOUTHELPER_TRUE@	$(GTKLOGOUTHELPER_LIBS) \
 @BUILD_GTKLOGOUTHELPER_TRUE@	$(GCONF_LIBS)
+
+@BUILD_GTKLOGOUTHELPER_TRUE@gtk_logout_helper_LDFLAGS = \
+@BUILD_GTKLOGOUTHELPER_TRUE@	$(COVERAGE_LDFLAGS)
 
 
 ###############

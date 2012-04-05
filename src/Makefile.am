@@ -26,10 +26,13 @@ libsession_la_SOURCES = \
 	accounts-service-user-client.h
 libsession_la_CFLAGS = \
 	$(APPLET_CFLAGS) \
+	$(COVERAGE_CFLAGS) \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"Indicator-Session\"
 libsession_la_LIBADD = $(APPLET_LIBS)
-libsession_la_LDFLAGS = -module -avoid-version
+libsession_la_LDFLAGS = \
+	$(COVERAGE_LDFLAGS) \
+	-module -avoid-version
 
 consolekit-manager-client.h: $(srcdir)/org.freedesktop.ConsoleKit.Manager.xml
 	dbus-binding-tool \
@@ -137,11 +140,14 @@ indicator_session_service_CFLAGS = \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"Indicator-Session\" \
-	$(GUDEV_CFLAGS)
+	$(GUDEV_CFLAGS) \
+	$(COVERAGE_CFLAGS)
 indicator_session_service_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
 	$(GCONF_LIBS) \
 	$(GUDEV_LIBS)
+indicator_session_service_LDFLAGS = \
+	$(COVERAGE_LDFLAGS)
 
 #################
 # GTK Logout Stuff
@@ -159,6 +165,7 @@ gtk_logout_helper_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
 	$(GTKLOGOUTHELPER_CFLAGS) \
 	$(GCONF_CFLAGS) \
+	$(COVERAGE_CFLAGS) \
 	-Wall -Werror \
 	-DINDICATOR_ICONS_DIR="\"$(INDICATORICONSDIR)\""
 
@@ -166,6 +173,9 @@ gtk_logout_helper_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
 	$(GTKLOGOUTHELPER_LIBS) \
 	$(GCONF_LIBS)
+
+gtk_logout_helper_LDFLAGS = \
+	$(COVERAGE_LDFLAGS)
 endif
 
 

@@ -72,3 +72,5 @@ test-ascii-quotes: po
 	@chmod +x $@
 
 CLEANFILES = $(TESTS)
+
+include $(top_srcdir)/Makefile.am.coverage

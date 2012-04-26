@@ -189,10 +189,14 @@ if test "x$enable_tests" != "xno"; then
         AC_MSG_ERROR([tests were requested but gtest is not installed.])
     fi
     if test "x$enable_tests" = "xyes"; then
-        PKG_CHECK_MODULES(LIBDBUSTEST, dbustest-1 >= DBUSTEST_REQUIRED_VERSION)
+        PKG_CHECK_MODULES([TEST_SERVICE],[indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                          dbustest-1 >= $DBUSTEST_REQUIRED_VERSION
+                                          dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION])
     fi
 fi
 AM_CONDITIONAL([BUILD_TESTS],[test "x$enable_tests" = "xyes"])
+AC_SUBST([TEST_SERVICE_CFLAGS])
+AC_SUBST([TEST_SERVICE_LDFLAGS])
 
 ##############################
 # Custom Junk
@@ -279,6 +283,6 @@ SUS Indicator Configuration:
 	Indicator GTK:      $with_gtk
 	Logout Helper:      $have_gtklogouthelper
 	APT support:        $enable_apt
-	Enable tests:       $enable_tests
+	Unit Tests:         $enable_tests
 	Coverage reporting: $use_gcov
 ])

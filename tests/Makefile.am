@@ -1,9 +1,10 @@
-AM_CPPFLAGS = $(GTEST_CPPFLAGS) $(SESSIONSERVICE_CFLAGS) $(LIBDBUSTEST_CFLAGS) -I${top_srcdir}/src -Wall -Werror
+AM_CPPFLAGS = $(GTEST_CPPFLAGS) $(INDICATOR_CFLAGS) -I${top_srcdir}/src -Wall -Werror
 AM_CXXFLAGS = $(GTEST_CXXFLAGS)
 
 check_PROGRAMS = test-service
 test_service_SOURCES = test-service.cc
-test_service_LDADD = $(SESSIONSERVICE_LIBS) $(LIBDBUSTEST_LIBS) libgtest.a
+test_service_LDADD = $(TEST_SERVICE_LIBS) libgtest.a
+test_service_CPPFLAGS = $(TEST_SERVICE_CFLAGS) $(AM_CPPFLAGS)
 
 check_LIBRARIES = libgtest.a
 nodist_libgtest_a_SOURCES = \

@@ -7,7 +7,7 @@ SUBDIRS = \
 if BUILD_TESTS
 SUBDIRS += tests
 # build src first
-test: src
+tests: src
 endif
 
 EXTRA_DIST = autogen.sh

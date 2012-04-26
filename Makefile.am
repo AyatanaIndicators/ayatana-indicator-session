@@ -2,8 +2,13 @@
 SUBDIRS = \
 	src \
 	data \
-	tests \
 	po
+
+if BUILD_TESTS
+SUBDIRS += tests
+# build src first
+test: src
+endif
 
 EXTRA_DIST = autogen.sh
 

@@ -89,8 +89,6 @@ AS_IF([test "x$with_gtk" = x3], [
        AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
      ])
 
-PKG_CHECK_MODULES(LIBDBUSTEST, dbustest-1 >= DBUSTEST_REQUIRED_VERSION)
-
 ###########################
 # GTK Logout Helper
 ###########################
@@ -178,8 +176,23 @@ AC_SUBST(DBUSSERVICEDIR)
 # Google Test framework
 ###########################
 
-m4_include([m4/gtest.m4])
-CHECK_GTEST
+AC_ARG_ENABLE([tests],
+    [AS_HELP_STRING([--disable-tests], [Disable test scripts and tools (default=auto)])],
+    [enable_tests=${enableval}],
+    [enable_tests=auto])
+if test "x$enable_tests" != "xno"; then
+    m4_include([m4/gtest.m4])
+    CHECK_GTEST
+    if test "x$enable_tests" = "xauto"; then
+        enable_tests=${have_gtest}
+    elif test "x$enable_tests" = "xyes" && test "x$have_gtest" != "xyes"; then
+        AC_MSG_ERROR([tests were requested but gtest is not installed.])
+    fi
+    if test "x$enable_tests" = "xyes"; then
+        PKG_CHECK_MODULES(LIBDBUSTEST, dbustest-1 >= DBUSTEST_REQUIRED_VERSION)
+    fi
+fi
+AM_CONDITIONAL([BUILD_TESTS],[test "x$enable_tests" = "xyes"])
 
 ##############################
 # Custom Junk
@@ -266,5 +279,6 @@ SUS Indicator Configuration:
 	Indicator GTK:      $with_gtk
 	Logout Helper:      $have_gtklogouthelper
 	APT support:        $enable_apt
+	Enable tests:       $enable_tests
 	Coverage reporting: $use_gcov
 ])

@@ -14,6 +14,7 @@ IT_PROG_INTLTOOL([0.35.0])
 
 AC_ISC_POSIX
 AC_PROG_CC
+AC_PROG_CXX
 AM_PROG_CC_C_O
 AC_STDC_HEADERS
 AC_PROG_LIBTOOL
@@ -32,6 +33,7 @@ GTK3_REQUIRED_VERSION=3.0
 INDICATOR_REQUIRED_VERSION=0.3.19
 DBUSMENUGTK_REQUIRED_VERSION=0.5.90
 POLKIT_REQUIRED_VERSION=0.92
+DBUSTEST_REQUIRED_VERSION=0.0.5
 
 AC_ARG_WITH([gtk],
   [AS_HELP_STRING([--with-gtk],
@@ -86,6 +88,8 @@ AM_CONDITIONAL([USE_GTK3], [test "x$with_gtk" = "x3"])
 AS_IF([test "x$with_gtk" = x3], [
        AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
      ])
+
+PKG_CHECK_MODULES(LIBDBUSTEST, dbustest-1 >= DBUSTEST_REQUIRED_VERSION)
 
 ###########################
 # GTK Logout Helper
@@ -170,6 +174,13 @@ else
 fi
 AC_SUBST(DBUSSERVICEDIR)
 
+###########################
+# Google Test framework
+###########################
+
+m4_include([m4/gtest.m4])
+CHECK_GTEST
+
 ##############################
 # Custom Junk
 ##############################
@@ -236,6 +247,7 @@ data/icons/scalable/Makefile
 data/icons/scalable/actions/Makefile
 data/icons/scalable/status/Makefile
 data/extra-sessions/Makefile
+tests/Makefile
 po/Makefile.in
 ])
 

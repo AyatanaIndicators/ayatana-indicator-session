@@ -36,7 +36,7 @@ class SessionServiceTest: public IndicatorServiceTest
     virtual ~SessionServiceTest() {}
     SessionServiceTest(): IndicatorServiceTest(INDICATOR_SESSION_DBUS_NAME,
                                                INDICATOR_SESSION_DBUS_OBJECT,
-                                               the_executable) { }
+                                               INDICATOR_SERVICE_PATH) { }
   public:
     virtual void SetUp() {
       wait_seconds(1);
@@ -56,16 +56,3 @@ TEST_F(SessionServiceTest, HelloWorld)
   ASSERT_TRUE(true);
 }
 
-
-int
-main (int argc, char *argv[])
-{
-  if (argc < 2) {
-    fprintf (stderr, "Usage: appname /path/to/indicator-session-service");
-    return -1;
-  }
-  the_executable = argv[1];
-  fprintf (stdout, "executable is '%s'\n", the_executable);
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

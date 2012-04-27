@@ -1,5 +1,10 @@
 
-AM_CPPFLAGS = $(GTEST_CPPFLAGS) $(INDICATOR_CFLAGS) -I${top_srcdir}/src -Wall -Werror
+AM_CPPFLAGS = \
+	$(GTEST_CPPFLAGS) \
+	$(XORG_GTEST_CPPFLAGS) \
+	$(INDICATOR_CFLAGS) \
+	-I${top_srcdir}/src \
+	-Wall -Werror
 AM_CXXFLAGS = $(GTEST_CXXFLAGS)
 
 TESTS = test-service
@@ -13,6 +18,7 @@ test_service_CPPFLAGS = \
 
 check_LIBRARIES = libgtest.a
 nodist_libgtest_a_SOURCES = \
+	$(XORG_GTEST_SOURCE)/src/xorg-gtest-all.cpp \
 	$(GTEST_SOURCE)/src/gtest-all.cc \
-	$(GTEST_SOURCE)/src/gtest_main.cc
+	$(XORG_GTEST_SOURCE)/src/xorg-gtest_main.cpp
 

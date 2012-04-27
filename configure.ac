@@ -183,13 +183,14 @@ AC_ARG_ENABLE([tests],
 if test "x$enable_tests" != "xno"; then
     m4_include([m4/gtest.m4])
     CHECK_GTEST
+    CHECK_XORG_GTEST
     if test "x$enable_tests" = "xauto"; then
         enable_tests=${have_gtest}
     elif test "x$enable_tests" = "xyes" && test "x$have_gtest" != "xyes"; then
         AC_MSG_ERROR([tests were requested but gtest is not installed.])
     fi
     if test "x$enable_tests" = "xyes"; then
-        PKG_CHECK_MODULES([TEST_SERVICE],[indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+        PKG_CHECK_MODULES([TEST_SERVICE],[indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                                           dbustest-1 >= $DBUSTEST_REQUIRED_VERSION
                                           dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION])
     fi

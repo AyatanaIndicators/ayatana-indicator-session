@@ -14,6 +14,7 @@ IT_PROG_INTLTOOL([0.35.0])
 
 AC_ISC_POSIX
 AC_PROG_CC
+AC_PROG_CXX
 AM_PROG_CC_C_O
 AC_STDC_HEADERS
 AC_PROG_LIBTOOL
@@ -32,6 +33,7 @@ GTK3_REQUIRED_VERSION=3.0
 INDICATOR_REQUIRED_VERSION=0.3.19
 DBUSMENUGTK_REQUIRED_VERSION=0.5.90
 POLKIT_REQUIRED_VERSION=0.92
+DBUSTEST_REQUIRED_VERSION=0.0.5
 
 AC_ARG_WITH([gtk],
   [AS_HELP_STRING([--with-gtk],
@@ -170,6 +172,33 @@ else
 fi
 AC_SUBST(DBUSSERVICEDIR)
 
+###########################
+# Google Test framework
+###########################
+
+AC_ARG_ENABLE([tests],
+    [AS_HELP_STRING([--disable-tests], [Disable test scripts and tools (default=auto)])],
+    [enable_tests=${enableval}],
+    [enable_tests=auto])
+if test "x$enable_tests" != "xno"; then
+    m4_include([m4/gtest.m4])
+    CHECK_GTEST
+    CHECK_XORG_GTEST
+    if test "x$enable_tests" = "xauto"; then
+        enable_tests=${have_gtest}
+    elif test "x$enable_tests" = "xyes" && test "x$have_gtest" != "xyes"; then
+        AC_MSG_ERROR([tests were requested but gtest is not installed.])
+    fi
+    if test "x$enable_tests" = "xyes"; then
+        PKG_CHECK_MODULES([TEST_SERVICE],[indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                          dbustest-1 >= $DBUSTEST_REQUIRED_VERSION
+                                          dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION])
+    fi
+fi
+AM_CONDITIONAL([BUILD_TESTS],[test "x$enable_tests" = "xyes"])
+AC_SUBST([TEST_SERVICE_CFLAGS])
+AC_SUBST([TEST_SERVICE_LDFLAGS])
+
 ##############################
 # Custom Junk
 ##############################
@@ -236,6 +265,7 @@ data/icons/scalable/Makefile
 data/icons/scalable/actions/Makefile
 data/icons/scalable/status/Makefile
 data/extra-sessions/Makefile
+tests/Makefile
 po/Makefile.in
 ])
 
@@ -254,5 +284,6 @@ SUS Indicator Configuration:
 	Indicator GTK:      $with_gtk
 	Logout Helper:      $have_gtklogouthelper
 	APT support:        $enable_apt
+	Unit Tests:         $enable_tests
 	Coverage reporting: $use_gcov
 ])

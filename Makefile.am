@@ -4,6 +4,12 @@ SUBDIRS = \
 	data \
 	po
 
+if BUILD_TESTS
+SUBDIRS += tests
+# build src first
+tests: src
+endif
+
 EXTRA_DIST = autogen.sh
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-localinstall

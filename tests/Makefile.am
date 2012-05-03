@@ -1,3 +1,8 @@
+TESTS =
+CLEANFILES =
+
+# stock UMB tests on user-visible strings
+include $(srcdir)/Makefile.am.strings
 
 AM_CPPFLAGS = \
 	$(GTEST_CPPFLAGS) \

@@ -28,66 +28,33 @@ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 # Dependencies 
 ###########################
 
-GTK_REQUIRED_VERSION=2.12
-GTK3_REQUIRED_VERSION=3.0
+GTK_REQUIRED_VERSION=3.0
 INDICATOR_REQUIRED_VERSION=0.3.19
 DBUSMENUGTK_REQUIRED_VERSION=0.5.90
 POLKIT_REQUIRED_VERSION=0.92
 DBUSTEST_REQUIRED_VERSION=0.0.5
+DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
 
-AC_ARG_WITH([gtk],
-  [AS_HELP_STRING([--with-gtk],
-    [Which version of gtk to use for the indicator @<:@default=3@:>@])],
-  [],
-  [with_gtk=3])
 
-AS_IF([test "x$with_gtk" = x3],
-        [PKG_CHECK_MODULES(APPLET, gtk+-3.0 >= $GTK3_REQUIRED_VERSION
-                                   indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
-                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
-        ],
-      [test "x$with_gtk" = x2],
-         [PKG_CHECK_MODULES(APPLET, gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                    indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
-                                    dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
-        ],
-      [AC_MSG_FAILURE([Value for --with-indicator-gtk was neither 2 nor 3])]
-)
-
+PKG_CHECK_MODULES(APPLET, gtk+-3.0 >= $GTK_REQUIRED_VERSION
+                          indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                          dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
 AC_SUBST(APPLET_CFLAGS)
 AC_SUBST(APPLET_LIBS)
 
-DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
 
-AS_IF([test "x$with_gtk" = x3],
-    [PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                       dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
-                                       dbus-glib-1
-                                       gio-unix-2.0
-                                       indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
-                                       packagekit-glib2)
-    ],
-    [test "x$with_gtk" = x2],
-    [PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
-                                       dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
-                                       dbus-glib-1
-                                       gio-unix-2.0
-                                       indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
-                                       packagekit-glib2)
-    ]
-)
-
+PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+                                  dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
+                                  dbus-glib-1
+                                  gio-unix-2.0
+                                  indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                  packagekit-glib2)
 AC_SUBST(SESSIONERVICE_CFLAGS)
 AC_SUBST(SESSIONERVICE_LIBS)
 
 PKG_CHECK_MODULES(GUDEV, gudev-1.0, has_gudev=true, has_gudev=false)
 AC_SUBST(GUDEV_CFLAGS)
 AC_SUBST(GUDEV_LIBS)
-
-AM_CONDITIONAL([USE_GTK3], [test "x$with_gtk" = "x3"])
-AS_IF([test "x$with_gtk" = x3], [
-       AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
-     ])
 
 ###########################
 # GTK Logout Helper
@@ -98,19 +65,10 @@ AC_ARG_ENABLE([gtklogouthelper],
             enable_gtklogouthelper=auto)
 
 if test x"$enable_gtklogouthelper" != x"no" ; then
-   AS_IF([test "x$with_gtk" = x3],
-       [PKG_CHECK_MODULES(GTKLOGOUTHELPER, gtk+-3.0 >= $GTK3_REQUIRED_VERSION
-                                           polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION,
-	                                   [have_gtklogouthelper=yes],
-	                                   [have_gtklogouthelper=no])
-       ],
-       [test "x$with_gtk" = x2],
-       [PKG_CHECK_MODULES(GTKLOGOUTHELPER, gtk+-2.0 >= $GTK_REQUIRED_VERSION
-                                           polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION,
-	                                   [have_gtklogouthelper=yes],
-	                                   [have_gtklogouthelper=no])
-       ]
-   )
+   PKG_CHECK_MODULES(GTKLOGOUTHELPER, gtk+-3.0 >= $GTK_REQUIRED_VERSION
+                                      polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION,
+	                              [have_gtklogouthelper=yes],
+	                              [have_gtklogouthelper=no])
    if test x${have_gtklogouthelper} = xyes; then
       AC_DEFINE(HAVE_GTKLOGOUTHELPER, 1, [Define to 1 to enable GTK Logout Helper])
    fi
@@ -281,7 +239,6 @@ SUS Indicator Configuration:
 
 	Prefix:             $prefix
 	Indicator Dir:      $INDICATORDIR
-	Indicator GTK:      $with_gtk
 	Logout Helper:      $have_gtklogouthelper
 	APT support:        $enable_apt
 	Unit Tests:         $enable_tests

@@ -137,11 +137,7 @@ user_widget_init (UserWidget *self)
   
   priv->user_name = gtk_label_new ("");
 
-#if HAVE_GTK3
   priv->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-#else
-  priv->container = gtk_hbox_new (FALSE, 0);
-#endif
 
 	priv->tick_icon = gtk_image_new_from_icon_name ("account-logged-in",
                                                    GTK_ICON_SIZE_MENU);

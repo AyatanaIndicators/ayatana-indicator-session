@@ -1,4 +1,4 @@
-
+CLEANFILES =
 EXTRA_DIST =
 
 libexec_PROGRAMS = \
@@ -12,6 +12,8 @@ endif
 ###################
 # Indicator Stuff
 ###################
+
+CLEANFILES += .libs/*.gcda .libs/*.gcno *.gcda *.gcno
 
 sessionlibdir = $(INDICATORDIR)
 sessionlib_LTLIBRARIES = libsession.la
@@ -204,5 +206,4 @@ EXTRA_DIST += \
 	accounts-service.xml \
 	accounts-service-user.xml
 
-CLEANFILES = \
-	$(BUILT_SOURCES)
+CLEANFILES += $(BUILT_SOURCES)

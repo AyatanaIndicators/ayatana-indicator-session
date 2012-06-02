@@ -78,7 +78,6 @@ static void _color_shade (const CairoColorRGB *a,
 
 static void draw_album_border (GtkWidget *widget, gboolean selected);
                                          
-#if GTK_CHECK_VERSION(3, 0, 0)
 static gboolean user_widget_primitive_draw_cb_gtk_3 (GtkWidget *image,
                                                          cairo_t* cr,
                                                          gpointer user_data);
@@ -86,16 +85,6 @@ static gboolean user_widget_draw_usericon_gtk_3 (GtkWidget *widget,
                                                  cairo_t* cr,
                                                  gpointer user_data);
                                                          
-#else
-static gboolean user_widget_primitive_draw_cb (GtkWidget *image,
-                                                   GdkEventExpose *event,
-                                                   gpointer user_data);
-static gboolean user_widget_draw_usericon_gtk_2 (GtkWidget *widget,
-                                                 GdkEventExpose *event,
-                                                 gpointer user_data);
-                                                   
-#endif
-
 G_DEFINE_TYPE (UserWidget, user_widget, GTK_TYPE_MENU_ITEM);
 
 static void
@@ -167,7 +156,6 @@ user_widget_init (UserWidget *self)
   
   
   // Fetch the drawing context.
-  #if GTK_CHECK_VERSION(3, 0, 0) 
   g_signal_connect_after (GTK_WIDGET(self), "draw", 
                           G_CALLBACK(user_widget_primitive_draw_cb_gtk_3),
                           GTK_WIDGET(self));
@@ -175,15 +163,6 @@ user_widget_init (UserWidget *self)
   g_signal_connect_after (GTK_WIDGET(priv->user_image), "draw", 
                           G_CALLBACK(user_widget_draw_usericon_gtk_3),
                           GTK_WIDGET(self));
-                          
-  #else
-  g_signal_connect_after (GTK_WIDGET(self), "expose-event", 
-                          G_CALLBACK(user_widget_primitive_draw_cb),
-                          GTK_WIDGET(self));  
-  g_signal_connect_after (GTK_WIDGET(priv->user_image), "expose-event", 
-                          G_CALLBACK(user_widget_draw_usericon_gtk_2),
-                          GTK_WIDGET(self));
-  #endif  
 }
 
 static void
@@ -201,8 +180,6 @@ user_widget_finalize (GObject *object)
 
 
 /*****************************************************************/
-
-#if GTK_CHECK_VERSION(3, 0, 0)  
 
 // TODO handle drawing of green check mark
 static gboolean
@@ -255,79 +232,14 @@ user_widget_draw_usericon_gtk_3 (GtkWidget *widget,
   draw_album_border (widget, FALSE);  
   return FALSE;
 }
-/**
- * TODO:
- * Sort out gtk2
- */
-// GTK 2 Expose handler
-#else
-
-static gboolean
-user_widget_draw_usericon_gtk_2 (GtkWidget *widget,
-                                 GdkEventExpose *event,
-                                 gpointer user_data)
-{
-  g_return_val_if_fail(IS_USER_WIDGET(user_data), FALSE);
-  UserWidget* meta = USER_WIDGET(user_data);
-  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);  
-
-  if (priv->using_personal_icon == FALSE)
-    return FALSE;
-  
-  draw_album_border (widget, FALSE);  
-  return FALSE;
-}
-
-static gboolean
-user_widget_primitive_draw_cb (GtkWidget *widget,
-                               GdkEventExpose *event,
-                               gpointer user_data)
-{
-  g_return_val_if_fail(IS_USER_WIDGET(user_data), FALSE);
-  UserWidget* meta = USER_WIDGET(user_data);
-  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);  
-
-  // Draw dot only when user is the current user.
-  if (!dbusmenu_menuitem_property_get_bool (priv->twin_item,
-                                            USER_ITEM_PROP_IS_CURRENT_USER)){
-    return FALSE;                                           
-  }
-  
-  GtkStyle *style;
-  cairo_t *cr;
-  cr = (cairo_t*) gdk_cairo_create (gtk_widget_get_window (widget));  
-  
-  gdouble x, y;  
-  style = gtk_widget_get_style (widget);
-
-  GtkAllocation allocation;
-  
-  gtk_widget_get_allocation (widget, &allocation);
-  x = allocation.x + 13;        
-  y = allocation.y + allocation.height/2;
-  
-  cairo_arc (cr, x, y, 3.0, 0.0, 2 * G_PI);;
-  
-  cairo_set_source_rgb (cr, style->fg[gtk_widget_get_state(widget)].red/65535.0,
-                            style->fg[gtk_widget_get_state(widget)].green/65535.0,
-                            style->fg[gtk_widget_get_state(widget)].blue/65535.0);
-  cairo_fill (cr);      
-  cairo_destroy (cr);
-
-  return FALSE;  
-}
-#endif
-
 
 static void
 draw_album_border(GtkWidget *widg, gboolean selected)
 {
   cairo_t *cr;  
   cr = gdk_cairo_create (gtk_widget_get_window (widg));
-  #if GTK_CHECK_VERSION(3, 0, 0)
   gtk_style_context_add_class (gtk_widget_get_style_context (widg),
                                "menu");
-  #endif
   
   GtkStyle *style;
   style = gtk_widget_get_style (widg);

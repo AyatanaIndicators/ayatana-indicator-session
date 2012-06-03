@@ -50,8 +50,8 @@ static void activate_user_session (DbusmenuMenuitem *mi,
 static void activate_user_accounts (DbusmenuMenuitem *mi,
                                     guint timestamp,
                                     gpointer user_data);
-static gint compare_users_by_username (const gchar *a,
-                                       const gchar *b);
+static gint compare_users_by_username (gconstpointer a,
+                                       gconstpointer b);
 static void activate_user_accounts (DbusmenuMenuitem *mi,
                                     guint timestamp,
                                     gpointer user_data);                                      
@@ -237,7 +237,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     
     
 
-    users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
+    users = g_list_sort (users, compare_users_by_username);
 
     for (u = users; u != NULL; u = g_list_next (u))
       {
@@ -315,8 +315,7 @@ activate_user_session (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data
 /* Comparison function to look into the UserData struct
    to compare by using the username value */
 static gint
-compare_users_by_username (const gchar *a,
-                           const gchar *b)
+compare_users_by_username (gconstpointer a, gconstpointer b)
 {
   UserData *user1 = (UserData *)a;
   UserData *user2 = (UserData *)b;

@@ -50,8 +50,6 @@ struct _UserData
   gboolean real_name_conflict;
   /* The menuitem representing this user if there is one. */
   DbusmenuMenuitem * menuitem;
-
-  UsersServiceDbus *service;
 };
 
 /* XXX - MAXIMUM_USERS should be set to 7 once we've

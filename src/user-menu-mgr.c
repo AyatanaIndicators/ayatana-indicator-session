@@ -25,15 +25,20 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lock-helper.h"
 #include "users-service-dbus.h"
 
-static GSettings* settings = NULL;
+struct ActivateUserSessionData
+{
+  UserMenuMgr * menu_mgr;
+  UserData * user;
+};
 
 struct _UserMenuMgr
 {
-	GObject parent_instance;
+  GObject parent_instance;
   UsersServiceDbus* users_dbus_interface;
   DbusmenuMenuitem* root_item;
   gint user_count;
   SessionDbus* session_dbus_interface;  
+  GSettings * lockdown_settings;
 };
 
 static void activate_new_session (DbusmenuMenuitem * mi,
@@ -55,7 +60,6 @@ static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
 static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
-static void ensure_settings_client ();
 static gboolean is_this_guest_session (void);
 static void activate_guest_session (DbusmenuMenuitem * mi,
                                     guint timestamp,
@@ -68,6 +72,7 @@ G_DEFINE_TYPE (UserMenuMgr, user_menu_mgr, G_TYPE_OBJECT);
 static void
 user_menu_mgr_init (UserMenuMgr *self)
 {
+  self->lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
   self->users_dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
   self->root_item = dbusmenu_menuitem_new ();
   g_signal_connect (G_OBJECT (self->users_dbus_interface),
@@ -81,17 +86,27 @@ user_menu_mgr_init (UserMenuMgr *self)
 }
 
 static void
+user_menu_mgr_dispose (GObject *object)
+{
+  UserMenuMgr * menu_mgr = USER_MENU_MGR(object);
+
+  g_clear_object (&menu_mgr->users_dbus_interface);
+  g_clear_object (&menu_mgr->lockdown_settings);
+}
+
+static void
 user_menu_mgr_finalize (GObject *object)
 {
-	/* TODO: Add deinitalization code here */
-	G_OBJECT_CLASS (user_menu_mgr_parent_class)->finalize (object);
+  /* TODO: Add deinitalization code here */
+  G_OBJECT_CLASS (user_menu_mgr_parent_class)->finalize (object);
 }
 
 static void
 user_menu_mgr_class_init (UserMenuMgrClass *klass)
 {
-	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	object_class->finalize = user_menu_mgr_finalize;
+  GObjectClass* object_class = G_OBJECT_CLASS (klass);
+  object_class->dispose = user_menu_mgr_dispose;
+  object_class->finalize = user_menu_mgr_finalize;
 }
 
 /* Builds up the menu for us */
@@ -102,13 +117,9 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
   gboolean can_activate;
   GList *children;
 
-  /* Make sure we have a valid GConf client, and build one
-     if needed */
-  ensure_settings_client ();
-
   /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (self->users_dbus_interface) &&
-      !g_settings_get_boolean (settings, LOCKDOWN_KEY_USER);
+      !g_settings_get_boolean (self->lockdown_settings, LOCKDOWN_KEY_USER);
 
   /* Remove the old menu items if that makes sense */
   children = dbusmenu_menuitem_take_children (self->root_item);
@@ -152,7 +163,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     g_signal_connect (G_OBJECT (switch_menuitem),
                       DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                       G_CALLBACK (activate_new_session),
-                      self->users_dbus_interface);
+                      self);
     
     if ( !is_this_guest_session () && guest_enabled)
     {
@@ -190,7 +201,6 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
       UserData *user;
       user = u->data;
       g_debug ("%s: %s", user->user_name, user->real_name);      
-      user->service = self->users_dbus_interface;
       gboolean current_user = g_strcmp0 (user->user_name, g_get_user_name()) == 0;  
       if (current_user == TRUE){
         g_debug ("about to set the users real name to %s for user %s",
@@ -238,11 +248,13 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
                                              USER_ITEM_PROP_IS_CURRENT_USER,
                                              current_user);                  
         dbusmenu_menuitem_child_append (self->root_item, mi);
-        g_signal_connect (G_OBJECT (mi),
-                          DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                          G_CALLBACK (activate_user_session),
-                          user);
-        user->menuitem = mi;
+
+        struct ActivateUserSessionData * data = g_new (struct ActivateUserSessionData, 1);
+        data->user = user;
+        data->menu_mgr = self;
+        g_signal_connect_data (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                               G_CALLBACK (activate_user_session),
+                               data, (GClosureNotify)g_free, 0);
       }
     }
     g_list_free(users);
@@ -275,38 +287,33 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 /* Check to see if the lockdown key is protecting from
    locking the screen.  If not, lock it. */
 static void
-lock_if_possible (void) {
-	ensure_settings_client ();
-
-	if (!g_settings_get_boolean (settings, LOCKDOWN_KEY_SCREENSAVER)) {
-		lock_screen(NULL, 0, NULL);
-	}
-
-	return;
+lock_if_possible (UserMenuMgr * menu_mgr)
+{
+  if (!g_settings_get_boolean (menu_mgr->lockdown_settings, LOCKDOWN_KEY_SCREENSAVER))
+    {
+      lock_screen(NULL, 0, NULL);
+    }
 }
-
 
 /* Starts a new generic session */
 static void
 activate_new_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
-	lock_if_possible();
+  UserMenuMgr * menu_mgr = USER_MENU_MGR (user_data);
+  g_return_if_fail (menu_mgr != NULL);
 
-  users_service_dbus_show_greeter (USERS_SERVICE_DBUS(user_data));
-
-	return;
+  lock_if_possible (menu_mgr);
+  users_service_dbus_show_greeter (menu_mgr->users_dbus_interface);
 }
 
 /* Activates a session for a particular user. */
 static void
 activate_user_session (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data)
 {
-  UserData *user = (UserData *)user_data;
-  UsersServiceDbus *service = user->service;
+  struct ActivateUserSessionData * data = user_data;
 
-  lock_if_possible();
-
-  users_service_dbus_activate_user_session (service, user);
+  lock_if_possible (data->menu_mgr);
+  users_service_dbus_activate_user_session (data->menu_mgr->users_dbus_interface, data->user);
 }
 
 /* Comparison function to look into the UserData struct
@@ -355,17 +362,6 @@ user_change (UsersServiceDbus *service,
 	return;
 }
 
-/* Ensures that we have a GConf client and if we build one
-   set up the signal handler. */
-static void
-ensure_settings_client ()
-{
-	if(!settings) {
-		settings = g_settings_new (LOCKDOWN_SCHEMA);
-	}
-	return;
-}
-
 DbusmenuMenuitem*
 user_mgr_get_root_item (UserMenuMgr* self)
 {
@@ -389,15 +385,11 @@ is_this_guest_session (void)
 static void
 activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
-  g_return_if_fail (USER_IS_MENU_MGR (user_data));  
-  UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
-  UsersServiceDbus *service = user_mgr->users_dbus_interface;
+  UserMenuMgr * menu_mgr = USER_MENU_MGR (user_data);
+  g_return_if_fail (menu_mgr != NULL);
 
-	lock_if_possible();
-  
-  if (users_service_dbus_activate_guest_session(service)) {
-    return;
-  }
+  lock_if_possible (menu_mgr);
+  users_service_dbus_activate_guest_session (menu_mgr->users_dbus_interface);
 }
 
 

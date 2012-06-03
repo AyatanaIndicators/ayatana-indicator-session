@@ -53,7 +53,6 @@ static void activate_user_accounts (DbusmenuMenuitem *mi,
                                     gpointer user_data);                                      
 static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
                                          gboolean greeter_mode);
-static gboolean check_new_session ();
 static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
@@ -143,20 +142,18 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     
     // TODO we should really return here if the menu is not going to be shown.
     
-    if (check_new_session ()){
-      switch_menuitem = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (switch_menuitem,
-                                      DBUSMENU_MENUITEM_PROP_TYPE,
-                                      MENU_SWITCH_TYPE);
-      dbusmenu_menuitem_property_set (switch_menuitem,
-                                      MENU_SWITCH_USER,
-                                      g_get_user_name());
-      dbusmenu_menuitem_child_append (self->root_item, switch_menuitem);
-      g_signal_connect (G_OBJECT (switch_menuitem),
-                        DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                        G_CALLBACK (activate_new_session),
-                        self->users_dbus_interface);
-    }    
+    switch_menuitem = dbusmenu_menuitem_new ();
+    dbusmenu_menuitem_property_set (switch_menuitem,
+                                    DBUSMENU_MENUITEM_PROP_TYPE,
+                                    MENU_SWITCH_TYPE);
+    dbusmenu_menuitem_property_set (switch_menuitem,
+                                    MENU_SWITCH_USER,
+                                    g_get_user_name());
+    dbusmenu_menuitem_child_append (self->root_item, switch_menuitem);
+    g_signal_connect (G_OBJECT (switch_menuitem),
+                      DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                      G_CALLBACK (activate_new_session),
+                      self->users_dbus_interface);
     
     if ( !is_this_guest_session () && guest_enabled)
     {
@@ -274,14 +271,6 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
   dbusmenu_menuitem_child_append (self->root_item, user_accounts_item); 
 
 
-}
-
-/* Checks to see if we can create sessions */
-// TODO what is this ?
-static gboolean
-check_new_session ()
-{
-	return TRUE;
 }
 
 /* Check to see if the lockdown key is protecting from

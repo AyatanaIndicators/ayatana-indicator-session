@@ -718,91 +718,88 @@ sync_users (UsersServiceDbus *self)
   g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
   UsersServiceDbusPrivate *priv = USERS_SERVICE_DBUS_GET_PRIVATE (self);
 
-  if (priv->count > MINIMUM_USERS)
+  GPtrArray *users = NULL;
+  GError *error = NULL;
+  gint i;
+
+  users = g_ptr_array_new ();
+
+  if (!org_freedesktop_Accounts_list_cached_users (priv->accounts_service_proxy,
+                                                   &users,
+                                                   &error))
     {
-      GPtrArray *users = NULL;
+      g_warning ("failed to retrieve user list: %s", error->message);
+      g_error_free (error);
+
+      return;
+    }
+
+  for (i = 0; i < users->len; i++)
+    {
+      gchar *id;
+      DBusGProxy *proxy;
+      UserData *user;
       GError *error = NULL;
-      gint i;
 
-      users = g_ptr_array_new ();
+      id = g_ptr_array_index (users, i);
 
-      if (!org_freedesktop_Accounts_list_cached_users (priv->accounts_service_proxy,
-                                                       &users,
-                                                       &error))
+      proxy = dbus_g_proxy_new_for_name (priv->system_bus,
+                                         "org.freedesktop.Accounts",
+                                         id,
+                                         "org.freedesktop.DBus.Properties");
+
+      GHashTable *properties;
+      if (!dbus_g_proxy_call (proxy, "GetAll", &error,
+                              G_TYPE_STRING, "org.freedesktop.Accounts.User", G_TYPE_INVALID,
+                              dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE), &properties, G_TYPE_INVALID))
         {
-          g_warning ("failed to retrieve user list: %s", error->message);
+          g_warning ("unable to retrieve user info: %s", error->message);
           g_error_free (error);
 
-          return;
+          continue;
         }
-
-      for (i = 0; i < users->len; i++)
+      
+      user = g_hash_table_lookup (priv->users, id);
+        // Double check we havent processed this user already
+      if (user != NULL)
         {
-          gchar *id;
-          DBusGProxy *proxy;
-          UserData *user;
-          GError *error = NULL;
-
-          id = g_ptr_array_index (users, i);
-
-          proxy = dbus_g_proxy_new_for_name (priv->system_bus,
-                                             "org.freedesktop.Accounts",
-                                             id,
-                                             "org.freedesktop.DBus.Properties");
-
-          GHashTable *properties;
-          if (!dbus_g_proxy_call (proxy, "GetAll", &error,
-                                  G_TYPE_STRING, "org.freedesktop.Accounts.User", G_TYPE_INVALID,
-                                  dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE), &properties, G_TYPE_INVALID))
-            {
-              g_warning ("unable to retrieve user info: %s", error->message);
-              g_error_free (error);
-
-              continue;
-            }
-          
-          user = g_hash_table_lookup (priv->users, id);
-            // Double check we havent processed this user already
-          if (user != NULL)
-            {
-              g_free(user->user_name);
-              g_free(user->real_name);
-              g_free(user->icon_file);
-              user->real_name_conflict = FALSE;              
-              //continue;                                     
-            }
-          else
-            {            
-            user = g_new0 (UserData, 1);
-            }
-          // Can't subscribe to the Changed signal on each individual user path
-          // for some reason.
-          dbus_g_proxy_add_signal (proxy,
-                                   "Changed",
-                                   G_TYPE_INVALID);
-
-          dbus_g_proxy_connect_signal (proxy, "Changed",
-                                       G_CALLBACK(user_changed),
-                                       self,
-                                       NULL);
-          user->uid         = g_value_get_uint64 (g_hash_table_lookup (properties, "Uid"));
-          user->user_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "UserName")));
-          user->real_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "RealName")));
-          user->icon_file    = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "IconFile")));
-          user->real_name_conflict = FALSE;
-		      user->menuitem    = NULL;
-
-          g_hash_table_unref (properties);
-
-          g_hash_table_insert (priv->users,
-                               g_strdup (id),
-                               user);
-
-          add_sessions_for_user (self, user);
+          g_free(user->user_name);
+          g_free(user->real_name);
+          g_free(user->icon_file);
+          user->real_name_conflict = FALSE;              
+          //continue;                                     
         }
+      else
+        {            
+        user = g_new0 (UserData, 1);
+        }
+      // Can't subscribe to the Changed signal on each individual user path
+      // for some reason.
+      dbus_g_proxy_add_signal (proxy,
+                               "Changed",
+                               G_TYPE_INVALID);
 
-      g_ptr_array_free (users, TRUE);
+      dbus_g_proxy_connect_signal (proxy, "Changed",
+                                   G_CALLBACK(user_changed),
+                                   self,
+                                   NULL);
+      user->uid         = g_value_get_uint64 (g_hash_table_lookup (properties, "Uid"));
+      user->user_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "UserName")));
+      user->real_name   = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "RealName")));
+      user->icon_file    = g_strdup (g_value_get_string (g_hash_table_lookup (properties, "IconFile")));
+      user->real_name_conflict = FALSE;
+                  user->menuitem    = NULL;
+
+      g_hash_table_unref (properties);
+
+      g_hash_table_insert (priv->users,
+                           g_strdup (id),
+                           user);
+
+      add_sessions_for_user (self, user);
     }
+
+  g_ptr_array_free (users, TRUE);
 }
 
 static void

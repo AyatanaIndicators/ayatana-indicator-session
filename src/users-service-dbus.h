@@ -52,11 +52,6 @@ struct _UserData
   DbusmenuMenuitem * menuitem;
 };
 
-/* XXX - MAXIMUM_USERS should be set to 7 once we've
- *       got some gdm issues worked out.
- */
-#define MINIMUM_USERS           0
-
 struct _UsersServiceDbus {
   GObject parent;
 };

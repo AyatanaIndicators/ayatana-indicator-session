@@ -193,9 +193,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     
     
 
-    if (self->user_count > MINIMUM_USERS) {
-      users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
-    }
+    users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
 
     for (u = users; u != NULL; u = g_list_next (u)) {
       UserData *user;
@@ -208,54 +206,52 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
         session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
       }
            
-      if (self->user_count > MINIMUM_USERS) {
-        DbusmenuMenuitem * mi = dbusmenu_menuitem_new ();
+      DbusmenuMenuitem * mi = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (mi,
+                                      DBUSMENU_MENUITEM_PROP_TYPE,
+                                      USER_ITEM_TYPE);
+      if (user->real_name_conflict) {
+        gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
+        dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
+        g_free(conflictedname);
+      } else {
+        //g_debug ("%p: %s", user, user->real_name);                
         dbusmenu_menuitem_property_set (mi,
-                                        DBUSMENU_MENUITEM_PROP_TYPE,
-                                        USER_ITEM_TYPE);
-        if (user->real_name_conflict) {
-          gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
-          dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
-          g_free(conflictedname);
-        } else {
-          //g_debug ("%p: %s", user, user->real_name);                
-          dbusmenu_menuitem_property_set (mi,
-                                          USER_ITEM_PROP_NAME,
-                                          user->real_name);
-        }
-        dbusmenu_menuitem_property_set_bool (mi,
-                                             USER_ITEM_PROP_LOGGED_IN,
-                                             user->sessions != NULL);
-        if (user->icon_file != NULL && user->icon_file[0] != '\0') {
-          g_debug ("user %s has this icon : %s",
-                    user->user_name,
-                    user->icon_file);
-          dbusmenu_menuitem_property_set (mi,
-                                          USER_ITEM_PROP_ICON,
-                                          user->icon_file);
-        } else {
-          dbusmenu_menuitem_property_set (mi,
-                                          USER_ITEM_PROP_ICON,
-                                          USER_ITEM_ICON_DEFAULT);
-        }
-        
-        
-        /*g_debug ("user name = %s and g user name = %s",
-                 user->user_name,
-                 g_get_user_name());*/
-                 
-        dbusmenu_menuitem_property_set_bool (mi,
-                                             USER_ITEM_PROP_IS_CURRENT_USER,
-                                             current_user);                  
-        dbusmenu_menuitem_child_append (self->root_item, mi);
-
-        struct ActivateUserSessionData * data = g_new (struct ActivateUserSessionData, 1);
-        data->user = user;
-        data->menu_mgr = self;
-        g_signal_connect_data (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                               G_CALLBACK (activate_user_session),
-                               data, (GClosureNotify)g_free, 0);
+                                        USER_ITEM_PROP_NAME,
+                                        user->real_name);
       }
+      dbusmenu_menuitem_property_set_bool (mi,
+                                           USER_ITEM_PROP_LOGGED_IN,
+                                           user->sessions != NULL);
+      if (user->icon_file != NULL && user->icon_file[0] != '\0') {
+        g_debug ("user %s has this icon : %s",
+                  user->user_name,
+                  user->icon_file);
+        dbusmenu_menuitem_property_set (mi,
+                                        USER_ITEM_PROP_ICON,
+                                        user->icon_file);
+      } else {
+        dbusmenu_menuitem_property_set (mi,
+                                        USER_ITEM_PROP_ICON,
+                                        USER_ITEM_ICON_DEFAULT);
+      }
+      
+      
+      /*g_debug ("user name = %s and g user name = %s",
+               user->user_name,
+               g_get_user_name());*/
+               
+      dbusmenu_menuitem_property_set_bool (mi,
+                                           USER_ITEM_PROP_IS_CURRENT_USER,
+                                           current_user);                  
+      dbusmenu_menuitem_child_append (self->root_item, mi);
+
+      struct ActivateUserSessionData * data = g_new (struct ActivateUserSessionData, 1);
+      data->user = user;
+      data->menu_mgr = self;
+      g_signal_connect_data (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                             G_CALLBACK (activate_user_session),
+                             data, (GClosureNotify)g_free, 0);
     }
     g_list_free(users);
   }

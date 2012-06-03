@@ -100,10 +100,7 @@ user_menu_mgr_class_init (UserMenuMgrClass *klass)
 static void 
 user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 {
-  DbusmenuMenuitem *mi = NULL;
-  DbusmenuMenuitem *guest_mi = NULL;
   GList *u;
-  UserData *user;
   gboolean can_activate;
   GList *children;
 
@@ -163,6 +160,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     
     if ( !is_this_guest_session () && guest_enabled)
     {
+      DbusmenuMenuitem *guest_mi = NULL;
       guest_mi = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (guest_mi,
                                       DBUSMENU_MENUITEM_PROP_TYPE,
@@ -193,6 +191,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     }
 
     for (u = users; u != NULL; u = g_list_next (u)) {
+      UserData *user;
       user = u->data;
       g_debug ("%s: %s", user->user_name, user->real_name);      
       user->service = self->users_dbus_interface;
@@ -204,7 +203,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
       }
            
       if (self->user_count > MINIMUM_USERS) {
-        mi = dbusmenu_menuitem_new ();
+        DbusmenuMenuitem * mi = dbusmenu_menuitem_new ();
         dbusmenu_menuitem_property_set (mi,
                                         DBUSMENU_MENUITEM_PROP_TYPE,
                                         USER_ITEM_TYPE);

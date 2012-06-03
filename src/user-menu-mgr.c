@@ -26,7 +26,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "users-service-dbus.h"
 
 static GSettings* settings = NULL;
-static DbusmenuMenuitem  *switch_menuitem = NULL;
 
 struct _UserMenuMgr
 {
@@ -142,7 +141,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     
     // TODO we should really return here if the menu is not going to be shown.
     
-    switch_menuitem = dbusmenu_menuitem_new ();
+    DbusmenuMenuitem * switch_menuitem = dbusmenu_menuitem_new ();
     dbusmenu_menuitem_property_set (switch_menuitem,
                                     DBUSMENU_MENUITEM_PROP_TYPE,
                                     MENU_SWITCH_TYPE);

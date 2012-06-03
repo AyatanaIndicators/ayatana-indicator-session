@@ -36,7 +36,6 @@ struct _UserMenuMgr
   GObject parent_instance;
   UsersServiceDbus* users_dbus_interface;
   DbusmenuMenuitem* root_item;
-  gint user_count;
   SessionDbus* session_dbus_interface;  
   GSettings * lockdown_settings;
 };
@@ -180,7 +179,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     gboolean guest_enabled = users_service_dbus_guest_session_enabled (self->users_dbus_interface);
     GList * users = NULL;
     users = users_service_dbus_get_user_list (self->users_dbus_interface);
-    self->user_count = g_list_length(users);
+    const gint user_count = g_list_length(users);
     
     gboolean gsettings_user_menu_is_visible = should_show_user_menu();
     
@@ -191,7 +190,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     else{
       // This needs to be updated once the ability to query guest session support is available
       session_dbus_set_user_menu_visibility (self->session_dbus_interface,
-                                             guest_enabled || self->user_count > 1);
+                                             guest_enabled || user_count > 1);
     }
     
     // TODO we should really return here if the menu is not going to be shown.

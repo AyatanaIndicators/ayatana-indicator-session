@@ -38,6 +38,7 @@ struct _UserMenuMgr
   DbusmenuMenuitem* root_item;
   SessionDbus* session_dbus_interface;  
   GSettings * lockdown_settings;
+  gboolean greeter_mode;
 };
 
 static void activate_new_session (DbusmenuMenuitem * mi,
@@ -54,8 +55,7 @@ static gint compare_users_by_username (gconstpointer a,
 static void activate_user_accounts (DbusmenuMenuitem *mi,
                                     guint timestamp,
                                     gpointer user_data);                                      
-static void user_menu_mgr_rebuild_items (UserMenuMgr *self,
-                                         gboolean greeter_mode);
+static void user_menu_mgr_rebuild_items (UserMenuMgr *self);
 static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
@@ -154,7 +154,7 @@ create_user_menuitem (UserMenuMgr * menu_mgr, UserData * user)
 
 /* Builds up the menu for us */
 static void 
-user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
+user_menu_mgr_rebuild_items (UserMenuMgr *self)
 {
   GList *u;
   gboolean can_activate;
@@ -183,7 +183,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
     
     gboolean gsettings_user_menu_is_visible = should_show_user_menu();
     
-    if (gsettings_user_menu_is_visible == FALSE || greeter_mode == TRUE){
+    if (gsettings_user_menu_is_visible == FALSE || self->greeter_mode){
       session_dbus_set_user_menu_visibility (self->session_dbus_interface,
                                              FALSE);
     }
@@ -352,8 +352,7 @@ user_change (UsersServiceDbus *service,
 {
   g_return_if_fail (USER_IS_MENU_MGR (user_data));  
   UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
-	user_menu_mgr_rebuild_items (user_mgr, FALSE);
-	return;
+  user_menu_mgr_rebuild_items (user_mgr);
 }
 
 DbusmenuMenuitem*
@@ -389,8 +388,9 @@ activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_da
 UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_mode)
 {
   UserMenuMgr* user_mgr = g_object_new (USER_TYPE_MENU_MGR, NULL);
+  user_mgr->greeter_mode = greeter_mode;
   user_mgr->session_dbus_interface = session_dbus;
-  user_menu_mgr_rebuild_items (user_mgr, greeter_mode);    
+  user_menu_mgr_rebuild_items (user_mgr);
   return user_mgr;
 }
   

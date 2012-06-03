@@ -364,17 +364,13 @@ user_mgr_get_root_item (UserMenuMgr* self)
   return self->root_item;
 }
 
-/* Checks to see if we should show the guest suession item */
+/* Checks to see if we should show the guest session item.
+   System users shouldn't have guest account shown.
+   Mostly this would be the case of the guest user itself. */
 static gboolean
 is_this_guest_session (void)
 {
-	if (geteuid() < 500) {
-		/* System users shouldn't have guest account shown.  Mostly
-		   this would be the case of the guest user itself. */
-		return TRUE;
-	}
-
-	return FALSE;
+  return geteuid() < 500;
 }
 
 /* Called when someone clicks on the guest session item. */

@@ -109,6 +109,50 @@ user_menu_mgr_class_init (UserMenuMgrClass *klass)
   object_class->finalize = user_menu_mgr_finalize;
 }
 
+static DbusmenuMenuitem*
+create_user_menuitem (UserMenuMgr * menu_mgr, UserData * user)
+{
+  DbusmenuMenuitem * mi = dbusmenu_menuitem_new ();
+  dbusmenu_menuitem_property_set (mi,
+                                  DBUSMENU_MENUITEM_PROP_TYPE,
+                                  USER_ITEM_TYPE);
+
+  /* set the name property */
+  char * str = user->real_name_conflict
+             ? g_strdup_printf ("%s (%s)", user->real_name, user->user_name)
+             : g_strdup (user->real_name);
+  dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, str);
+  g_free (str);
+
+  /* set the logged-in property */
+  dbusmenu_menuitem_property_set_bool (mi,
+                                       USER_ITEM_PROP_LOGGED_IN,
+                                       user->sessions != NULL);
+
+  /* set the icon property */
+  str = user->icon_file;
+  if (!str || !*str)
+    str = USER_ITEM_ICON_DEFAULT;
+  dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_ICON, str);
+
+  /* set the is-current-user property */
+  dbusmenu_menuitem_property_set_bool (mi,
+                                       USER_ITEM_PROP_IS_CURRENT_USER,
+                                       !g_strcmp0 (user->user_name, g_get_user_name()));
+
+  /* set the activate callback */
+  struct ActivateUserSessionData * data = g_new (struct ActivateUserSessionData, 1);
+  data->user = user;
+  data->menu_mgr = menu_mgr;
+  g_signal_connect_data (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                         G_CALLBACK (activate_user_session),
+                         data, (GClosureNotify)g_free,
+                         0);
+
+  /* done */
+  return mi;
+}
+
 /* Builds up the menu for us */
 static void 
 user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
@@ -195,66 +239,22 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self, gboolean greeter_mode)
 
     users = g_list_sort (users, (GCompareFunc)compare_users_by_username);
 
-    for (u = users; u != NULL; u = g_list_next (u)) {
-      UserData *user;
-      user = u->data;
-      g_debug ("%s: %s", user->user_name, user->real_name);      
-      gboolean current_user = g_strcmp0 (user->user_name, g_get_user_name()) == 0;  
-      if (current_user == TRUE){
-        g_debug ("about to set the users real name to %s for user %s",
-                  user->real_name, user->user_name);
-        session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
-      }
-           
-      DbusmenuMenuitem * mi = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (mi,
-                                      DBUSMENU_MENUITEM_PROP_TYPE,
-                                      USER_ITEM_TYPE);
-      if (user->real_name_conflict) {
-        gchar * conflictedname = g_strdup_printf("%s (%s)", user->real_name, user->user_name);
-        dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, conflictedname);
-        g_free(conflictedname);
-      } else {
-        //g_debug ("%p: %s", user, user->real_name);                
-        dbusmenu_menuitem_property_set (mi,
-                                        USER_ITEM_PROP_NAME,
-                                        user->real_name);
-      }
-      dbusmenu_menuitem_property_set_bool (mi,
-                                           USER_ITEM_PROP_LOGGED_IN,
-                                           user->sessions != NULL);
-      if (user->icon_file != NULL && user->icon_file[0] != '\0') {
-        g_debug ("user %s has this icon : %s",
-                  user->user_name,
-                  user->icon_file);
-        dbusmenu_menuitem_property_set (mi,
-                                        USER_ITEM_PROP_ICON,
-                                        user->icon_file);
-      } else {
-        dbusmenu_menuitem_property_set (mi,
-                                        USER_ITEM_PROP_ICON,
-                                        USER_ITEM_ICON_DEFAULT);
-      }
-      
-      
-      /*g_debug ("user name = %s and g user name = %s",
-               user->user_name,
-               g_get_user_name());*/
-               
-      dbusmenu_menuitem_property_set_bool (mi,
-                                           USER_ITEM_PROP_IS_CURRENT_USER,
-                                           current_user);                  
-      dbusmenu_menuitem_child_append (self->root_item, mi);
+    for (u = users; u != NULL; u = g_list_next (u))
+      {
+        UserData * user = u->data;
 
-      struct ActivateUserSessionData * data = g_new (struct ActivateUserSessionData, 1);
-      data->user = user;
-      data->menu_mgr = self;
-      g_signal_connect_data (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                             G_CALLBACK (activate_user_session),
-                             data, (GClosureNotify)g_free, 0);
-    }
+        DbusmenuMenuitem * mi = create_user_menuitem (self, user);
+        dbusmenu_menuitem_child_append (self->root_item, mi);
+
+        if (!g_strcmp0 (user->user_name, g_get_user_name()))
+          {
+            session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+          }
+      }
+
     g_list_free(users);
   }
+
   // Add the user accounts and separator
   DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (separator1,

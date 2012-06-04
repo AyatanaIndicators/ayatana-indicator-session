@@ -63,7 +63,6 @@ static DbusmenuMenuitem  *login_settings_menuitem = NULL;
 #ifdef HAVE_APT
 static DbusmenuMenuitem  *software_updates_menuitem = NULL;
 #endif  /* HAVE_APT */
-static DbusmenuMenuitem  *webcam_menuitem = NULL;
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
@@ -90,10 +89,6 @@ static void show_system_settings_with_context (DbusmenuMenuitem * mi,
                                                guint timestamp,
                                                gchar * type);  
                                                
-static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
-                                         guint timestamp,
-                                         gchar * type);
-                                                                  
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
@@ -447,26 +442,6 @@ show_system_settings_with_context (DbusmenuMenuitem * mi,
 	g_free(control_centre_command);
 }
 
-static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
-                                         guint timestamp,
-                                         gchar * type)
-{
-  GError * error = NULL;
-  if (!g_spawn_command_line_async("cheese", &error))
-  {
-    g_warning("Unable to launch cheese: %s", error->message);
-    g_error_free(error);
-#ifdef HAVE_APT
-    if (!g_spawn_command_line_async("software-center cheese", &error))
-    {
-      g_warning ("Unable to launch software-centre cheese: %s",
-                 error->message);
-      g_error_free(error);
-    }    
-#endif  /* HAVE_APT */
-  }  
-}                              
-
 static void
 device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
 {
@@ -533,26 +508,11 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
                                         device_heading,
                                         5);
 
-  webcam_menuitem = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (webcam_menuitem,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Webcam"));
-  g_signal_connect (G_OBJECT(webcam_menuitem),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(device_menu_mgr_show_cheese),
-                    NULL);
-  dbusmenu_menuitem_child_add_position (self->root_item,
-                                        webcam_menuitem,
-                                        6);
-  dbusmenu_menuitem_property_set_bool (webcam_menuitem,
-                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       FALSE);
-                                        
   DbusmenuMenuitem * separator3 = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (separator3,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_add_position (self->root_item, separator3, 7);
+  dbusmenu_menuitem_child_add_position (self->root_item, separator3, 6);
 }
 
 static void

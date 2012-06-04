@@ -63,7 +63,6 @@ static DbusmenuMenuitem  *login_settings_menuitem = NULL;
 #ifdef HAVE_APT
 static DbusmenuMenuitem  *software_updates_menuitem = NULL;
 #endif  /* HAVE_APT */
-static DbusmenuMenuitem  *scanners_menuitem = NULL;
 static DbusmenuMenuitem  *webcam_menuitem = NULL;
 
 static DBusGProxyCall * suspend_call = NULL;
@@ -91,9 +90,6 @@ static void show_system_settings_with_context (DbusmenuMenuitem * mi,
                                                guint timestamp,
                                                gchar * type);  
                                                
-static void device_menu_mgr_show_simple_scan (DbusmenuMenuitem * mi,
-                                              guint timestamp,
-                                              gchar * type);   
 static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
                                          guint timestamp,
                                          gchar * type);
@@ -451,27 +447,6 @@ show_system_settings_with_context (DbusmenuMenuitem * mi,
 	g_free(control_centre_command);
 }
 
-// TODO: refactor both of these down to the one method.
-static void device_menu_mgr_show_simple_scan (DbusmenuMenuitem * mi,
-                                              guint timestamp,
-                                              gchar * type)
-{
-  GError * error = NULL;
-  if (!g_spawn_command_line_async("simple-scan", &error))
-  {
-    g_warning("Unable to launch simple-scan: %s", error->message);
-    g_error_free(error);
-#ifdef HAVE_APT
-    if (!g_spawn_command_line_async("software-center simple-scan", &error))
-    {
-      g_warning ("Unable to launch software-centre simple-scan: %s",
-                 error->message);
-      g_error_free(error);
-    }    
-#endif  /* HAVE_APT */
-  }  
-}                              
-
 static void device_menu_mgr_show_cheese (DbusmenuMenuitem * mi,
                                          guint timestamp,
                                          gchar * type)
@@ -558,21 +533,6 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
                                         device_heading,
                                         5);
 
-  scanners_menuitem = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (scanners_menuitem,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Scanners"));
-  g_signal_connect (G_OBJECT(scanners_menuitem),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(device_menu_mgr_show_simple_scan),
-                    NULL);
-  dbusmenu_menuitem_child_add_position (self->root_item,
-                                        scanners_menuitem,
-                                        6);
-  dbusmenu_menuitem_property_set_bool (scanners_menuitem,
-                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       FALSE);
-                                        
   webcam_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (webcam_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -583,7 +543,7 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
                     NULL);
   dbusmenu_menuitem_child_add_position (self->root_item,
                                         webcam_menuitem,
-                                        7);
+                                        6);
   dbusmenu_menuitem_property_set_bool (webcam_menuitem,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        FALSE);
@@ -592,7 +552,7 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
   dbusmenu_menuitem_property_set (separator3,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_add_position (self->root_item, separator3, 8);
+  dbusmenu_menuitem_child_add_position (self->root_item, separator3, 7);
 }
 
 static void

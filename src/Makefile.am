@@ -116,16 +116,6 @@ indicator_session_service_SOURCES = \
 	device-menu-mgr.c \
 	sane-rules.h
 
-if BUILD_APT
-indicator_session_service_SOURCES += \
-	apt-watcher.h \
-	apt-watcher.c 
-else
-EXTRA_DIST += \
-	apt-watcher.h \
-	apt-watcher.c 
-endif
-
 if HAS_GUDEV
 indicator_session_service_SOURCES += \
 	udev-mgr.h \

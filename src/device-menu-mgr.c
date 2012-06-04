@@ -18,7 +18,12 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <config.h>
+
+#include <glib.h>
+#include <gio/gio.h>
+
 #include <libdbusmenu-glib/client.h>
+#include <libdbusmenu-gtk/menuitem.h>
 
 #include "device-menu-mgr.h"
 #include "settings-helper.h"
@@ -26,10 +31,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"
 #include "upower-client.h"
-
-#ifdef HAVE_APT
-#include "apt-watcher.h"
-#endif  /* HAVE_APT */
 
 #ifdef HAS_GUDEV
 #include "udev-mgr.h"
@@ -43,12 +44,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 struct _DeviceMenuMgr
 {
-	GObject parent_instance;
+  GObject parent_instance;
   DbusmenuMenuitem* root_item;
   SessionDbus* session_dbus_interface;  
-#ifdef HAVE_APT
-  AptWatcher* apt_watcher;                              
-#endif  /* HAVE_APT */
 #ifdef HAS_GUDEV
   UdevMgr* udev_mgr;
 #endif  /* HAS_GUDEV */
@@ -58,9 +56,6 @@ static GSettings         *lockdown_settings  = NULL;
 static GSettings         *keybinding_settings  = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *system_settings_menuitem = NULL;
-#ifdef HAVE_APT
-static DbusmenuMenuitem  *software_updates_menuitem = NULL;
-#endif  /* HAVE_APT */
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
@@ -101,9 +96,6 @@ G_DEFINE_TYPE (DeviceMenuMgr, device_menu_mgr, G_TYPE_OBJECT);
 static void
 device_menu_mgr_init (DeviceMenuMgr *self)
 {
-#ifdef HAVE_APT
-  self->apt_watcher = NULL;
-#endif  /* HAVE_APT */
   self->root_item = dbusmenu_menuitem_new ();  
 	setup_up(self);  
 	g_idle_add(lock_screen_setup, NULL);  
@@ -441,21 +433,11 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
                                        system_settings_menuitem,
                                        0);
   
-#ifdef HAVE_APT
-  software_updates_menuitem = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (software_updates_menuitem,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Software Up to Date"));
-  dbusmenu_menuitem_child_add_position(self->root_item,
-                                       software_updates_menuitem,
-                                       1);
-#endif  /* HAVE_APT */
-
   DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (separator1,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_add_position (self->root_item, separator1, 2);
+  dbusmenu_menuitem_child_add_position (self->root_item, separator1, 1);
 }
 
 static void
@@ -644,11 +626,5 @@ DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_
   DeviceMenuMgr* device_mgr = g_object_new (DEVICE_TYPE_MENU_MGR, NULL);
   device_mgr->session_dbus_interface = session_dbus;
   device_menu_mgr_build_static_items (device_mgr, greeter_mode);
-#ifdef HAVE_APT
-  if (software_updates_menuitem != NULL) {
-    device_mgr->apt_watcher = apt_watcher_new (session_dbus,
-                                               software_updates_menuitem);
-  }
-#endif  /* HAVE_APT */
   return device_mgr;
 }

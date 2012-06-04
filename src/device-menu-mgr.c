@@ -58,7 +58,6 @@ static GSettings         *lockdown_settings  = NULL;
 static GSettings         *keybinding_settings  = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *system_settings_menuitem = NULL;
-static DbusmenuMenuitem  *display_settings_menuitem = NULL;
 static DbusmenuMenuitem  *login_settings_menuitem = NULL;
 #ifdef HAVE_APT
 static DbusmenuMenuitem  *software_updates_menuitem = NULL;
@@ -456,16 +455,6 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
                                        system_settings_menuitem,
                                        0);
   
-  display_settings_menuitem = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (display_settings_menuitem,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Displays…"));
-  g_signal_connect (G_OBJECT(display_settings_menuitem),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context), "display");
-  dbusmenu_menuitem_child_add_position(self->root_item,
-                                       display_settings_menuitem,
-                                       1);
   login_settings_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (login_settings_menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
@@ -476,7 +465,7 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
                     "login");
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        login_settings_menuitem,                                  
-                                       2);
+                                       1);
 #ifdef HAVE_APT
   software_updates_menuitem = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (software_updates_menuitem,
@@ -484,14 +473,14 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
                                   _("Software Up to Date"));
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        software_updates_menuitem,
-                                       3);
+                                       2);
 #endif  /* HAVE_APT */
 
   DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (separator1,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_add_position (self->root_item, separator1, 4);
+  dbusmenu_menuitem_child_add_position (self->root_item, separator1, 3);
 }
 
 static void

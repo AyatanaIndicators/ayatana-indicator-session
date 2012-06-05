@@ -49,6 +49,10 @@ struct _DeviceMenuMgr
 
   DbusmenuMenuitem * hibernate_mi;
   DbusmenuMenuitem * suspend_mi;
+
+  DBusGProxy * up_main_proxy;
+  DBusGProxy * up_prop_proxy;
+
 };
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
@@ -61,9 +65,6 @@ static gboolean can_hibernate = TRUE;
 static gboolean can_suspend = TRUE;
 static gboolean allow_hibernate = TRUE;
 static gboolean allow_suspend = TRUE;
-
-static DBusGProxy * up_main_proxy = NULL;
-static DBusGProxy * up_prop_proxy = NULL;
 
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
@@ -106,6 +107,8 @@ device_menu_mgr_dispose (GObject *object)
   DeviceMenuMgr * self = DEVICE_MENU_MGR (object);
   g_clear_object (&self->lockdown_settings);
   g_clear_object (&self->keybinding_settings);
+  g_clear_object (&self->up_main_proxy);
+  g_clear_object (&self->up_prop_proxy);
 
   G_OBJECT_CLASS (device_menu_mgr_parent_class)->finalize (object);
 }
@@ -171,11 +174,11 @@ machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
 static void
 machine_sleep_with_context (DeviceMenuMgr* self, gchar* type)
 {
-	if (up_main_proxy == NULL) {
+	if (self->up_main_proxy == NULL) {
 		g_warning("Can not %s as no upower proxy", type);
 	}
 
-	dbus_g_proxy_begin_call(up_main_proxy,
+	dbus_g_proxy_begin_call(self->up_main_proxy,
 	                        type,
 	                        NULL,
 	                        NULL,
@@ -242,9 +245,11 @@ hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 static void
 up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 {
+	DeviceMenuMgr * self = DEVICE_MENU_MGR(user_data);
+
 	/* Start Async call to see if we can hibernate */
 	if (suspend_call == NULL) {
-		suspend_call = dbus_g_proxy_begin_call(up_prop_proxy,
+		suspend_call = dbus_g_proxy_begin_call(self->up_prop_proxy,
 		                                       "Get",
 		                                       suspend_prop_cb,
 		                                       user_data,
@@ -260,7 +265,7 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 
 	/* Start Async call to see if we can suspend */
 	if (hibernate_call == NULL) {
-		hibernate_call = dbus_g_proxy_begin_call(up_prop_proxy,
+		hibernate_call = dbus_g_proxy_begin_call(self->up_prop_proxy,
 		                                         "Get",
 		                                         hibernate_prop_cb,
 		                                         user_data,
@@ -324,41 +329,41 @@ setup_up (DeviceMenuMgr* self) {
 	DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
 	g_return_if_fail(bus != NULL);
 
-	if (up_main_proxy == NULL) {
-		up_main_proxy = dbus_g_proxy_new_for_name(bus,
+	if (self->up_main_proxy == NULL) {
+		self->up_main_proxy = dbus_g_proxy_new_for_name(bus,
 		                                           UP_ADDRESS,
 		                                           UP_OBJECT,
 		                                           UP_INTERFACE);
 	}
-	g_return_if_fail(up_main_proxy != NULL);
+	g_return_if_fail(self->up_main_proxy != NULL);
 
-	if (up_prop_proxy == NULL) {
-		up_prop_proxy = dbus_g_proxy_new_for_name(bus,
+	if (self->up_prop_proxy == NULL) {
+		self->up_prop_proxy = dbus_g_proxy_new_for_name(bus,
                                               UP_ADDRESS,
                                               UP_OBJECT,
                                               DBUS_INTERFACE_PROPERTIES);
 		/* Connect to changed signal */
-		dbus_g_proxy_add_signal(up_main_proxy,
+		dbus_g_proxy_add_signal(self->up_main_proxy,
 		                        "Changed",
 		                        G_TYPE_INVALID);
 
-		dbus_g_proxy_connect_signal(up_main_proxy,
+		dbus_g_proxy_connect_signal(self->up_main_proxy,
 		                            "Changed",
 		                            G_CALLBACK(up_changed_cb),
 		                            self,
 		                            NULL);
 	}
-	g_return_if_fail(up_prop_proxy != NULL);
+	g_return_if_fail(self->up_prop_proxy != NULL);
 
 
 	/* Force an original "changed" event */
-	up_changed_cb(up_main_proxy, self);
+	up_changed_cb(self->up_main_proxy, self);
 
 	/* Check to see if these are getting blocked by PolicyKit */
-	org_freedesktop_UPower_suspend_allowed_async(up_main_proxy,
+	org_freedesktop_UPower_suspend_allowed_async(self->up_main_proxy,
 	                                             allowed_suspend_cb,
 	                                             self);
-	org_freedesktop_UPower_hibernate_allowed_async(up_main_proxy,
+	org_freedesktop_UPower_hibernate_allowed_async(self->up_main_proxy,
 	                                               allowed_hibernate_cb,
 	                                               self);
 

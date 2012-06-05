@@ -57,9 +57,6 @@ static DbusmenuMenuitem  *system_settings_menuitem = NULL;
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
 
-static DbusmenuMenuitem * logout_mi = NULL;
-static DbusmenuMenuitem * shutdown_mi = NULL;
-
 static gboolean can_hibernate = TRUE;
 static gboolean can_suspend = TRUE;
 static gboolean allow_hibernate = TRUE;
@@ -454,6 +451,9 @@ device_menu_mgr_build_devices_items (DeviceMenuMgr* self)
 static void
 device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 {
+  DbusmenuMenuitem * logout_mi = NULL;
+  DbusmenuMenuitem * shutdown_mi = NULL;
+
   // Static Setting items
   if (!greeter_mode) {
     device_menu_mgr_build_settings_items (self);

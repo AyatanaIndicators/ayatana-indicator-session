@@ -43,10 +43,11 @@ struct _DeviceMenuMgr
   GObject parent_instance;
   DbusmenuMenuitem* root_item;
   SessionDbus* session_dbus_interface;  
+
   GSettings *lockdown_settings;
+  GSettings * keybinding_settings;
 };
 
-static GSettings         *keybinding_settings  = NULL;
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 static DbusmenuMenuitem  *system_settings_menuitem = NULL;
 
@@ -66,7 +67,6 @@ static gboolean allow_suspend = TRUE;
 static DBusGProxy * up_main_proxy = NULL;
 static DBusGProxy * up_prop_proxy = NULL;
 
-static void device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self);
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
 static void machine_sleep_with_context (DeviceMenuMgr* self,
@@ -94,6 +94,9 @@ device_menu_mgr_init (DeviceMenuMgr *self)
   g_signal_connect_swapped (self->lockdown_settings, "changed::" LOCKDOWN_KEY_USER, G_CALLBACK(device_menu_mgr_rebuild_items), self);
   g_signal_connect_swapped (self->lockdown_settings, "changed::" LOCKDOWN_KEY_SCREENSAVER, G_CALLBACK(device_menu_mgr_rebuild_items), self);
 
+  self->keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
+  g_signal_connect (self->keybinding_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(screensaver_keybinding_changed), self);
+
   setup_up(self);  
   g_idle_add(lock_screen_setup, NULL);  
 }
@@ -103,6 +106,7 @@ device_menu_mgr_dispose (GObject *object)
 {
   DeviceMenuMgr * self = DEVICE_MENU_MGR (object);
   g_clear_object (&self->lockdown_settings);
+  g_clear_object (&self->keybinding_settings);
 
   G_OBJECT_CLASS (device_menu_mgr_parent_class)->finalize (object);
 }
@@ -464,7 +468,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 
     /* Make sure we have a valid GConf client, and build one
        if needed */
-    device_menu_mgr_ensure_settings_client (self);
     can_lockscreen = !g_settings_get_boolean (self->lockdown_settings,
                                               LOCKDOWN_KEY_SCREENSAVER);
     /* Lock screen item */
@@ -474,7 +477,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       _("Lock Screen"));
 
-      update_screensaver_shortcut (lock_menuitem, keybinding_settings);
+      update_screensaver_shortcut (lock_menuitem, self->keybinding_settings);
 
       g_signal_connect (G_OBJECT(lock_menuitem),
                         DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
@@ -567,18 +570,6 @@ device_menu_mgr_rebuild_items (DeviceMenuMgr* self)
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        can_suspend && allow_suspend);
 }                                       
-
-/* Ensures that we have a GConf client and if we build one
-   set up the signal handler. */
-static void
-device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self)
-{
-	if (!keybinding_settings) {
-		keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
-		g_signal_connect (keybinding_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(screensaver_keybinding_changed), self);
-	}
-	return;
-}
 
 DbusmenuMenuitem*
 device_mgr_get_root_item (DeviceMenuMgr* self)

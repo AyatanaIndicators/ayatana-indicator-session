@@ -65,20 +65,7 @@ struct _DeviceMenuMgr
 
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
-static void machine_sleep_with_context (DeviceMenuMgr* self,
-                                        const gchar* type);
-static void show_system_settings (DbusmenuMenuitem * mi,
-                                  guint timestamp,
-                                  gpointer userdata);
 static void screensaver_keybinding_changed (GSettings*, const gchar*, gpointer);
-static void
-machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
-                              guint timestamp,
-                              gpointer userdata);
-static void
-machine_sleep_from_suspend (DbusmenuMenuitem * mi,
-                            guint timestamp,
-                            gpointer userdata);
 
 G_DEFINE_TYPE (DeviceMenuMgr, device_menu_mgr, G_TYPE_OBJECT);
 
@@ -153,6 +140,23 @@ screensaver_keybinding_changed (GSettings   * settings,
   update_screensaver_shortcut (DEVICE_MENU_MGR(userdata)->lock_mi, settings);
 }
 
+
+/* Let's put this machine to sleep with some hints on how it should sleep.  */
+static void
+machine_sleep_with_context (DeviceMenuMgr* self, const gchar* type)
+{
+  if (self->up_main_proxy == NULL)
+    {
+      g_warning("Cannot %s because no upower proxy", type);
+    }
+  else
+    {
+      dbus_g_proxy_begin_call (self->up_main_proxy, type,
+                               NULL, NULL, NULL,
+                               G_TYPE_INVALID);
+    }
+}
+
 static void
 machine_sleep_from_suspend (DbusmenuMenuitem * mi        G_GNUC_UNUSED,
                             guint              timestamp G_GNUC_UNUSED,
@@ -167,23 +171,6 @@ machine_sleep_from_hibernate (DbusmenuMenuitem * mi        G_GNUC_UNUSED,
                               gpointer           userdata)
 {
   machine_sleep_with_context (DEVICE_MENU_MGR(userdata), "Hibernate");
-}
-
-/* Let's put this machine to sleep, with some info on how
-   it should sleep.  */
-static void
-machine_sleep_with_context (DeviceMenuMgr* self, const gchar* type)
-{
-  if (self->up_main_proxy == NULL)
-    {
-      g_warning("Can not %s as no upower proxy", type);
-    }
-  else
-    {
-      dbus_g_proxy_begin_call (self->up_main_proxy, type,
-                               NULL, NULL, NULL,
-                               G_TYPE_INVALID);
-    }
 }
 
 /***

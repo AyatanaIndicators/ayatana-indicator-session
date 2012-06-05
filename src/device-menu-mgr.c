@@ -53,17 +53,16 @@ struct _DeviceMenuMgr
   DBusGProxy * up_main_proxy;
   DBusGProxy * up_prop_proxy;
 
+  gboolean can_hibernate;
+  gboolean can_suspend;
+  gboolean allow_hibernate;
+  gboolean allow_suspend;
 };
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
-
-static gboolean can_hibernate = TRUE;
-static gboolean can_suspend = TRUE;
-static gboolean allow_hibernate = TRUE;
-static gboolean allow_suspend = TRUE;
 
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
@@ -88,6 +87,11 @@ static void
 device_menu_mgr_init (DeviceMenuMgr *self)
 {
   self->root_item = dbusmenu_menuitem_new ();  
+
+  self->can_hibernate = TRUE;
+  self->can_suspend = TRUE;
+  self->allow_hibernate = TRUE;
+  self->allow_suspend = TRUE;
 
   self->lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
   g_signal_connect_swapped (self->lockdown_settings, "changed::" LOCKDOWN_KEY_USER, G_CALLBACK(device_menu_mgr_rebuild_items), self);
@@ -205,8 +209,8 @@ suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	g_debug("Got Suspend: %s", g_value_get_boolean(&candoit) ? "true" : "false");
 
 	gboolean local_can_suspend = g_value_get_boolean(&candoit);
-	if (local_can_suspend != can_suspend) {
-		can_suspend = local_can_suspend;
+	if (local_can_suspend != self->can_suspend) {
+		self->can_suspend = local_can_suspend;
     // TODO figure out what needs updating on the menu
     // And add or remove it but just don't rebuild the whole menu
     // a waste
@@ -233,8 +237,8 @@ hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 	g_debug("Got Hibernate: %s", g_value_get_boolean(&candoit) ? "true" : "false");
 
 	gboolean local_can_hibernate = g_value_get_boolean(&candoit);
-	if (local_can_hibernate != can_hibernate) {
-		can_hibernate = local_can_hibernate;
+	if (local_can_hibernate != self->can_hibernate) {
+		self->can_hibernate = local_can_hibernate;
 		device_menu_mgr_rebuild_items(self);
 	}
 }
@@ -278,46 +282,45 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 		                                         G_TYPE_INVALID);
 	}
 }
-/* Handle the callback from the allow functions to check and
-   see if we're changing the value, and if so, rebuilding the
-   menus based on that info. */
+
+/* If the allow-suspend value changed, rebuild the menus */
 static void
-allowed_suspend_cb (DBusGProxy *proxy,
-                    gboolean OUT_allowed,
-                    GError *error,
-                    gpointer userdata)
+allowed_suspend_cb (DBusGProxy * proxy G_GNUC_UNUSED,
+                    gboolean     allow_suspend,
+                    GError     * error,
+                    gpointer     userdata)
 {
-	if (error != NULL) {
-		g_warning("Unable to get information on what is allowed from UPower: %s",
-               error->message);
-		return;
-	}
-  
-	if (OUT_allowed != allow_suspend) {
-    allow_suspend = OUT_allowed;
-    device_menu_mgr_rebuild_items(DEVICE_MENU_MGR (userdata));
-  }
+  DeviceMenuMgr * self = DEVICE_MENU_MGR (userdata);
+
+  if (error != NULL)
+    {
+      g_warning("Unable to get information on what is allowed from UPower: %s", error->message);
+    }
+  else if (self->allow_suspend != allow_suspend)
+    {
+      self->allow_suspend = allow_suspend;
+      device_menu_mgr_rebuild_items (self);
+    }
 }
 
-/* Handle the callback from the allow functions to check and
-   see if we're changing the value, and if so, rebuilding the
-   menus based on that info. */
+/* If the allow-hibernate value changed, rebuild the menus */
 static void
-allowed_hibernate_cb (DBusGProxy *proxy,
-                      gboolean OUT_allowed,
-                      GError *error,
-                      gpointer userdata)
+allowed_hibernate_cb (DBusGProxy * proxy,
+                      gboolean     allow_hibernate,
+                      GError     * error,
+                      gpointer     userdata)
 {
-	if (error != NULL) {
-		g_warning("Unable to get information on what is allowed from UPower: %s",
-               error->message);
-		return;
-	}
-  
-	if (OUT_allowed != allow_hibernate) {
-    allow_hibernate = OUT_allowed;
-    device_menu_mgr_rebuild_items(DEVICE_MENU_MGR (userdata));
-  }
+  DeviceMenuMgr * self = DEVICE_MENU_MGR (userdata);
+
+  if (error != NULL)
+    {
+      g_warning("Unable to get information on what is allowed from UPower: %s", error->message);
+    }
+  else if (self->allow_hibernate != allow_hibernate)
+    {
+      self->allow_hibernate = allow_hibernate;
+      device_menu_mgr_rebuild_items (self);
+    }
 }
 
 /* This function goes through and sets up what we need for
@@ -509,7 +512,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                       G_CALLBACK(show_dialog), "logout");
   }
 
-	if (can_suspend && allow_suspend) {
+	if (self->can_suspend && self->allow_suspend) {
 		self->suspend_mi = dbusmenu_menuitem_new();
 		dbusmenu_menuitem_property_set (self->suspend_mi,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
@@ -521,7 +524,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                       self);
 	}
 
-	if (can_hibernate && allow_hibernate) {
+	if (self->can_hibernate && self->allow_hibernate) {
 		self->hibernate_mi = dbusmenu_menuitem_new();
 		dbusmenu_menuitem_property_set (self->hibernate_mi,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
@@ -568,10 +571,10 @@ device_menu_mgr_rebuild_items (DeviceMenuMgr* self)
 {
   dbusmenu_menuitem_property_set_bool (self->hibernate_mi,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       can_hibernate && allow_hibernate);
+                                       self->can_hibernate && self->allow_hibernate);
   dbusmenu_menuitem_property_set_bool (self->suspend_mi,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       can_suspend && allow_suspend);
+                                       self->can_suspend && self->allow_suspend);
 }                                       
 
 DbusmenuMenuitem*

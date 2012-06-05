@@ -49,6 +49,7 @@ struct _DeviceMenuMgr
 
   DbusmenuMenuitem * hibernate_mi;
   DbusmenuMenuitem * suspend_mi;
+  DbusmenuMenuitem * lock_mi;
 
   DBusGProxy * up_main_proxy;
   DBusGProxy * up_prop_proxy;
@@ -61,8 +62,6 @@ struct _DeviceMenuMgr
   DBusGProxyCall * suspend_call;
   DBusGProxyCall * hibernate_call;
 };
-
-static DbusmenuMenuitem  *lock_menuitem = NULL;
 
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
@@ -148,10 +147,10 @@ update_screensaver_shortcut (DbusmenuMenuitem * menuitem, GSettings * settings)
 
 static void
 screensaver_keybinding_changed (GSettings   * settings,
-                                const gchar * key       G_GNUC_UNUSED,
-                                gpointer      user_data G_GNUC_UNUSED)
+                                const gchar * key  G_GNUC_UNUSED,
+                                gpointer      userdata)
 {
-  update_screensaver_shortcut (lock_menuitem, settings);
+  update_screensaver_shortcut (DEVICE_MENU_MGR(userdata)->lock_mi, settings);
 }
 
 static void
@@ -480,17 +479,17 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                                               LOCKDOWN_KEY_SCREENSAVER);
     /* Lock screen item */
     if (can_lockscreen) {
-      lock_menuitem = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (lock_menuitem,
+      self->lock_mi = dbusmenu_menuitem_new();
+      dbusmenu_menuitem_property_set (self->lock_mi,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       _("Lock Screen"));
 
-      update_screensaver_shortcut (lock_menuitem, self->keybinding_settings);
+      update_screensaver_shortcut (self->lock_mi, self->keybinding_settings);
 
-      g_signal_connect (G_OBJECT(lock_menuitem),
+      g_signal_connect (G_OBJECT(self->lock_mi),
                         DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK(lock_screen), NULL);
-      dbusmenu_menuitem_child_append(self->root_item, lock_menuitem);
+      dbusmenu_menuitem_child_append(self->root_item, self->lock_mi);
     }
 
     logout_mi = dbusmenu_menuitem_new();

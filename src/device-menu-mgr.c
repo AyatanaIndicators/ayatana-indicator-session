@@ -321,6 +321,25 @@ setup_up (DeviceMenuMgr* self)
   org_freedesktop_UPower_hibernate_allowed_async(self->up_main_proxy, allowed_hibernate_cb, self);
 }
 
+static void
+spawn_command_line_async (const char * fmt, ...)
+{
+  va_list marker;
+  va_start (marker, fmt);
+  gchar * cmd = g_strdup_vprintf (fmt, marker);
+  va_end (marker);
+  
+  GError * error = NULL; 
+  if (!g_spawn_command_line_async (cmd, &error))
+    {
+      g_warning ("Unable to show \"%s\": %s", cmd, error->message);
+    }
+
+  g_clear_error (&error);
+  g_free (cmd);
+}
+
+
 /* This is the function to show a dialog on actions that
    can destroy data.  Currently it just calls the GTK version
    but it seems that in the future it should figure out
@@ -333,57 +352,49 @@ show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 #else
   gchar * helper = g_build_filename("gnome-session-quit", NULL);
 #endif  /* HAVE_GTKLOGOUTHELPER */
-  gchar * dialog_line = g_strdup_printf("%s --%s", helper, type);
-
-  g_debug ("Showing dialog '%s'", dialog_line);
-
-  GError * error = NULL;
-  if (!g_spawn_command_line_async(dialog_line, &error))
-    {
-      g_warning ("Unable to show dialog: %s", error->message);
-      g_clear_error (&error);
-    }
-
-  g_free (dialog_line);  
+  spawn_command_line_async ("%s --%s", helper, type);
   g_free (helper);
-}
-
-static void
-show_system_settings (DbusmenuMenuitem  * mi         G_GNUC_UNUSED,
-                      guint               timestamp  G_GNUC_UNUSED,
-                      gpointer            user_data  G_GNUC_UNUSED)
-{
-  const char * const cmd = "gnome-control-center";
-
-  GError * error = NULL;
-  if (!g_spawn_command_line_async (cmd, &error))
-    {
-      g_warning("Unable to show dialog: %s", error->message);
-      g_error_free(error);
-    }
 }
 
 static void
 device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 {
+  const char * name;
   DbusmenuMenuitem * mi;
   DbusmenuMenuitem * logout_mi = NULL;
   DbusmenuMenuitem * shutdown_mi = NULL;
 
-  // Static Setting items
+  /* About this computer */
+  name = _("About This Computer");
+  mi = dbusmenu_menuitem_new ();
+  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
+  dbusmenu_menuitem_child_append (self->root_item, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(spawn_command_line_async), "gnome-control-center info");
+
+  /* ubuntu help */
+  name = _("Ubuntu Help");
+  mi = dbusmenu_menuitem_new ();
+  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
+  dbusmenu_menuitem_child_append (self->root_item, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(spawn_command_line_async), "yelp");
+ 
+  /* system settings */
   if (!greeter_mode)
     {
-      /* system settings... */
-      mi = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("System Settings…"));
-      dbusmenu_menuitem_child_add_position(self->root_item, mi, 0);
-      g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                        G_CALLBACK(show_system_settings), NULL);
- 
       /* separator */ 
       mi = dbusmenu_menuitem_new();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-      dbusmenu_menuitem_child_add_position (self->root_item, mi, 1);
+      dbusmenu_menuitem_child_append (self->root_item, mi);
+
+      /* system settings... */
+      name = _("System Settings…");
+      mi = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
+      dbusmenu_menuitem_child_append (self->root_item, mi);
+      g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                                G_CALLBACK(spawn_command_line_async), "gnome-control-center");
     }
 
   // Session control  
@@ -391,11 +402,17 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
     {
       const gboolean can_lockscreen = !g_settings_get_boolean (self->lockdown_settings, LOCKDOWN_KEY_SCREENSAVER);
 
+      /* separator */ 
+      mi = dbusmenu_menuitem_new();
+      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+      dbusmenu_menuitem_child_append (self->root_item, mi);
+
       /* lock screen */
       if (can_lockscreen)
         {
+          name = _("Lock Screen");
           self->lock_mi = mi = dbusmenu_menuitem_new();
-          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Lock Screen"));
+          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
           update_screensaver_shortcut (mi, self->keybinding_settings);
           dbusmenu_menuitem_child_append (self->root_item, mi);
           g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
@@ -403,10 +420,9 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
         }
 
       /* logout */
+      name = supress_confirmations() ? _("Log Out") : _("Log Out\342\200\246");
       logout_mi = mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL,
-                                      supress_confirmations() ? _("Log Out")
-                                                              : _("Log Out\342\200\246"));
+      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
       dbusmenu_menuitem_property_set_bool (mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_logout());
       dbusmenu_menuitem_child_append(self->root_item, mi);
       g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
@@ -416,8 +432,9 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   /* suspend */
   if (self->can_suspend && self->allow_suspend)
     {
+      name = _("Suspend");
       self->suspend_mi = mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Suspend"));
+      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
       dbusmenu_menuitem_child_append (self->root_item, mi);
       g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK(machine_sleep_from_suspend), self);
@@ -426,18 +443,18 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   /* hibernate */
   if (self->can_hibernate && self->allow_hibernate)
     {
+      name = _("Hibernate");
       self->hibernate_mi = mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Hibernate"));
+      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
       dbusmenu_menuitem_child_append(self->root_item, mi);
       g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK(machine_sleep_from_hibernate), self);
     }
  
   /* shut down */ 
+  name = supress_confirmations() ? _("Shut Down") : _("Shut Down\342\200\246");
   shutdown_mi = mi = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL,
-                                  supress_confirmations() ? _("Shut Down")
-                                                          : _("Shut Down\342\200\246"));
+  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
   dbusmenu_menuitem_property_set_bool (mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_shutdown());
   dbusmenu_menuitem_child_append (self->root_item, mi);
   g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,

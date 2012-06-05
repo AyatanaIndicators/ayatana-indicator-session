@@ -186,62 +186,79 @@ machine_sleep_with_context (DeviceMenuMgr* self, const gchar* type)
     }
 }
 
-/* A response to getting the suspend property */
+/***
+****
+***/
+
+static void
+rebuild_if_flag_changed (DeviceMenuMgr * mgr, GError * error, gboolean * setme, gboolean value)
+{
+  if (error != NULL)
+    {
+      g_warning ("Unable to get information on what's allowed from UPower: %s", error->message);
+    }
+  else if (*setme != value)
+    {
+      *setme = value;
+      device_menu_mgr_rebuild_items (mgr);
+    }
+}
+
+/* When allow-suspend changes, rebuild the menus */
+static void
+allowed_suspend_cb (DBusGProxy * proxy G_GNUC_UNUSED,
+                    gboolean     allow_suspend,
+                    GError     * error,
+                    gpointer     userdata)
+{
+  DeviceMenuMgr * mgr = DEVICE_MENU_MGR (userdata);
+  rebuild_if_flag_changed (mgr, error, &mgr->allow_suspend, allow_suspend);
+}
+
+/* When allow-hibernate changes, rebuild the menus */
+static void
+allowed_hibernate_cb (DBusGProxy * proxy G_GNUC_UNUSED,
+                      gboolean     allow_hibernate,
+                      GError     * error,
+                      gpointer     userdata)
+{
+  DeviceMenuMgr * mgr = DEVICE_MENU_MGR (userdata);
+  rebuild_if_flag_changed (mgr, error, &mgr->allow_hibernate, allow_hibernate);
+}
+
+
+static void
+rebuild_if_flag_changed_from_proxy_call (DeviceMenuMgr * mgr, gboolean * setme, DBusGProxy * proxy, DBusGProxyCall * call)
+{
+  GValue value = {0};
+  GError * error = NULL;
+
+  dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID);
+  rebuild_if_flag_changed (mgr, error, setme, g_value_get_boolean (&value));
+
+  g_clear_error (&error);
+  g_value_unset (&value);
+}
+
+/* When can-suspend changes, rebuild the menus */
 static void
 suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
   DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
-
   self->suspend_call = NULL;
-  
-	GValue candoit = {0};
-	GError * error = NULL;
-	dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &candoit, G_TYPE_INVALID);
-	if (error != NULL) {
-		g_warning("Unable to check suspend: %s", error->message);
-		g_error_free(error);
-		return;
-	}
-	g_debug("Got Suspend: %s", g_value_get_boolean(&candoit) ? "true" : "false");
-
-	gboolean local_can_suspend = g_value_get_boolean(&candoit);
-	if (local_can_suspend != self->can_suspend) {
-		self->can_suspend = local_can_suspend;
-    // TODO figure out what needs updating on the menu
-    // And add or remove it but just don't rebuild the whole menu
-    // a waste
-		device_menu_mgr_rebuild_items(self);
-	}
-	return;
+  rebuild_if_flag_changed_from_proxy_call (self, &self->can_suspend, proxy, call);
 }
 
-/* Response to getting the hibernate property */
+/* When can-hibernate changes, rebuild the menus */
 static void
 hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
   DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
-
   self->hibernate_call = NULL;
-
-	GValue candoit = {0};
-	GError * error = NULL;
-	dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &candoit, G_TYPE_INVALID);
-	if (error != NULL) {
-		g_warning("Unable to check hibernate: %s", error->message);
-		g_error_free(error);
-		return;
-	}
-	g_debug("Got Hibernate: %s", g_value_get_boolean(&candoit) ? "true" : "false");
-
-	gboolean local_can_hibernate = g_value_get_boolean(&candoit);
-	if (local_can_hibernate != self->can_hibernate) {
-		self->can_hibernate = local_can_hibernate;
-		device_menu_mgr_rebuild_items(self);
-	}
+  rebuild_if_flag_changed_from_proxy_call (self, &self->can_hibernate, proxy, call);
 }
 
-/* A signal that we need to recheck to ensure we can still
-   hibernate and/or suspend */
+/* A signal that we need to recheck to ensure we can still hibernate and/or suspend */
 static void
 up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 {
@@ -278,46 +295,6 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 		                                         G_TYPE_VALUE,
 		                                         G_TYPE_INVALID);
 	}
-}
-
-/* If the allow-suspend value changed, rebuild the menus */
-static void
-allowed_suspend_cb (DBusGProxy * proxy G_GNUC_UNUSED,
-                    gboolean     allow_suspend,
-                    GError     * error,
-                    gpointer     userdata)
-{
-  DeviceMenuMgr * self = DEVICE_MENU_MGR (userdata);
-
-  if (error != NULL)
-    {
-      g_warning("Unable to get information on what is allowed from UPower: %s", error->message);
-    }
-  else if (self->allow_suspend != allow_suspend)
-    {
-      self->allow_suspend = allow_suspend;
-      device_menu_mgr_rebuild_items (self);
-    }
-}
-
-/* If the allow-hibernate value changed, rebuild the menus */
-static void
-allowed_hibernate_cb (DBusGProxy * proxy,
-                      gboolean     allow_hibernate,
-                      GError     * error,
-                      gpointer     userdata)
-{
-  DeviceMenuMgr * self = DEVICE_MENU_MGR (userdata);
-
-  if (error != NULL)
-    {
-      g_warning("Unable to get information on what is allowed from UPower: %s", error->message);
-    }
-  else if (self->allow_hibernate != allow_hibernate)
-    {
-      self->allow_hibernate = allow_hibernate;
-      device_menu_mgr_rebuild_items (self);
-    }
 }
 
 /* This function goes through and sets up what we need for

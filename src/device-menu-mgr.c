@@ -46,6 +46,9 @@ struct _DeviceMenuMgr
 
   GSettings *lockdown_settings;
   GSettings * keybinding_settings;
+
+  DbusmenuMenuitem * hibernate_mi;
+  DbusmenuMenuitem * suspend_mi;
 };
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
@@ -54,8 +57,6 @@ static DbusmenuMenuitem  *system_settings_menuitem = NULL;
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
 
-static DbusmenuMenuitem * hibernate_mi = NULL;
-static DbusmenuMenuitem * suspend_mi = NULL;
 static DbusmenuMenuitem * logout_mi = NULL;
 static DbusmenuMenuitem * shutdown_mi = NULL;
 
@@ -74,6 +75,7 @@ static void machine_sleep_with_context (DeviceMenuMgr* self,
 static void show_system_settings (DbusmenuMenuitem * mi,
                                   guint timestamp,
                                   gpointer userdata);
+static void screensaver_keybinding_changed (GSettings*, const gchar*, gpointer);
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
@@ -132,11 +134,11 @@ device_menu_mgr_class_init (DeviceMenuMgrClass *klass)
 static void
 update_screensaver_shortcut (DbusmenuMenuitem * menuitem, GSettings * settings)
 {
-  if (lock_menuitem != NULL)
+  if (menuitem != NULL)
     {
       gchar * val = g_settings_get_string (settings, KEY_LOCK_SCREEN);
       g_debug ("Keybinding changed to: %s", val);
-      dbusmenu_menuitem_property_set_shortcut_string (lock_menuitem, val);
+      dbusmenu_menuitem_property_set_shortcut_string (menuitem, val);
       g_free (val);
     }
 }
@@ -507,24 +509,24 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   }
 
 	if (can_suspend && allow_suspend) {
-		suspend_mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set (suspend_mi,
+		self->suspend_mi = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set (self->suspend_mi,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Suspend"));
-		dbusmenu_menuitem_child_append (self->root_item, suspend_mi);
-		g_signal_connect( G_OBJECT(suspend_mi),
+		dbusmenu_menuitem_child_append (self->root_item, self->suspend_mi);
+		g_signal_connect( G_OBJECT(self->suspend_mi),
                       DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                       G_CALLBACK(machine_sleep_from_suspend),
                       self);
 	}
 
 	if (can_hibernate && allow_hibernate) {
-		hibernate_mi = dbusmenu_menuitem_new();
-		dbusmenu_menuitem_property_set (hibernate_mi,
+		self->hibernate_mi = dbusmenu_menuitem_new();
+		dbusmenu_menuitem_property_set (self->hibernate_mi,
                                     DBUSMENU_MENUITEM_PROP_LABEL,
                                     _("Hibernate"));
-		dbusmenu_menuitem_child_append(self->root_item, hibernate_mi);
-		g_signal_connect (G_OBJECT(hibernate_mi),
+		dbusmenu_menuitem_child_append(self->root_item, self->hibernate_mi);
+		g_signal_connect (G_OBJECT(self->hibernate_mi),
                       DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                       G_CALLBACK(machine_sleep_from_hibernate), self);
 	}
@@ -563,10 +565,10 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 static void
 device_menu_mgr_rebuild_items (DeviceMenuMgr* self)
 {
-  dbusmenu_menuitem_property_set_bool (hibernate_mi,
+  dbusmenu_menuitem_property_set_bool (self->hibernate_mi,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        can_hibernate && allow_hibernate);
-  dbusmenu_menuitem_property_set_bool (suspend_mi,
+  dbusmenu_menuitem_property_set_bool (self->suspend_mi,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        can_suspend && allow_suspend);
 }                                       

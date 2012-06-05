@@ -174,18 +174,16 @@ machine_sleep_from_hibernate (DbusmenuMenuitem * mi        G_GNUC_UNUSED,
 static void
 machine_sleep_with_context (DeviceMenuMgr* self, const gchar* type)
 {
-	if (self->up_main_proxy == NULL) {
-		g_warning("Can not %s as no upower proxy", type);
-	}
-
-	dbus_g_proxy_begin_call(self->up_main_proxy,
-	                        type,
-	                        NULL,
-	                        NULL,
-	                        NULL,
-	                        G_TYPE_INVALID);
-
-	return;
+  if (self->up_main_proxy == NULL)
+    {
+      g_warning("Can not %s as no upower proxy", type);
+    }
+  else
+    {
+      dbus_g_proxy_begin_call (self->up_main_proxy, type,
+                               NULL, NULL, NULL,
+                               G_TYPE_INVALID);
+    }
 }
 
 /* A response to getting the suspend property */

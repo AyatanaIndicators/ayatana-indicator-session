@@ -66,7 +66,7 @@ struct _DeviceMenuMgr
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
 static void machine_sleep_with_context (DeviceMenuMgr* self,
-                                        gchar* type);
+                                        const gchar* type);
 static void show_system_settings (DbusmenuMenuitem * mi,
                                   guint timestamp,
                                   gpointer userdata);
@@ -154,27 +154,25 @@ screensaver_keybinding_changed (GSettings   * settings,
 }
 
 static void
-machine_sleep_from_suspend (DbusmenuMenuitem * mi,
-                            guint timestamp,
-                            gpointer userdata)
+machine_sleep_from_suspend (DbusmenuMenuitem * mi        G_GNUC_UNUSED,
+                            guint              timestamp G_GNUC_UNUSED,
+                            gpointer           userdata)
 {
-  DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
-  machine_sleep_with_context (self, "Suspend");
+  machine_sleep_with_context (DEVICE_MENU_MGR(userdata), "Suspend");
 }
 
 static void
-machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
-                              guint timestamp,
-                              gpointer userdata)
+machine_sleep_from_hibernate (DbusmenuMenuitem * mi        G_GNUC_UNUSED,
+                              guint              timestamp G_GNUC_UNUSED,
+                              gpointer           userdata)
 {
-  DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
-  machine_sleep_with_context (self, "Hibernate");
+  machine_sleep_with_context (DEVICE_MENU_MGR(userdata), "Hibernate");
 }
 
 /* Let's put this machine to sleep, with some info on how
    it should sleep.  */
 static void
-machine_sleep_with_context (DeviceMenuMgr* self, gchar* type)
+machine_sleep_with_context (DeviceMenuMgr* self, const gchar* type)
 {
 	if (self->up_main_proxy == NULL) {
 		g_warning("Can not %s as no upower proxy", type);

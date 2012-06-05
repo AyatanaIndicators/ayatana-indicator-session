@@ -71,10 +71,9 @@ static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
 static void machine_sleep_with_context (DeviceMenuMgr* self,
                                         gchar* type);
-static void show_system_settings_with_context (DbusmenuMenuitem * mi,
-                                               guint timestamp,
-                                               gchar * type);  
-                                               
+static void show_system_settings (DbusmenuMenuitem * mi,
+                                  guint timestamp,
+                                  gpointer userdata);
 static void
 machine_sleep_from_hibernate (DbusmenuMenuitem * mi,
                               guint timestamp,
@@ -393,23 +392,18 @@ show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
 }
 
 static void
-show_system_settings_with_context (DbusmenuMenuitem * mi,
-                                   guint timestamp,
-                                   gchar * type)
+show_system_settings (DbusmenuMenuitem  * mi         G_GNUC_UNUSED,
+                      guint               timestamp  G_GNUC_UNUSED,
+                      gpointer            user_data  G_GNUC_UNUSED)
 {
-	gchar * control_centre_command = g_strdup_printf("%s %s",
-                                                   "gnome-control-center",
-                                                    type);
-
-	g_debug("Command centre exec call '%s'", control_centre_command);
+  const char * const cmd = "gnome-control-center";
 
   GError * error = NULL;
-  if (!g_spawn_command_line_async(control_centre_command, &error))
+  if (!g_spawn_command_line_async (cmd, &error))
   {
     g_warning("Unable to show dialog: %s", error->message);
     g_error_free(error);
   }
-	g_free(control_centre_command);
 }
 
 static void
@@ -421,7 +415,7 @@ device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
                                   _("System Settings…"));
   g_signal_connect (G_OBJECT(system_settings_menuitem),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK(show_system_settings_with_context), "");
+                    G_CALLBACK(show_system_settings), NULL);
   dbusmenu_menuitem_child_add_position(self->root_item,
                                        system_settings_menuitem,
                                        0);

@@ -56,7 +56,6 @@ struct _DeviceMenuMgr
 };
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
-static DbusmenuMenuitem  *system_settings_menuitem = NULL;
 
 static DBusGProxyCall * suspend_call = NULL;
 static DBusGProxyCall * hibernate_call = NULL;
@@ -414,22 +413,19 @@ show_system_settings (DbusmenuMenuitem  * mi         G_GNUC_UNUSED,
 static void
 device_menu_mgr_build_settings_items (DeviceMenuMgr* self)
 {
-  system_settings_menuitem  = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (system_settings_menuitem,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("System Settings…"));
-  g_signal_connect (G_OBJECT(system_settings_menuitem),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+  DbusmenuMenuitem * mi;
+
+  /* system settings... */
+  mi = dbusmenu_menuitem_new ();
+  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("System Settings…"));
+  dbusmenu_menuitem_child_add_position(self->root_item, mi, 0);
+  g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK(show_system_settings), NULL);
-  dbusmenu_menuitem_child_add_position(self->root_item,
-                                       system_settings_menuitem,
-                                       0);
-  
-  DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (separator1,
-                                  DBUSMENU_MENUITEM_PROP_TYPE,
-                                  DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_add_position (self->root_item, separator1, 1);
+ 
+  /* separator */ 
+  mi = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+  dbusmenu_menuitem_child_add_position (self->root_item, mi, 1);
 }
 
 static void

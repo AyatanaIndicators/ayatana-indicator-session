@@ -386,21 +386,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
       dbusmenu_menuitem_child_add_position (self->root_item, mi, 1);
     }
 
-  // Devices control
-  if (!greeter_mode)
-    {
-      /* attached devices... */
-      mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, _("Attached Devices"));
-      dbusmenu_menuitem_property_set_bool (mi, DBUSMENU_MENUITEM_PROP_ENABLED, FALSE);
-      dbusmenu_menuitem_child_add_position (self->root_item, mi, 5);
-
-      /* separator */
-      mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-      dbusmenu_menuitem_child_add_position (self->root_item, mi, 6);
-    }
-
   // Session control  
   if (!greeter_mode)
     {

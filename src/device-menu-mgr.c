@@ -57,12 +57,12 @@ struct _DeviceMenuMgr
   gboolean can_suspend;
   gboolean allow_hibernate;
   gboolean allow_suspend;
+
+  DBusGProxyCall * suspend_call;
+  DBusGProxyCall * hibernate_call;
 };
 
 static DbusmenuMenuitem  *lock_menuitem = NULL;
-
-static DBusGProxyCall * suspend_call = NULL;
-static DBusGProxyCall * hibernate_call = NULL;
 
 static void setup_up (DeviceMenuMgr* self);
 static void device_menu_mgr_rebuild_items (DeviceMenuMgr *self);
@@ -195,8 +195,9 @@ machine_sleep_with_context (DeviceMenuMgr* self, gchar* type)
 static void
 suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
-	suspend_call = NULL;
   DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
+
+  self->suspend_call = NULL;
   
 	GValue candoit = {0};
 	GError * error = NULL;
@@ -223,8 +224,9 @@ suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 static void
 hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
 {
-	hibernate_call = NULL;
   DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
+
+  self->hibernate_call = NULL;
 
 	GValue candoit = {0};
 	GError * error = NULL;
@@ -251,8 +253,8 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 	DeviceMenuMgr * self = DEVICE_MENU_MGR(user_data);
 
 	/* Start Async call to see if we can hibernate */
-	if (suspend_call == NULL) {
-		suspend_call = dbus_g_proxy_begin_call(self->up_prop_proxy,
+	if (self->suspend_call == NULL) {
+		self->suspend_call = dbus_g_proxy_begin_call(self->up_prop_proxy,
 		                                       "Get",
 		                                       suspend_prop_cb,
 		                                       user_data,
@@ -267,8 +269,8 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 	}
 
 	/* Start Async call to see if we can suspend */
-	if (hibernate_call == NULL) {
-		hibernate_call = dbus_g_proxy_begin_call(self->up_prop_proxy,
+	if (self->hibernate_call == NULL) {
+		self->hibernate_call = dbus_g_proxy_begin_call(self->up_prop_proxy,
 		                                         "Get",
 		                                         hibernate_prop_cb,
 		                                         user_data,

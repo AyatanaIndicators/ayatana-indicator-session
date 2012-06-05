@@ -24,8 +24,7 @@ libsession_la_SOURCES = \
 	dbusmenu-shared.h \
 	user-widget.c \
 	user-widget.h \
-	accounts-service-client.h \
-	accounts-service-user-client.h
+	accounts-service-client.h
 libsession_la_CFLAGS = \
 	$(APPLET_CFLAGS) \
 	$(COVERAGE_CFLAGS) \
@@ -70,13 +69,6 @@ accounts-service-client.h: $(srcdir)/accounts-service.xml
 		--mode=glib-client \
 		--output=accounts-service-client.h \
 		$(srcdir)/accounts-service.xml
-
-accounts-service-user-client.h: $(srcdir)/accounts-service-user.xml
-	dbus-binding-tool \
-		--prefix=_accounts_service_user_client \
-		--mode=glib-client \
-		--output=accounts-service-user-client.h \
-		$(srcdir)/accounts-service-user.xml
 
 upower-client.h: $(srcdir)/upower.xml
 	dbus-binding-tool \
@@ -170,8 +162,7 @@ BUILT_SOURCES = \
 	gen-session-dbus.xml.c \
 	gen-session-dbus.xml.h \
 	upower-client.h \
-	accounts-service-client.h \
-	accounts-service-user-client.h
+	accounts-service-client.h
 
 EXTRA_DIST += \
 	org.freedesktop.ConsoleKit.Manager.xml \

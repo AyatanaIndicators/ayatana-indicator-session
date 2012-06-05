@@ -364,7 +364,10 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   DbusmenuMenuitem * logout_mi = NULL;
   DbusmenuMenuitem * shutdown_mi = NULL;
 
-  /* About this computer */
+  /***
+  ****  Admin items
+  ***/
+
   name = _("About This Computer");
   mi = dbusmenu_menuitem_new ();
   dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
@@ -372,7 +375,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(spawn_command_line_async), "gnome-control-center info");
 
-  /* ubuntu help */
   name = _("Ubuntu Help");
   mi = dbusmenu_menuitem_new ();
   dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
@@ -380,15 +382,12 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(spawn_command_line_async), "yelp");
  
-  /* system settings */
   if (!greeter_mode)
     {
-      /* separator */ 
       mi = dbusmenu_menuitem_new();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
       dbusmenu_menuitem_child_append (self->root_item, mi);
 
-      /* system settings... */
       name = _("System Settings…");
       mi = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
@@ -397,29 +396,34 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                                 G_CALLBACK(spawn_command_line_async), "gnome-control-center");
     }
 
-  // Session control  
+  /***
+  ****  Account-switching items
+  ***/
+
+  /* TODO: FIXME */
+
+  const gboolean can_lockscreen = !g_settings_get_boolean (self->lockdown_settings, LOCKDOWN_KEY_SCREENSAVER);
+  if (can_lockscreen)
+    {
+      name = _("Lock Screen");
+      self->lock_mi = mi = dbusmenu_menuitem_new();
+      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
+      update_screensaver_shortcut (mi, self->keybinding_settings);
+      dbusmenu_menuitem_child_append (self->root_item, mi);
+      g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                        G_CALLBACK(lock_screen), NULL);
+    }
+
+  /***
+  ****  Session Items
+  ***/
+
+  mi = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+  dbusmenu_menuitem_child_append (self->root_item, mi);
+
   if (!greeter_mode)
     {
-      const gboolean can_lockscreen = !g_settings_get_boolean (self->lockdown_settings, LOCKDOWN_KEY_SCREENSAVER);
-
-      /* separator */ 
-      mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-      dbusmenu_menuitem_child_append (self->root_item, mi);
-
-      /* lock screen */
-      if (can_lockscreen)
-        {
-          name = _("Lock Screen");
-          self->lock_mi = mi = dbusmenu_menuitem_new();
-          dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-          update_screensaver_shortcut (mi, self->keybinding_settings);
-          dbusmenu_menuitem_child_append (self->root_item, mi);
-          g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                            G_CALLBACK(lock_screen), NULL);
-        }
-
-      /* logout */
       name = supress_confirmations() ? _("Log Out") : _("Log Out\342\200\246");
       logout_mi = mi = dbusmenu_menuitem_new();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
@@ -429,7 +433,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                         G_CALLBACK(show_dialog), "logout");
     }
 
-  /* suspend */
   if (self->can_suspend && self->allow_suspend)
     {
       name = _("Suspend");
@@ -440,7 +443,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                         G_CALLBACK(machine_sleep_from_suspend), self);
     }
 
-  /* hibernate */
   if (self->can_hibernate && self->allow_hibernate)
     {
       name = _("Hibernate");
@@ -450,8 +452,13 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
       g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK(machine_sleep_from_hibernate), self);
     }
+
+  name = _("Restart");
+  mi = dbusmenu_menuitem_new();
+  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
+  dbusmenu_menuitem_child_append (self->root_item, mi);
+  /* FIXME: not implemented */
  
-  /* shut down */ 
   name = supress_confirmations() ? _("Shut Down") : _("Shut Down\342\200\246");
   shutdown_mi = mi = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);

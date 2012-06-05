@@ -562,7 +562,7 @@ device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self)
 	}
 	if (!keybinding_settings) {
 		keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
-		g_signal_connect(lockdown_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(screensaver_keybinding_changed), self);
+		g_signal_connect (keybinding_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(screensaver_keybinding_changed), self);
 	}
 	return;
 }

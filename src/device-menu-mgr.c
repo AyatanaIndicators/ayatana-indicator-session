@@ -129,23 +129,23 @@ lockdown_changed (GSettings * settings,
 }
 
 static void
-keybinding_changed (GSettings   *settings,
-                    const gchar *key,
-                    gpointer     user_data)
+update_screensaver_shortcut (DbusmenuMenuitem * menuitem, GSettings * settings)
 {
-	if (key == NULL) {
-		return;
-	}
+  if (lock_menuitem != NULL)
+    {
+      gchar * val = g_settings_get_string (settings, KEY_LOCK_SCREEN);
+      g_debug ("Keybinding changed to: %s", val);
+      dbusmenu_menuitem_property_set_shortcut_string (lock_menuitem, val);
+      g_free (val);
+    }
+}
 
-	if (g_strcmp0 (key, KEY_LOCK_SCREEN) == 0) {
-		gchar * val = g_settings_get_string(settings, key);
-		g_debug("Keybinding changed to: %s", val);
-		if (lock_menuitem != NULL) {
-			dbusmenu_menuitem_property_set_shortcut_string (lock_menuitem, val);
-		}
-		g_free (val);
-	}
-	return;
+static void
+screensaver_keybinding_changed (GSettings   * settings,
+                                const gchar * key       G_GNUC_UNUSED,
+                                gpointer      user_data G_GNUC_UNUSED)
+{
+  update_screensaver_shortcut (lock_menuitem, settings);
 }
 
 static void
@@ -477,15 +477,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       _("Lock Screen"));
 
-      gchar * shortcut = g_settings_get_string(keybinding_settings, KEY_LOCK_SCREEN);
-      if (shortcut != NULL) {
-        g_debug("Lock screen shortcut: %s", shortcut);
-        dbusmenu_menuitem_property_set_shortcut_string(lock_menuitem, shortcut);
-        g_free(shortcut);
-      }
-      else {
-        g_debug("Unable to get lock screen shortcut.");
-      }
+      update_screensaver_shortcut (lock_menuitem, keybinding_settings);
 
       g_signal_connect (G_OBJECT(lock_menuitem),
                         DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
@@ -590,7 +582,7 @@ device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self)
 	}
 	if (!keybinding_settings) {
 		keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
-		g_signal_connect(lockdown_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(keybinding_changed), self);
+		g_signal_connect(lockdown_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(screensaver_keybinding_changed), self);
 	}
 	return;
 }

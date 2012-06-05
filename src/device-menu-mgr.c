@@ -107,27 +107,6 @@ device_menu_mgr_class_init (DeviceMenuMgrClass *klass)
 	object_class->finalize = device_menu_mgr_finalize;
 }
 
-// TODO
-// Is this needed anymore
-static void
-lockdown_changed (GSettings * settings,
-                  const gchar * key,
-                  gpointer     user_data)
-{
-	DeviceMenuMgr* self = DEVICE_MENU_MGR (user_data);
-
-	if (key == NULL) {
-		return;
-	}
-
-	if (g_strcmp0 (key, LOCKDOWN_KEY_USER) == 0 ||
-	      g_strcmp0 (key, LOCKDOWN_KEY_SCREENSAVER) == 0) {
-		device_menu_mgr_rebuild_items(self);
-	}
-
-	return;
-}
-
 static void
 update_screensaver_shortcut (DbusmenuMenuitem * menuitem, GSettings * settings)
 {
@@ -578,7 +557,8 @@ device_menu_mgr_ensure_settings_client (DeviceMenuMgr* self)
 {
 	if (!lockdown_settings) {
 		lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
-		g_signal_connect(lockdown_settings, "changed", G_CALLBACK(lockdown_changed), self);
+		g_signal_connect_swapped (lockdown_settings, "changed::" LOCKDOWN_KEY_USER, G_CALLBACK(device_menu_mgr_rebuild_items), self);
+		g_signal_connect_swapped (lockdown_settings, "changed::" LOCKDOWN_KEY_SCREENSAVER, G_CALLBACK(device_menu_mgr_rebuild_items), self);
 	}
 	if (!keybinding_settings) {
 		keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);

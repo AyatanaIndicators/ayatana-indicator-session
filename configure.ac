@@ -52,7 +52,6 @@ PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VE
 AC_SUBST(SESSIONERVICE_CFLAGS)
 AC_SUBST(SESSIONERVICE_LIBS)
 
-PKG_CHECK_MODULES(GUDEV, gudev-1.0, has_gudev=true, has_gudev=false)
 AC_SUBST(GUDEV_CFLAGS)
 AC_SUBST(GUDEV_LIBS)
 
@@ -187,8 +186,6 @@ AC_SUBST(COVERAGE_LDFLAGS)
 ###########################
 # Files
 ###########################
-
-AM_CONDITIONAL([HAS_GUDEV], [test "x$has_gudev" = "xtrue"])
 
 AC_CONFIG_FILES([
 Makefile

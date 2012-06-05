@@ -32,10 +32,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lock-helper.h"
 #include "upower-client.h"
 
-#ifdef HAS_GUDEV
-#include "udev-mgr.h"
-#endif  /* HAS_GUDEV */
-
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
 #define UP_INTERFACE  "org.freedesktop.UPower"
@@ -47,9 +43,6 @@ struct _DeviceMenuMgr
   GObject parent_instance;
   DbusmenuMenuitem* root_item;
   SessionDbus* session_dbus_interface;  
-#ifdef HAS_GUDEV
-  UdevMgr* udev_mgr;
-#endif  /* HAS_GUDEV */
 };
 
 static GSettings         *lockdown_settings  = NULL;
@@ -579,10 +572,6 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 	restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
 
 	update_menu_entries(restart_shutdown_logout_mi);
-#ifdef HAS_GUDEV
-  // Time to create the udev mgr and hand it the static relevant items.
-  self->udev_mgr = udev_mgr_new (scanners_menuitem, webcam_menuitem);   
-#endif
 }
 
 static void

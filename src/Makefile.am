@@ -113,18 +113,7 @@ indicator_session_service_SOURCES = \
 	user-menu-mgr.h \
 	user-menu-mgr.c \
 	device-menu-mgr.h \
-	device-menu-mgr.c \
-	sane-rules.h
-
-if HAS_GUDEV
-indicator_session_service_SOURCES += \
-	udev-mgr.h \
-	udev-mgr.c
-else
-EXTRA_DIST += \
-	udev-mgr.h \
-	udev-mgr.c
-endif
+	device-menu-mgr.c
 
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
@@ -132,12 +121,10 @@ indicator_session_service_CFLAGS = \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"Indicator-Session\" \
-	$(GUDEV_CFLAGS) \
 	$(COVERAGE_CFLAGS)
 indicator_session_service_LDADD = \
 	$(SESSIONSERVICE_LIBS) \
-	$(GCONF_LIBS) \
-	$(GUDEV_LIBS)
+	$(GCONF_LIBS)
 indicator_session_service_LDFLAGS = \
 	$(COVERAGE_LDFLAGS)
 

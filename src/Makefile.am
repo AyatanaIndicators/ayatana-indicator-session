@@ -70,12 +70,16 @@ accounts-service-client.h: $(srcdir)/accounts-service.xml
 		--output=accounts-service-client.h \
 		$(srcdir)/accounts-service.xml
 
-upower-client.h: $(srcdir)/upower.xml
-	dbus-binding-tool \
-		--prefix=_upower_client \
-		--mode=glib-client \
-		--output=upower-client.h \
-		$(srcdir)/upower.xml
+dbus_upower_sources = \
+        dbus-upower.c \
+        dbus-upower.h
+
+$(dbus_upower_sources): upower.xml
+	gdbus-codegen \
+	    --interface-prefix org.freedesktop \
+	    --c-namespace IndicatorSession \
+	    --generate-c-code dbus-upower \
+	    $^
 
 gen-%.xml.c: %.xml
 	@echo "Building $@ from $<"
@@ -92,6 +96,7 @@ gen-%.xml.h: %.xml
 #################
 
 indicator_session_service_SOURCES = \
+	$(dbus_upower_sources) \
 	lock-helper.c \
 	lock-helper.h \
 	session-service.c \
@@ -155,13 +160,13 @@ endif
 ###############
 
 BUILT_SOURCES = \
+	$(dbus_upower_sources) \
 	consolekit-manager-client.h \
 	consolekit-seat-client.h \
 	consolekit-session-client.h \
 	display-manager-client.h \
 	gen-session-dbus.xml.c \
 	gen-session-dbus.xml.h \
-	upower-client.h \
 	accounts-service-client.h
 
 EXTRA_DIST += \

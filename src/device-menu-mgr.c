@@ -25,12 +25,12 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-gtk/menuitem.h>
 
+#include "dbus-upower.h"
 #include "device-menu-mgr.h"
 #include "settings-helper.h"
 #include "dbus-shared-names.h"
 #include "dbusmenu-shared.h"
 #include "lock-helper.h"
-#include "upower-client.h"
 
 #define UP_ADDRESS    "org.freedesktop.UPower"
 #define UP_OBJECT     "/org/freedesktop/UPower"
@@ -51,16 +51,13 @@ struct _DeviceMenuMgr
   DbusmenuMenuitem * suspend_mi;
   DbusmenuMenuitem * lock_mi;
 
-  DBusGProxy * up_main_proxy;
-  DBusGProxy * up_prop_proxy;
-
   gboolean can_hibernate;
   gboolean can_suspend;
   gboolean allow_hibernate;
   gboolean allow_suspend;
 
-  DBusGProxyCall * suspend_call;
-  DBusGProxyCall * hibernate_call;
+  IndicatorSessionUPower * upower_proxy;
+  GCancellable * cancellable;
 };
 
 static void setup_up (DeviceMenuMgr* self);
@@ -96,8 +93,8 @@ device_menu_mgr_dispose (GObject *object)
   DeviceMenuMgr * self = DEVICE_MENU_MGR (object);
   g_clear_object (&self->lockdown_settings);
   g_clear_object (&self->keybinding_settings);
-  g_clear_object (&self->up_main_proxy);
-  g_clear_object (&self->up_prop_proxy);
+  g_clear_object (&self->upower_proxy);
+  g_clear_object (&self->cancellable);
 
   G_OBJECT_CLASS (device_menu_mgr_parent_class)->finalize (object);
 }
@@ -141,28 +138,20 @@ screensaver_keybinding_changed (GSettings   * settings,
 }
 
 
-/* Let's put this machine to sleep with some hints on how it should sleep.  */
-static void
-machine_sleep_with_context (DeviceMenuMgr* self, const gchar* type)
-{
-  if (self->up_main_proxy == NULL)
-    {
-      g_warning("Cannot %s because no upower proxy", type);
-    }
-  else
-    {
-      dbus_g_proxy_begin_call (self->up_main_proxy, type,
-                               NULL, NULL, NULL,
-                               G_TYPE_INVALID);
-    }
-}
-
 static void
 machine_sleep_from_suspend (DbusmenuMenuitem * mi        G_GNUC_UNUSED,
                             guint              timestamp G_GNUC_UNUSED,
                             gpointer           userdata)
 {
-  machine_sleep_with_context (DEVICE_MENU_MGR(userdata), "Suspend");
+  GError * error = NULL;
+  DeviceMenuMgr * mgr = DEVICE_MENU_MGR (userdata);
+
+  indicator_session_upower_call_suspend_sync (mgr->upower_proxy, mgr->cancellable, &error);
+  if (error != NULL)
+    {
+      g_warning ("%s: %s", G_STRFUNC, error->message);
+      g_clear_error (&error);
+    }
 }
 
 static void
@@ -170,120 +159,90 @@ machine_sleep_from_hibernate (DbusmenuMenuitem * mi        G_GNUC_UNUSED,
                               guint              timestamp G_GNUC_UNUSED,
                               gpointer           userdata)
 {
-  machine_sleep_with_context (DEVICE_MENU_MGR(userdata), "Hibernate");
+  GError * error = NULL;
+  DeviceMenuMgr * mgr = DEVICE_MENU_MGR (userdata);
+
+  indicator_session_upower_call_hibernate_sync (mgr->upower_proxy, mgr->cancellable, &error);
+  if (error != NULL)
+    {
+      g_warning ("%s: %s", G_STRFUNC, error->message);
+      g_clear_error (&error);
+    }
 }
 
 /***
 ****
 ***/
 
+/* When allow-suspend changes, rebuild the menus */
 static void
-rebuild_if_flag_changed (DeviceMenuMgr * mgr, GError * error, gboolean * setme, gboolean value)
+allowed_suspend_cb (GObject * source, GAsyncResult * res, gpointer userdata)
 {
+  gboolean allowed;
+  GError * error = NULL;
+  DeviceMenuMgr * mgr = DEVICE_MENU_MGR (userdata);
+
+  indicator_session_upower_call_suspend_allowed_finish (mgr->upower_proxy, &allowed, res, &error);
   if (error != NULL)
     {
-      g_warning ("Unable to get information on what's allowed from UPower: %s", error->message);
+      g_warning ("%s: %s", G_STRFUNC, error->message);
+      g_error_free (error);
     }
-  else if (*setme != value)
+  else if (mgr->allow_suspend != allowed)
     {
-      *setme = value;
+      mgr->allow_suspend = allowed;
       device_menu_mgr_rebuild_items (mgr);
     }
 }
 
-/* When allow-suspend changes, rebuild the menus */
-static void
-allowed_suspend_cb (DBusGProxy * proxy G_GNUC_UNUSED,
-                    gboolean     allow_suspend,
-                    GError     * error,
-                    gpointer     userdata)
-{
-  DeviceMenuMgr * mgr = DEVICE_MENU_MGR (userdata);
-  rebuild_if_flag_changed (mgr, error, &mgr->allow_suspend, allow_suspend);
-}
-
 /* When allow-hibernate changes, rebuild the menus */
 static void
-allowed_hibernate_cb (DBusGProxy * proxy G_GNUC_UNUSED,
-                      gboolean     allow_hibernate,
-                      GError     * error,
-                      gpointer     userdata)
+allowed_hibernate_cb (GObject * source, GAsyncResult * res, gpointer userdata)
 {
-  DeviceMenuMgr * mgr = DEVICE_MENU_MGR (userdata);
-  rebuild_if_flag_changed (mgr, error, &mgr->allow_hibernate, allow_hibernate);
-}
-
-
-static void
-rebuild_if_flag_changed_from_proxy_call (DeviceMenuMgr * mgr, gboolean * setme, DBusGProxy * proxy, DBusGProxyCall * call)
-{
-  GValue value = {0};
+  gboolean allowed;
   GError * error = NULL;
+  DeviceMenuMgr * mgr = DEVICE_MENU_MGR (userdata);
 
-  dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID);
-  rebuild_if_flag_changed (mgr, error, setme, g_value_get_boolean (&value));
-
-  g_clear_error (&error);
-  g_value_unset (&value);
-}
-
-/* When can-suspend changes, rebuild the menus */
-static void
-suspend_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
-{
-  DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
-  self->suspend_call = NULL;
-  rebuild_if_flag_changed_from_proxy_call (self, &self->can_suspend, proxy, call);
-}
-
-/* When can-hibernate changes, rebuild the menus */
-static void
-hibernate_prop_cb (DBusGProxy * proxy, DBusGProxyCall * call, gpointer userdata)
-{
-  DeviceMenuMgr* self = DEVICE_MENU_MGR (userdata);
-  self->hibernate_call = NULL;
-  rebuild_if_flag_changed_from_proxy_call (self, &self->can_hibernate, proxy, call);
-}
-
-/* A signal that we need to recheck to ensure we can still hibernate and/or suspend */
-static void
-up_changed_cb (DBusGProxy * proxy, gpointer user_data)
-{
-  DeviceMenuMgr * self = DEVICE_MENU_MGR(user_data);
-
-  if (self->suspend_call == NULL)
+  indicator_session_upower_call_hibernate_allowed_finish (mgr->upower_proxy, &allowed, res, &error);
+  if (error != NULL)
     {
-      /* start async call to see if we can hibernate */
-      self->suspend_call = dbus_g_proxy_begin_call (self->up_prop_proxy,
-                                                    "Get",
-                                                    suspend_prop_cb,
-                                                    user_data,
-                                                    NULL,
-                                                    G_TYPE_STRING,
-                                                    UP_INTERFACE,
-                                                    G_TYPE_STRING,
-                                                    "CanSuspend",
-                                                    G_TYPE_INVALID,
-                                                    G_TYPE_VALUE,
-                                                    G_TYPE_INVALID);
+      g_warning ("%s: %s", G_STRFUNC, error->message);
+      g_error_free (error);
+    }
+  else if (mgr->allow_hibernate != allowed)
+    {
+      mgr->allow_hibernate = allowed;
+      device_menu_mgr_rebuild_items (mgr);
+    }
+}
+
+
+static void
+on_upower_properties_changed (IndicatorSessionUPower * upower_proxy, DeviceMenuMgr * mgr)
+{
+  gboolean b;
+  gboolean refresh = FALSE;
+
+  /* suspend */
+  b = indicator_session_upower_get_can_suspend (upower_proxy);
+  if (mgr->can_suspend != b)
+    {
+      mgr->can_suspend = b;
+      refresh = TRUE;
     }
 
-    if (self->hibernate_call == NULL)
-      {
-        /* start async call to see if we can suspend */
-        self->hibernate_call = dbus_g_proxy_begin_call (self->up_prop_proxy,
-                                                        "Get",
-                                                        hibernate_prop_cb,
-                                                        user_data,
-                                                        NULL,
-                                                        G_TYPE_STRING,
-                                                        UP_INTERFACE,
-                                                        G_TYPE_STRING,
-                                                        "CanHibernate",
-                                                        G_TYPE_INVALID,
-                                                        G_TYPE_VALUE,
-                                                        G_TYPE_INVALID);
-      }
+  /* hibernate */
+  b = indicator_session_upower_get_can_hibernate (upower_proxy);
+  if (mgr->can_hibernate != b)
+    {
+      mgr->can_hibernate = b;
+      refresh = TRUE;
+    }
+
+  if (refresh)
+    {
+      device_menu_mgr_rebuild_items (mgr);
+    }
 }
 
 /* This function goes through and sets up what we need for DKp checking.
@@ -291,34 +250,33 @@ up_changed_cb (DBusGProxy * proxy, gpointer user_data)
 static void
 setup_up (DeviceMenuMgr* self)
 {
-  DBusGConnection * bus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
-  g_return_if_fail (bus != NULL);
+  self->cancellable = g_cancellable_new ();
 
-  if (self->up_main_proxy == NULL)
+  GError * error = NULL;
+  self->upower_proxy = indicator_session_upower_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                                                        0,
+                                                                        UP_ADDRESS,
+                                                                        UP_OBJECT,
+                                                                        NULL,
+                                                                        &error);
+  if (error != NULL)
     {
-      self->up_main_proxy = dbus_g_proxy_new_for_name (bus,
-                                                       UP_ADDRESS,
-                                                       UP_OBJECT,
-                                                       UP_INTERFACE);
+      g_warning ("Error creating cups notify handler: %s", error->message);
+      g_error_free (error);
+    }
+  else
+    {
+      /* Check to see if these are getting blocked by PolicyKit */
+      indicator_session_upower_call_suspend_allowed (self->upower_proxy, self->cancellable, allowed_suspend_cb, self);
+      indicator_session_upower_call_hibernate_allowed (self->upower_proxy, self->cancellable, allowed_hibernate_cb, self);
+
+      g_signal_connect (self->upower_proxy, "changed", G_CALLBACK(on_upower_properties_changed), self);
+
+      /* trigger an initial "changed" event */
+      on_upower_properties_changed (self->upower_proxy, self);
     }
 
-  if (self->up_prop_proxy == NULL)
-    {
-      self->up_prop_proxy = dbus_g_proxy_new_for_name(bus,
-                                                      UP_ADDRESS,
-                                                      UP_OBJECT,
-                                                      DBUS_INTERFACE_PROPERTIES);
-      /* Connect to changed signal */
-      dbus_g_proxy_add_signal(self->up_main_proxy, "Changed", G_TYPE_INVALID);
-      dbus_g_proxy_connect_signal(self->up_main_proxy, "Changed", G_CALLBACK(up_changed_cb), self, NULL);
-    }
 
-  /* Force an original "changed" event */
-  up_changed_cb(self->up_main_proxy, self);
-
-  /* Check to see if these are getting blocked by PolicyKit */
-  org_freedesktop_UPower_suspend_allowed_async(self->up_main_proxy, allowed_suspend_cb, self);
-  org_freedesktop_UPower_hibernate_allowed_async(self->up_main_proxy, allowed_hibernate_cb, self);
 }
 
 static void

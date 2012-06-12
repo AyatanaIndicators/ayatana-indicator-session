@@ -65,12 +65,6 @@ static void user_widget_set_twin_item (UserWidget* self,
 // keyevent consumers
 static gboolean user_widget_button_release_event (GtkWidget *menuitem, 
                                                   GdkEventButton *event);
-// Dbusmenuitem properties update callback
-static void user_widget_property_update (DbusmenuMenuitem* item,
-                                         gchar* property, 
-                                         GVariant* value,
-                                         gpointer userdata);
-                                         
 
 static void _color_shade (const CairoColorRGB *a,
                           float k,
@@ -484,7 +478,7 @@ _color_hls_to_rgb (gdouble *h,
   }
 }
 
-void
+static void
 _color_shade (const CairoColorRGB *a, float k, CairoColorRGB *b)
 {
   double red;
@@ -535,20 +529,25 @@ user_widget_button_release_event (GtkWidget *menuitem,
   return FALSE;
 }
 
-
-/** 
- * TODO, be sensitive to UI updates
- * */
 static void 
-user_widget_property_update (DbusmenuMenuitem* item, gchar* property, 
-                             GVariant* value, gpointer userdata)
+user_widget_property_update (DbusmenuMenuitem  * item,
+                             const gchar       * property, 
+                             GVariant          * value,
+                             UserWidget        * self)
 {
-  g_return_if_fail (IS_USER_WIDGET (userdata)); 
-  //gtk_widget_queue_redraw (GTK_WIDGET(userdata));
+  g_return_if_fail (IS_USER_WIDGET (self)); 
+
+  UserWidgetPrivate* priv = USER_WIDGET_GET_PRIVATE(self);
+
+  if (!g_strcmp0 (property, USER_ITEM_PROP_LOGGED_IN))
+    {
+      gtk_widget_set_visible (priv->tick_icon, g_variant_get_boolean(value));
+    }
+  else
+    {
+      g_debug ("%s FIXME: unhandled property change %s", G_STRFUNC, property);
+    }
 }
-
-
-
 
 static void
 user_widget_set_twin_item (UserWidget* self,

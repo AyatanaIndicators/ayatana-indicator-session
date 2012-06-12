@@ -28,7 +28,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 struct ActivateUserSessionData
 {
   UserMenuMgr * menu_mgr;
-  UserData * user;
+  AccountsUser * user;
 };
 
 struct _UserMenuMgr
@@ -36,6 +36,7 @@ struct _UserMenuMgr
   GObject parent_instance;
   UsersServiceDbus* users_dbus_interface;
   DbusmenuMenuitem* root_item;
+  DbusmenuMenuitem * guest_mi;
   SessionDbus* session_dbus_interface;  
   GSettings * lockdown_settings;
   gboolean greeter_mode;
@@ -59,6 +60,13 @@ static void user_menu_mgr_rebuild_items (UserMenuMgr *self);
 static void user_change (UsersServiceDbus *service,
                          const gchar      *user_id,
                          gpointer          user_data);
+
+static void on_guest_logged_in_changed (UsersServiceDbus * users_dbus,
+                                        UserMenuMgr      * self);
+
+static void on_user_logged_in_changed (UsersServiceDbus  * users_dbus,
+                                       AccountsUser      * user,
+                                       UserMenuMgr       * self);
 static gboolean is_this_guest_session (void);
 static void activate_guest_session (DbusmenuMenuitem * mi,
                                     guint timestamp,
@@ -67,6 +75,9 @@ static void activate_guest_session (DbusmenuMenuitem * mi,
 
 G_DEFINE_TYPE (UserMenuMgr, user_menu_mgr, G_TYPE_OBJECT);
 
+/***
+****
+***/
 
 static void
 user_menu_mgr_init (UserMenuMgr *self)
@@ -74,14 +85,14 @@ user_menu_mgr_init (UserMenuMgr *self)
   self->lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
   self->users_dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
   self->root_item = dbusmenu_menuitem_new ();
-  g_signal_connect (G_OBJECT (self->users_dbus_interface),
-                    "user-added",
-                    G_CALLBACK (user_change),
-                    self);
-  g_signal_connect (G_OBJECT (self->users_dbus_interface),
-                    "user-deleted",
-                    G_CALLBACK (user_change),
-                    self);
+  g_signal_connect (self->users_dbus_interface, "user-added",
+                    G_CALLBACK (user_change), self);
+  g_signal_connect (self->users_dbus_interface, "user-deleted",
+                    G_CALLBACK (user_change), self);
+  g_signal_connect (self->users_dbus_interface, "user-logged-in-changed",
+                    G_CALLBACK(on_user_logged_in_changed), self);
+  g_signal_connect (self->users_dbus_interface, "guest-logged-in-changed",
+                    G_CALLBACK(on_guest_logged_in_changed), self);
 }
 
 static void
@@ -108,8 +119,67 @@ user_menu_mgr_class_init (UserMenuMgrClass *klass)
   object_class->finalize = user_menu_mgr_finalize;
 }
 
+/***
+****
+***/
+
+static GQuark
+get_menuitem_quark (void)
+{
+  static GQuark q = 0;
+
+  if (G_UNLIKELY(!q))
+    {
+      q = g_quark_from_static_string ("menuitem");
+    }
+
+  return q;
+}
+
 static DbusmenuMenuitem*
-create_user_menuitem (UserMenuMgr * menu_mgr, UserData * user)
+user_get_menuitem (AccountsUser * user)
+{
+  return g_object_get_qdata (G_OBJECT(user), get_menuitem_quark());
+}
+
+static void
+user_set_menuitem (AccountsUser * user, DbusmenuMenuitem * mi)
+{
+  g_message ("%s %s() associating user %s with mi %p", G_STRLOC, G_STRFUNC, accounts_user_get_user_name(user), mi);
+  g_object_set_qdata_full (G_OBJECT(user), get_menuitem_quark(), g_object_ref(G_OBJECT(mi)), g_object_unref);
+}
+
+static GQuark
+get_name_collision_quark (void)
+{
+  static GQuark q = 0;
+
+  if (G_UNLIKELY(!q))
+    {
+      q = g_quark_from_static_string ("name-collision");
+    }
+
+  return q;
+}
+
+static gboolean
+get_user_name_collision (AccountsUser * user)
+{
+  return g_object_get_qdata (G_OBJECT(user), get_name_collision_quark()) != NULL;
+}
+
+static void
+set_user_name_collision (AccountsUser * user, gboolean b)
+{
+  g_object_set_qdata (G_OBJECT(user), get_name_collision_quark(), GINT_TO_POINTER(b));
+}
+
+/***
+****
+***/
+
+static DbusmenuMenuitem*
+create_user_menuitem (UserMenuMgr * menu_mgr, AccountsUser * user)
 {
   DbusmenuMenuitem * mi = dbusmenu_menuitem_new ();
   dbusmenu_menuitem_property_set (mi,
@@ -117,27 +187,30 @@ create_user_menuitem (UserMenuMgr * menu_mgr, UserData * user)
                                   USER_ITEM_TYPE);
 
   /* set the name property */
-  char * str = user->real_name_conflict
-             ? g_strdup_printf ("%s (%s)", user->real_name, user->user_name)
-             : g_strdup (user->real_name);
+  const gchar * const real_name = accounts_user_get_real_name (user);
+  const gchar * const user_name = accounts_user_get_user_name (user);
+  char * str = get_user_name_collision (user)
+             ? g_strdup_printf ("%s (%s)", real_name, user_name)
+             : g_strdup (real_name);
   dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, str);
   g_free (str);
 
   /* set the logged-in property */
+  const gboolean is_logged_in = users_service_dbus_is_user_logged_in (menu_mgr->users_dbus_interface, user);
   dbusmenu_menuitem_property_set_bool (mi,
                                        USER_ITEM_PROP_LOGGED_IN,
-                                       user->sessions != NULL);
+                                       is_logged_in);
 
   /* set the icon property */
-  str = user->icon_file;
-  if (!str || !*str)
-    str = USER_ITEM_ICON_DEFAULT;
-  dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_ICON, str);
+  const gchar * icon_str = accounts_user_get_icon_file (user);
+  if (!icon_str || !*icon_str)
+    icon_str = USER_ITEM_ICON_DEFAULT;
+  dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_ICON, icon_str);
 
   /* set the is-current-user property */
   dbusmenu_menuitem_property_set_bool (mi,
                                        USER_ITEM_PROP_IS_CURRENT_USER,
-                                       !g_strcmp0 (user->user_name, g_get_user_name()));
+                                       !g_strcmp0 (user_name, g_get_user_name()));
 
   /* set the activate callback */
   struct ActivateUserSessionData * data = g_new (struct ActivateUserSessionData, 1);
@@ -148,8 +221,40 @@ create_user_menuitem (UserMenuMgr * menu_mgr, UserData * user)
                          data, (GClosureNotify)g_free,
                          0);
 
+  /* give this AccountsUser a hook back to this menuitem */
+  user_set_menuitem (user, mi);
+
   /* done */
   return mi;
+}
+
+static void
+on_guest_logged_in_changed (UsersServiceDbus * users_service_dbus,
+                            UserMenuMgr      * self)
+{
+  if (self->guest_mi != NULL)
+    {
+      const gboolean b = users_service_dbus_is_guest_logged_in (users_service_dbus);
+      dbusmenu_menuitem_property_set_bool (self->guest_mi, USER_ITEM_PROP_LOGGED_IN, b);
+    }
+}
+
+/* When a user's login state changes,
+   update the corresponding menuitem's LOGGED_IN property */
+static void
+on_user_logged_in_changed (UsersServiceDbus  * users_service_dbus,
+                           AccountsUser      * user,
+                           UserMenuMgr       * self)
+{
+  DbusmenuMenuitem * mi = user_get_menuitem (user);
+g_message ("%s %s() user %s corresponds to mi %p", G_STRLOC, G_STRFUNC, accounts_user_get_user_name(user), mi);
+
+  if (mi != NULL)
+    {
+      const gboolean b = users_service_dbus_is_user_logged_in (users_service_dbus, user);
+g_message ("setting %p USER_ITEM_PROP_LOGGED_IN to %d", mi, (int)b);
+      dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, b);
+    }
 }
 
 /* Builds up the menu for us */
@@ -169,8 +274,8 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
 
-  /* Set to NULL just incase we don't end up building one */
-  users_service_dbus_set_guest_item(self->users_dbus_interface, NULL);
+  /* Set to NULL in case we don't end up building one */
+  self->guest_mi = NULL;
 
   /* Build all of the user switching items */
   if (can_activate)
@@ -201,24 +306,19 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
     
     if ( !is_this_guest_session () && guest_enabled)
     {
-      DbusmenuMenuitem *guest_mi = NULL;
-      guest_mi = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (guest_mi,
+      self->guest_mi = dbusmenu_menuitem_new ();
+      dbusmenu_menuitem_property_set (self->guest_mi,
                                       DBUSMENU_MENUITEM_PROP_TYPE,
                                       USER_ITEM_TYPE);
-      dbusmenu_menuitem_property_set (guest_mi,
+      dbusmenu_menuitem_property_set (self->guest_mi,
                                       USER_ITEM_PROP_NAME,
                                       _("Guest Session"));
-      dbusmenu_menuitem_property_set_bool (guest_mi,
-                                           USER_ITEM_PROP_LOGGED_IN,
-                                           FALSE);
-      dbusmenu_menuitem_child_append (self->root_item, guest_mi);
-      g_signal_connect (G_OBJECT (guest_mi),
+      on_guest_logged_in_changed (self->users_dbus_interface, self);
+      dbusmenu_menuitem_child_append (self->root_item, self->guest_mi);
+      g_signal_connect (G_OBJECT (self->guest_mi),
                         DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK (activate_guest_session),
                         self);
-      users_service_dbus_set_guest_item (self->users_dbus_interface,
-                                         guest_mi);
     }
     else{
       session_dbus_set_users_real_name (self->session_dbus_interface,
@@ -231,14 +331,16 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
 
     for (u = users; u != NULL; u = g_list_next (u))
       {
-        UserData * user = u->data;
+        AccountsUser * user = u->data;
 
         DbusmenuMenuitem * mi = create_user_menuitem (self, user);
         dbusmenu_menuitem_child_append (self->root_item, mi);
 
-        if (!g_strcmp0 (user->user_name, g_get_user_name()))
+        const char * const user_name = accounts_user_get_user_name (user);
+        if (!g_strcmp0 (user_name, g_get_user_name()))
           {
-            session_dbus_set_users_real_name (self->session_dbus_interface, user->real_name);
+            const char * const real_name = accounts_user_get_real_name (user);
+            session_dbus_set_users_real_name (self->session_dbus_interface, real_name);
           }
       }
 
@@ -305,20 +407,21 @@ activate_user_session (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data
 /* Comparison function to look into the UserData struct
    to compare by using the username value */
 static gint
-compare_users_by_username (gconstpointer a, gconstpointer b)
+compare_users_by_username (gconstpointer ga, gconstpointer gb)
 {
-  UserData *user1 = (UserData *)a;
-  UserData *user2 = (UserData *)b;
+  AccountsUser * a = ACCOUNTS_USER(ga);
+  AccountsUser * b = ACCOUNTS_USER(gb);
 
-  gint retval = g_strcmp0 (user1->real_name, user2->real_name);
+  const int ret = g_strcmp0 (accounts_user_get_real_name (a),
+                             accounts_user_get_real_name (b));
 
-  /* If they're the same, they're both in conflict. */
-  if (retval == 0) {
-    user1->real_name_conflict = TRUE;
-    user2->real_name_conflict = TRUE;
-  }
+  if (!ret) /* names are the same, so both have a name collision */
+    {
+      set_user_name_collision (a, TRUE);
+      set_user_name_collision (b, TRUE);
+    }
 
-  return retval;
+  return ret;
 }
 
 static void
@@ -334,15 +437,16 @@ activate_user_accounts (DbusmenuMenuitem *mi,
   }
 }
 
-/* Signal called when a user is added.  It updates the count and
-   rebuilds the menu */
+/* Signal called when a user is added.
+   It updates the count and rebuilds the menu */
 static void
-user_change (UsersServiceDbus *service,
-             const gchar      *user_id,
+user_change (UsersServiceDbus *service    G_GNUC_UNUSED,
+             const gchar      *user_id    G_GNUC_UNUSED,
              gpointer          user_data)
 {
-  g_return_if_fail (USER_IS_MENU_MGR (user_data));  
-  UserMenuMgr* user_mgr = USER_MENU_MGR(user_data);  
+  UserMenuMgr* user_mgr = USER_MENU_MGR (user_data);
+  g_return_if_fail (user_mgr != NULL);
+
   user_menu_mgr_rebuild_items (user_mgr);
 }
 

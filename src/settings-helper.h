@@ -25,9 +25,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib/gi18n.h>
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
-
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 

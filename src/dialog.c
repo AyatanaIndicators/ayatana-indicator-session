@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib/gi18n.h>
 
-#include "consolekit-manager-client.h"
+#include "dbus-consolekit-manager.h"
 #include "dialog.h"
 
 /* Strings */
@@ -137,30 +137,31 @@ check_restart_required (void)
 static gboolean
 ck_check_allowed (LogoutDialogType type)
 {
-	DBusGConnection * system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
-	g_return_val_if_fail(system_bus != NULL, TRUE);
+	gboolean allowed = TRUE;
 
-	DBusGProxy * ck_proxy = dbus_g_proxy_new_for_name (system_bus,
-	                                                   "org.freedesktop.ConsoleKit",
-	                                                   "/org/freedesktop/ConsoleKit/Manager",
-	                                                   "org.freedesktop.ConsoleKit.Manager");
-	g_return_val_if_fail(ck_proxy != NULL, TRUE);
+	ConsoleKitManager * ck_proxy = console_kit_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+	                                                                           G_DBUS_PROXY_FLAGS_NONE,
+	                                                                           "org.freedesktop.ConsoleKit",
+	                                                                           "/org/freedesktop/ConsoleKit/Manager",
+	                                                                           NULL,
+	                                                                           NULL);
+	if (ck_proxy != NULL)
+	{
+		switch (type) {
+		case LOGOUT_DIALOG_TYPE_RESTART:
+			console_kit_manager_call_can_restart_sync (ck_proxy, &allowed, NULL, NULL);
+			break;
+		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
+			console_kit_manager_call_can_stop_sync (ck_proxy, &allowed, NULL, NULL);
+			break;
+		default:
+			break;
+		}
 
-	gboolean retval = TRUE;
-	switch (type) {
-	case LOGOUT_DIALOG_TYPE_RESTART:
-		org_freedesktop_ConsoleKit_Manager_can_restart(ck_proxy, &retval, NULL);
-		break;
-	case LOGOUT_DIALOG_TYPE_SHUTDOWN:
-		org_freedesktop_ConsoleKit_Manager_can_stop(ck_proxy, &retval, NULL);
-		break;
-	default:
-		break;
+		g_object_unref(ck_proxy);
 	}
 
-	g_object_unref(ck_proxy);
-
-	return retval;
+	return allowed;
 }
 
 LogoutDialog *

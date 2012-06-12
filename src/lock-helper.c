@@ -21,13 +21,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <dbus/dbus-glib.h>
 #include "lock-helper.h"
 
 #define SCREENSAVER_SCHEMA            "org.gnome.desktop.screensaver"
 #define SCREENSAVER_LOCK_ENABLED_KEY  "lock-enabled"
 
-static DBusGProxy * gss_proxy = NULL;
+static GDBusProxy * gss_proxy = NULL;
+
 static GMainLoop * gss_mainloop = NULL;
 
 static gboolean is_guest = FALSE;
@@ -52,16 +52,29 @@ will_lock_screen (void)
 	return g_settings_get_boolean (settings, SCREENSAVER_LOCK_ENABLED_KEY);
 }
 
-/* When the screensave go active, if we've got a mainloop
-   running we should quit it. */
+/* When the screensave goes active,
+   if we've got a mainloop running we should quit it. */
 static void
-gss_active_changed (DBusGProxy * proxy, gboolean active, gpointer data)
+on_gss_signal (GDBusProxy *proxy,
+               gchar      *sender_name,
+               gchar      *signal_name,
+               GVariant   *parameters,
+               gpointer    user_data)
 {
-	if (active && gss_mainloop != NULL) {
-		g_main_loop_quit(gss_mainloop);
-	}
+	g_debug ("%s sender_name: %s", G_STRLOC, sender_name);
+	g_debug ("%s signal_name: %s", G_STRLOC, signal_name);
 
-	return;
+	if (!g_strcmp0 (signal_name, "ActiveChanged"))
+	{
+		gboolean active = FALSE;
+		g_variant_get_child (parameters, 0, "b", &active);
+		g_debug ("%s active: %i", G_STRLOC, active);
+
+		if (active && gss_mainloop != NULL)
+		{
+			g_main_loop_quit(gss_mainloop);
+		}
+	}
 }
 
 static gboolean
@@ -72,7 +85,7 @@ get_greeter_mode (void)
 	return (g_strcmp0(var, "1") == 0);
 }
 
-/* Build the gss proxy and set up it's signals */
+/* Build the gss proxy and set up its signals */
 void
 build_gss_proxy (void)
 {
@@ -80,17 +93,23 @@ build_gss_proxy (void)
 		if (get_greeter_mode ())
 			return; /* Don't start/lock the screensaver from the login screen */
 
-		DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-		g_return_if_fail(session_bus != NULL);
+	
+		GError * error = NULL;	
+		gss_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+                                                           G_DBUS_PROXY_FLAGS_NONE,
+                                                           NULL,
+                                                           "org.gnome.ScreenSaver",
+                                                           "/",
+                                                           "org.gnome.ScreenSaver",
+                                                           NULL,
+                                                           &error);
+		if (error != NULL) {
+			g_message ("Unable to get ScreenSaver proxy: %s", error->message);
+			g_error_free (error);
+		}
 
-		gss_proxy = dbus_g_proxy_new_for_name(session_bus,
-		                                      "org.gnome.ScreenSaver",
-		                                      "/",
-		                                      "org.gnome.ScreenSaver");
-		g_return_if_fail(gss_proxy != NULL);
-
-		dbus_g_proxy_add_signal(gss_proxy, "ActiveChanged", G_TYPE_BOOLEAN, G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal(gss_proxy, "ActiveChanged", G_CALLBACK(gss_active_changed), NULL, NULL);
+		g_return_if_fail (gss_proxy != NULL);
+		g_signal_connect (gss_proxy, "g-signal", G_CALLBACK(on_gss_signal), NULL);
 	}
 
 	return;
@@ -113,8 +132,8 @@ activate_timeout (gpointer data)
 	return FALSE;
 }
 
-/* A fun little function to actually lock the screen.  If,
-   that's what you want, let's do it! */
+/* A fun little function to actually lock the screen.
+   If that's what you want, let's do it! */
 void
 lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 {
@@ -123,11 +142,19 @@ lock_screen (DbusmenuMenuitem * mi, guint timestamp, gpointer data)
 	build_gss_proxy();
 	g_return_if_fail(gss_proxy != NULL);
 
-	dbus_g_proxy_call_no_reply(gss_proxy,
-	                           "Lock",
-	                           G_TYPE_INVALID,
-	                           G_TYPE_INVALID);
-
+	GError * error = NULL;
+	GVariant * ret = g_dbus_proxy_call_sync (gss_proxy,
+	                                         "Lock",
+	                                         NULL,
+	                                         G_DBUS_CALL_FLAGS_NONE,
+	                                         -1,
+	                                         NULL,
+	                                         &error);
+	g_variant_unref (ret);
+	if (error != NULL) {
+		g_warning ("Unable to lock: %s", error->message);
+		g_error_free (error);
+	}
 	if (gss_mainloop == NULL) {
 		gss_mainloop = g_main_loop_new(NULL, FALSE);
 	}

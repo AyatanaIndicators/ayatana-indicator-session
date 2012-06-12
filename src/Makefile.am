@@ -23,53 +23,77 @@ libsession_la_SOURCES = \
 	dbus-shared-names.h \
 	dbusmenu-shared.h \
 	user-widget.c \
-	user-widget.h \
-	accounts-service-client.h
+	user-widget.h
 libsession_la_CFLAGS = \
 	$(APPLET_CFLAGS) \
 	$(COVERAGE_CFLAGS) \
-	-Wall -Werror \
+	-Wall -Wunused \
 	-DG_LOG_DOMAIN=\"Indicator-Session\"
 libsession_la_LIBADD = $(APPLET_LIBS)
 libsession_la_LDFLAGS = \
 	$(COVERAGE_LDFLAGS) \
 	-module -avoid-version
 
-consolekit-manager-client.h: $(srcdir)/org.freedesktop.ConsoleKit.Manager.xml
-	dbus-binding-tool \
-		--prefix=_consolekit_manager_client \
-		--mode=glib-client \
-		--output=consolekit-manager-client.h \
-		$(srcdir)/org.freedesktop.ConsoleKit.Manager.xml
+dbus_display_manager_sources = \
+	dbus-display-manager.c \
+	dbus-display-manager.h
 
-consolekit-seat-client.h: $(srcdir)/org.freedesktop.ConsoleKit.Seat.xml
-	dbus-binding-tool \
-		--prefix=_consolekit_seat_client \
-		--mode=glib-client \
-		--output=consolekit-seat-client.h \
-		$(srcdir)/org.freedesktop.ConsoleKit.Seat.xml
+$(dbus_display_manager_sources): display-manager.xml
+	gdbus-codegen \
+	    --interface-prefix org.freedesktop \
+	    --generate-c-code dbus-display-manager \
+	    $^
 
-consolekit-session-client.h: $(srcdir)/org.freedesktop.ConsoleKit.Session.xml
-	dbus-binding-tool \
-		--prefix=_consolekit_session_client \
-		--mode=glib-client \
-		--output=consolekit-session-client.h \
-		$(srcdir)/org.freedesktop.ConsoleKit.Session.xml
+dbus_consolekit_manager_sources = \
+	dbus-consolekit-manager.c \
+	dbus-consolekit-manager.h
 
-display-manager-client.h: $(srcdir)/display-manager.xml
-	dbus-binding-tool \
-		--prefix=_gdm_local_display_factory_client \
-		--mode=glib-client \
-		--output=display-manager-client.h \
-		$(srcdir)/display-manager.xml
+$(dbus_consolekit_manager_sources): org.freedesktop.ConsoleKit.Manager.xml
+	gdbus-codegen \
+	    --interface-prefix org.freedesktop \
+	    --generate-c-code dbus-consolekit-manager \
+	    $^
 
-accounts-service-client.h: $(srcdir)/accounts-service.xml
-	dbus-binding-tool \
-		--prefix=_accounts_service_client \
-		--mode=glib-client \
-		--output=accounts-service-client.h \
-		$(srcdir)/accounts-service.xml
+dbus_consolekit_seat_sources = \
+	dbus-consolekit-seat.c \
+	dbus-consolekit-seat.h
 
+$(dbus_consolekit_seat_sources): org.freedesktop.ConsoleKit.Seat.xml
+	gdbus-codegen \
+	    --interface-prefix org.freedesktop \
+	    --generate-c-code dbus-consolekit-seat \
+	    $^
+
+dbus_consolekit_session_sources = \
+	dbus-consolekit-session.c \
+	dbus-consolekit-session.h
+
+$(dbus_consolekit_session_sources): org.freedesktop.ConsoleKit.Session.xml
+	gdbus-codegen \
+	    --interface-prefix org.freedesktop \
+	    --generate-c-code dbus-consolekit-session \
+	    $^
+
+dbus_accounts_sources = \
+	dbus-accounts.c \
+	dbus-accounts.h
+
+$(dbus_accounts_sources): org.freedesktop.Accounts.xml
+	gdbus-codegen \
+	    --interface-prefix org.freedesktop \
+	    --generate-c-code dbus-accounts \
+	    $^
+	
+dbus_user_sources = \
+	dbus-user.c \
+	dbus-user.h
+
+$(dbus_user_sources): org.freedesktop.Accounts.User.xml
+	gdbus-codegen \
+	    --interface-prefix org.freedesktop \
+	    --generate-c-code dbus-user \
+	    $^
+	
 dbus_upower_sources = \
         dbus-upower.c \
         dbus-upower.h
@@ -96,7 +120,13 @@ gen-%.xml.h: %.xml
 #################
 
 indicator_session_service_SOURCES = \
+	$(dbus_accounts_sources) \
+	$(dbus_consolekit_manager_sources) \
+	$(dbus_consolekit_seat_sources) \
+	$(dbus_consolekit_session_sources) \
+	$(dbus_display_manager_sources) \
 	$(dbus_upower_sources) \
+	$(dbus_user_sources) \
 	lock-helper.c \
 	lock-helper.h \
 	session-service.c \
@@ -116,7 +146,7 @@ indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
-	-Wall -Werror \
+	-Wall \
 	-DG_LOG_DOMAIN=\"Indicator-Session\" \
 	$(COVERAGE_CFLAGS)
 indicator_session_service_LDADD = \
@@ -131,6 +161,7 @@ indicator_session_service_LDFLAGS = \
 
 if BUILD_GTKLOGOUTHELPER
 gtk_logout_helper_SOURCES = \
+	$(dbus_consolekit_manager_sources) \
 	gtk-logout-helper.c \
 	settings-helper.c \
 	settings-helper.h \
@@ -142,7 +173,7 @@ gtk_logout_helper_CFLAGS = \
 	$(GTKLOGOUTHELPER_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(COVERAGE_CFLAGS) \
-	-Wall -Werror \
+	-Wall \
 	-DINDICATOR_ICONS_DIR="\"$(INDICATORICONSDIR)\""
 
 gtk_logout_helper_LDADD = \
@@ -160,23 +191,24 @@ endif
 ###############
 
 BUILT_SOURCES = \
+	$(dbus_accounts_sources) \
+	$(dbus_consolekit_manager_sources) \
+	$(dbus_consolekit_seat_sources) \
+	$(dbus_consolekit_session_sources) \
+	$(dbus_display_manager_sources) \
 	$(dbus_upower_sources) \
-	consolekit-manager-client.h \
-	consolekit-seat-client.h \
-	consolekit-session-client.h \
-	display-manager-client.h \
+	$(dbus_user_sources) \
 	gen-session-dbus.xml.c \
-	gen-session-dbus.xml.h \
-	accounts-service-client.h
+	gen-session-dbus.xml.h
 
 EXTRA_DIST += \
+	display-manager.xml \
+	org.freedesktop.Accounts.User.xml \
+	org.freedesktop.Accounts.xml \
 	org.freedesktop.ConsoleKit.Manager.xml \
 	org.freedesktop.ConsoleKit.Seat.xml \
 	org.freedesktop.ConsoleKit.Session.xml \
-	display-manager.xml \
 	session-dbus.xml \
-	upower.xml \
-	accounts-service.xml \
-	accounts-service-user.xml
+	upower.xml
 
 CLEANFILES += $(BUILT_SOURCES)

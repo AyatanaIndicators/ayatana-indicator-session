@@ -32,9 +32,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gio/gio.h>
 #include <gio/gdesktopappinfo.h>
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
-
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/client.h>
@@ -50,13 +47,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "user-menu-mgr.h"
 #include "device-menu-mgr.h"
 #include "session-dbus.h"
-
-typedef struct _ActivateData ActivateData;
-struct _ActivateData
-{
-  UsersServiceDbus *service;
-  UserData *user;
-};
 
 //static UsersServiceDbus  *dbus_interface = NULL;
 static SessionDbus       *session_dbus = NULL;

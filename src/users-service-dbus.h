@@ -37,8 +37,8 @@ typedef struct _UsersServiceDbusClass   UsersServiceDbusClass;
 typedef struct _UsersServiceDbusPrivate UsersServiceDbusPrivate;
 
 /**
- * A class which interacts with multiple DBus services to track
- * info which is useful to the interactor's user menu:
+ * A facade class which interacts with multiple DBus services to
+ * track info which is useful to the interactor's user menu:
  *
  *  1. A list of users to add to the user menu.
  *
@@ -72,8 +72,7 @@ struct _UsersServiceDbusClass
   GObjectClass parent_class;
 
   /* Signals */
-  void (* user_added)              (UsersServiceDbus*, AccountsUser*, gpointer);
-  void (* user_deleted)            (UsersServiceDbus*, AccountsUser*, gpointer);
+  void (* user_list_changed)       (UsersServiceDbus*, gpointer);
   void (* user_logged_in_changed)  (UsersServiceDbus*, AccountsUser*, gpointer);
   void (* guest_logged_in_changed) (UsersServiceDbus*, gpointer);
 };

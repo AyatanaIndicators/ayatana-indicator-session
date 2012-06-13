@@ -57,9 +57,8 @@ static void activate_user_accounts (DbusmenuMenuitem *mi,
                                     guint timestamp,
                                     gpointer user_data);                                      
 static void user_menu_mgr_rebuild_items (UserMenuMgr *self);
-static void user_change (UsersServiceDbus *service,
-                         const gchar      *user_id,
-                         gpointer          user_data);
+static void on_user_list_changed (UsersServiceDbus *service,
+                                  UserMenuMgr * umm);
 
 static void on_guest_logged_in_changed (UsersServiceDbus * users_dbus,
                                         UserMenuMgr      * self);
@@ -85,10 +84,8 @@ user_menu_mgr_init (UserMenuMgr *self)
   self->lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
   self->users_dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
   self->root_item = dbusmenu_menuitem_new ();
-  g_signal_connect (self->users_dbus_interface, "user-added",
-                    G_CALLBACK (user_change), self);
-  g_signal_connect (self->users_dbus_interface, "user-deleted",
-                    G_CALLBACK (user_change), self);
+  g_signal_connect (self->users_dbus_interface, "user-list-changed",
+                    G_CALLBACK (on_user_list_changed), self);
   g_signal_connect (self->users_dbus_interface, "user-logged-in-changed",
                     G_CALLBACK(on_user_logged_in_changed), self);
   g_signal_connect (self->users_dbus_interface, "guest-logged-in-changed",
@@ -455,12 +452,10 @@ activate_user_accounts (DbusmenuMenuitem *mi,
 /* Signal called when a user is added.
    It updates the count and rebuilds the menu */
 static void
-user_change (UsersServiceDbus *service    G_GNUC_UNUSED,
-             const gchar      *user_id    G_GNUC_UNUSED,
-             gpointer          user_data)
+on_user_list_changed (UsersServiceDbus * service   G_GNUC_UNUSED, 
+                      UserMenuMgr      * user_mgr)
 {
-  UserMenuMgr* user_mgr = USER_MENU_MGR (user_data);
-  g_return_if_fail (user_mgr != NULL);
+  g_return_if_fail (USER_IS_MENU_MGR(user_mgr));
 
   user_menu_mgr_rebuild_items (user_mgr);
 }

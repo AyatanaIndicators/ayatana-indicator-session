@@ -46,7 +46,7 @@
 ***
 **/
 
-static void     init_users           (UsersServiceDbus  * self);
+static void     update_user_list     (UsersServiceDbus  * self);
 
 static gchar*   get_seat             (UsersServiceDbus  * service);
 
@@ -98,8 +98,7 @@ struct _UsersServiceDbusPrivate
 
 enum
 {
-  USER_ADDED,
-  USER_DELETED,
+  USER_LIST_CHANGED,
   USER_LOGGED_IN_CHANGED,
   GUEST_LOGGED_IN_CHANGED,
   N_SIGNALS
@@ -161,23 +160,14 @@ users_service_dbus_class_init (UsersServiceDbusClass *klass)
   object_class->dispose = users_service_dbus_dispose;
   object_class->finalize = users_service_dbus_finalize;
 
-  signals[USER_ADDED] = g_signal_new (
-              "user-added",
+  signals[USER_LIST_CHANGED] = g_signal_new (
+              "user-list-changed",
               G_TYPE_FROM_CLASS (klass),
               G_SIGNAL_RUN_LAST,
-              G_STRUCT_OFFSET (UsersServiceDbusClass, user_added),
+              G_STRUCT_OFFSET (UsersServiceDbusClass, user_list_changed),
               NULL, NULL,
-              g_cclosure_marshal_VOID__OBJECT,
-              G_TYPE_NONE, 1, G_TYPE_OBJECT);
-
-  signals[USER_DELETED] = g_signal_new (
-              "user-deleted",
-              G_TYPE_FROM_CLASS (klass),
-              G_SIGNAL_RUN_LAST,
-              G_STRUCT_OFFSET (UsersServiceDbusClass, user_deleted),
-              NULL, NULL,
-              g_cclosure_marshal_VOID__OBJECT,
-              G_TYPE_NONE, 1, G_TYPE_OBJECT);
+              g_cclosure_marshal_VOID__VOID,
+              G_TYPE_NONE, 0);
 
   signals[USER_LOGGED_IN_CHANGED] = g_signal_new (
               "user-logged-in-changed",
@@ -294,7 +284,7 @@ users_service_dbus_init (UsersServiceDbus *self)
       g_signal_connect (proxy, "user-added", G_CALLBACK(on_user_added), self);
       g_signal_connect (proxy, "user-deleted", G_CALLBACK(on_user_deleted), self);
       p->accounts_proxy = proxy;
-      init_users (self);
+      update_user_list (self);
     }
 }
 
@@ -303,15 +293,9 @@ users_service_dbus_init (UsersServiceDbus *self)
 ***/
 
 static void
-emit_user_added (UsersServiceDbus * self, AccountsUser * user)
+emit_user_list_changed (UsersServiceDbus * self)
 {
-  g_signal_emit (self, signals[USER_ADDED], 0, user);
-}
-
-static void
-emit_user_deleted (UsersServiceDbus * self, AccountsUser * user)
-{
-  g_signal_emit (self, signals[USER_DELETED], 0, user);
+  g_signal_emit (self, signals[USER_LIST_CHANGED], 0);
 }
 
 static void
@@ -528,7 +512,7 @@ add_user_session (UsersServiceDbus  * service,
 
 /* calls add_user_session() for each of this user's sessions */
 static void
-add_user (UsersServiceDbus *self, AccountsUser * user)
+add_user_sessions (UsersServiceDbus *self, AccountsUser * user)
 {
   const guint64 uid = accounts_user_get_uid (user);
   const char * username = accounts_user_get_user_name (user);
@@ -564,10 +548,55 @@ add_user (UsersServiceDbus *self, AccountsUser * user)
 }
 
 static void
+copy_proxy_properties (GDBusProxy * source, GDBusProxy * target)
+{
+  gchar ** keys = g_dbus_proxy_get_cached_property_names (source);
+
+  if (keys != NULL)
+    {
+      int i;
+
+      for (i=0; keys[i]; i++)
+        {
+          const gchar * const key = keys[i];
+          GVariant * value = g_dbus_proxy_get_cached_property (source, key);
+          g_dbus_proxy_set_cached_property (target, key, value);
+          g_variant_unref (value);
+        }
+
+      g_signal_emit_by_name (target, "g-properties-changed", NULL, keys);
+      g_strfreev (keys);
+    }
+}
+
+/**
+ * The AccountsUserProxy's properties aren't being updated automatically
+ * for some reason... the only update we get is the 'changed' signal.
+ * This function is a workaround to update our User object's properties.
+ */
+static void
+on_user_changed (AccountsUser * user, UsersServiceDbus * service)
+{
+  AccountsUser * tmp = accounts_user_proxy_new_for_bus_sync (
+                          G_BUS_TYPE_SYSTEM,
+                          G_DBUS_PROXY_FLAGS_NONE,
+                          "org.freedesktop.Accounts",
+                          g_dbus_proxy_get_object_path (G_DBUS_PROXY(user)),
+                          NULL,
+                          NULL);
+  if (tmp != NULL)
+    {
+      copy_proxy_properties (G_DBUS_PROXY(tmp), G_DBUS_PROXY(user));
+      g_object_unref (tmp);
+    }
+}
+
+static void
 add_user_from_object_path (UsersServiceDbus  * self,
                            const char        * user_object_path)
 {
   GError * error = NULL;
+
   AccountsUser * user = accounts_user_proxy_new_for_bus_sync (
                           G_BUS_TYPE_SYSTEM,
                           G_DBUS_PROXY_FLAGS_NONE,
@@ -583,25 +612,36 @@ add_user_from_object_path (UsersServiceDbus  * self,
     }
   else
     {
-      g_debug ("%s adding user %s from object path %s", G_STRLOC,
-               accounts_user_get_user_name(user),
-               user_object_path);
-      g_hash_table_insert (self->priv->users, g_strdup(user_object_path), user);
-      add_user (self, user);
+      AccountsUser * prev = g_hash_table_lookup (self->priv->users, user_object_path);
+
+      if (prev != NULL) /* we've already got this user... sync its properties */
+        {
+          copy_proxy_properties (G_DBUS_PROXY(user), G_DBUS_PROXY(prev));
+          g_object_unref (user);
+          user = prev;
+        }
+      else /* ooo, we got a new user */
+        {
+          g_signal_connect (user, "changed", G_CALLBACK(on_user_changed), self);
+          g_hash_table_insert (self->priv->users, g_strdup(user_object_path), user);
+        }
+
+      add_user_sessions (self, user);
     }
 }
 
 
-/* calls add_user_from_object_path() on a list of user object paths */
+/* asks org.freedesktop.Accounts for a list of users and
+ * calls add_user_from_object_path() on each of those users */
 static void
-init_users (UsersServiceDbus *self)
+update_user_list (UsersServiceDbus *self)
 {
   g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
 
   GError * error = NULL;
   char ** object_paths = NULL;
   UsersServiceDbusPrivate * priv = self->priv;
-  g_debug ("%s bootstrapping the user list", G_STRLOC);
+  g_debug ("%s updating the user list", G_STRLOC);
 
   accounts_call_list_cached_users_sync (priv->accounts_proxy,
                                         &object_paths,
@@ -622,21 +662,25 @@ init_users (UsersServiceDbus *self)
           add_user_from_object_path (self, object_paths[i]);
         }
 
+      emit_user_list_changed (self);
+
       g_strfreev (object_paths);
     }
 
-  g_debug ("%s finished bootstrapping the user list", G_STRLOC);
+  g_debug ("%s finished updating the user list", G_STRLOC);
 }
 
 static void
-on_user_added (Accounts          * o                    G_GNUC_UNUSED,
-               const gchar       * user_path,
+on_user_added (Accounts          * o          G_GNUC_UNUSED,
+               const gchar       * user_path  G_GNUC_UNUSED,
                UsersServiceDbus  * service)
 {
-  add_user_from_object_path (service, user_path);
-
-  AccountsUser * user = g_hash_table_lookup (service->priv->users, user_path);
-  emit_user_added (service, user);
+  /* We see a new user but we might not want to list it --
+     for example, lightdm shows up when we switch to the greeter.
+     So instead of adding the user directly here, let's ask 
+     org.freedesktop.Accounts for a fresh list of users
+     because it filters out special cases. */
+  update_user_list (service);
 }
 
 static void
@@ -650,7 +694,7 @@ on_user_deleted (Accounts          * o                  G_GNUC_UNUSED,
     {
       GObject * o = g_object_ref (G_OBJECT(user));
       g_hash_table_remove (service->priv->users, user_path);
-      emit_user_deleted (service, user);
+      emit_user_list_changed (service);
       g_object_unref (o);
     }
 }

@@ -96,12 +96,6 @@ user_widget_init (UserWidget *self)
 
   UserWidgetPrivate * priv = self->priv;
   
-	gint padding = 0;
-	gtk_widget_style_get (GTK_WIDGET(self),
-                        "horizontal-padding",
-                        &padding,
-                        NULL);
-  
   priv->user_image = NULL;
   priv->user_name  = NULL;
   priv->logged_in = FALSE;

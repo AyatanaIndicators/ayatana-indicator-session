@@ -98,7 +98,9 @@ user_widget_class_init (UserWidgetClass *klass)
 static void
 user_widget_init (UserWidget *self)
 {
-  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(self);
+  self->priv = USER_WIDGET_GET_PRIVATE(self);
+
+  UserWidgetPrivate * priv = self->priv;
   
 	gint padding = 0;
 	gtk_widget_style_get (GTK_WIDGET(self),
@@ -220,10 +222,11 @@ user_widget_draw_usericon_gtk_3 (GtkWidget *widget,
   UserWidget* meta = USER_WIDGET(user_data);
   UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);  
 
-  if (priv->using_personal_icon == FALSE)
-    return FALSE;
+  if (priv->using_personal_icon)
+    {
+      draw_album_border (widget, FALSE);  
+    }
   
-  draw_album_border (widget, FALSE);  
   return FALSE;
 }
 
@@ -529,19 +532,91 @@ user_widget_button_release_event (GtkWidget *menuitem,
   return FALSE;
 }
 
+/***
+****
+***/
+
+static void
+update_icon (UserWidget * self, DbusmenuMenuitem * mi)
+{
+  GdkPixbuf * pixbuf = NULL;
+
+  /* first, try the menuitem's icon property */
+  const gchar * icon_name = dbusmenu_menuitem_property_get (mi, USER_ITEM_PROP_ICON);
+  if (icon_name)
+    {
+      GError* error = NULL;
+      pixbuf = gdk_pixbuf_new_from_file_at_size (icon_name, 32, 32, &error);
+      if (error != NULL)
+        {
+          g_warning ("Couldn't load the image \"%s\": %s", icon_name, error->message);
+          g_clear_error (&error);
+        }
+    }
+
+  /* as a fallback, try to use the default user icon */
+  if (pixbuf != NULL)
+    {
+      self->priv->using_personal_icon = TRUE;
+    }
+  else
+    {
+      self->priv->using_personal_icon = FALSE;
+
+      pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+                                         USER_ITEM_ICON_DEFAULT,
+                                         32,
+                                         GTK_ICON_LOOKUP_FORCE_SIZE,
+                                         NULL);
+    }
+
+  if (pixbuf != NULL)
+    {
+      gtk_image_set_from_pixbuf (GTK_IMAGE(self->priv->user_image), pixbuf);
+      g_object_unref (pixbuf);
+    }
+}
+
+static void
+update_logged_in (UserWidget * self, DbusmenuMenuitem * mi)
+{
+  const gboolean b = dbusmenu_menuitem_property_get_bool (mi, USER_ITEM_PROP_LOGGED_IN);
+
+  g_debug ("User \"%s\" %s active sessions",
+           dbusmenu_menuitem_property_get (mi, USER_ITEM_PROP_NAME),
+           b ? "has" : "doesn't have");
+
+  gtk_widget_set_visible (self->priv->tick_icon, b);
+}
+
+static void
+update_name (UserWidget * self, DbusmenuMenuitem * mi)
+{
+  gtk_label_set_label (GTK_LABEL(self->priv->user_name),
+                       dbusmenu_menuitem_property_get (mi, USER_ITEM_PROP_NAME));
+}
+
 static void 
-user_widget_property_update (DbusmenuMenuitem  * item,
+user_widget_property_update (DbusmenuMenuitem  * mi,
                              const gchar       * property, 
                              GVariant          * value,
                              UserWidget        * self)
 {
   g_return_if_fail (IS_USER_WIDGET (self)); 
 
-  UserWidgetPrivate* priv = USER_WIDGET_GET_PRIVATE(self);
+g_message ("user_widget_property_update: %s", property);
 
   if (!g_strcmp0 (property, USER_ITEM_PROP_LOGGED_IN))
     {
-      gtk_widget_set_visible (priv->tick_icon, g_variant_get_boolean(value));
+      update_logged_in (self, mi);
+    }
+  else if (!g_strcmp0 (property, USER_ITEM_PROP_ICON))
+    {
+      update_icon (self, mi);
+    }
+  else if (!g_strcmp0 (property, USER_ITEM_PROP_NAME))
+    {
+      update_name (self, mi);
     }
   else
     {
@@ -550,72 +625,16 @@ user_widget_property_update (DbusmenuMenuitem  * item,
 }
 
 static void
-user_widget_set_twin_item (UserWidget* self,
-                           DbusmenuMenuitem* twin_item)
+user_widget_set_twin_item (UserWidget * self, DbusmenuMenuitem * mi)
 {
-  UserWidgetPrivate* priv = USER_WIDGET_GET_PRIVATE(self);
-  priv->twin_item = twin_item;
-  g_signal_connect( G_OBJECT(priv->twin_item), "property-changed", 
+  self->priv->twin_item = mi;
+
+  update_icon      (self, mi);
+  update_name      (self, mi);
+  update_logged_in (self, mi);
+
+  g_signal_connect (G_OBJECT(mi), "property-changed", 
                     G_CALLBACK(user_widget_property_update), self);
- 
-  const gchar * icon_name = dbusmenu_menuitem_property_get (twin_item,
-                                                            USER_ITEM_PROP_ICON);
-  gtk_label_set_label (GTK_LABEL (priv->user_name),
-                       dbusmenu_menuitem_property_get (twin_item, USER_ITEM_PROP_NAME));
-
-	if (dbusmenu_menuitem_property_get_bool (twin_item, USER_ITEM_PROP_LOGGED_IN)) {
-    g_debug ("%s USER HAS ACTIVE SESSIONS", 
-             dbusmenu_menuitem_property_get (twin_item, USER_ITEM_PROP_NAME));
-	  gtk_widget_show(priv->tick_icon);
-	}
-  else {
-    g_debug ("%s USER DOESN'T HAVE ACTIVE SESSIONS", 
-             dbusmenu_menuitem_property_get (twin_item, USER_ITEM_PROP_NAME));
-    gtk_widget_hide(priv->tick_icon);
-	}
-
-  GdkPixbuf* pixbuf  = NULL; 
-  GError* error = NULL;
-  pixbuf = gdk_pixbuf_new_from_file_at_size(icon_name, 32, 32, NULL);
-
-  if (pixbuf == NULL || error != NULL) {
-    g_warning ("Could not load the user image (%s) for some reason",
-                icon_name);
-    if (pixbuf != NULL){
-      g_object_unref (pixbuf);
-      pixbuf = NULL;
-    }
-    if (error != NULL){
-      g_error_free (error);
-      error = NULL;
-    }
-    
-    priv->using_personal_icon = FALSE;
-    
-    pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-                                       USER_ITEM_ICON_DEFAULT,
-                                       32,
-                                       GTK_ICON_LOOKUP_FORCE_SIZE,
-                                       &error);                
-  }
-  else{
-    priv->using_personal_icon = TRUE;
-  }    
-
-  if (pixbuf == NULL || error != NULL) {
-    g_warning ("Could not load the user image");
-    if (error != NULL){
-      g_error_free (error);
-      error = NULL;
-    }                    
-  }  
-  else{
-    gtk_image_set_from_pixbuf (GTK_IMAGE(priv->user_image), pixbuf);
-  }
-  if (pixbuf != NULL){
-    g_object_unref (pixbuf);  
-    pixbuf = NULL;
-  }
 }
 
  /**

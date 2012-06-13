@@ -31,18 +31,23 @@ G_BEGIN_DECLS
 #define IS_USER_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), USER_WIDGET_TYPE))
 #define USER_WIDGET_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), USER_WIDGET_TYPE, UserWidgetClass))
 
-typedef struct _UserWidget      UserWidget;
-typedef struct _UserWidgetClass UserWidgetClass;
+typedef struct _UserWidget        UserWidget;
+typedef struct _UserWidgetClass   UserWidgetClass;
+typedef struct _UserWidgetPrivate UserWidgetPrivate;
 
-struct _UserWidgetClass {
+struct _UserWidgetClass
+{
   GtkMenuItemClass parent_class;
 };
 
-struct _UserWidget {
+struct _UserWidget
+{
+  /*< private >*/
   GtkMenuItem parent;
+  UserWidgetPrivate * priv;
 };
 
-GType user_widget_get_type (void);
+GType user_widget_get_type (void) G_GNUC_CONST;
 GtkWidget* user_widget_new(DbusmenuMenuitem *twin_item);
 
 G_END_DECLS

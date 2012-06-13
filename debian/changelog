@@ -1,10 +1,10 @@
-indicator-session (0.3.96-0ubuntu2) UNRELEASED; urgency=low
+indicator-session (0.3.96-0ubuntu2) quantal; urgency=low
 
   * Recommend packagekit-system-interface instead of
     python-aptdaemon.pkcompat: we care about the dbus interface, now
     provided by the python3 package, not the python module.
 
- -- Steve Langasek <steve.langasek@ubuntu.com>  Wed, 13 Jun 2012 16:12:04 -0700
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Wed, 13 Jun 2012 16:13:28 -0700
 
 indicator-session (0.3.96-0ubuntu1) precise; urgency=low
 

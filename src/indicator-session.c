@@ -150,15 +150,15 @@ indicator_session_init (IndicatorSession *self)
   
   // I think the avatar image is available always but just in case have a fallback
   if (error != NULL) {
-    g_warning ("Could not load the default avatar image for some reason");
+    g_warning ("Could not load the default avatar image: %s", error->message);
     self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
+    g_clear_error (&error);
   }
   else{
     avatar_icon = gtk_image_new ();
     gtk_image_set_from_pixbuf (GTK_IMAGE (avatar_icon), pixbuf);
     self->users.image = GTK_IMAGE (avatar_icon);
     g_object_unref (pixbuf);
-    g_error_free (error);
   }
                                                       
   self->users.label = GTK_LABEL (gtk_label_new (NULL));

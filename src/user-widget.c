@@ -62,9 +62,6 @@ static void user_widget_finalize      (GObject *object);
 
 static void user_widget_set_twin_item (UserWidget* self,
                                        DbusmenuMenuitem* twin_item);
-// keyevent consumers
-static gboolean user_widget_button_release_event (GtkWidget *menuitem, 
-                                                  GdkEventButton *event);
 
 static void _color_shade (const CairoColorRGB *a,
                           float k,
@@ -84,11 +81,8 @@ G_DEFINE_TYPE (UserWidget, user_widget, GTK_TYPE_MENU_ITEM);
 static void
 user_widget_class_init (UserWidgetClass *klass)
 {
-  GObjectClass      *gobject_class = G_OBJECT_CLASS (klass);
-  GtkWidgetClass    *widget_class = GTK_WIDGET_CLASS (klass);
+  GObjectClass * gobject_class = G_OBJECT_CLASS (klass);
 
-  widget_class->button_release_event = user_widget_button_release_event;
-  
   g_type_class_add_private (klass, sizeof (UserWidgetPrivate));
 
   gobject_class->dispose = user_widget_dispose;
@@ -519,17 +513,6 @@ _color_shade (const CairoColorRGB *a, float k, CairoColorRGB *b)
   b->r = red;
   b->g = green;
   b->b = blue;
-}
-
-
-/*****************************************************************/
-
-/* Suppress/consume keyevents */
-static gboolean
-user_widget_button_release_event (GtkWidget *menuitem, 
-                                      GdkEventButton *event)
-{
-  return FALSE;
 }
 
 /***

@@ -178,6 +178,25 @@ set_user_name_collision (AccountsUser * user, gboolean b)
 ****
 ***/
 
+static void
+update_menuitem_icon (DbusmenuMenuitem * mi, AccountsUser * user)
+{
+  const gchar * str = accounts_user_get_icon_file (user);
+  
+  if (!str || !*str)
+    {
+      str = USER_ITEM_ICON_DEFAULT;
+    }
+
+  dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_ICON, str);
+}
+
+static void
+on_user_icon_file_changed (AccountsUser * user, GParamSpec * pspec, DbusmenuMenuitem * mi)
+{
+  update_menuitem_icon (mi, user);
+}
+
 static DbusmenuMenuitem*
 create_user_menuitem (UserMenuMgr * menu_mgr, AccountsUser * user)
 {
@@ -202,10 +221,8 @@ create_user_menuitem (UserMenuMgr * menu_mgr, AccountsUser * user)
                                        is_logged_in);
 
   /* set the icon property */
-  const gchar * icon_str = accounts_user_get_icon_file (user);
-  if (!icon_str || !*icon_str)
-    icon_str = USER_ITEM_ICON_DEFAULT;
-  dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_ICON, icon_str);
+  update_menuitem_icon (mi, user);
+  g_signal_connect (user, "notify::icon-file", G_CALLBACK(on_user_icon_file_changed), mi);
 
   /* set the is-current-user property */
   dbusmenu_menuitem_property_set_bool (mi,
@@ -247,12 +264,10 @@ on_user_logged_in_changed (UsersServiceDbus  * users_service_dbus,
                            UserMenuMgr       * self)
 {
   DbusmenuMenuitem * mi = user_get_menuitem (user);
-g_message ("%s %s() user %s corresponds to mi %p", G_STRLOC, G_STRFUNC, accounts_user_get_user_name(user), mi);
 
   if (mi != NULL)
     {
       const gboolean b = users_service_dbus_is_user_logged_in (users_service_dbus, user);
-g_message ("setting %p USER_ITEM_PROP_LOGGED_IN to %d", mi, (int)b);
       dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, b);
     }
 }

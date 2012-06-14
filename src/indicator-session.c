@@ -61,8 +61,7 @@ struct _IndicatorSession
 {
   IndicatorObject parent;
   IndicatorServiceManager * service;
-  IndicatorObjectEntry users;
-  IndicatorObjectEntry devices;
+  IndicatorObjectEntry entry;
   GCancellable * service_proxy_cancel;
   GDBusProxy * service_proxy;
 };
@@ -122,92 +121,43 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 static void
 indicator_session_init (IndicatorSession *self)
 {
-	self->service = NULL;
-	self->service_proxy_cancel = NULL;
-	self->service_proxy = NULL;
-  
-	/* Now let's fire these guys up. */
-	self->service = indicator_service_manager_new_version(INDICATOR_SESSION_DBUS_NAME,
+  /* Now let's fire these guys up. */
+  self->service = indicator_service_manager_new_version(INDICATOR_SESSION_DBUS_NAME,
                                                         INDICATOR_SESSION_DBUS_VERSION);
-	g_signal_connect(G_OBJECT(self->service),
-                   INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE,
-                   G_CALLBACK(service_connection_cb), self);
+  g_signal_connect (G_OBJECT(self->service),
+                    INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE,
+                    G_CALLBACK(service_connection_cb), self);
 
-  GtkWidget* avatar_icon = NULL;
-  // users
-  self->users.name_hint = PACKAGE"-users";
-  self->users.menu =  GTK_MENU (dbusmenu_gtkmenu_new (INDICATOR_USERS_DBUS_NAME,
-                                                      INDICATOR_USERS_DBUS_OBJECT));
-  // Set the image to the default avator image
-  GdkPixbuf* pixbuf  = NULL; 
-  GError* error = NULL;
-  pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-                                     "avatar-default",
-                                     17,
-                                     GTK_ICON_LOOKUP_FORCE_SIZE,
-                                     &error);
-  
-  // I think the avatar image is available always but just in case have a fallback
-  if (error != NULL) {
-    g_warning ("Could not load the default avatar image: %s", error->message);
-    self->users.image = indicator_image_helper (USER_ITEM_ICON_DEFAULT);
-    g_clear_error (&error);
-  }
-  else{
-    avatar_icon = gtk_image_new ();
-    gtk_image_set_from_pixbuf (GTK_IMAGE (avatar_icon), pixbuf);
-    self->users.image = GTK_IMAGE (avatar_icon);
-    g_object_unref (pixbuf);
-  }
-                                                      
-  self->users.label = GTK_LABEL (gtk_label_new (NULL));
-  self->users.accessible_desc = _("User Menu");
+  greeter_mode = !g_strcmp0(g_getenv("INDICATOR_GREETER_MODE"), "1");
 
-  const gchar *greeter_var;
-  greeter_var = g_getenv("INDICATOR_GREETER_MODE");
-  greeter_mode = g_strcmp0(greeter_var, "1") == 0;
-
-  // devices
-  self->devices.name_hint = PACKAGE"-devices";
-  self->devices.accessible_desc = _("Device Menu");
-  self->devices.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
-                                                      INDICATOR_SESSION_DBUS_OBJECT));
-  if (greeter_mode){
-    self->devices.image = indicator_image_helper (GREETER_ICON_DEFAULT);
-  }
-  else{
-    self->devices.image = indicator_image_helper (ICON_DEFAULT);
-  }
+  self->entry.name_hint = PACKAGE;
+  self->entry.accessible_desc = _("Session Menu");
+  self->entry.label = GTK_LABEL (gtk_label_new ("User Name"));
+  self->entry.image = greeter_mode
+                    ? indicator_image_helper (GREETER_ICON_DEFAULT)
+                    : indicator_image_helper (ICON_DEFAULT);
+  self->entry.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
+                                                    INDICATOR_SESSION_DBUS_OBJECT));
   
-  gtk_widget_show (GTK_WIDGET(self->devices.menu));
-  gtk_widget_show (GTK_WIDGET(self->devices.image));
-  gtk_widget_show (GTK_WIDGET(self->users.image));
-  gtk_widget_show (GTK_WIDGET(self->users.menu));
+  gtk_widget_show (GTK_WIDGET(self->entry.menu));
+  gtk_widget_show (GTK_WIDGET(self->entry.image));
+  g_object_ref_sink (self->entry.menu);
+  g_object_ref_sink (self->entry.image);
   
-  g_object_ref_sink (self->users.menu);
-  g_object_ref_sink (self->users.image);
-  g_object_ref_sink (self->devices.menu);
-  g_object_ref_sink (self->devices.image);
-  
-  // Setup the handlers for users
-	DbusmenuClient * users_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->users.menu)));
-	dbusmenu_client_add_type_handler (users_client,
+  // set up the handlers
+  DbusmenuClient * menu_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->entry.menu)));
+  dbusmenu_client_add_type_handler (menu_client,
                                     USER_ITEM_TYPE,
                                     new_user_item);
-	dbusmenu_client_add_type_handler_full (users_client,
+  dbusmenu_client_add_type_handler (menu_client,
+                                    RESTART_ITEM_TYPE,
+                                    build_restart_item);
+  dbusmenu_client_add_type_handler_full (menu_client,
                                          MENU_SWITCH_TYPE,
                                          build_menu_switch,
                                          self, NULL);
-  
-  // Setup the handlers for devices
-	DbusmenuClient * devices_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->devices.menu)));
-	dbusmenu_client_add_type_handler (devices_client,
-                                    RESTART_ITEM_TYPE,
-                                    build_restart_item);
-  
-	GtkAccelGroup * agroup = gtk_accel_group_new();
-	dbusmenu_gtkclient_set_accel_group(DBUSMENU_GTKCLIENT(devices_client), agroup);
-	return;
+  dbusmenu_gtkclient_set_accel_group (DBUSMENU_GTKCLIENT(menu_client),
+                                      gtk_accel_group_new());
 }
 
 static void
@@ -224,8 +174,7 @@ indicator_session_dispose (GObject *object)
       g_clear_object (&self->service_proxy_cancel);
     }
 
-  g_clear_object (&self->users.menu);
-  g_clear_object (&self->devices.menu);
+  g_clear_object (&self->entry.menu);
 
   G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);
 }
@@ -242,29 +191,16 @@ static GList*
 indicator_session_get_entries (IndicatorObject* obj)
 {
   g_return_val_if_fail(IS_INDICATOR_SESSION(obj), NULL);
-  IndicatorSession* self = INDICATOR_SESSION (obj);
-  
-  g_debug ("get entries");
 
-  GList * entries = NULL;
-  entries = g_list_append (entries, &self->users);
-  entries = g_list_append (entries, &self->devices);
-  return entries;
+  IndicatorSession* self = INDICATOR_SESSION (obj);
+  return g_list_append (NULL, &self->entry);
 }
 
 static guint
 indicator_session_get_location (IndicatorObject * io,
                                 IndicatorObjectEntry * entry)
-{  
-	IndicatorSession * self = INDICATOR_SESSION (io);
-  if (entry == &self->users){
-    return 0;
-  }
-  else if (entry == &self->devices){
-    return 1;
-  }
-  g_warning ("IOEntry handed to us to position but we don't own it!");
-  return 0;
+{
+  return 0;  
 }
 
 /* callback for the service manager state of being */
@@ -395,29 +331,25 @@ user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 /* Receives all signals from the service, routed to the appropriate functions */
 static void
 receive_signal (GDBusProxy * proxy,
-                gchar * sender_name,
-                gchar * signal_name,
-                GVariant * parameters,
-                gpointer user_data)
+                gchar      * sender_name,
+                gchar      * signal_name,
+                GVariant   * parameters,
+                gpointer     user_data)
 {
-	IndicatorSession * self = INDICATOR_SESSION(user_data);
+  IndicatorSession * self = INDICATOR_SESSION(user_data);
 
-	if (g_strcmp0(signal_name, "UserRealNameUpdated") == 0) {
-    const gchar* username = NULL;
-    g_variant_get (parameters, "(&s)", &username);
-    indicator_session_update_users_label (self, username);	
-  }
-  else if (g_strcmp0(signal_name, "RestartRequired") == 0) {    
-    if (greeter_mode == TRUE){
-      indicator_image_helper_update(self->devices.image, GREETER_ICON_RESTART);
+  if (!g_strcmp0(signal_name, "UserRealNameUpdated"))
+    {
+      const gchar * username = NULL;
+      g_variant_get (parameters, "(&s)", &username);
+      indicator_session_update_users_label (self, username);	
     }
-    else{
-      g_debug ("reboot required");
-      indicator_image_helper_update(self->devices.image, ICON_RESTART);
+  else if (!g_strcmp0(signal_name, "RestartRequired"))
+    {
+      indicator_image_helper_update (self->entry.image, greeter_mode ? GREETER_ICON_RESTART : ICON_RESTART);
+      self->entry.accessible_desc = _("Device Menu (reboot required)");
+      g_signal_emit (G_OBJECT(self), INDICATOR_OBJECT_SIGNAL_ACCESSIBLE_DESC_UPDATE_ID, 0, &self->entry);
     }
-    self->devices.accessible_desc = _("Device Menu (reboot required)");
-    g_signal_emit(G_OBJECT(self), INDICATOR_OBJECT_SIGNAL_ACCESSIBLE_DESC_UPDATE_ID, 0, &(self->devices));
-  }  
 }
 
 
@@ -603,17 +535,19 @@ build_menu_switch (DbusmenuMenuitem * newitem,
 }
 
 static void
-indicator_session_update_users_label (IndicatorSession* self, 
-                                      const gchar* name)
+indicator_session_update_users_label (IndicatorSession * self, 
+                                      const gchar      * name)
 {  
-  if (name == NULL){
-    gtk_widget_hide(GTK_WIDGET(self->users.label));
-    return;
-  }  
-
-  GSettings* settings = g_settings_new ("com.canonical.indicator.session");
-  const gboolean use_name = g_settings_get_boolean (settings, "show-real-name-on-panel");    
-  gtk_label_set_text (self->users.label, name);
-  gtk_widget_set_visible (GTK_WIDGET(self->users.label), use_name);
-  g_object_unref (settings);
+  if (name == NULL)
+    {
+      gtk_widget_hide(GTK_WIDGET(self->entry.label));
+    }
+  else
+    {
+      GSettings* settings = g_settings_new ("com.canonical.indicator.session");
+      const gboolean use_name = g_settings_get_boolean (settings, "show-real-name-on-panel");    
+      gtk_label_set_text (self->entry.label, name);
+      gtk_widget_set_visible (GTK_WIDGET(self->entry.label), use_name);
+      g_object_unref (settings);
+    }
 }

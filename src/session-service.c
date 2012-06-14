@@ -9,6 +9,7 @@ Authors:
     Christoph Korn <c_korn@gmx.de>
     Cody Russell <crussell@canonical.com>
     Conor Curran <conor.curran@canonical.com>
+    Charles Kerr <charles.kerr@canonical.com>
 
 This program is free software: you can redistribute it and/or modify it 
 under the terms of the GNU General Public License version 3, as published 

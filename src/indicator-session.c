@@ -39,7 +39,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator-image-helper.h>
 
 #include "dbus-shared-names.h"
-#include "dbusmenu-shared.h"
 #include "user-widget.h"
 
 #define INDICATOR_SESSION_TYPE            (indicator_session_get_type ())
@@ -75,10 +74,6 @@ INDICATOR_SET_VERSION
 INDICATOR_SET_TYPE(INDICATOR_SESSION_TYPE)
 
 /* Prototypes */
-static gboolean build_menu_switch (DbusmenuMenuitem * newitem,
-                                   DbusmenuMenuitem * parent,
-                                   DbusmenuClient * client,
-                                   gpointer user_data);
 static gboolean new_user_item (DbusmenuMenuitem * newitem,
                                DbusmenuMenuitem * parent,
                                DbusmenuClient * client,
@@ -152,10 +147,6 @@ indicator_session_init (IndicatorSession *self)
   dbusmenu_client_add_type_handler (menu_client,
                                     RESTART_ITEM_TYPE,
                                     build_restart_item);
-  dbusmenu_client_add_type_handler_full (menu_client,
-                                         MENU_SWITCH_TYPE,
-                                         build_menu_switch,
-                                         self, NULL);
   dbusmenu_gtkclient_set_accel_group (DBUSMENU_GTKCLIENT(menu_client),
                                       gtk_accel_group_new());
 }
@@ -354,83 +345,6 @@ receive_signal (GDBusProxy * proxy,
 
 
 
-static void
-switch_property_change (DbusmenuMenuitem * item,
-                        const gchar * property,
-                        GVariant * variant,
-                        gpointer user_data)
-{
-  if (g_strcmp0 (property, MENU_SWITCH_USER) != 0) {
-    return;
-  }
-	
-  GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(DBUSMENU_GTKCLIENT(user_data), item);
-  gchar * finalstring = NULL;
-  gboolean set_ellipsize = FALSE;
-  gboolean no_name_in_lang = FALSE;
-
-  const gchar * translate = C_("session_menu:switchfrom", "1");
-  if (g_strcmp0(translate, "1") != 0) {
-    no_name_in_lang = TRUE;
-  }
-  
-  GSettings* settings = g_settings_new ("com.canonical.indicator.session");
-  gboolean use_username = g_settings_get_boolean (settings,
-                                                  "use-username-in-switch-item");    
-  g_object_unref (settings);
-
-  if (variant == NULL || g_variant_get_string(variant, NULL) == NULL ||
-      g_variant_get_string(variant, NULL)[0] == '\0' || no_name_in_lang 
-      || use_username == FALSE) {
-    finalstring = _("Switch User Account…");
-    set_ellipsize = FALSE;
-  }
-
-  if (finalstring == NULL) {
-    const gchar * username = g_variant_get_string(variant, NULL);
-    GtkStyle * style = gtk_widget_get_style(GTK_WIDGET(gmi));
-
-    PangoLayout * layout = pango_layout_new(gtk_widget_get_pango_context(GTK_WIDGET(gmi)));
-    pango_layout_set_text (layout, username, -1);
-    pango_layout_set_font_description(layout, style->font_desc);
-
-    gint width;
-    pango_layout_get_pixel_size(layout, &width, NULL);
-    g_object_unref(layout);
-    g_debug("Username width %dpx", width);
-
-    gint point = pango_font_description_get_size(style->font_desc);
-    g_debug("Font size %f pt", (gfloat)point / PANGO_SCALE);
-
-    gdouble dpi = gdk_screen_get_resolution(gdk_screen_get_default());
-    g_debug("Screen DPI %f", dpi);
-
-    gdouble pixels_per_em = ((point * dpi) / 72.0f) / PANGO_SCALE;
-    gdouble ems = width / pixels_per_em;
-    g_debug("Username width %fem", ems);
-
-    finalstring = g_strdup_printf(_("Switch From %s…"), username);
-    if (ems >= 20.0f) {
-      set_ellipsize = TRUE;
-    } else {
-      set_ellipsize = FALSE;
-    }
-    
-  }
-  gtk_menu_item_set_label(gmi, finalstring);
-
-  GtkLabel * label = GTK_LABEL(gtk_bin_get_child(GTK_BIN(gmi)));
-  if (label != NULL) {
-    if (set_ellipsize) {
-      gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_END);
-    } else {
-      gtk_label_set_ellipsize(label, PANGO_ELLIPSIZE_NONE);
-    }
-  }
-	return;
-}
-
-static const gchar * dbusmenu_item_data = "dbusmenu-item";
 
 static void
 restart_property_change (DbusmenuMenuitem * item,
@@ -485,53 +399,6 @@ build_restart_item (DbusmenuMenuitem * newitem,
 	}
 
 	return TRUE;
-}
-
-static void
-switch_style_set (GtkWidget * widget,
-                  GtkStyle * prev_style,
-                  gpointer user_data)
-{
-	DbusmenuGtkClient * client = DBUSMENU_GTKCLIENT(user_data);
-	DbusmenuMenuitem * mi = DBUSMENU_MENUITEM(g_object_get_data(G_OBJECT(widget),
-                                                              dbusmenu_item_data));
-
-	switch_property_change (mi,
-                          MENU_SWITCH_USER,
-                          dbusmenu_menuitem_property_get_variant(mi, MENU_SWITCH_USER),
-                          client);
-	return;
-}
-
-static gboolean
-build_menu_switch (DbusmenuMenuitem * newitem,
-                   DbusmenuMenuitem * parent,
-                   DbusmenuClient * client,
-                   gpointer user_data)
-{
-	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_menu_item_new());
-	if (gmi == NULL) {
-		return FALSE;
-	}
-  	
-  g_object_set_data(G_OBJECT(gmi), dbusmenu_item_data, newitem);
-
-	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
-
-	g_signal_connect (G_OBJECT(newitem),
-                    DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
-                    G_CALLBACK(switch_property_change),
-                    client);
-	g_signal_connect (G_OBJECT(gmi),
-                    "style-set",
-                    G_CALLBACK(switch_style_set),
-                    client);
-                    
-	switch_property_change (newitem,
-                          MENU_SWITCH_USER,
-                          dbusmenu_menuitem_property_get_variant(newitem, MENU_SWITCH_USER), client);
-  	
-  return TRUE;
 }
 
 static void

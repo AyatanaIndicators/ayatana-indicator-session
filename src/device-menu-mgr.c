@@ -29,7 +29,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "device-menu-mgr.h"
 #include "settings-helper.h"
 #include "dbus-shared-names.h"
-#include "dbusmenu-shared.h"
 #include "lock-helper.h"
 
 #define UP_ADDRESS    "org.freedesktop.UPower"

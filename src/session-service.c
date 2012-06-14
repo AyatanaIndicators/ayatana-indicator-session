@@ -43,7 +43,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator-service.h>
 
 #include "dbus-shared-names.h"
-#include "dbusmenu-shared.h"
 #include "users-service-dbus.h"
 #include "user-menu-mgr.h"
 #include "device-menu-mgr.h"

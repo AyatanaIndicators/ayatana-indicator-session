@@ -21,7 +21,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "user-menu-mgr.h"
 #include "settings-helper.h"
 #include "dbus-shared-names.h"
-#include "dbusmenu-shared.h"
 #include "lock-helper.h"
 #include "users-service-dbus.h"
 
@@ -299,12 +298,14 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
     /* TODO we should really return here if the menu is not going to be shown. */
     
     DbusmenuMenuitem * switch_menuitem = dbusmenu_menuitem_new ();
+/*
     dbusmenu_menuitem_property_set (switch_menuitem,
                                     DBUSMENU_MENUITEM_PROP_TYPE,
                                     MENU_SWITCH_TYPE);
+*/
     dbusmenu_menuitem_property_set (switch_menuitem,
-                                    MENU_SWITCH_USER,
-                                    g_get_user_name());
+                                    USER_ITEM_PROP_NAME,
+                                    _("Switch User Account…"));
     dbusmenu_menuitem_child_append (self->root_item, switch_menuitem);
     g_signal_connect (G_OBJECT (switch_menuitem),
                       DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,

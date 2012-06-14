@@ -21,7 +21,6 @@ libsession_la_SOURCES = \
 	indicator-session.c \
 	gen-session-dbus.xml.h \
 	dbus-shared-names.h \
-	dbusmenu-shared.h \
 	user-widget.c \
 	user-widget.h
 libsession_la_CFLAGS = \
@@ -133,7 +132,6 @@ indicator_session_service_SOURCES = \
 	session-dbus.c \
 	session-dbus.h \
 	gen-session-dbus.xml.c \
-	dbusmenu-shared.h \
 	settings-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \

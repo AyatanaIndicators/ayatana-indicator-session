@@ -34,7 +34,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RESTART_KEY                   "suppress-restart-menuitem"
 #define SHUTDOWN_KEY                  "suppress-shutdown-menuitem"
 #define SHOW_USER_MENU                "user-show-menu"
-#define USER_USERNAME_IN_SWITCH_ITEM  "use-username-in-switch-item"
 
 #define LOCKDOWN_SCHEMA           "org.gnome.desktop.lockdown"
 #define LOCKDOWN_KEY_USER         "disable-user-switching"

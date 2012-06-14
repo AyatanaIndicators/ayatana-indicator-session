@@ -214,34 +214,21 @@ indicator_session_init (IndicatorSession *self)
 static void
 indicator_session_dispose (GObject *object)
 {
-	IndicatorSession * self = INDICATOR_SESSION(object);
+  IndicatorSession * self = INDICATOR_SESSION(object);
 
-	if (self->service != NULL) {
-		g_object_unref(G_OBJECT(self->service));
-		self->service = NULL;
-	}
+  g_clear_object (&self->service);
+  g_clear_object (&self->service_proxy);
 
-	if (self->service_proxy != NULL) {
-		g_object_unref(self->service_proxy);
-		self->service_proxy = NULL;
-	}
+  if (self->service_proxy_cancel != NULL)
+    {
+      g_cancellable_cancel(self->service_proxy_cancel);
+      g_clear_object (&self->service_proxy_cancel);
+    }
 
-	if (self->service_proxy_cancel != NULL) {
-		g_cancellable_cancel(self->service_proxy_cancel);
-		g_object_unref(self->service_proxy_cancel);
-		self->service_proxy_cancel = NULL;
-	}
-  
-  if (self->users.menu != NULL) {
-    g_object_unref (self->users.menu);
-  }
-  
-  if (self->devices.menu != NULL) {
-    g_object_unref (self->devices.menu);
-  }
+  g_clear_object (&self->users.menu);
+  g_clear_object (&self->devices.menu);
 
-	G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);
-	return;
+  G_OBJECT_CLASS (indicator_session_parent_class)->dispose (object);
 }
 
 static void
@@ -266,10 +253,7 @@ indicator_session_get_entries (IndicatorObject* obj)
   }
   retval = g_list_prepend (retval, &self->devices);
 
-	if (retval != NULL) {
-		retval = g_list_reverse(retval);
-	}
-	return retval;  
+	return g_list_reverse (retval);
 }
 
 static guint
@@ -341,10 +325,7 @@ service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 
 	GDBusProxy * proxy = g_dbus_proxy_new_for_bus_finish(res, &error);
 
-	if (self->service_proxy_cancel != NULL) {
-		g_object_unref(self->service_proxy_cancel);
-		self->service_proxy_cancel = NULL;
-	}
+	g_clear_object (&self->service_proxy_cancel);
 
 	if (error != NULL) {
 		g_warning("Could not grab DBus proxy for %s: %s", INDICATOR_SESSION_DBUS_NAME, error->message);

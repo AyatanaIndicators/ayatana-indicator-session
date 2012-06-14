@@ -137,10 +137,7 @@ session_action (LogoutDialogType action)
 	}
 	
 	g_object_unref(sm_proxy);
-	
-	if (error != NULL) {
-		g_error_free(error);
-	}
+	g_clear_error (&error);
 	
 	return;
 }	

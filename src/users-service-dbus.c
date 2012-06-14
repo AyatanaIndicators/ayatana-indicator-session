@@ -555,16 +555,19 @@ copy_proxy_properties (GDBusProxy * source, GDBusProxy * target)
   if (keys != NULL)
     {
       int i;
+      GVariantBuilder builder;
+      g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
 
       for (i=0; keys[i]; i++)
         {
           const gchar * const key = keys[i];
           GVariant * value = g_dbus_proxy_get_cached_property (source, key);
           g_dbus_proxy_set_cached_property (target, key, value);
+          g_variant_builder_add (&builder, "{sv}", key, value);
           g_variant_unref (value);
         }
 
-      g_signal_emit_by_name (target, "g-properties-changed", NULL, keys);
+      g_signal_emit_by_name (target, "g-properties-changed", g_variant_builder_end(&builder), keys);
       g_strfreev (keys);
     }
 }

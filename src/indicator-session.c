@@ -63,6 +63,7 @@ struct _IndicatorSession
   IndicatorObjectEntry entry;
   GCancellable * service_proxy_cancel;
   GDBusProxy * service_proxy;
+  GSettings * settings;
 };
 
 static gboolean greeter_mode;
@@ -116,6 +117,8 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 static void
 indicator_session_init (IndicatorSession *self)
 {
+  self->settings = g_settings_new ("com.canonical.indicator.session");
+
   /* Now let's fire these guys up. */
   self->service = indicator_service_manager_new_version(INDICATOR_SESSION_DBUS_NAME,
                                                         INDICATOR_SESSION_DBUS_VERSION);
@@ -133,6 +136,9 @@ indicator_session_init (IndicatorSession *self)
                     : indicator_image_helper (ICON_DEFAULT);
   self->entry.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                     INDICATOR_SESSION_DBUS_OBJECT));
+  g_settings_bind (self->settings, "show-real-name-on-panel",
+                   self->entry.label, "visible",
+                   G_SETTINGS_BIND_GET);
   
   gtk_widget_show (GTK_WIDGET(self->entry.menu));
   gtk_widget_show (GTK_WIDGET(self->entry.image));
@@ -156,6 +162,7 @@ indicator_session_dispose (GObject *object)
 {
   IndicatorSession * self = INDICATOR_SESSION(object);
 
+  g_clear_object (&self->settings);
   g_clear_object (&self->service);
   g_clear_object (&self->service_proxy);
 
@@ -405,16 +412,5 @@ static void
 indicator_session_update_users_label (IndicatorSession * self, 
                                       const gchar      * name)
 {  
-  if (name == NULL)
-    {
-      gtk_widget_hide(GTK_WIDGET(self->entry.label));
-    }
-  else
-    {
-      GSettings* settings = g_settings_new ("com.canonical.indicator.session");
-      const gboolean use_name = g_settings_get_boolean (settings, "show-real-name-on-panel");    
-      gtk_label_set_text (self->entry.label, name);
-      gtk_widget_set_visible (GTK_WIDGET(self->entry.label), use_name);
-      g_object_unref (settings);
-    }
+  gtk_label_set_text (self->entry.label, name ? name : "");
 }

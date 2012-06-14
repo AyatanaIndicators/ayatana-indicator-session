@@ -52,18 +52,19 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 typedef struct _IndicatorSession      IndicatorSession;
 typedef struct _IndicatorSessionClass IndicatorSessionClass;
 
-struct _IndicatorSessionClass {
-	IndicatorObjectClass parent_class;
+struct _IndicatorSessionClass
+{
+  IndicatorObjectClass parent_class;
 };
 
-struct _IndicatorSession {
-	IndicatorObject parent;
-	IndicatorServiceManager * service;
+struct _IndicatorSession
+{
+  IndicatorObject parent;
+  IndicatorServiceManager * service;
   IndicatorObjectEntry users;
   IndicatorObjectEntry devices;
-  gboolean show_users_entry;
-	GCancellable * service_proxy_cancel;
-	GDBusProxy * service_proxy;
+  GCancellable * service_proxy_cancel;
+  GDBusProxy * service_proxy;
 };
 
 static gboolean greeter_mode;
@@ -93,7 +94,6 @@ static void service_connection_cb (IndicatorServiceManager * sm, gboolean connec
 static void receive_signal (GDBusProxy * proxy, gchar * sender_name, gchar * signal_name, GVariant * parameters, gpointer user_data);
 static void service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data);
 static void user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data);
-static void user_menu_visibility_get_cb (GObject* obj, GAsyncResult* res, gpointer user_data);
 
 static void indicator_session_class_init (IndicatorSessionClass *klass);
 static void indicator_session_init       (IndicatorSession *self);
@@ -125,7 +125,6 @@ indicator_session_init (IndicatorSession *self)
 	self->service = NULL;
 	self->service_proxy_cancel = NULL;
 	self->service_proxy = NULL;
-  self->show_users_entry = FALSE;
   
 	/* Now let's fire these guys up. */
 	self->service = indicator_service_manager_new_version(INDICATOR_SESSION_DBUS_NAME,
@@ -242,18 +241,15 @@ indicator_session_finalize (GObject *object)
 static GList*
 indicator_session_get_entries (IndicatorObject* obj)
 {
-	g_return_val_if_fail(IS_INDICATOR_SESSION(obj), NULL);
+  g_return_val_if_fail(IS_INDICATOR_SESSION(obj), NULL);
   IndicatorSession* self = INDICATOR_SESSION (obj);
   
   g_debug ("get entries");
-	GList * retval = NULL;
-  // Only show the users menu if we have more than one
-  if (self->show_users_entry == TRUE){
-    retval = g_list_prepend (retval, &self->users);
-  }
-  retval = g_list_prepend (retval, &self->devices);
 
-	return g_list_reverse (retval);
+  GList * entries = NULL;
+  entries = g_list_append (entries, &self->users);
+  entries = g_list_append (entries, &self->devices);
+  return entries;
 }
 
 static guint
@@ -281,14 +277,6 @@ service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointe
     if (self->service_proxy != NULL){
       // Its a reconnect !
       // Fetch synchronisation data and return (proxy is still legit)
-      g_dbus_proxy_call (self->service_proxy,
-                         "GetUserMenuVisibility",
-                         NULL,
-                         G_DBUS_CALL_FLAGS_NONE,
-                         -1,
-                         NULL,
-                         user_menu_visibility_get_cb,
-                         user_data);                               
       g_dbus_proxy_call (self->service_proxy,
                          "GetUserRealName",
                          NULL,
@@ -338,16 +326,6 @@ service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	self->service_proxy = proxy;
 
 	g_signal_connect(proxy, "g-signal", G_CALLBACK(receive_signal), self);
-  
-  // Figure out whether we should show the user menu at all.
-  g_dbus_proxy_call (self->service_proxy,
-                     "GetUserMenuVisibility",
-                     NULL,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     -1,
-                     NULL,
-                     user_menu_visibility_get_cb,
-                     user_data);                               
   
   // Fetch the user's real name for the user entry label
   g_dbus_proxy_call (self->service_proxy,
@@ -414,42 +392,6 @@ user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 	return;
 }
 
-static void 
-user_menu_visibility_get_cb (GObject* obj, GAsyncResult* res, gpointer user_data)
-{
-	IndicatorSession * self = INDICATOR_SESSION(user_data);
-	GError * error = NULL;
-	GVariant * result;
-
-	result = g_dbus_proxy_call_finish(self->service_proxy, res, &error);
-
-	if (error != NULL) {
-    g_warning ("unable to complete real name dbus query");
-    g_error_free (error);
-		return;
-	}
-  gboolean update;
-  g_variant_get (result, "(b)", &update);
-  
-  // If it is what we had before no need to do anything...
-  if (self->show_users_entry == update){
-    return;
-  }  
-  //Otherwise
-  self->show_users_entry = update;
-
-  if (self->show_users_entry == TRUE){
-    g_signal_emit_by_name ((gpointer)self,
-                           "entry-added",
-                           &self->users);   
-  }
-  else{
-    g_signal_emit_by_name ((gpointer)self,
-                           "entry-removed",
-                           &self->users);       
-  }
-}
-
 /* Receives all signals from the service, routed to the appropriate functions */
 static void
 receive_signal (GDBusProxy * proxy,
@@ -464,30 +406,6 @@ receive_signal (GDBusProxy * proxy,
     const gchar* username = NULL;
     g_variant_get (parameters, "(&s)", &username);
     indicator_session_update_users_label (self, username);	
-  }
-  else if (g_strcmp0(signal_name, "UserMenuIsVisible") == 0) {
-    gboolean update;
-    g_variant_get (parameters, "(b)", &update);
-    
-    // If it is what we had before no need to do anything...
-    if (self->show_users_entry == update){
-      return;
-    }
-    
-    //Otherwise
-    self->show_users_entry = update;
-    
-    if (self->show_users_entry == TRUE){
-      g_signal_emit_by_name ((gpointer)self,
-                             "entry-added",
-                             &self->users);
-                             
-    }   
-    else{
-      g_signal_emit_by_name ((gpointer)self,
-                             "entry-removed",
-                             &self->users);       
-    }
   }
   else if (g_strcmp0(signal_name, "RestartRequired") == 0) {    
     if (greeter_mode == TRUE){

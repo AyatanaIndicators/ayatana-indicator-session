@@ -55,7 +55,6 @@ gboolean supress_confirmations (void);
 gboolean show_logout (void);
 gboolean show_restart (void);
 gboolean show_shutdown (void);
-gboolean should_show_user_menu (void);
 
 
 #endif /* __GCONF_HELPER__ */

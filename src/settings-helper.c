@@ -54,13 +54,6 @@ supress_confirmations (void) {
 }
 
 gboolean
-should_show_user_menu (void) {
-	gboolean settings_built = build_settings();
-	g_return_val_if_fail(settings_built, TRUE);
-	return g_settings_get_boolean (settings, SHOW_USER_MENU) ;
-}
-
-gboolean
 show_logout (void) {
 	gboolean settings_built = build_settings();
 	g_return_val_if_fail(settings_built, TRUE);

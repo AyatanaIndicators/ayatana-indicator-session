@@ -25,11 +25,6 @@
       <summary>Determine the visibility of the User's real name on the panel</summary>
       <description>Allow for the Removal of the users name from the panel</description>
     </key>
-    <key type="b" name="user-show-menu">
-      <default>true</default>
-      <summary>Determine the visibility of the User Menu</summary>
-      <description>Allow for the user menu to be hidden by the user.</description>
-    </key>
     <key type="b" name="use-username-in-switch-item">
       <default>false</default>
       <summary>Determine what string to use for the user's name in the switch menuitem.</summary>

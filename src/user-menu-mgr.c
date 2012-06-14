@@ -294,12 +294,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
   {
     /* TODO: This needs to be updated once the ability to query guest session support is available */
     GList * users = users_service_dbus_get_user_list (self->users_dbus_interface);
-    const gint user_count = g_list_length(users);
     const gboolean guest_enabled = users_service_dbus_guest_session_enabled (self->users_dbus_interface);
-    const gboolean is_guest = guest_enabled && is_this_guest_session();
-    const gboolean other_users_exist = user_count>1 || (is_guest && user_count>0);
-    const gboolean visible = !self->greeter_mode && should_show_user_menu() && other_users_exist;
-    session_dbus_set_user_menu_visibility (self->session_dbus_interface, visible);
     
     /* TODO we should really return here if the menu is not going to be shown. */
     

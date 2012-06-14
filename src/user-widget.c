@@ -581,8 +581,6 @@ user_widget_property_update (DbusmenuMenuitem  * mi,
 {
   g_return_if_fail (IS_USER_WIDGET (self)); 
 
-g_message ("user_widget_property_update: %s", property);
-
   if (!g_strcmp0 (property, USER_ITEM_PROP_LOGGED_IN))
     {
       update_logged_in (self, mi);

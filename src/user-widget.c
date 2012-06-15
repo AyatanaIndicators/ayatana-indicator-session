@@ -105,16 +105,16 @@ user_widget_init (UserWidget *self)
   
   // Create the UI elements.  
   priv->user_image = gtk_image_new ();
- 	gtk_misc_set_alignment(GTK_MISC(priv->user_image), 0.0, 0.0);
+  gtk_misc_set_alignment(GTK_MISC(priv->user_image), 0.0, 0.0);
   gtk_misc_set_padding (GTK_MISC(priv->user_image),0, 4.0);
   
   priv->user_name = gtk_label_new ("");
 
   priv->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
-	priv->tick_icon = gtk_image_new_from_icon_name ("account-logged-in",
+  priv->tick_icon = gtk_image_new_from_icon_name ("account-logged-in",
                                                    GTK_ICON_SIZE_MENU);
- 	gtk_misc_set_alignment(GTK_MISC(priv->tick_icon), 1.0, 0.5);
+  gtk_misc_set_alignment(GTK_MISC(priv->tick_icon), 1.0, 0.5);
   
   // Pack it together
   gtk_box_pack_start (GTK_BOX (priv->container),
@@ -127,10 +127,10 @@ user_widget_init (UserWidget *self)
                       FALSE,
                       FALSE,
                       3);                       
-	gtk_box_pack_start (GTK_BOX(priv->container),
-                      priv->tick_icon,
-                      FALSE,
-                      FALSE, 5);
+  gtk_box_pack_end (GTK_BOX(priv->container),
+                    priv->tick_icon,
+                    FALSE,
+                    FALSE, 5);
   
   gtk_widget_show_all (priv->container);  
   gtk_container_add (GTK_CONTAINER (self), priv->container);    
@@ -171,7 +171,6 @@ user_widget_primitive_draw_cb_gtk_3 (GtkWidget *widget,
                                      cairo_t* cr,
                                      gpointer user_data)
 {
-	
   g_return_val_if_fail(IS_USER_WIDGET(user_data), FALSE);
   UserWidget* meta = USER_WIDGET(user_data);
   UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);  

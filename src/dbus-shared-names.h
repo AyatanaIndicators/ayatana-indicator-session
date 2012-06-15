@@ -38,10 +38,10 @@ typedef enum {
   REAL
 }TransactionType;
 
-#define INDICATOR_USERS_DBUS_NAME  INDICATOR_SESSION_DBUS_NAME
-#define INDICATOR_USERS_DBUS_OBJECT "/com/canonical/indicator/users/menu"
-#define INDICATOR_USERS_SERVICE_DBUS_OBJECT "/org/gnome/DisplayManager/UserManager"
-#define INDICATOR_USERS_SERVICE_DBUS_INTERFACE "org.gnome.DisplayManager.UserManager"
+//#define INDICATOR_USERS_DBUS_NAME  INDICATOR_SESSION_DBUS_NAME
+//#define INDICATOR_USERS_DBUS_OBJECT "/com/canonical/indicator/users/menu"
+//#define INDICATOR_USERS_SERVICE_DBUS_OBJECT "/org/gnome/DisplayManager/UserManager"
+//#define INDICATOR_USERS_SERVICE_DBUS_INTERFACE "org.gnome.DisplayManager.UserManager"
 
 #define INDICATOR_SESSION_DBUS_NAME  "com.canonical.indicator.session"
 #define INDICATOR_SESSION_DBUS_OBJECT "/com/canonical/indicator/session/menu"

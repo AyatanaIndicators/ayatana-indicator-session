@@ -34,7 +34,7 @@ struct _UserMenuMgr
 {
   GObject parent_instance;
   UsersServiceDbus* users_dbus_interface;
-  DbusmenuMenuitem* root_item;
+  DbusmenuMenuitem* parent_mi;
   DbusmenuMenuitem * guest_mi;
   SessionDbus* session_dbus_interface;  
   GSettings * lockdown_settings;
@@ -82,7 +82,6 @@ user_menu_mgr_init (UserMenuMgr *self)
 {
   self->lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
   self->users_dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
-  self->root_item = dbusmenu_menuitem_new ();
   g_signal_connect (self->users_dbus_interface, "user-list-changed",
                     G_CALLBACK (on_user_list_changed), self);
   g_signal_connect (self->users_dbus_interface, "user-logged-in-changed",
@@ -274,16 +273,18 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
 {
   GList *u;
   gboolean can_activate;
-  GList *children;
 
   /* Check to see which menu items we're allowed to have */
   can_activate = users_service_dbus_can_activate_session (self->users_dbus_interface) &&
       !g_settings_get_boolean (self->lockdown_settings, LOCKDOWN_KEY_USER);
 
   /* Remove the old menu items if that makes sense */
-  children = dbusmenu_menuitem_take_children (self->root_item);
+#warning FIXME
+#if 0
+  GList * children = dbusmenu_menuitem_take_children (self->root_item);
   g_list_foreach (children, (GFunc)g_object_unref, NULL);
   g_list_free (children);
+#endif
 
   /* Set to NULL in case we don't end up building one */
   self->guest_mi = NULL;
@@ -306,7 +307,8 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
     dbusmenu_menuitem_property_set (switch_menuitem,
                                     USER_ITEM_PROP_NAME,
                                     _("Switch User Account…"));
-    dbusmenu_menuitem_child_append (self->root_item, switch_menuitem);
+    dbusmenu_menuitem_child_append (self->parent_mi, switch_menuitem);
+g_message ("appending Switch button to %p", self->parent_mi);
     g_signal_connect (G_OBJECT (switch_menuitem),
                       DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                       G_CALLBACK (activate_new_session),
@@ -322,7 +324,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
                                       USER_ITEM_PROP_NAME,
                                       _("Guest Session"));
       on_guest_logged_in_changed (self->users_dbus_interface, self);
-      dbusmenu_menuitem_child_append (self->root_item, self->guest_mi);
+      dbusmenu_menuitem_child_append (self->parent_mi, self->guest_mi);
       g_signal_connect (G_OBJECT (self->guest_mi),
                         DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK (activate_guest_session),
@@ -342,7 +344,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
         AccountsUser * user = u->data;
 
         DbusmenuMenuitem * mi = create_user_menuitem (self, user);
-        dbusmenu_menuitem_child_append (self->root_item, mi);
+        dbusmenu_menuitem_child_append (self->parent_mi, mi);
 
         const char * const user_name = accounts_user_get_user_name (user);
         if (!g_strcmp0 (user_name, g_get_user_name()))
@@ -360,7 +362,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
   dbusmenu_menuitem_property_set (separator1,
                                   DBUSMENU_MENUITEM_PROP_TYPE,
                                   DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_append (self->root_item, separator1);
+  dbusmenu_menuitem_child_append (self->parent_mi, separator1);
 
   DbusmenuMenuitem * user_accounts_item = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (user_accounts_item,
@@ -375,7 +377,7 @@ user_menu_mgr_rebuild_items (UserMenuMgr *self)
                     G_CALLBACK (activate_user_accounts),
                     NULL);
                                   
-  dbusmenu_menuitem_child_append (self->root_item, user_accounts_item); 
+  dbusmenu_menuitem_child_append (self->parent_mi, user_accounts_item); 
 
 
 }
@@ -456,11 +458,6 @@ on_user_list_changed (UsersServiceDbus * service   G_GNUC_UNUSED,
   user_menu_mgr_rebuild_items (user_mgr);
 }
 
-DbusmenuMenuitem*
-user_mgr_get_root_item (UserMenuMgr* self)
-{
-  return self->root_item;
-}
 
 /* Checks to see if we should show the guest session item.
    System users shouldn't have guest account shown.
@@ -486,13 +483,14 @@ activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_da
 /*
  * Clean Entry Point 
  */
-UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_mode)
+UserMenuMgr* user_menu_mgr_new (DbusmenuMenuitem  * parent_mi,
+                                SessionDbus       * session_dbus,
+                                gboolean            greeter_mode)
 {
   UserMenuMgr* user_mgr = g_object_new (USER_TYPE_MENU_MGR, NULL);
+  user_mgr->parent_mi = parent_mi;
   user_mgr->greeter_mode = greeter_mode;
   user_mgr->session_dbus_interface = session_dbus;
   user_menu_mgr_rebuild_items (user_mgr);
   return user_mgr;
 }
-  
-

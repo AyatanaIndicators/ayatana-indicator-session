@@ -40,7 +40,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 struct _DeviceMenuMgr
 {
   GObject parent_instance;
-  DbusmenuMenuitem* root_item;
+  DbusmenuMenuitem * parent_mi;
   SessionDbus* session_dbus_interface;  
 
   GSettings *lockdown_settings;
@@ -68,8 +68,6 @@ G_DEFINE_TYPE (DeviceMenuMgr, device_menu_mgr, G_TYPE_OBJECT);
 static void
 device_menu_mgr_init (DeviceMenuMgr *self)
 {
-  self->root_item = dbusmenu_menuitem_new ();  
-
   self->can_hibernate = TRUE;
   self->can_suspend = TRUE;
   self->allow_hibernate = TRUE;
@@ -328,14 +326,16 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   name = _("About This Computer");
   mi = dbusmenu_menuitem_new ();
   dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-  dbusmenu_menuitem_child_append (self->root_item, mi);
+  dbusmenu_menuitem_child_append (self->parent_mi, mi);
+g_message ("appending About This Computer to %p", self->parent_mi);
+
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(spawn_command_line_async), "gnome-control-center info");
 
   name = _("Ubuntu Help");
   mi = dbusmenu_menuitem_new ();
   dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-  dbusmenu_menuitem_child_append (self->root_item, mi);
+  dbusmenu_menuitem_child_append (self->parent_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(spawn_command_line_async), "yelp");
  
@@ -343,12 +343,12 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
     {
       mi = dbusmenu_menuitem_new();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-      dbusmenu_menuitem_child_append (self->root_item, mi);
+      dbusmenu_menuitem_child_append (self->parent_mi, mi);
 
       name = _("System Settings…");
       mi = dbusmenu_menuitem_new ();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-      dbusmenu_menuitem_child_append (self->root_item, mi);
+      dbusmenu_menuitem_child_append (self->parent_mi, mi);
       g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                                 G_CALLBACK(spawn_command_line_async), "gnome-control-center");
     }
@@ -366,7 +366,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
       self->lock_mi = mi = dbusmenu_menuitem_new();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
       update_screensaver_shortcut (mi, self->keybinding_settings);
-      dbusmenu_menuitem_child_append (self->root_item, mi);
+      dbusmenu_menuitem_child_append (self->parent_mi, mi);
       g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK(lock_screen), NULL);
     }
@@ -377,7 +377,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
 
   mi = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_append (self->root_item, mi);
+  dbusmenu_menuitem_child_append (self->parent_mi, mi);
 
   if (!greeter_mode)
     {
@@ -385,7 +385,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
       logout_mi = mi = dbusmenu_menuitem_new();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
       dbusmenu_menuitem_property_set_bool (mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_logout());
-      dbusmenu_menuitem_child_append(self->root_item, mi);
+      dbusmenu_menuitem_child_append(self->parent_mi, mi);
       g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK(show_dialog), "logout");
     }
@@ -395,7 +395,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
       name = _("Suspend");
       self->suspend_mi = mi = dbusmenu_menuitem_new();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-      dbusmenu_menuitem_child_append (self->root_item, mi);
+      dbusmenu_menuitem_child_append (self->parent_mi, mi);
       g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK(machine_sleep_from_suspend), self);
     }
@@ -405,7 +405,7 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
       name = _("Hibernate");
       self->hibernate_mi = mi = dbusmenu_menuitem_new();
       dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-      dbusmenu_menuitem_child_append(self->root_item, mi);
+      dbusmenu_menuitem_child_append(self->parent_mi, mi);
       g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                         G_CALLBACK(machine_sleep_from_hibernate), self);
     }
@@ -413,14 +413,14 @@ device_menu_mgr_build_static_items (DeviceMenuMgr* self, gboolean greeter_mode)
   name = _("Restart");
   mi = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-  dbusmenu_menuitem_child_append (self->root_item, mi);
+  dbusmenu_menuitem_child_append (self->parent_mi, mi);
   /* FIXME: not implemented */
  
   name = supress_confirmations() ? _("Shut Down") : _("Shut Down\342\200\246");
   shutdown_mi = mi = dbusmenu_menuitem_new();
   dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
   dbusmenu_menuitem_property_set_bool (mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_shutdown());
-  dbusmenu_menuitem_child_append (self->root_item, mi);
+  dbusmenu_menuitem_child_append (self->parent_mi, mi);
   g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
 #ifdef HAVE_GTKLOGOUTHELPER
                     G_CALLBACK(show_dialog), "shutdown");
@@ -446,18 +446,15 @@ device_menu_mgr_rebuild_items (DeviceMenuMgr* self)
                                        self->can_suspend && self->allow_suspend);
 }                                       
 
-DbusmenuMenuitem*
-device_mgr_get_root_item (DeviceMenuMgr* self)
-{
-  return self->root_item;
-}
-
 /*
  * Clean Entry Point 
  */
-DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_mode)
+DeviceMenuMgr* device_menu_mgr_new (DbusmenuMenuitem  * parent_mi,
+                                    SessionDbus       * session_dbus,
+                                    gboolean            greeter_mode)
 {
   DeviceMenuMgr* device_mgr = g_object_new (DEVICE_TYPE_MENU_MGR, NULL);
+  device_mgr->parent_mi = parent_mi;
   device_mgr->session_dbus_interface = session_dbus;
   device_menu_mgr_build_static_items (device_mgr, greeter_mode);
   return device_mgr;

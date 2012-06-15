@@ -98,17 +98,11 @@ main (int argc, char ** argv)
 
   greeter_mode = get_greeter_mode();
 
-  // Devices
-  DeviceMenuMgr* device_mgr = device_menu_mgr_new (session_dbus, greeter_mode);
-  DbusmenuServer * server = dbusmenu_server_new(INDICATOR_SESSION_DBUS_OBJECT);
-  dbusmenu_server_set_root(server, device_mgr_get_root_item (device_mgr));
-    
-  if (!greeter_mode) {
-    // Users
-    UserMenuMgr* user_mgr = user_menu_mgr_new (session_dbus, greeter_mode);    
-    DbusmenuServer* users_server = dbusmenu_server_new (INDICATOR_USERS_DBUS_OBJECT);
-    dbusmenu_server_set_root (users_server, user_mgr_get_root_item (user_mgr));
-  }
+  DbusmenuMenuitem * root_item = dbusmenu_menuitem_new ();
+  device_menu_mgr_new (root_item, session_dbus, greeter_mode);
+  user_menu_mgr_new (root_item, session_dbus, greeter_mode);    
+  DbusmenuServer* server = dbusmenu_server_new (INDICATOR_SESSION_DBUS_OBJECT);
+  dbusmenu_server_set_root (server, root_item);
 
   mainloop = g_main_loop_new(NULL, FALSE);
   g_main_loop_run(mainloop);

@@ -45,10 +45,11 @@ struct _UserMenuMgrClass
 };
 
 GType user_menu_mgr_get_type (void) G_GNUC_CONST;
-UserMenuMgr* user_menu_mgr_new (SessionDbus* session_dbus,
-                                gboolean greeter_mode);
 
-DbusmenuMenuitem* user_mgr_get_root_item (UserMenuMgr* self);
+UserMenuMgr* user_menu_mgr_new (DbusmenuMenuitem * parent,
+                                SessionDbus      * session_dbus,
+                                gboolean           greeter_mode);
+
 G_END_DECLS
 
 #endif /* _USER_MENU_MGR_H_ */

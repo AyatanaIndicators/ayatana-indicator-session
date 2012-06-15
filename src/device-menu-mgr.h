@@ -39,14 +39,14 @@ typedef struct _DeviceMenuMgr DeviceMenuMgr;
 
 struct _DeviceMenuMgrClass
 {
-	GObjectClass parent_class;
+  GObjectClass parent_class;
 };
 
 GType device_menu_mgr_get_type (void) G_GNUC_CONST;
 
-DeviceMenuMgr* device_menu_mgr_new (SessionDbus* session_dbus, gboolean greeter_mode);
-
-DbusmenuMenuitem* device_mgr_get_root_item (DeviceMenuMgr* self);
+DeviceMenuMgr* device_menu_mgr_new (DbusmenuMenuitem  * parent_mi,
+                                    SessionDbus       * session_dbus,
+                                    gboolean            greeter_mode);
 
 G_END_DECLS
 

@@ -8,6 +8,5 @@ src/dialog.c
 src/indicator-session.c
 src/session-service.c
 src/apt-watcher.c
-src/device-menu-mgr.c
-src/user-menu-mgr.c
+src/session-menu-mgr.c
 src/udev-mgr.c

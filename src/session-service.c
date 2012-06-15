@@ -44,9 +44,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "dbus-shared-names.h"
 #include "users-service-dbus.h"
-#include "user-menu-mgr.h"
-#include "device-menu-mgr.h"
 #include "session-dbus.h"
+#include "session-menu-mgr.h"
 
 //static UsersServiceDbus  *dbus_interface = NULL;
 static SessionDbus       *session_dbus = NULL;
@@ -99,8 +98,7 @@ main (int argc, char ** argv)
   greeter_mode = get_greeter_mode();
 
   DbusmenuMenuitem * root_item = dbusmenu_menuitem_new ();
-  device_menu_mgr_new (root_item, session_dbus, greeter_mode);
-  user_menu_mgr_new (root_item, session_dbus, greeter_mode);    
+  session_menu_mgr_new (root_item, session_dbus, greeter_mode);
   DbusmenuServer* server = dbusmenu_server_new (INDICATOR_SESSION_DBUS_OBJECT);
   dbusmenu_server_set_root (server, root_item);
 

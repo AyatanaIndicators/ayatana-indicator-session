@@ -135,10 +135,8 @@ indicator_session_service_SOURCES = \
 	settings-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \
-	user-menu-mgr.h \
-	user-menu-mgr.c \
-	device-menu-mgr.h \
-	device-menu-mgr.c
+	session-menu-mgr.h \
+	session-menu-mgr.c
 
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \

@@ -23,11 +23,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __GCONF_HELPER_H__
 #define __GCONF_HELPER_H__ 
 
-#include <glib/gi18n.h>
-
-#include <libdbusmenu-glib/server.h>
-#include <libdbusmenu-glib/menuitem.h>
-
 #define SESSION_SCHEMA                "com.canonical.indicator.session"
 #define SUPPRESS_KEY                  "suppress-logout-restart-shutdown"
 #define LOGOUT_KEY                    "suppress-logout-menuitem"
@@ -35,25 +30,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SHUTDOWN_KEY                  "suppress-shutdown-menuitem"
 #define SHOW_USER_MENU                "user-show-menu"
 
-#define LOCKDOWN_SCHEMA           "org.gnome.desktop.lockdown"
-#define LOCKDOWN_KEY_USER         "disable-user-switching"
-#define LOCKDOWN_KEY_SCREENSAVER  "disable-lock-screen"
-#define KEYBINDING_SCHEMA         "org.gnome.settings-daemon.plugins.media-keys"
-#define KEY_LOCK_SCREEN           "screensaver"
-
-typedef struct _RestartShutdownLogoutMenuItems
-{
-	DbusmenuMenuitem * logout_mi;
-	DbusmenuMenuitem * restart_mi;
-	DbusmenuMenuitem * shutdown_mi;
-}
-RestartShutdownLogoutMenuItems;
-
-void update_menu_entries(RestartShutdownLogoutMenuItems*);
 gboolean supress_confirmations (void);
-gboolean show_logout (void);
-gboolean show_restart (void);
-gboolean show_shutdown (void);
-
 
 #endif /* __GCONF_HELPER__ */

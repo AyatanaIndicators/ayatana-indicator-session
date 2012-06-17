@@ -100,8 +100,8 @@ dbus_upower_sources = \
 $(dbus_upower_sources): upower.xml
 	gdbus-codegen \
 	    --interface-prefix org.freedesktop \
-	    --c-namespace IndicatorSession \
 	    --generate-c-code dbus-upower \
+	    --c-namespace DBus \
 	    $^
 
 gen-%.xml.c: %.xml
@@ -126,8 +126,6 @@ indicator_session_service_SOURCES = \
 	$(dbus_display_manager_sources) \
 	$(dbus_upower_sources) \
 	$(dbus_user_sources) \
-	lock-helper.c \
-	lock-helper.h \
 	session-service.c \
 	session-dbus.c \
 	session-dbus.h \

@@ -3,6 +3,7 @@ Copyright 2011 Canonical Ltd.
 
 Authors:
     Conor Curran <conor.curran@canonical.com>
+    Charles Kerr <charles.kerr@canonical.com>
 
 This program is free software: you can redistribute it and/or modify it 
 under the terms of the GNU General Public License version 3, as published 
@@ -19,126 +20,182 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <config.h>
 
+#include <sys/types.h>
+#include <pwd.h>
+
 #include <glib.h>
-#include <gio/gio.h>
+#include <glib/gi18n.h>
 
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-gtk/menuitem.h>
 
 #include "dbus-shared-names.h"
 #include "dbus-upower.h"
-#include "lock-helper.h"
 #include "session-menu-mgr.h"
-#include "settings-helper.h"
 #include "users-service-dbus.h"
 
-#define UP_ADDRESS    "org.freedesktop.UPower"
-#define UP_OBJECT     "/org/freedesktop/UPower"
-#define UP_INTERFACE  "org.freedesktop.UPower"
+#define UPOWER_ADDRESS    "org.freedesktop.UPower"
+#define UPOWER_PATH       "/org/freedesktop/UPower"
 
-#define EXTRA_LAUNCHER_DIR "/usr/share/indicators/session/applications"
+#define CMD_HELP            "yelp"
+#define CMD_INFO            "gnome-control-center info"
+#define CMD_SYSTEM_SETTINGS "gnome-control-center"
+#ifdef HAVE_GTKLOGOUTHELPER
+ #define CMD_LOGOUT   LIBEXECDIR"/gtk-logout-helper --logout"
+ #define CMD_SHUTDOWN LIBEXECDIR"/gtk-logout-helper --shutdown"
+ #define CMD_RESTART  LIBEXECDIR"/gtk-logout-helper --restart"
+#else
+ #define CMD_LOGOUT   "gnome-session-quit --logout"
+ #define CMD_SHUTDOWN "gnome-session-quit --power-off"
+ #define CMD_RESTART  CMD_SHUTDOWN /* hmm, no gnome-session-quit --restart? */
+#endif
+
+/**
+ * Which switch menuitem to show -- based on lockdown settings,
+ * greeter mode, number of users in the system, and so on.
+ * See get_switcher_mode()
+ */
+typedef enum
+{
+  SWITCHER_MODE_SCREENSAVER,
+  SWITCHER_MODE_LOCK,
+  SWITCHER_MODE_SWITCH,
+  SWITCHER_MODE_SWITCH_OR_LOCK
+}
+SwitcherMode;
+
+typedef struct
+{
+  SessionMenuMgr * mgr;
+  AccountsUser * user;
+}
+ActivateUserSessionData;
 
 struct _SessionMenuMgr
 {
   GObject parent_instance;
+
   DbusmenuMenuitem * parent_mi;
-  SessionDbus* session_dbus_interface;  
-
-  GSettings *lockdown_settings;
-  GSettings * keybinding_settings;
-
-  DbusmenuMenuitem * hibernate_mi;
-  DbusmenuMenuitem * suspend_mi;
   DbusmenuMenuitem * lock_mi;
+  DbusmenuMenuitem * lock_switch_mi;
+  DbusmenuMenuitem * guest_mi;
+  DbusmenuMenuitem * logout_mi;
+  DbusmenuMenuitem * suspend_mi;
+  DbusmenuMenuitem * hibernate_mi;
+  DbusmenuMenuitem * restart_mi;
+  DbusmenuMenuitem * shutdown_mi;
+
+  GSList * user_menuitems;
+  gint user_menuitem_index;
+
+  GSettings * lockdown_settings;
+  GSettings * indicator_settings;
+  GSettings * keybinding_settings;
 
   gboolean can_hibernate;
   gboolean can_suspend;
   gboolean allow_hibernate;
   gboolean allow_suspend;
-
-  IndicatorSessionUPower * upower_proxy;
-  GCancellable * cancellable;
-
-  UsersServiceDbus* users_dbus_interface;
-  DbusmenuMenuitem * guest_mi;
   gboolean greeter_mode;
+
+  GCancellable * cancellable;
+  DBusUPower * upower_proxy;
+  SessionDbus * session_dbus;  
+  UsersServiceDbus * users_dbus_facade;
 };
 
-static void setup_up (SessionMenuMgr* self);
-static void session_menu_mgr_rebuild_items (SessionMenuMgr *self);
-static void screensaver_keybinding_changed (GSettings*, const gchar*, gpointer);
+static SwitcherMode get_switcher_mode         (SessionMenuMgr *);
+static void init_upower_proxy                 (SessionMenuMgr *);
 
-static void activate_new_session (DbusmenuMenuitem * mi,
-                                  guint timestamp,
-                                  gpointer user_data);
-static void activate_user_session (DbusmenuMenuitem *mi,
-                                   guint timestamp,
-                                   gpointer user_data);
-static void activate_user_accounts (DbusmenuMenuitem *mi,
-                                    guint timestamp,
-                                    gpointer user_data);
-static gint compare_users_by_username (gconstpointer a,
-                                       gconstpointer b);
-static void activate_user_accounts (DbusmenuMenuitem *mi,
-                                    guint timestamp,
-                                    gpointer user_data);                                      
-static void menu_mgr_rebuild_users (SessionMenuMgr *self);
-static void on_user_list_changed (UsersServiceDbus *service,
-                                  SessionMenuMgr * umm);
+static void update_screensaver_shortcut       (SessionMenuMgr *);
+static void update_user_menuitems             (SessionMenuMgr *);
+static void update_session_menuitems          (SessionMenuMgr *);
+static void update_confirmation_labels        (SessionMenuMgr *);
 
-static void on_guest_logged_in_changed (UsersServiceDbus * users_dbus,
-                                        SessionMenuMgr      * self);
+static void action_func_lock                  (SessionMenuMgr *);
+static void action_func_suspend               (SessionMenuMgr *);
+static void action_func_hibernate             (SessionMenuMgr *);
+static void action_func_switch_to_lockscreen  (SessionMenuMgr *);
+static void action_func_switch_to_greeter     (SessionMenuMgr *);
+static void action_func_switch_to_guest       (SessionMenuMgr *);
+static void action_func_switch_to_user        (ActivateUserSessionData *);
+static void action_func_spawn_async           (const char * fmt, ...);
 
-static void on_user_logged_in_changed (UsersServiceDbus  * users_dbus,
-                                       AccountsUser      * user,
-                                       SessionMenuMgr       * self);
 static gboolean is_this_guest_session (void);
-static void activate_guest_session (DbusmenuMenuitem * mi,
-                                    guint timestamp,
-                                    gpointer user_data);
-                                    
+static gboolean is_this_live_session (void);
 
+static void on_guest_logged_in_changed (UsersServiceDbus *,
+                                        SessionMenuMgr   *);
+
+static void on_user_logged_in_changed (UsersServiceDbus *,
+                                       AccountsUser     *,
+                                       SessionMenuMgr  *);
+
+/**
+***  GObject init / dispose / finalize
+**/
 
 G_DEFINE_TYPE (SessionMenuMgr, session_menu_mgr, G_TYPE_OBJECT);
 
 static void
-session_menu_mgr_init (SessionMenuMgr *self)
+session_menu_mgr_init (SessionMenuMgr *mgr)
 {
-  self->can_hibernate = TRUE;
-  self->can_suspend = TRUE;
-  self->allow_hibernate = TRUE;
-  self->allow_suspend = TRUE;
+  mgr->can_hibernate = TRUE;
+  mgr->can_suspend = TRUE;
+  mgr->allow_hibernate = TRUE;
+  mgr->allow_suspend = TRUE;
 
-  self->lockdown_settings = g_settings_new (LOCKDOWN_SCHEMA);
-  g_signal_connect_swapped (self->lockdown_settings, "changed::" LOCKDOWN_KEY_USER, G_CALLBACK(session_menu_mgr_rebuild_items), self);
-  g_signal_connect_swapped (self->lockdown_settings, "changed::" LOCKDOWN_KEY_SCREENSAVER, G_CALLBACK(session_menu_mgr_rebuild_items), self);
+  /* Lockdown settings */
+  GSettings * s = g_settings_new ("org.gnome.desktop.lockdown");
+  g_signal_connect_swapped (s, "changed",
+                            G_CALLBACK(update_session_menuitems), mgr);
+  g_signal_connect_swapped (s, "changed::disable-lock-screen",
+                            G_CALLBACK(update_user_menuitems), mgr);
+  g_signal_connect_swapped (s, "changed::disable-user-switching",
+                            G_CALLBACK(update_user_menuitems), mgr);
+  mgr->lockdown_settings = s;
 
-  self->keybinding_settings = g_settings_new (KEYBINDING_SCHEMA);
-  g_signal_connect (self->keybinding_settings, "changed::" KEY_LOCK_SCREEN, G_CALLBACK(screensaver_keybinding_changed), self);
+  /* Indicator settings */
+  s = g_settings_new ("com.canonical.indicator.session");
+  g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",
+                            G_CALLBACK(update_confirmation_labels), mgr);
+  g_signal_connect (s, "changed", G_CALLBACK(update_session_menuitems), mgr);
+  mgr->indicator_settings = s;
 
-  setup_up(self);  
+  /* Keybinding settings */
+  s = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
+  g_signal_connect_swapped (s, "changed::screensaver",
+                            G_CALLBACK(update_screensaver_shortcut), mgr);
+  mgr->keybinding_settings = s;
 
-  /* users */
-  self->users_dbus_interface = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
-  g_signal_connect (self->users_dbus_interface, "user-list-changed",
-                    G_CALLBACK (on_user_list_changed), self);
-  g_signal_connect (self->users_dbus_interface, "user-logged-in-changed",
-                    G_CALLBACK(on_user_logged_in_changed), self);
-  g_signal_connect (self->users_dbus_interface, "guest-logged-in-changed",
-                    G_CALLBACK(on_guest_logged_in_changed), self);
+  /* listen for users who appear or log in or log out */
+  mgr->users_dbus_facade = g_object_new (USERS_SERVICE_DBUS_TYPE, NULL);
+  g_signal_connect_swapped (mgr->users_dbus_facade, "user-list-changed",
+                            G_CALLBACK (update_user_menuitems), mgr);
+  g_signal_connect (mgr->users_dbus_facade, "user-logged-in-changed",
+                    G_CALLBACK(on_user_logged_in_changed), mgr);
+  g_signal_connect (mgr->users_dbus_facade, "guest-logged-in-changed",
+                    G_CALLBACK(on_guest_logged_in_changed), mgr);
 
-  g_idle_add(lock_screen_setup, NULL);  
+  init_upower_proxy (mgr);  
 }
 
 static void
 session_menu_mgr_dispose (GObject *object)
 {
-  SessionMenuMgr * self = SESSION_MENU_MGR (object);
-  g_clear_object (&self->lockdown_settings);
-  g_clear_object (&self->keybinding_settings);
-  g_clear_object (&self->upower_proxy);
-  g_clear_object (&self->cancellable);
-  g_clear_object (&self->users_dbus_interface);
+  SessionMenuMgr * mgr = SESSION_MENU_MGR (object);
+
+  if (mgr->cancellable != NULL)
+    {
+      g_cancellable_cancel (mgr->cancellable);
+      g_clear_object (&mgr->cancellable);
+     }
+
+  g_clear_object (&mgr->indicator_settings);
+  g_clear_object (&mgr->lockdown_settings);
+  g_clear_object (&mgr->keybinding_settings);
+  g_clear_object (&mgr->upower_proxy);
+  g_clear_object (&mgr->users_dbus_facade);
 
   G_OBJECT_CLASS (session_menu_mgr_parent_class)->finalize (object);
 }
@@ -158,117 +215,68 @@ session_menu_mgr_class_init (SessionMenuMgrClass *klass)
 }
 
 /***
-****
+****  Menuitem Helpers
 ***/
 
-static void
-update_screensaver_shortcut (DbusmenuMenuitem * menuitem, GSettings * settings)
+static inline void
+mi_set_label (DbusmenuMenuitem * mi, const char * str)
 {
-  if (menuitem != NULL)
-    {
-      gchar * val = g_settings_get_string (settings, KEY_LOCK_SCREEN);
-      g_debug ("Keybinding changed to: %s", val);
-      dbusmenu_menuitem_property_set_shortcut_string (menuitem, val);
-      g_free (val);
-    }
+  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, str);
 }
 
-static void
-screensaver_keybinding_changed (GSettings   * settings,
-                                const gchar * key  G_GNUC_UNUSED,
-                                gpointer      userdata)
+static inline void
+mi_set_type (DbusmenuMenuitem * mi, const char * str)
 {
-  update_screensaver_shortcut (SESSION_MENU_MGR(userdata)->lock_mi, settings);
+  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, str);
 }
 
-
-static void
-machine_sleep_from_suspend (DbusmenuMenuitem * mi        G_GNUC_UNUSED,
-                            guint              timestamp G_GNUC_UNUSED,
-                            gpointer           userdata)
+static inline void
+mi_set_visible (DbusmenuMenuitem * mi, gboolean b)
 {
-  GError * error = NULL;
-  SessionMenuMgr * mgr = SESSION_MENU_MGR (userdata);
-
-  indicator_session_upower_call_suspend_sync (mgr->upower_proxy, mgr->cancellable, &error);
-  if (error != NULL)
-    {
-      g_warning ("%s: %s", G_STRFUNC, error->message);
-      g_clear_error (&error);
-    }
+  dbusmenu_menuitem_property_set_bool (mi, DBUSMENU_MENUITEM_PROP_VISIBLE, b);
 }
 
-static void
-machine_sleep_from_hibernate (DbusmenuMenuitem * mi        G_GNUC_UNUSED,
-                              guint              timestamp G_GNUC_UNUSED,
-                              gpointer           userdata)
+static inline void
+mi_set_logged_in (DbusmenuMenuitem * mi, gboolean b)
 {
-  GError * error = NULL;
-  SessionMenuMgr * mgr = SESSION_MENU_MGR (userdata);
+  dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, b);
+}
 
-  indicator_session_upower_call_hibernate_sync (mgr->upower_proxy, mgr->cancellable, &error);
-  if (error != NULL)
-    {
-      g_warning ("%s: %s", G_STRFUNC, error->message);
-      g_clear_error (&error);
-    }
+static DbusmenuMenuitem*
+mi_new_separator (void)
+{
+  DbusmenuMenuitem * mi = dbusmenu_menuitem_new ();
+  mi_set_type (mi, DBUSMENU_CLIENT_TYPES_SEPARATOR);
+  return mi;
+}
+
+static DbusmenuMenuitem*
+mi_new (const char * label)
+{
+  DbusmenuMenuitem * mi = dbusmenu_menuitem_new ();
+  mi_set_label (mi, label);
+  return mi;
 }
 
 /***
+****  UPower Proxy:
+****
+****  1. While bootstrapping, we invoke the AllowSuspend and AllowHibernate
+****     methods to find out whether or not those functions are allowed.
+****  2. While bootstrapping, we get the CanSuspend and CanHibernate properties
+****     and also listen for property changes.
+****  3. These four values are used to set suspend and hibernate's visibility
 ****
 ***/
 
-/* When allow-suspend changes, rebuild the menus */
 static void
-allowed_suspend_cb (GObject * source, GAsyncResult * res, gpointer userdata)
-{
-  gboolean allowed;
-  GError * error = NULL;
-  SessionMenuMgr * mgr = SESSION_MENU_MGR (userdata);
-
-  indicator_session_upower_call_suspend_allowed_finish (mgr->upower_proxy, &allowed, res, &error);
-  if (error != NULL)
-    {
-      g_warning ("%s: %s", G_STRFUNC, error->message);
-      g_error_free (error);
-    }
-  else if (mgr->allow_suspend != allowed)
-    {
-      mgr->allow_suspend = allowed;
-      session_menu_mgr_rebuild_items (mgr);
-    }
-}
-
-/* When allow-hibernate changes, rebuild the menus */
-static void
-allowed_hibernate_cb (GObject * source, GAsyncResult * res, gpointer userdata)
-{
-  gboolean allowed;
-  GError * error = NULL;
-  SessionMenuMgr * mgr = SESSION_MENU_MGR (userdata);
-
-  indicator_session_upower_call_hibernate_allowed_finish (mgr->upower_proxy, &allowed, res, &error);
-  if (error != NULL)
-    {
-      g_warning ("%s: %s", G_STRFUNC, error->message);
-      g_error_free (error);
-    }
-  else if (mgr->allow_hibernate != allowed)
-    {
-      mgr->allow_hibernate = allowed;
-      session_menu_mgr_rebuild_items (mgr);
-    }
-}
-
-
-static void
-on_upower_properties_changed (IndicatorSessionUPower * upower_proxy, SessionMenuMgr * mgr)
+on_upower_properties_changed (SessionMenuMgr * mgr)
 {
   gboolean b;
   gboolean refresh = FALSE;
 
   /* suspend */
-  b = indicator_session_upower_get_can_suspend (upower_proxy);
+  b = dbus_upower_get_can_suspend (mgr->upower_proxy);
   if (mgr->can_suspend != b)
     {
       mgr->can_suspend = b;
@@ -276,7 +284,7 @@ on_upower_properties_changed (IndicatorSessionUPower * upower_proxy, SessionMenu
     }
 
   /* hibernate */
-  b = indicator_session_upower_get_can_hibernate (upower_proxy);
+  b = dbus_upower_get_can_hibernate (mgr->upower_proxy);
   if (mgr->can_hibernate != b)
     {
       mgr->can_hibernate = b;
@@ -285,230 +293,185 @@ on_upower_properties_changed (IndicatorSessionUPower * upower_proxy, SessionMenu
 
   if (refresh)
     {
-      session_menu_mgr_rebuild_items (mgr);
+      update_session_menuitems (mgr);
     }
 }
 
-/* This function goes through and sets up what we need for DKp checking.
-    We're even setting up the calls for the props we need */
 static void
-setup_up (SessionMenuMgr* self)
+init_upower_proxy (SessionMenuMgr * mgr)
 {
-  self->cancellable = g_cancellable_new ();
+  mgr->cancellable = g_cancellable_new ();
 
   GError * error = NULL;
-  self->upower_proxy = indicator_session_upower_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                                                        0,
-                                                                        UP_ADDRESS,
-                                                                        UP_OBJECT,
-                                                                        NULL,
-                                                                        &error);
+  mgr->upower_proxy = dbus_upower_proxy_new_for_bus_sync (
+                         G_BUS_TYPE_SYSTEM,
+                         0,
+                         UPOWER_ADDRESS,
+                         UPOWER_PATH,
+                         NULL,
+                         &error);
   if (error != NULL)
     {
-      g_warning ("Error creating cups notify handler: %s", error->message);
-      g_error_free (error);
+      g_warning ("Error creating upower proxy: %s", error->message);
+      g_clear_error (&error);
     }
   else
     {
-      /* Check to see if these are getting blocked by PolicyKit */
-      indicator_session_upower_call_suspend_allowed (self->upower_proxy, self->cancellable, allowed_suspend_cb, self);
-      indicator_session_upower_call_hibernate_allowed (self->upower_proxy, self->cancellable, allowed_hibernate_cb, self);
+      dbus_upower_call_suspend_allowed_sync (mgr->upower_proxy,
+                                             &mgr->allow_suspend,
+                                             NULL,
+                                             &error);
+      if (error != NULL)
+        {
+          g_warning ("%s: %s", G_STRFUNC, error->message);
+          g_clear_error (&error);
+        }
 
-      g_signal_connect (self->upower_proxy, "changed", G_CALLBACK(on_upower_properties_changed), self);
+      dbus_upower_call_hibernate_allowed_sync (mgr->upower_proxy,
+                                               &mgr->allow_hibernate,
+                                               NULL,
+                                               &error);
+      if (error != NULL)
+        {
+          g_warning ("%s: %s", G_STRFUNC, error->message);
+          g_clear_error (&error);
+        }
 
-      /* trigger an initial "changed" event */
-      on_upower_properties_changed (self->upower_proxy, self);
+      on_upower_properties_changed (mgr);
+      g_signal_connect_swapped (mgr->upower_proxy, "changed",
+                                G_CALLBACK(on_upower_properties_changed), mgr);
     }
-
-
-}
-
-static void
-spawn_command_line_async (const char * fmt, ...)
-{
-  va_list marker;
-  va_start (marker, fmt);
-  gchar * cmd = g_strdup_vprintf (fmt, marker);
-  va_end (marker);
-  
-  GError * error = NULL; 
-  if (!g_spawn_command_line_async (cmd, &error))
-    {
-      g_warning ("Unable to show \"%s\": %s", cmd, error->message);
-    }
-
-  g_clear_error (&error);
-  g_free (cmd);
-}
-
-
-/* This is the function to show a dialog on actions that
-   can destroy data.  Currently it just calls the GTK version
-   but it seems that in the future it should figure out
-   what's going on and something better. */
-static void
-show_dialog (DbusmenuMenuitem * mi, guint timestamp, gchar * type)
-{
-#ifdef HAVE_GTKLOGOUTHELPER
-  gchar * helper = g_build_filename(LIBEXECDIR, "gtk-logout-helper", NULL);
-#else
-  gchar * helper = g_build_filename("gnome-session-quit", NULL);
-#endif  /* HAVE_GTKLOGOUTHELPER */
-  spawn_command_line_async ("%s --%s", helper, type);
-  g_free (helper);
-}
-
-static void
-session_menu_mgr_build_static_items (SessionMenuMgr* self, gboolean greeter_mode)
-{
-  const char * name;
-  DbusmenuMenuitem * mi;
-  DbusmenuMenuitem * logout_mi = NULL;
-  DbusmenuMenuitem * shutdown_mi = NULL;
-
-  /***
-  ****  Admin items
-  ***/
-
-  name = _("About This Computer");
-  mi = dbusmenu_menuitem_new ();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-  dbusmenu_menuitem_child_append (self->parent_mi, mi);
-
-  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                            G_CALLBACK(spawn_command_line_async), "gnome-control-center info");
-
-  name = _("Ubuntu Help");
-  mi = dbusmenu_menuitem_new ();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-  dbusmenu_menuitem_child_append (self->parent_mi, mi);
-  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                            G_CALLBACK(spawn_command_line_async), "yelp");
- 
-  if (!greeter_mode)
-    {
-      mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-      dbusmenu_menuitem_child_append (self->parent_mi, mi);
-
-      name = _("System Settings…");
-      mi = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-      dbusmenu_menuitem_child_append (self->parent_mi, mi);
-      g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                                G_CALLBACK(spawn_command_line_async), "gnome-control-center");
-    }
-
-  mi = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_append (self->parent_mi, mi);
-
-  /***
-  ****  Account-switching items
-  ***/
-
-  /* TODO: FIXME */
-
-  const gboolean can_lockscreen = !g_settings_get_boolean (self->lockdown_settings, LOCKDOWN_KEY_SCREENSAVER);
-  if (can_lockscreen)
-    {
-      name = _("Lock Screen");
-      self->lock_mi = mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-      update_screensaver_shortcut (mi, self->keybinding_settings);
-      dbusmenu_menuitem_child_append (self->parent_mi, mi);
-      g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                        G_CALLBACK(lock_screen), NULL);
-    }
-
-  /***
-  ****  Session Items
-  ***/
-
-  mi = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_TYPE, DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_append (self->parent_mi, mi);
-
-  if (!greeter_mode)
-    {
-      name = supress_confirmations() ? _("Log Out") : _("Log Out\342\200\246");
-      logout_mi = mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-      dbusmenu_menuitem_property_set_bool (mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_logout());
-      dbusmenu_menuitem_child_append(self->parent_mi, mi);
-      g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                        G_CALLBACK(show_dialog), "logout");
-    }
-
-  if (self->can_suspend && self->allow_suspend)
-    {
-      name = _("Suspend");
-      self->suspend_mi = mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-      dbusmenu_menuitem_child_append (self->parent_mi, mi);
-      g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                        G_CALLBACK(machine_sleep_from_suspend), self);
-    }
-
-  if (self->can_hibernate && self->allow_hibernate)
-    {
-      name = _("Hibernate");
-      self->hibernate_mi = mi = dbusmenu_menuitem_new();
-      dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-      dbusmenu_menuitem_child_append(self->parent_mi, mi);
-      g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                        G_CALLBACK(machine_sleep_from_hibernate), self);
-    }
-
-  name = _("Restart");
-  mi = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-  dbusmenu_menuitem_child_append (self->parent_mi, mi);
-  /* FIXME: not implemented */
- 
-  name = supress_confirmations() ? _("Shut Down") : _("Shut Down\342\200\246");
-  shutdown_mi = mi = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (mi, DBUSMENU_MENUITEM_PROP_LABEL, name);
-  dbusmenu_menuitem_property_set_bool (mi, DBUSMENU_MENUITEM_PROP_VISIBLE, show_shutdown());
-  dbusmenu_menuitem_child_append (self->parent_mi, mi);
-  g_signal_connect (G_OBJECT(mi), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-#ifdef HAVE_GTKLOGOUTHELPER
-                    G_CALLBACK(show_dialog), "shutdown");
-#else
-                    G_CALLBACK(show_dialog), "power-off");
-#endif  /* HAVE_GTKLOGOUTHELPER */
-
-  RestartShutdownLogoutMenuItems * restart_shutdown_logout_mi = g_new0 (RestartShutdownLogoutMenuItems, 1);
-  restart_shutdown_logout_mi->logout_mi = logout_mi;
-  restart_shutdown_logout_mi->shutdown_mi = shutdown_mi;
-
-  update_menu_entries(restart_shutdown_logout_mi);
-}
-
-static void
-session_menu_mgr_rebuild_items (SessionMenuMgr* self)
-{
-  dbusmenu_menuitem_property_set_bool (self->hibernate_mi,
-                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       self->can_hibernate && self->allow_hibernate);
-  dbusmenu_menuitem_property_set_bool (self->suspend_mi,
-                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                       self->can_suspend && self->allow_suspend);
 }
 
 /***
-****  User Menu
-***/                                       
-
-struct ActivateUserSessionData
-{
-  SessionMenuMgr * menu_mgr;
-  AccountsUser * user;
-};
-
-/***
-****
+****  Admin Menuitems
 ***/
+
+#define DEBUG_SHOW_ALL 1
+
+static void
+build_admin_menuitems (SessionMenuMgr * mgr)
+{
+  DbusmenuMenuitem * mi;
+  const gboolean show_settings = DEBUG_SHOW_ALL || !mgr->greeter_mode;
+
+  mi = mi_new (_("About This Computer"));
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(action_func_spawn_async), CMD_INFO);
+
+  mi = mi_new (_("Ubuntu Help"));
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(action_func_spawn_async), CMD_HELP);
+
+  mi = mi_new_separator ();
+  mi_set_visible (mi, show_settings);
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+
+  mi = mi_new (_("System Settings\342\200\246"));
+  mi_set_visible (mi, show_settings);
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(action_func_spawn_async),
+                            CMD_SYSTEM_SETTINGS);
+
+  mi = mi_new_separator ();
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+}
+
+/***
+****  Session Menuitems
+***/
+
+static void
+update_session_menuitems (SessionMenuMgr * mgr)
+{
+  gboolean v;
+  GSettings * s = mgr->indicator_settings;
+
+  v = !mgr->greeter_mode
+   && !is_this_live_session()
+   && !g_settings_get_boolean (mgr->lockdown_settings, "disable-logout")
+   && !g_settings_get_boolean (s, "suppress-logout-menuitem");
+  mi_set_visible (mgr->logout_mi, v);
+
+  v = mgr->can_suspend
+   && mgr->allow_suspend;
+  mi_set_visible (mgr->suspend_mi, v);
+
+  v = mgr->can_hibernate
+   && mgr->allow_hibernate;
+  mi_set_visible (mgr->hibernate_mi, v);
+
+  v = !g_settings_get_boolean (s, "suppress-restart-menuitem");
+  mi_set_visible (mgr->restart_mi, v);
+
+  v = !g_settings_get_boolean (s, "suppress-shutdown-menuitem");
+  mi_set_visible (mgr->shutdown_mi, v);
+}
+
+/* if confirmation is enabled,
+   add ellipsis to the labels of items whose actions need confirmation */
+static void
+update_confirmation_labels (SessionMenuMgr * mgr)
+{
+  const gboolean confirm_needed = !g_settings_get_boolean (
+                                       mgr->indicator_settings,
+                                       "suppress-logout-restart-shutdown");
+
+  mi_set_label (mgr->logout_mi, confirm_needed ? _("Log Out\342\200\246")
+                                               : _("Log Out"));
+
+  mi_set_label (mgr->shutdown_mi, confirm_needed ? _("Switch Off\342\200\246")
+                                                 : _("Switch Off"));
+
+  dbusmenu_menuitem_property_set (mgr->restart_mi, RESTART_ITEM_LABEL,
+                                  confirm_needed ? _("Restart\342\200\246")
+                                                 : _("Restart"));
+}
+
+static void
+build_session_menuitems (SessionMenuMgr* mgr)
+{
+  DbusmenuMenuitem * mi;
+
+  mi = mi_new_separator ();
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+
+  mi = mgr->logout_mi = mi_new (_("Log Out\342\200\246"));
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(action_func_spawn_async), CMD_LOGOUT);
+
+  mi = mgr->suspend_mi = mi_new ("Suspend");
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(action_func_suspend), mgr);
+
+  mi = mgr->hibernate_mi = mi_new (_("Hibernate"));
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(action_func_hibernate), mgr);
+
+  mi = mgr->restart_mi = mi_new (_("Restart\342\200\246"));
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(action_func_spawn_async), CMD_RESTART);
+ 
+  mi = mgr->shutdown_mi = mi_new (_("Switch Off\342\200\246"));
+  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK(action_func_spawn_async), CMD_SHUTDOWN);
+
+  update_confirmation_labels (mgr);
+}
+
+/****
+*****  User Menuitems
+****/
+
+/* Local Extensions to AccountsUser */
 
 static GQuark
 get_menuitem_quark (void)
@@ -532,12 +495,14 @@ user_get_menuitem (AccountsUser * user)
 static void
 user_set_menuitem (AccountsUser * user, DbusmenuMenuitem * mi)
 {
-  g_message ("%s %s() associating user %s with mi %p", G_STRLOC, G_STRFUNC, accounts_user_get_user_name(user), mi);
-  g_object_set_qdata_full (G_OBJECT(user), get_menuitem_quark(), g_object_ref(G_OBJECT(mi)), g_object_unref);
+  g_message ("%s %s() associating user %s with mi %p",
+             G_STRLOC, G_STRFUNC, accounts_user_get_user_name(user), mi);
+  g_object_set_qdata_full (G_OBJECT(user), get_menuitem_quark(),
+                           g_object_ref(G_OBJECT(mi)), g_object_unref);
 }
 
 static GQuark
-get_name_collision_quark (void)
+get_collision_quark (void)
 {
   static GQuark q = 0;
 
@@ -550,15 +515,15 @@ get_name_collision_quark (void)
 }
 
 static gboolean
-get_user_name_collision (AccountsUser * user)
+user_has_name_collision (AccountsUser * u)
 {
-  return g_object_get_qdata (G_OBJECT(user), get_name_collision_quark()) != NULL;
+  return g_object_get_qdata (G_OBJECT(u), get_collision_quark()) != NULL;
 }
 
 static void
-set_user_name_collision (AccountsUser * user, gboolean b)
+user_set_name_collision (AccountsUser * u, gboolean b)
 {
-  g_object_set_qdata (G_OBJECT(user), get_name_collision_quark(), GINT_TO_POINTER(b));
+  g_object_set_qdata (G_OBJECT(u), get_collision_quark(), GINT_TO_POINTER(b));
 }
 
 /***
@@ -566,7 +531,42 @@ set_user_name_collision (AccountsUser * user, gboolean b)
 ***/
 
 static void
-update_menuitem_icon (DbusmenuMenuitem * mi, AccountsUser * user)
+on_guest_logged_in_changed (UsersServiceDbus * usd,
+                            SessionMenuMgr   * mgr)
+{
+  mi_set_logged_in (mgr->guest_mi,
+                    users_service_dbus_is_guest_logged_in (usd));
+}
+
+/* When a user's login state changes,
+   update the corresponding menuitem's LOGGED_IN property */
+static void
+on_user_logged_in_changed (UsersServiceDbus  * usd,
+                           AccountsUser      * user,
+                           SessionMenuMgr    * mgr)
+{
+  DbusmenuMenuitem * mi = user_get_menuitem (user);
+
+  if (mi != NULL)
+    {
+      mi_set_logged_in (mi, users_service_dbus_is_user_logged_in (usd, user));
+    }
+}
+
+static void
+update_screensaver_shortcut (SessionMenuMgr * mgr)
+{
+  gchar * s = g_settings_get_string (mgr->keybinding_settings, "screensaver");
+  g_debug ("Keybinding changed to: %s", s);
+  dbusmenu_menuitem_property_set_shortcut_string (mgr->lock_mi, s);
+  dbusmenu_menuitem_property_set_shortcut_string (mgr->lock_switch_mi, s);
+  g_free (s);
+}
+
+static void
+on_user_icon_file_changed (AccountsUser      * user,
+                           GParamSpec        * pspec G_GNUC_UNUSED,
+                           DbusmenuMenuitem  * mi)
 {
   const gchar * str = accounts_user_get_icon_file (user);
   
@@ -578,236 +578,83 @@ update_menuitem_icon (DbusmenuMenuitem * mi, AccountsUser * user)
   dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_ICON, str);
 }
 
-static void
-on_user_icon_file_changed (AccountsUser * user, GParamSpec * pspec, DbusmenuMenuitem * mi)
+typedef struct
 {
-  update_menuitem_icon (mi, user);
+  AccountsUser * user;
+  gulong handler_id;
+}
+UserChangeListenerData;
+
+/* when the menuitem is destroyed,
+   it should stop listening for changes to the UserAccount properties :) */
+static void
+on_user_menuitem_destroyed (UserChangeListenerData * data)
+{
+  g_signal_handler_disconnect (data->user, data->handler_id);
+  g_free (data);
 }
 
 static DbusmenuMenuitem*
-create_user_menuitem (SessionMenuMgr * menu_mgr, AccountsUser * user)
+user_menuitem_new (AccountsUser * user, SessionMenuMgr * mgr)
 {
   DbusmenuMenuitem * mi = dbusmenu_menuitem_new ();
-  dbusmenu_menuitem_property_set (mi,
-                                  DBUSMENU_MENUITEM_PROP_TYPE,
-                                  USER_ITEM_TYPE);
+  mi_set_type (mi, USER_ITEM_TYPE);
 
   /* set the name property */
-  const gchar * const real_name = accounts_user_get_real_name (user);
-  const gchar * const user_name = accounts_user_get_user_name (user);
-  char * str = get_user_name_collision (user)
-             ? g_strdup_printf ("%s (%s)", real_name, user_name)
-             : g_strdup (real_name);
-  dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, str);
-  g_free (str);
+  GString * gstr = g_string_new (accounts_user_get_real_name (user));
+  if (user_has_name_collision (user))
+    {
+      g_string_append_printf (gstr, " (%s)", accounts_user_get_user_name(user));
+    }
+  dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, gstr->str);
+  g_string_free (gstr, TRUE);
 
   /* set the logged-in property */
-  const gboolean is_logged_in = users_service_dbus_is_user_logged_in (menu_mgr->users_dbus_interface, user);
-  dbusmenu_menuitem_property_set_bool (mi,
-                                       USER_ITEM_PROP_LOGGED_IN,
-                                       is_logged_in);
+  mi_set_logged_in (mi,
+         users_service_dbus_is_user_logged_in (mgr->users_dbus_facade, user));
 
-  /* set the icon property */
-  update_menuitem_icon (mi, user);
-  g_signal_connect (user, "notify::icon-file", G_CALLBACK(on_user_icon_file_changed), mi);
+  /* set the icon property & listen for changes */
+  UserChangeListenerData * cd = g_new0 (UserChangeListenerData, 1);
+  cd->user = user;
+  cd->handler_id = g_signal_connect (user, "notify::icon-file",
+                                     G_CALLBACK(on_user_icon_file_changed), mi);
+  g_object_weak_ref (G_OBJECT(mi), (GWeakNotify)on_user_menuitem_destroyed, cd);
+  on_user_icon_file_changed (user, NULL, mi);
 
   /* set the is-current-user property */
+  const gboolean is_current_user =
+              !g_strcmp0 (g_get_user_name(), accounts_user_get_user_name(user));
   dbusmenu_menuitem_property_set_bool (mi,
                                        USER_ITEM_PROP_IS_CURRENT_USER,
-                                       !g_strcmp0 (user_name, g_get_user_name()));
+                                       is_current_user);
 
   /* set the activate callback */
-  struct ActivateUserSessionData * data = g_new (struct ActivateUserSessionData, 1);
+  ActivateUserSessionData * data = g_new (ActivateUserSessionData, 1);
   data->user = user;
-  data->menu_mgr = menu_mgr;
+  data->mgr = mgr;
   g_signal_connect_data (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                         G_CALLBACK (activate_user_session),
+                         G_CALLBACK (action_func_switch_to_user),
                          data, (GClosureNotify)g_free,
-                         0);
+                         G_CONNECT_SWAPPED);
 
   /* give this AccountsUser a hook back to this menuitem */
   user_set_menuitem (user, mi);
 
-  /* done */
   return mi;
 }
 
-static void
-on_guest_logged_in_changed (UsersServiceDbus * users_service_dbus,
-                            SessionMenuMgr   * self)
+/* for sorting AccountsUsers from most to least frequently used */
+static gint
+compare_users_by_login_frequency (gconstpointer a, gconstpointer b)
 {
-  if (self->guest_mi != NULL)
-    {
-      const gboolean b = users_service_dbus_is_guest_logged_in (users_service_dbus);
-      dbusmenu_menuitem_property_set_bool (self->guest_mi, USER_ITEM_PROP_LOGGED_IN, b);
-    }
+  const guint64 a_freq = accounts_user_get_login_frequency (ACCOUNTS_USER(a));
+  const guint64 b_freq = accounts_user_get_login_frequency (ACCOUNTS_USER(b));
+  if (a_freq > b_freq) return -1;
+  if (a_freq < b_freq) return  1;
+  return 0;
 }
 
-/* When a user's login state changes,
-   update the corresponding menuitem's LOGGED_IN property */
-static void
-on_user_logged_in_changed (UsersServiceDbus  * users_service_dbus,
-                           AccountsUser      * user,
-                           SessionMenuMgr    * self)
-{
-  DbusmenuMenuitem * mi = user_get_menuitem (user);
-
-  if (mi != NULL)
-    {
-      const gboolean b = users_service_dbus_is_user_logged_in (users_service_dbus, user);
-      dbusmenu_menuitem_property_set_bool (mi, USER_ITEM_PROP_LOGGED_IN, b);
-    }
-}
-
-/* Builds up the menu for us */
-static void 
-menu_mgr_rebuild_users (SessionMenuMgr *self)
-{
-  GList *u;
-  gboolean can_activate;
-
-  /* Check to see which menu items we're allowed to have */
-  can_activate = users_service_dbus_can_activate_session (self->users_dbus_interface) &&
-      !g_settings_get_boolean (self->lockdown_settings, LOCKDOWN_KEY_USER);
-
-  /* Remove the old menu items if that makes sense */
-#warning FIXME
-#if 0
-  GList * children = dbusmenu_menuitem_take_children (self->root_item);
-  g_list_foreach (children, (GFunc)g_object_unref, NULL);
-  g_list_free (children);
-#endif
-
-  /* Set to NULL in case we don't end up building one */
-  self->guest_mi = NULL;
-
-  /* Build all of the user switching items */
-  if (can_activate)
-  {
-    /* TODO: This needs to be updated once the ability to query guest session support is available */
-    GList * users = users_service_dbus_get_user_list (self->users_dbus_interface);
-    const gboolean guest_enabled = users_service_dbus_guest_session_enabled (self->users_dbus_interface);
-    
-    /* TODO we should really return here if the menu is not going to be shown. */
-    
-    DbusmenuMenuitem * switch_menuitem = dbusmenu_menuitem_new ();
-/*
-    dbusmenu_menuitem_property_set (switch_menuitem,
-                                    DBUSMENU_MENUITEM_PROP_TYPE,
-                                    MENU_SWITCH_TYPE);
-*/
-    dbusmenu_menuitem_property_set (switch_menuitem,
-                                    USER_ITEM_PROP_NAME,
-                                    _("Switch User Account…"));
-    dbusmenu_menuitem_child_append (self->parent_mi, switch_menuitem);
-g_message ("appending Switch button to %p", self->parent_mi);
-    g_signal_connect (G_OBJECT (switch_menuitem),
-                      DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                      G_CALLBACK (activate_new_session),
-                      self);
-    
-    if ( !is_this_guest_session () && guest_enabled)
-    {
-      self->guest_mi = dbusmenu_menuitem_new ();
-      dbusmenu_menuitem_property_set (self->guest_mi,
-                                      DBUSMENU_MENUITEM_PROP_TYPE,
-                                      USER_ITEM_TYPE);
-      dbusmenu_menuitem_property_set (self->guest_mi,
-                                      USER_ITEM_PROP_NAME,
-                                      _("Guest Session"));
-      on_guest_logged_in_changed (self->users_dbus_interface, self);
-      dbusmenu_menuitem_child_append (self->parent_mi, self->guest_mi);
-      g_signal_connect (G_OBJECT (self->guest_mi),
-                        DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                        G_CALLBACK (activate_guest_session),
-                        self);
-    }
-    else{
-      session_dbus_set_users_real_name (self->session_dbus_interface,
-                                        _("Guest"));      
-    }
-    
-    
-
-    users = g_list_sort (users, compare_users_by_username);
-
-    for (u = users; u != NULL; u = g_list_next (u))
-      {
-        AccountsUser * user = u->data;
-
-        DbusmenuMenuitem * mi = create_user_menuitem (self, user);
-        dbusmenu_menuitem_child_append (self->parent_mi, mi);
-
-        const char * const user_name = accounts_user_get_user_name (user);
-        if (!g_strcmp0 (user_name, g_get_user_name()))
-          {
-            const char * const real_name = accounts_user_get_real_name (user);
-            session_dbus_set_users_real_name (self->session_dbus_interface, real_name);
-          }
-      }
-
-    g_list_free(users);
-  }
-
-  // Add the user accounts and separator
-  DbusmenuMenuitem * separator1 = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (separator1,
-                                  DBUSMENU_MENUITEM_PROP_TYPE,
-                                  DBUSMENU_CLIENT_TYPES_SEPARATOR);
-  dbusmenu_menuitem_child_append (self->parent_mi, separator1);
-
-  DbusmenuMenuitem * user_accounts_item = dbusmenu_menuitem_new();
-  dbusmenu_menuitem_property_set (user_accounts_item,
-                                  DBUSMENU_MENUITEM_PROP_TYPE,
-                                  DBUSMENU_CLIENT_TYPES_DEFAULT);
-  dbusmenu_menuitem_property_set (user_accounts_item,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("User Accounts…"));
-
-  g_signal_connect (G_OBJECT (user_accounts_item),
-                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                    G_CALLBACK (activate_user_accounts),
-                    NULL);
-                                  
-  dbusmenu_menuitem_child_append (self->parent_mi, user_accounts_item); 
-
-
-}
-
-/* Check to see if the lockdown key is protecting from
-   locking the screen.  If not, lock it. */
-static void
-lock_if_possible (SessionMenuMgr * menu_mgr)
-{
-  if (!g_settings_get_boolean (menu_mgr->lockdown_settings, LOCKDOWN_KEY_SCREENSAVER))
-    {
-      lock_screen(NULL, 0, NULL);
-    }
-}
-
-/* Starts a new generic session */
-static void
-activate_new_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
-{
-  SessionMenuMgr * menu_mgr = SESSION_MENU_MGR (user_data);
-  g_return_if_fail (menu_mgr != NULL);
-
-  lock_if_possible (menu_mgr);
-  users_service_dbus_show_greeter (menu_mgr->users_dbus_interface);
-}
-
-/* Activates a session for a particular user. */
-static void
-activate_user_session (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data)
-{
-  struct ActivateUserSessionData * data = user_data;
-
-  lock_if_possible (data->menu_mgr);
-  users_service_dbus_activate_user_session (data->menu_mgr->users_dbus_interface, data->user);
-}
-
-/* Comparison function to look into the UserData struct
-   to compare by using the username value */
+/* for sorting AccountsUsers by name */
 static gint
 compare_users_by_username (gconstpointer ga, gconstpointer gb)
 {
@@ -819,57 +666,350 @@ compare_users_by_username (gconstpointer ga, gconstpointer gb)
 
   if (!ret) /* names are the same, so both have a name collision */
     {
-      set_user_name_collision (a, TRUE);
-      set_user_name_collision (b, TRUE);
+      user_set_name_collision (a, TRUE);
+      user_set_name_collision (b, TRUE);
     }
 
   return ret;
 }
 
+static gboolean
+is_user_switching_allowed (SessionMenuMgr * mgr)
+{
+  /* maybe it's locked down */
+  if (g_settings_get_boolean (mgr->lockdown_settings, "disable-user-switching"))
+    return FALSE;
+
+  /* maybe the seat doesn't support activation */
+  if (!users_service_dbus_can_activate_session (mgr->users_dbus_facade))
+    return FALSE;
+
+  return TRUE;
+}
+
 static void
-activate_user_accounts (DbusmenuMenuitem *mi,
-                          guint timestamp,
-                          gpointer user_data)
+build_user_menuitems (SessionMenuMgr * mgr)
+{
+  DbusmenuMenuitem * mi;
+  GSList * items = NULL;
+  gint pos = mgr->user_menuitem_index;
+  const char * current_real_name = NULL;
+
+  /**
+  ***  Start Screen Saver
+  ***  Switch Account...
+  ***  Lock
+  ***  Lock / Switch Account...
+  **/
+
+  const gboolean show_all = DEBUG_SHOW_ALL;
+  const SwitcherMode mode = get_switcher_mode (mgr);
+
+  mi = mi_new (_("Start Screen Saver"));
+  mi_set_visible (mi, show_all || (mode == SWITCHER_MODE_SCREENSAVER));
+  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  items = g_slist_prepend (items, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK (action_func_lock), mgr);
+
+  mi = mi_new (_("Switch User Account\342\200\246"));
+  mi_set_visible (mi, show_all || (mode == SWITCHER_MODE_SWITCH));
+  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  items = g_slist_prepend (items, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK (action_func_switch_to_greeter), mgr);
+
+  mi = mgr->lock_mi = mi_new (_("Lock"));
+  mi_set_visible (mi, show_all || (mode == SWITCHER_MODE_LOCK));
+  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  items = g_slist_prepend (items, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK (action_func_switch_to_lockscreen), mgr);
+
+  mi = mgr->lock_switch_mi = mi_new (_("Lock/Switch Account\342\200\246"));
+  mi_set_visible (mi, show_all || (mode == SWITCHER_MODE_SWITCH_OR_LOCK));
+  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  items = g_slist_prepend (items, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK (action_func_switch_to_lockscreen), mgr);
+
+  const gboolean guest_allowed =
+           users_service_dbus_guest_session_enabled (mgr->users_dbus_facade);
+  const gboolean is_guest = is_this_guest_session();
+  mi = mi_new (_("Guest Session"));
+  mi_set_type (mi, USER_ITEM_TYPE);
+  mi_set_visible (mi, guest_allowed && !is_guest);
+  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  on_guest_logged_in_changed (mgr->users_dbus_facade, mgr);
+  items = g_slist_prepend (items, mi);
+  g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                            G_CALLBACK (action_func_switch_to_guest), mgr);
+  mgr->guest_mi = mi;
+  if (guest_allowed && is_guest)
+    {
+      current_real_name = _("Guest");
+    }
+  
+  /***
+  ****  Users
+  ***/
+
+  /* if we can switch to another user account, show them here */
+  if (is_user_switching_allowed (mgr))
+    {
+      GList * users = users_service_dbus_get_user_list (mgr->users_dbus_facade);
+
+      /* pick the most frequently used accounts */
+      const int MAX_USERS = 12; /* this limit comes from the spec */
+      if (g_list_length(users) > MAX_USERS)
+        {
+          users = g_list_sort (users, compare_users_by_login_frequency);
+          GList * last = g_list_nth (users, MAX_USERS-1);
+          GList * remainder = last->next;
+          last->next = NULL;
+          remainder->prev = NULL;
+          g_list_free (remainder);
+        }
+
+      /* Sort the users by name for display */
+      users = g_list_sort (users, compare_users_by_username);
+
+      /* Create menuitems for them */
+      int i;
+      GList * u;
+      const char * const username = g_get_user_name();
+      for (i=0, u=users; i<MAX_USERS && u!=NULL; u=u->next, i++)
+        {
+          AccountsUser * user = u->data;
+          DbusmenuMenuitem * mi = user_menuitem_new (user, mgr);
+          dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+          items = g_slist_prepend (items, mi);
+
+          if (!g_strcmp0 (username, accounts_user_get_user_name(user)))
+            {
+              current_real_name = accounts_user_get_real_name (user);
+            }
+        }
+      g_list_free(users);
+    }
+
+  /* separator */
+  mi = mi_new_separator ();
+  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  items = g_slist_prepend (items, mi);
+
+  if (current_real_name != NULL)
+    {
+      session_dbus_set_users_real_name (mgr->session_dbus,
+                                        current_real_name);
+    }
+
+  update_screensaver_shortcut (mgr);
+  mgr->user_menuitems = items;
+}
+
+static void
+update_user_menuitems (SessionMenuMgr * mgr)
+{
+  /* remove any previous user menuitems */
+  GSList * l;
+  for (l=mgr->user_menuitems; l!=NULL; l=l->next)
+    {
+      dbusmenu_menuitem_child_delete (mgr->parent_mi, l->data);
+    }
+  g_slist_free (mgr->user_menuitems);
+  mgr->user_menuitems = NULL;
+
+  /* add fresh user menuitems */
+  build_user_menuitems (mgr);
+}
+
+/***
+****
+***/
+
+static void
+action_func_spawn_async (const char * fmt, ...)
+{
+  va_list marker;
+  va_start (marker, fmt);
+  gchar * cmd = g_strdup_vprintf (fmt, marker);
+  va_end (marker);
+  
+  GError * error = NULL; 
+  if (!g_spawn_command_line_async (cmd, &error))
+    {
+      g_warning ("Unable to show \"%s\": %s", cmd, error->message);
+    }
+
+  g_clear_error (&error);
+  g_free (cmd);
+}
+
+/* Calling "Lock" locks the screen & goes to black.
+   Calling "SimulateUserActivity" afterwards shows the Lock Screen. */
+static void
+lock_helper (SessionMenuMgr * mgr, gboolean show_lock_screen)
+{
+  if (!g_settings_get_boolean (mgr->lockdown_settings, "disable-lock-screen"))
+    {
+      GError * error = NULL;
+      GDBusProxy * proxy = g_dbus_proxy_new_for_bus_sync (
+                             G_BUS_TYPE_SESSION,
+                             G_DBUS_PROXY_FLAGS_NONE,
+                             NULL,
+                             "org.gnome.ScreenSaver",
+                             "/org/gnome/ScreenSaver",
+                             "org.gnome.ScreenSaver",
+                             NULL,
+                             &error);
+
+      if (error == NULL)
+        {
+          g_dbus_proxy_call_sync (proxy, "Lock",
+                                  NULL, G_DBUS_CALL_FLAGS_NONE, -1, NULL,
+                                  &error);
+        }
+
+      if ((error == NULL) && show_lock_screen)
+        {
+          g_dbus_proxy_call_sync (proxy, "SimulateUserActivity",
+                                  NULL, G_DBUS_CALL_FLAGS_NONE, -1, NULL,
+                                  &error);
+        }
+
+      if (error != NULL)
+        {
+          g_warning ("Error locking screen: %s", error->message);
+        }
+
+      g_clear_object (&proxy);
+      g_clear_error (&error);
+    }
+}
+
+static void
+action_func_lock (SessionMenuMgr * mgr)
+{
+  lock_helper (mgr, FALSE);
+}
+
+static void
+action_func_switch_to_lockscreen (SessionMenuMgr * mgr)
+{
+  lock_helper (mgr, TRUE);
+}
+
+static void
+action_func_switch_to_greeter (SessionMenuMgr * mgr)
+{
+  action_func_lock (mgr);
+  users_service_dbus_show_greeter (mgr->users_dbus_facade);
+}
+
+static void
+action_func_switch_to_user (ActivateUserSessionData * data)
+{
+  action_func_lock (data->mgr);
+  users_service_dbus_activate_user_session (data->mgr->users_dbus_facade,
+                                            data->user);
+}
+
+static void
+action_func_switch_to_guest (SessionMenuMgr * mgr)
+{
+  action_func_lock (mgr);
+  users_service_dbus_activate_guest_session (mgr->users_dbus_facade);
+}
+
+static void
+action_func_suspend (SessionMenuMgr * mgr)
 {
   GError * error = NULL;
-  if (!g_spawn_command_line_async("gnome-control-center user-accounts", &error))
-  {
-    g_warning("Unable to show control centre: %s", error->message);
-    g_error_free(error);
-  }
+
+  dbus_upower_call_suspend_sync (mgr->upower_proxy,
+                                 mgr->cancellable,
+                                 &error);
+
+  if (error != NULL)
+    {
+      g_warning ("%s: %s", G_STRFUNC, error->message);
+      g_clear_error (&error);
+    }
 }
 
-/* Signal called when a user is added.
-   It updates the count and rebuilds the menu */
 static void
-on_user_list_changed (UsersServiceDbus * service   G_GNUC_UNUSED, 
-                      SessionMenuMgr   * menu_mgr)
+action_func_hibernate (SessionMenuMgr * mgr)
 {
-  g_return_if_fail (IS_SESSION_MENU_MGR(menu_mgr));
+  GError * error = NULL;
 
-  menu_mgr_rebuild_users (menu_mgr);
+  dbus_upower_call_hibernate_sync (mgr->upower_proxy,
+                                   mgr->cancellable,
+                                   &error);
+
+  if (error != NULL)
+    {
+      g_warning ("%s: %s", G_STRFUNC, error->message);
+      g_clear_error (&error);
+    }
 }
 
+/***
+****
+***/
 
-/* Checks to see if we should show the guest session item.
-   System users shouldn't have guest account shown.
-   Mostly this would be the case of the guest user itself. */
 static gboolean
 is_this_guest_session (void)
 {
   return geteuid() < 500;
 }
 
-/* Called when someone clicks on the guest session item. */
-static void
-activate_guest_session (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
+static gboolean
+is_this_live_session (void)
 {
-  SessionMenuMgr * menu_mgr = SESSION_MENU_MGR (user_data);
-  g_return_if_fail (menu_mgr != NULL);
-
-  lock_if_possible (menu_mgr);
-  users_service_dbus_activate_guest_session (menu_mgr->users_dbus_interface);
+  const struct passwd * const pw = getpwuid (geteuid());
+  return (pw->pw_uid==999) && !g_strcmp0("ubuntu",pw->pw_name);
 }
+
+static SwitcherMode
+get_switcher_mode (SessionMenuMgr * mgr)
+{
+  SwitcherMode mode;
+
+  const gboolean can_lock = !g_settings_get_boolean (mgr->lockdown_settings,
+                                                     "disable-lock-screen");
+  const gboolean can_switch = is_user_switching_allowed (mgr);
+
+  if (!can_lock && !can_switch) /* hmm, quite an extreme lockdown */
+    {
+      mode = SWITCHER_MODE_SCREENSAVER;
+    }
+  else if (is_this_live_session()) /* live sessions can't lock or switch */
+    {
+      mode = SWITCHER_MODE_SCREENSAVER;
+    }
+  else if (!can_switch) /* switching's locked down */
+    {
+      mode = SWITCHER_MODE_LOCK;
+    }
+  else if (is_this_guest_session ()) /* guest sessions can't lock */
+    {
+      mode = SWITCHER_MODE_SWITCH;
+    }
+  else
+    {
+      GList * l = users_service_dbus_get_user_list (mgr->users_dbus_facade);
+      const size_t user_count = g_list_length (l);
+      g_list_free (l);
+
+      mode = user_count < 2
+           ? SWITCHER_MODE_LOCK /* you can't switch if no other users */
+           : SWITCHER_MODE_SWITCH_OR_LOCK;
+    }
+
+  return mode;
+}
+
 
 /***
 ****
@@ -879,11 +1019,14 @@ SessionMenuMgr* session_menu_mgr_new (DbusmenuMenuitem  * parent_mi,
                                       SessionDbus       * session_dbus,
                                       gboolean            greeter_mode)
 {
-  SessionMenuMgr* menu_mgr = g_object_new (SESSION_TYPE_MENU_MGR, NULL);
-  menu_mgr->parent_mi = parent_mi;
-  menu_mgr->greeter_mode = greeter_mode;
-  menu_mgr->session_dbus_interface = session_dbus;
-  session_menu_mgr_build_static_items (menu_mgr, greeter_mode);
-  menu_mgr_rebuild_users (menu_mgr);
-  return menu_mgr;
+  SessionMenuMgr* mgr = g_object_new (SESSION_TYPE_MENU_MGR, NULL);
+  mgr->parent_mi = parent_mi;
+  mgr->greeter_mode = greeter_mode;
+  mgr->session_dbus = session_dbus;
+  build_admin_menuitems (mgr);
+  const guint n = g_list_length (dbusmenu_menuitem_get_children (parent_mi));
+  mgr->user_menuitem_index = n;
+  build_user_menuitems (mgr);
+  build_session_menuitems (mgr);
+  return mgr;
 }

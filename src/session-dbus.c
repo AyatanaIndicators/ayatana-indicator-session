@@ -7,16 +7,16 @@ Authors:
     Ted Gould <ted@canonical.com>
     Conor Curran <conor.curran@canonical.com>
 
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -27,7 +27,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gio/gio.h>
 
 #include "session-dbus.h"
-#include "dbus-shared-names.h"
+#include "shared-names.h"
 
 static GVariant * get_users_real_name (SessionDbus * service);
 static void bus_get_cb (GObject * object, GAsyncResult * res, gpointer user_data);
@@ -206,10 +206,7 @@ session_dbus_finalize (GObject *object)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(object);
 
-	if (priv->name != NULL) {
-		g_free(priv->name);
-		priv->name = NULL;
-	}
+	g_clear_pointer (&priv->name, g_free);
 
 	G_OBJECT_CLASS (session_dbus_parent_class)->finalize (object);
 	return;
@@ -219,7 +216,7 @@ static GVariant *
 get_users_real_name (SessionDbus * service)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(service);
-	return g_variant_new ("(s)", priv->name);
+	return g_variant_new ("(s)", priv->name ? priv->name : "");
 }
 
 SessionDbus *
@@ -242,7 +239,7 @@ session_dbus_set_users_real_name (SessionDbus * session, const gchar * name)
 		g_free(priv->name);
 		priv->name = NULL;
 	}
-    
+
 	priv->name = g_strdup(name);
 
 	if (priv->bus != NULL) {
@@ -267,7 +264,7 @@ void session_dbus_restart_required (SessionDbus* session)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
 	GError * error = NULL;
-    
+
 	if (priv->bus != NULL) {
     g_debug("About to send RebootRequired signal");
 
@@ -283,6 +280,6 @@ void session_dbus_restart_required (SessionDbus* session)
 			g_warning("Unable to send reboot-required signal: %s", error->message);
 			g_error_free(error);
 		}
-	}  
-  
+	}
+
 }

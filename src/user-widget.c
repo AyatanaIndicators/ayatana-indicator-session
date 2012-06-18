@@ -4,17 +4,18 @@ Copyright 2011 Canonical Ltd.
 Authors:
     Conor Curran <conor.curran@canonical.com>
     Mirco Müller <mirco.mueller@canonical.com>
- 
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+    Charles Kerr <charles.kerr@canonical.com>
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -24,11 +25,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <glib.h>
+
 #include <math.h>
+
 #include <libindicator/indicator-image-helper.h>
+
+#include "shared-names.h"
 #include "user-widget.h"
-#include "dbus-shared-names.h"
 
 
 typedef struct _UserWidgetPrivate UserWidgetPrivate;
@@ -65,17 +68,17 @@ static void user_widget_set_twin_item (UserWidget* self,
 
 static void _color_shade (const CairoColorRGB *a,
                           float k,
-                          CairoColorRGB *b);                                         
+                          CairoColorRGB *b);
 
 static void draw_album_border (GtkWidget *widget, gboolean selected);
-                                         
+
 static gboolean user_widget_primitive_draw_cb_gtk_3 (GtkWidget *image,
                                                          cairo_t* cr,
                                                          gpointer user_data);
 static gboolean user_widget_draw_usericon_gtk_3 (GtkWidget *widget,
                                                  cairo_t* cr,
                                                  gpointer user_data);
-                                                         
+
 G_DEFINE_TYPE (UserWidget, user_widget, GTK_TYPE_MENU_ITEM);
 
 static void
@@ -95,19 +98,19 @@ user_widget_init (UserWidget *self)
   self->priv = USER_WIDGET_GET_PRIVATE(self);
 
   UserWidgetPrivate * priv = self->priv;
-  
+
   priv->user_image = NULL;
   priv->user_name  = NULL;
   priv->logged_in = FALSE;
   priv->sessions_active = FALSE;
   priv->container = NULL;
   priv->tick_icon = NULL;
-  
-  // Create the UI elements.  
+
+  // Create the UI elements.
   priv->user_image = gtk_image_new ();
   gtk_misc_set_alignment(GTK_MISC(priv->user_image), 0.0, 0.0);
   gtk_misc_set_padding (GTK_MISC(priv->user_image),0, 4.0);
-  
+
   priv->user_name = gtk_label_new ("");
 
   priv->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
@@ -115,36 +118,36 @@ user_widget_init (UserWidget *self)
   priv->tick_icon = gtk_image_new_from_icon_name ("account-logged-in",
                                                    GTK_ICON_SIZE_MENU);
   gtk_misc_set_alignment(GTK_MISC(priv->tick_icon), 1.0, 0.5);
-  
+
   // Pack it together
   gtk_box_pack_start (GTK_BOX (priv->container),
                       priv->user_image,
                       FALSE,
                       FALSE,
-                      0);   
+                      0);
   gtk_box_pack_start (GTK_BOX (priv->container),
                       priv->user_name,
                       FALSE,
                       FALSE,
-                      3);                       
+                      3);
   gtk_box_pack_end (GTK_BOX(priv->container),
                     priv->tick_icon,
                     FALSE,
                     FALSE, 5);
-  
-  gtk_widget_show_all (priv->container);  
-  gtk_container_add (GTK_CONTAINER (self), priv->container);    
+
+  gtk_widget_show_all (priv->container);
+  gtk_container_add (GTK_CONTAINER (self), priv->container);
   gtk_widget_show_all (priv->tick_icon);
   gtk_widget_set_no_show_all (priv->tick_icon, TRUE);
   gtk_widget_hide (priv->tick_icon);
-  
-  
+
+
   // Fetch the drawing context.
-  g_signal_connect_after (GTK_WIDGET(self), "draw", 
+  g_signal_connect_after (GTK_WIDGET(self), "draw",
                           G_CALLBACK(user_widget_primitive_draw_cb_gtk_3),
                           GTK_WIDGET(self));
 
-  g_signal_connect_after (GTK_WIDGET(priv->user_image), "draw", 
+  g_signal_connect_after (GTK_WIDGET(priv->user_image), "draw",
                           G_CALLBACK(user_widget_draw_usericon_gtk_3),
                           GTK_WIDGET(self));
 }
@@ -173,31 +176,31 @@ user_widget_primitive_draw_cb_gtk_3 (GtkWidget *widget,
 {
   g_return_val_if_fail(IS_USER_WIDGET(user_data), FALSE);
   UserWidget* meta = USER_WIDGET(user_data);
-  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);  
+  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);
 
   // Draw dot only when user is the current user.
   if (!dbusmenu_menuitem_property_get_bool (priv->twin_item,
                                             USER_ITEM_PROP_IS_CURRENT_USER)){
-    return FALSE;                                           
+    return FALSE;
   }
-  
+
   GtkStyle *style;
-  gdouble x, y;  
+  gdouble x, y;
   style = gtk_widget_get_style (widget);
-  
+
   GtkAllocation allocation;
   gtk_widget_get_allocation (widget, &allocation);
-  x = allocation.x + 13;        
+  x = allocation.x + 13;
   y = allocation.height / 2;
-  
-  cairo_arc (cr, x, y, 3.0, 0.0, 2 * G_PI);;
-  
+
+  cairo_arc (cr, x, y, 3.0, 0.0, 2 * G_PI);
+
   cairo_set_source_rgb (cr, style->fg[gtk_widget_get_state(widget)].red/65535.0,
                             style->fg[gtk_widget_get_state(widget)].green/65535.0,
                             style->fg[gtk_widget_get_state(widget)].blue/65535.0);
-  cairo_fill (cr);                                             
+  cairo_fill (cr);
 
-  return FALSE;  
+  return FALSE;
 }
 
 static gboolean
@@ -207,32 +210,32 @@ user_widget_draw_usericon_gtk_3 (GtkWidget *widget,
 {
   g_return_val_if_fail(IS_USER_WIDGET(user_data), FALSE);
   UserWidget* meta = USER_WIDGET(user_data);
-  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);  
+  UserWidgetPrivate * priv = USER_WIDGET_GET_PRIVATE(meta);
 
   if (priv->using_personal_icon)
     {
-      draw_album_border (widget, FALSE);  
+      draw_album_border (widget, FALSE);
     }
-  
+
   return FALSE;
 }
 
 static void
 draw_album_border(GtkWidget *widg, gboolean selected)
 {
-  cairo_t *cr;  
+  cairo_t *cr;
   cr = gdk_cairo_create (gtk_widget_get_window (widg));
   gtk_style_context_add_class (gtk_widget_get_style_context (widg),
                                "menu");
-  
+
   GtkStyle *style;
   style = gtk_widget_get_style (widg);
-  
+
   GtkAllocation alloc;
   gtk_widget_get_allocation (widg, &alloc);
   gint offset = 0;
   gint v_offset = 4;
-  
+
   alloc.width = alloc.width + (offset * 2);
   alloc.height = alloc.height - v_offset - 2;
   alloc.x = alloc.x - offset;
@@ -245,7 +248,7 @@ draw_album_border(GtkWidget *widg, gboolean selected)
   bg_normal.b = style->bg[0].blue/65535.0;
 
   gint state = selected ? 5 : 0;
-  
+
   fg_normal.r = style->fg[state].red/65535.0;
   fg_normal.g = style->fg[state].green/65535.0;
   fg_normal.b = style->fg[state].blue/65535.0;
@@ -253,17 +256,17 @@ draw_album_border(GtkWidget *widg, gboolean selected)
   CairoColorRGB dark_top_color;
   CairoColorRGB light_bottom_color;
   CairoColorRGB background_color;
-  
+
   _color_shade ( &bg_normal, 0.93, &background_color );
   _color_shade ( &bg_normal, 0.23, &dark_top_color );
   _color_shade ( &fg_normal, 0.55, &light_bottom_color );
-  
+
   cairo_rectangle (cr,
                    alloc.x, alloc.y,
                    alloc.width, alloc.height);
 
   cairo_set_line_width (cr, 1.0);
-  
+
   cairo_clip ( cr );
 
   cairo_move_to (cr, alloc.x, alloc.y );
@@ -280,9 +283,9 @@ draw_album_border(GtkWidget *widg, gboolean selected)
                           background_color.g,
                           background_color.b,
                           1.0 );
-  
+
   cairo_stroke ( cr );
-  
+
   cairo_move_to (cr, alloc.x, alloc.y );
   cairo_line_to (cr, alloc.x + alloc.width,
                 alloc.y );
@@ -293,9 +296,9 @@ draw_album_border(GtkWidget *widg, gboolean selected)
                           dark_top_color.g,
                           dark_top_color.b,
                           1.0 );
-  
+
   cairo_stroke ( cr );
-  
+
   cairo_move_to ( cr, alloc.x + alloc.width,
                   alloc.y + alloc.height );
   cairo_line_to ( cr, alloc.x, alloc.y + alloc.height );
@@ -306,9 +309,9 @@ draw_album_border(GtkWidget *widg, gboolean selected)
                          light_bottom_color.g,
                          light_bottom_color.b,
                          1.0);
-  
+
   cairo_stroke ( cr );
-  cairo_destroy (cr);   
+  cairo_destroy (cr);
 }
 
 static void
@@ -368,7 +371,7 @@ _color_rgb_to_hls (gdouble *r,
     s = (max-min)/(2-max-min);
 
     delta = (max -min) != 0 ? (max -min) : 1;
-    
+
     if(delta == 0)
       delta = 1;
     if (red == max)
@@ -390,7 +393,7 @@ _color_rgb_to_hls (gdouble *r,
 
 static void
 _color_hls_to_rgb (gdouble *h,
-                   gdouble *l, 
+                   gdouble *l,
                    gdouble *s)
 {
   gdouble hue;
@@ -572,13 +575,13 @@ update_name (UserWidget * self, DbusmenuMenuitem * mi)
                        dbusmenu_menuitem_property_get (mi, USER_ITEM_PROP_NAME));
 }
 
-static void 
+static void
 user_widget_property_update (DbusmenuMenuitem  * mi,
-                             const gchar       * property, 
+                             const gchar       * property,
                              GVariant          * value,
                              UserWidget        * self)
 {
-  g_return_if_fail (IS_USER_WIDGET (self)); 
+  g_return_if_fail (IS_USER_WIDGET (self));
 
   if (!g_strcmp0 (property, USER_ITEM_PROP_LOGGED_IN))
     {
@@ -607,7 +610,7 @@ user_widget_set_twin_item (UserWidget * self, DbusmenuMenuitem * mi)
   update_name      (self, mi);
   update_logged_in (self, mi);
 
-  g_signal_connect (G_OBJECT(mi), "property-changed", 
+  g_signal_connect (G_OBJECT(mi), "property-changed",
                     G_CALLBACK(user_widget_property_update), self);
 }
 
@@ -615,10 +618,10 @@ user_widget_set_twin_item (UserWidget * self, DbusmenuMenuitem * mi)
  * transport_new:
  * @returns: a new #UserWidget.
  **/
-GtkWidget* 
+GtkWidget*
 user_widget_new(DbusmenuMenuitem *item)
 {
   GtkWidget* widget =  g_object_new(USER_WIDGET_TYPE, NULL);
   user_widget_set_twin_item ( USER_WIDGET(widget), item );
-  return widget;                  
+  return widget;
 }

@@ -7,16 +7,16 @@ Copyright 2010 Canonical Ltd.
 Authors:
     Ted Gould <ted@canonical.com>
 
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -226,17 +226,17 @@ logout_dialog_new (LogoutDialogType type)
 		                       button_text, GTK_RESPONSE_OK,
 		                       NULL);
 	}
-  
-  if (type == LOGOUT_DIALOG_TYPE_SHUTDOWN){
-  	const gchar * restart_text;
+
+	if (type == LOGOUT_DIALOG_TYPE_SHUTDOWN) {
+		const gchar * restart_text;
 		restart_text = g_dpgettext2 (NULL, "button", button_strings[LOGOUT_DIALOG_TYPE_RESTART]);
-		gtk_dialog_add_button (GTK_DIALOG(dialog), restart_text, GTK_RESPONSE_HELP);    
-  }
+		gtk_dialog_add_button (GTK_DIALOG(dialog), restart_text, GTK_RESPONSE_HELP);
+	}
 
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
-        /* The following  is a workaround to fix an issue in GtkMessageDialog 
-           in which the user can tab through the text in addition to 
+        /* The following  is a workaround to fix an issue in GtkMessageDialog
+           in which the user can tab through the text in addition to
            the buttons. */
         GtkWidget *message_area = gtk_message_dialog_get_message_area(GTK_MESSAGE_DIALOG(dialog));
         GList *children = gtk_container_get_children(GTK_CONTAINER(message_area));

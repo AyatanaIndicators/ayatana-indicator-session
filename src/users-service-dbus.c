@@ -30,13 +30,13 @@
 
 #include <pwd.h> /* getpwuid() */
 
-#include "dbus-shared-names.h"
 #include "dbus-accounts.h"
 #include "dbus-consolekit-manager.h"
 #include "dbus-consolekit-seat.h"
 #include "dbus-consolekit-session.h"
 #include "dbus-display-manager.h"
 #include "dbus-user.h"
+#include "shared-names.h"
 #include "users-service-dbus.h"
 
 #define CK_ADDR             "org.freedesktop.ConsoleKit"
@@ -326,7 +326,6 @@ create_consolekit_session_proxy (const char * ssid)
                             ssid,
                             NULL,
                             &error);
-
   if (error != NULL)
     {
       g_warning ("%s: %s", G_STRLOC, error->message);
@@ -644,7 +643,6 @@ update_user_list (UsersServiceDbus *self)
   GError * error = NULL;
   char ** object_paths = NULL;
   UsersServiceDbusPrivate * priv = self->priv;
-  g_debug ("%s updating the user list", G_STRLOC);
 
   accounts_call_list_cached_users_sync (priv->accounts_proxy,
                                         &object_paths,
@@ -680,7 +678,7 @@ on_user_added (Accounts          * o          G_GNUC_UNUSED,
 {
   /* We see a new user but we might not want to list it --
      for example, lightdm shows up when we switch to the greeter.
-     So instead of adding the user directly here, let's ask 
+     So instead of adding the user directly here, let's ask
      org.freedesktop.Accounts for a fresh list of users
      because it filters out special cases. */
   update_user_list (service);
@@ -790,7 +788,7 @@ get_unix_username_from_ssid (UsersServiceDbus * self,
               g_warning ("Failed to lookup user id %d: %s", (int)uid, g_strerror(errno));
             }
           else
-            { 
+            {
               username = g_strdup (pwent->pw_name);
             }
         }
@@ -807,7 +805,7 @@ is_guest_username (const char * username)
   if (!g_strcmp0 (username, "guest"))
     return TRUE;
 
-  if ((strlen(username)==12) && !memcmp(username,"guest-",6))
+  if (username && (strlen(username)==12) && !memcmp(username,"guest-",6))
     return TRUE;
 
   return FALSE;

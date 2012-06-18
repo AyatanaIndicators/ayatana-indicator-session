@@ -8,16 +8,16 @@ Authors:
     Ted Gould <ted@canonical.com>
     Christoph Korn <c_korn@gmx.de>
 
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -28,7 +28,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbus/dbus-glib.h>
 #include <gtk/gtk.h>
 #include "dialog.h"
-#include "settings-helper.h"
+#include "shared-names.h"
 
 static void
 consolekit_fallback (LogoutDialogType action)
@@ -91,7 +91,7 @@ session_action (LogoutDialogType action)
 	GError * error = NULL;
 	gboolean res = FALSE;
 	
-	sbus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL); 
+	sbus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 	if (sbus == NULL) {
 		g_warning("Unable to get DBus session bus.");
 		return;
@@ -113,15 +113,15 @@ session_action (LogoutDialogType action)
 	
 	if (action == LOGOUT_DIALOG_TYPE_LOG_OUT) {
 		g_debug("Asking Session manager to 'Logout'");
-		res = dbus_g_proxy_call_with_timeout (sm_proxy, "Logout", INT_MAX, &error, 
+		res = dbus_g_proxy_call_with_timeout (sm_proxy, "Logout", INT_MAX, &error,
 											  G_TYPE_UINT, 1, G_TYPE_INVALID, G_TYPE_INVALID);
 	} else if (action == LOGOUT_DIALOG_TYPE_SHUTDOWN) {
 		g_debug("Asking Session manager to 'RequestShutdown'");
-		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestShutdown", INT_MAX, &error, 
+		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestShutdown", INT_MAX, &error,
 											  G_TYPE_INVALID, G_TYPE_INVALID);
 	} else if (action == LOGOUT_DIALOG_TYPE_RESTART) {
 		g_debug("Asking Session manager to 'RequestReboot'");
-		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestReboot", INT_MAX, &error, 
+		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestReboot", INT_MAX, &error,
 											  G_TYPE_INVALID, G_TYPE_INVALID);
 	} else {
 		g_warning ("Unknown session action");
@@ -177,6 +177,17 @@ static GOptionEntry options[] = {
 	{NULL}
 };
 
+static gboolean
+suppress_confirmations (void)
+{
+  GSettings * s = g_settings_new (SESSION_SCHEMA);
+  const gboolean suppress = g_settings_get_boolean (s, SUPPRESS_KEY);
+  g_clear_object (&s);
+  return suppress;
+}
+
+
+
 int
 main (int argc, char * argv[])
 {
@@ -205,7 +216,7 @@ main (int argc, char * argv[])
 	                                  INDICATOR_ICONS_DIR);
 
 	GtkWidget * dialog = NULL;
-	if (!supress_confirmations()) {
+	if (!suppress_confirmations()) {
 		g_debug("Showing dialog to ask for user confirmation");
 		dialog = GTK_WIDGET(logout_dialog_new(type));
 	}

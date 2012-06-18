@@ -20,7 +20,7 @@ sessionlib_LTLIBRARIES = libsession.la
 libsession_la_SOURCES = \
 	indicator-session.c \
 	gen-session-dbus.xml.h \
-	dbus-shared-names.h \
+	shared-names.h \
 	user-widget.c \
 	user-widget.h
 libsession_la_CFLAGS = \
@@ -130,7 +130,6 @@ indicator_session_service_SOURCES = \
 	session-dbus.c \
 	session-dbus.h \
 	gen-session-dbus.xml.c \
-	settings-helper.c \
 	users-service-dbus.h \
 	users-service-dbus.c \
 	session-menu-mgr.h \
@@ -157,8 +156,6 @@ if BUILD_GTKLOGOUTHELPER
 gtk_logout_helper_SOURCES = \
 	$(dbus_consolekit_manager_sources) \
 	gtk-logout-helper.c \
-	settings-helper.c \
-	settings-helper.h \
 	dialog.c \
 	dialog.h
 

@@ -1,23 +1,23 @@
 /*
 A small wrapper utility to load indicators and put them as menu items
-into the gnome-panel using it's applet interface.
+into the gnome-panel using its applet interface.
 
 Copyright 2009 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
     Conor Curran <conor.curran@canonical.com>
-    
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -38,7 +38,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator-service-manager.h>
 #include <libindicator/indicator-image-helper.h>
 
-#include "dbus-shared-names.h"
+#include "shared-names.h"
 #include "user-widget.h"
 
 #define INDICATOR_SESSION_TYPE            (indicator_session_get_type ())
@@ -97,10 +97,10 @@ static void indicator_session_finalize   (GObject *object);
 static GList* indicator_session_get_entries (IndicatorObject* obj);
 static guint indicator_session_get_location (IndicatorObject * io,
                                              IndicatorObjectEntry * entry);
-                                             
+
 G_DEFINE_TYPE (IndicatorSession, indicator_session, INDICATOR_OBJECT_TYPE);
 
-static void 
+static void
 indicator_session_class_init (IndicatorSessionClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -139,12 +139,12 @@ indicator_session_init (IndicatorSession *self)
   g_settings_bind (self->settings, "show-real-name-on-panel",
                    self->entry.label, "visible",
                    G_SETTINGS_BIND_GET);
-  
+
   gtk_widget_show (GTK_WIDGET(self->entry.menu));
   gtk_widget_show (GTK_WIDGET(self->entry.image));
   g_object_ref_sink (self->entry.menu);
   g_object_ref_sink (self->entry.image);
-  
+
   // set up the handlers
   DbusmenuClient * menu_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->entry.menu)));
   dbusmenu_client_add_type_handler (menu_client,
@@ -198,7 +198,7 @@ static guint
 indicator_session_get_location (IndicatorObject * io,
                                 IndicatorObjectEntry * entry)
 {
-  return 0;  
+  return 0;
 }
 
 /* callback for the service manager state of being */
@@ -218,10 +218,10 @@ service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointe
                          -1,
                          NULL,
                          user_real_name_get_cb,
-                         user_data);      
+                         user_data);
       return;
     }
-    
+
 	  self->service_proxy_cancel = g_cancellable_new();
 	  g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                               G_DBUS_PROXY_FLAGS_NONE,
@@ -232,7 +232,7 @@ service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointe
                               self->service_proxy_cancel,
                               service_proxy_cb,
                               self);
-  }    
+  }
 	return;
 }
 
@@ -260,7 +260,7 @@ service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 	self->service_proxy = proxy;
 
 	g_signal_connect(proxy, "g-signal", G_CALLBACK(receive_signal), self);
-  
+
   // Fetch the user's real name for the user entry label
   g_dbus_proxy_call (self->service_proxy,
                      "GetUserRealName",
@@ -277,17 +277,13 @@ service_proxy_cb (GObject * object, GAsyncResult * res, gpointer user_data)
 static gboolean
 new_user_item (DbusmenuMenuitem * newitem,
                DbusmenuMenuitem * parent,
-               DbusmenuClient * client,
-               gpointer user_data)
+               DbusmenuClient   * client,
+               gpointer           user_data)
 {
-  
+  g_return_val_if_fail (DBUSMENU_IS_MENUITEM(newitem), FALSE);
+  g_return_val_if_fail (DBUSMENU_IS_GTKCLIENT(client), FALSE);
 
-  GtkWidget* user_item = NULL;
-
-  g_return_val_if_fail(DBUSMENU_IS_MENUITEM(newitem), FALSE);
-  g_return_val_if_fail(DBUSMENU_IS_GTKCLIENT(client), FALSE);
-
-  user_item = user_widget_new(newitem);
+  GtkWidget * user_item = user_widget_new (newitem);
 
   GtkMenuItem *user_widget = GTK_MENU_ITEM(user_item);
 
@@ -308,22 +304,23 @@ new_user_item (DbusmenuMenuitem * newitem,
 static void
 user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 {
-	IndicatorSession * self = INDICATOR_SESSION(user_data);
-	GError * error = NULL;
-	GVariant * result;
+  IndicatorSession * self = INDICATOR_SESSION(user_data);
 
-	result = g_dbus_proxy_call_finish(self->service_proxy, res, &error);
+  GError * error = NULL;
+  GVariant * result = g_dbus_proxy_call_finish(self->service_proxy, res, &error);
 
-	if (error != NULL) {
-    g_warning ("unable to complete real name dbus query");
-    g_error_free (error);
-		return;
-	}
-  
-  const gchar* username = NULL;
-  g_variant_get (result, "(&s)", &username);
-  indicator_session_update_users_label (self, username);
-	return;
+  if (error != NULL)
+    {
+      g_warning ("Unable to complete real name dbus query: %s", error->message);
+      g_clear_error (&error);
+    }
+  else
+    {
+      const gchar * username = NULL;
+      g_variant_get (result, "(&s)", &username);
+      indicator_session_update_users_label (self, username);
+      g_variant_unref (result);
+    }
 }
 
 /* Receives all signals from the service, routed to the appropriate functions */
@@ -409,8 +406,8 @@ build_restart_item (DbusmenuMenuitem * newitem,
 }
 
 static void
-indicator_session_update_users_label (IndicatorSession * self, 
+indicator_session_update_users_label (IndicatorSession * self,
                                       const gchar      * name)
-{  
+{
   gtk_label_set_text (self->entry.label, name ? name : "");
 }

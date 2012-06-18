@@ -11,16 +11,16 @@ Authors:
     Conor Curran <conor.curran@canonical.com>
     Charles Kerr <charles.kerr@canonical.com>
 
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -42,34 +42,31 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <libindicator/indicator-service.h>
 
-#include "dbus-shared-names.h"
-#include "users-service-dbus.h"
 #include "session-dbus.h"
 #include "session-menu-mgr.h"
+#include "shared-names.h"
+#include "users-service-dbus.h"
 
-//static UsersServiceDbus  *dbus_interface = NULL;
-static SessionDbus       *session_dbus = NULL;
+static SessionDbus * session_dbus = NULL;
 static GMainLoop * mainloop = NULL;
 
 
-/* When the service interface starts to shutdown, we
-   should follow it. */
+/* When the service interface starts to shutdown,
+   we should follow it. */
 void
 service_shutdown (IndicatorService * service, gpointer user_data)
 {
-	if (mainloop != NULL) {
-		g_debug("Service shutdown");
-		g_main_loop_quit(mainloop);
-	}
-	return;
+  if (mainloop != NULL)
+    {
+      g_debug ("Service shutdown");
+      g_main_loop_quit (mainloop);
+    }
 }
 
-static gboolean
-get_greeter_mode (void)
+static inline gboolean
+is_greeter_mode (void)
 {
-  const gchar *var;
-  var = g_getenv("INDICATOR_GREETER_MODE");
-  return (g_strcmp0(var, "1") == 0);
+  return !g_strcmp0 (g_getenv ("INDICATOR_GREETER_MODE"), "1");
 }
 
 /* Main, is well, main.  It brings everything up and throws
@@ -77,34 +74,29 @@ get_greeter_mode (void)
 int
 main (int argc, char ** argv)
 {
-  gboolean greeter_mode;
-
   g_type_init();
 
-	/* Setting up i18n and gettext.  Apparently, we need
-	   all of these. */
-	setlocale (LC_ALL, "");
-	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-	textdomain (GETTEXT_PACKAGE);
+  /* Setting up i18n and gettext.
+     Apparently we need all of these. */
+  setlocale (LC_ALL, "");
+  bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+  textdomain (GETTEXT_PACKAGE);
 
-	IndicatorService * service = indicator_service_new_version (INDICATOR_SESSION_DBUS_NAME,
-      		                                                    INDICATOR_SESSION_DBUS_VERSION);
-	g_signal_connect (G_OBJECT(service),
-                    INDICATOR_SERVICE_SIGNAL_SHUTDOWN,
+  IndicatorService * service = indicator_service_new_version (INDICATOR_SESSION_DBUS_NAME,
+      		                                              INDICATOR_SESSION_DBUS_VERSION);
+  g_signal_connect (G_OBJECT(service), INDICATOR_SERVICE_SIGNAL_SHUTDOWN,
                     G_CALLBACK(service_shutdown), NULL);
 
-	session_dbus = session_dbus_new();
-
-  greeter_mode = get_greeter_mode();
+  session_dbus = session_dbus_new();
 
   DbusmenuMenuitem * root_item = dbusmenu_menuitem_new ();
-  session_menu_mgr_new (root_item, session_dbus, greeter_mode);
+  session_menu_mgr_new (root_item, session_dbus, is_greeter_mode());
   DbusmenuServer* server = dbusmenu_server_new (INDICATOR_SESSION_DBUS_OBJECT);
   dbusmenu_server_set_root (server, root_item);
 
   mainloop = g_main_loop_new(NULL, FALSE);
   g_main_loop_run(mainloop);
-  
+
   return 0;
 }
 

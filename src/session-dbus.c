@@ -235,11 +235,8 @@ session_dbus_set_users_real_name (SessionDbus * session, const gchar * name)
 {
 	SessionDbusPrivate * priv = SESSION_DBUS_GET_PRIVATE(session);
 	GError * error = NULL;
-	if (priv->name != NULL) {
-		g_free(priv->name);
-		priv->name = NULL;
-	}
 
+	g_free (priv->name);
 	priv->name = g_strdup(name);
 
 	if (priv->bus != NULL) {

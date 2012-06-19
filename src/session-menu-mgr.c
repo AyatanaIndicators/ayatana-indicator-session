@@ -909,8 +909,9 @@ build_user_menuitems (SessionMenuMgr * mgr)
           dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
           items = g_slist_prepend (items, mi);
         }
-      g_list_free (users);
     }
+
+  g_list_free (users);
 
   /* separator */
   mi = mi_new_separator ();

@@ -26,7 +26,6 @@
 #include <glib.h>
 
 #include <errno.h>
-#include <string.h>
 
 #include <pwd.h> /* getpwuid() */
 
@@ -805,7 +804,7 @@ is_guest_username (const char * username)
   if (!g_strcmp0 (username, "guest"))
     return TRUE;
 
-  if (username && (strlen(username)==12) && !memcmp(username,"guest-",6))
+  if (username && g_str_has_prefix (username, "guest-"))
     return TRUE;
 
   return FALSE;

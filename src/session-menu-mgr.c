@@ -76,7 +76,7 @@ SwitcherMode;
  * and listens for events that can affect the model's properties.
  *
  * Simple event sources, such as GSettings and a UPower DBus proxy,
- * are handled here. More involved event sources are delegated to
+ * are handled here. More involved event sources are delegated to the
  * UsersServiceDBus facade class.
  */
 struct _SessionMenuMgr
@@ -220,7 +220,7 @@ session_menu_mgr_dispose (GObject *object)
 }
 
 static void
-session_menu_mgr_class_init (SessionMenuMgrClass *klass)
+session_menu_mgr_class_init (SessionMenuMgrClass * klass)
 {
   GObjectClass* object_class = G_OBJECT_CLASS (klass);
   object_class->dispose = session_menu_mgr_dispose;
@@ -279,7 +279,7 @@ init_upower_proxy (SessionMenuMgr * mgr)
   GError * error = NULL;
   mgr->upower_proxy = dbus_upower_proxy_new_for_bus_sync (
                          G_BUS_TYPE_SYSTEM,
-                         0,
+                         G_DBUS_PROXY_FLAGS_NONE,
                          UPOWER_ADDRESS,
                          UPOWER_PATH,
                          NULL,
@@ -729,7 +729,6 @@ user_menuitem_new (AccountsUser * user, SessionMenuMgr * mgr)
                                      G_CALLBACK(on_user_property_changed), mi);
   g_object_weak_ref (G_OBJECT(mi), (GWeakNotify)on_user_menuitem_destroyed, hd);
 
-
   /* set the logged-in property */
   mi_set_logged_in (mi,
          users_service_dbus_is_user_logged_in (mgr->users_dbus_facade, user));
@@ -787,11 +786,15 @@ is_user_switching_allowed (SessionMenuMgr * mgr)
 {
   /* maybe it's locked down */
   if (g_settings_get_boolean (mgr->lockdown_settings, "disable-user-switching"))
-    return FALSE;
+    {
+      return FALSE;
+    }
 
   /* maybe the seat doesn't support activation */
   if (!users_service_dbus_can_activate_session (mgr->users_dbus_facade))
-    return FALSE;
+    {
+      return FALSE;
+    }
 
   return TRUE;
 }
@@ -844,7 +847,8 @@ build_user_menuitems (SessionMenuMgr * mgr)
                             G_CALLBACK (action_func_switch_to_lockscreen), mgr);
 
   const gboolean is_guest = is_this_guest_session ();
-  const gboolean guest_allowed = users_service_dbus_guest_session_enabled (mgr->users_dbus_facade);
+  const gboolean guest_allowed =
+              users_service_dbus_guest_session_enabled (mgr->users_dbus_facade);
   mi = mgr->guest_mi = dbusmenu_menuitem_new ();
   mi_set_type (mi, USER_ITEM_TYPE);
   mi_set_visible (mi, !is_guest && guest_allowed);
@@ -1138,8 +1142,9 @@ get_switcher_mode (SessionMenuMgr * mgr)
 ****
 ***/
 
-SessionMenuMgr* session_menu_mgr_new (SessionDbus       * session_dbus,
-                                      gboolean            greeter_mode)
+SessionMenuMgr*
+session_menu_mgr_new (SessionDbus  * session_dbus,
+                      gboolean       greeter_mode)
 {
   SessionMenuMgr* mgr = g_object_new (SESSION_TYPE_MENU_MGR, NULL);
   mgr->greeter_mode = greeter_mode;

@@ -211,6 +211,7 @@ session_menu_mgr_dispose (GObject *object)
   g_clear_object (&mgr->upower_proxy);
   g_clear_object (&mgr->users_dbus_facade);
   g_clear_object (&mgr->top_mi);
+  g_clear_object (&mgr->session_dbus);
 
   G_OBJECT_CLASS (session_menu_mgr_parent_class)->dispose (object);
 }
@@ -1143,7 +1144,7 @@ SessionMenuMgr* session_menu_mgr_new (SessionDbus       * session_dbus,
 {
   SessionMenuMgr* mgr = g_object_new (SESSION_TYPE_MENU_MGR, NULL);
   mgr->greeter_mode = greeter_mode;
-  mgr->session_dbus = session_dbus;
+  mgr->session_dbus = g_object_ref (session_dbus);
   build_admin_menuitems (mgr);
   const guint n = g_list_length (dbusmenu_menuitem_get_children (mgr->top_mi));
   mgr->user_menuitem_index = n;

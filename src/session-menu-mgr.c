@@ -131,7 +131,7 @@ static void action_func_switch_to_lockscreen  (SessionMenuMgr *);
 static void action_func_switch_to_greeter     (SessionMenuMgr *);
 static void action_func_switch_to_guest       (SessionMenuMgr *);
 static void action_func_switch_to_user        (AccountsUser   *);
-static void action_func_spawn_async           (const char * fmt, ...);
+static void action_func_spawn_async           (const char * cmd);
 
 static gboolean is_this_guest_session         (void);
 static gboolean is_this_live_session          (void);
@@ -952,22 +952,17 @@ update_user_menuitems (SessionMenuMgr * mgr)
 ***/
 
 static void
-action_func_spawn_async (const char * fmt, ...)
+action_func_spawn_async (const char * cmd)
 {
-  va_list marker;
-  va_start (marker, fmt);
-  gchar * cmd = g_strdup_vprintf (fmt, marker);
-  va_end (marker);
-
   GError * error = NULL;
+
   g_spawn_command_line_async (cmd, &error);
+
   if (error != NULL)
     {
       g_warning ("Unable to execute \"%s\": %s", cmd, error->message);
       g_clear_error (&error);
     }
-
-  g_free (cmd);
 }
 
 /* Calling "Lock" locks the screen & goes to black.

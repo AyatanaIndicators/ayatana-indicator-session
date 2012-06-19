@@ -44,9 +44,11 @@ struct _SessionMenuMgrClass
 
 GType session_menu_mgr_get_type (void) G_GNUC_CONST;
 
-SessionMenuMgr* session_menu_mgr_new (DbusmenuMenuitem  * parent_mi,
-                                      SessionDbus       * session_dbus,
+SessionMenuMgr* session_menu_mgr_new (SessionDbus       * session_dbus,
                                       gboolean            greeter_mode);
+
+DbusmenuMenuitem* session_menu_mgr_get_menu (SessionMenuMgr * mgr);
+
 
 G_END_DECLS
 

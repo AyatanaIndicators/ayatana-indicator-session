@@ -89,10 +89,9 @@ main (int argc, char ** argv)
 
   session_dbus = session_dbus_new();
 
-  DbusmenuMenuitem * root_item = dbusmenu_menuitem_new ();
-  session_menu_mgr_new (root_item, session_dbus, is_greeter_mode());
+  SessionMenuMgr * menu_mgr = session_menu_mgr_new (session_dbus, is_greeter_mode());
   DbusmenuServer* server = dbusmenu_server_new (INDICATOR_SESSION_DBUS_OBJECT);
-  dbusmenu_server_set_root (server, root_item);
+  dbusmenu_server_set_root (server, session_menu_mgr_get_menu (menu_mgr));
 
   mainloop = g_main_loop_new(NULL, FALSE);
   g_main_loop_run(mainloop);

@@ -83,7 +83,7 @@ struct _SessionMenuMgr
 {
   GObject parent_instance;
 
-  DbusmenuMenuitem * parent_mi;
+  DbusmenuMenuitem * top_mi;
   DbusmenuMenuitem * screensaver_mi;
   DbusmenuMenuitem * lock_mi;
   DbusmenuMenuitem * lock_switch_mi;
@@ -152,6 +152,8 @@ G_DEFINE_TYPE (SessionMenuMgr, session_menu_mgr, G_TYPE_OBJECT);
 static void
 session_menu_mgr_init (SessionMenuMgr *mgr)
 {
+  mgr->top_mi = dbusmenu_menuitem_new ();
+
   /* Lockdown settings */
   GSettings * s = g_settings_new ("org.gnome.desktop.lockdown");
   g_signal_connect_swapped (s, "changed::disable-log-out",
@@ -208,6 +210,7 @@ session_menu_mgr_dispose (GObject *object)
   g_clear_object (&mgr->keybinding_settings);
   g_clear_object (&mgr->upower_proxy);
   g_clear_object (&mgr->users_dbus_facade);
+  g_clear_object (&mgr->top_mi);
 
   G_OBJECT_CLASS (session_menu_mgr_parent_class)->dispose (object);
 }
@@ -369,28 +372,28 @@ build_admin_menuitems (SessionMenuMgr * mgr)
     const gboolean show_settings = !mgr->greeter_mode;
 
     mi = mi_new (_("About This Computer"));
-    dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+    dbusmenu_menuitem_child_append (mgr->top_mi, mi);
     g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                               G_CALLBACK(action_func_spawn_async), CMD_INFO);
 
     mi = mi_new (_("Ubuntu Help"));
-    dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+    dbusmenu_menuitem_child_append (mgr->top_mi, mi);
     g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                               G_CALLBACK(action_func_spawn_async), CMD_HELP);
 
     mi = mi_new_separator ();
     mi_set_visible (mi, show_settings);
-    dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+    dbusmenu_menuitem_child_append (mgr->top_mi, mi);
 
     mi = mi_new (_("System Settings"));
     mi_set_visible (mi, show_settings);
-    dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+    dbusmenu_menuitem_child_append (mgr->top_mi, mi);
     g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                               G_CALLBACK(action_func_spawn_async),
                               CMD_SYSTEM_SETTINGS);
 
     mi = mi_new_separator ();
-    dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+    dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   }
 }
 
@@ -457,29 +460,29 @@ build_session_menuitems (SessionMenuMgr* mgr)
   DbusmenuMenuitem * mi;
 
   mi = mgr->logout_mi = mi_new (_("Log Out\342\200\246"));
-  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(action_func_spawn_async), CMD_LOGOUT);
 
   mi = mgr->suspend_mi = mi_new ("Suspend");
-  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(action_func_suspend), mgr);
 
   mi = mgr->hibernate_mi = mi_new (_("Hibernate"));
-  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(action_func_hibernate), mgr);
 
   mi = mgr->restart_mi = dbusmenu_menuitem_new ();
   mi_set_type (mi, RESTART_ITEM_TYPE);
   dbusmenu_menuitem_property_set (mi, RESTART_ITEM_LABEL, _("Restart\342\200\246"));
-  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(action_func_spawn_async), CMD_RESTART);
 
   mi = mgr->shutdown_mi = mi_new (_("Switch Off\342\200\246"));
-  dbusmenu_menuitem_child_append (mgr->parent_mi, mi);
+  dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(action_func_spawn_async), CMD_SHUTDOWN);
 
@@ -810,28 +813,28 @@ build_user_menuitems (SessionMenuMgr * mgr)
 
   mi = mgr->screensaver_mi = mi_new (_("Start Screen Saver"));
   mi_set_visible (mi, mode == SWITCHER_MODE_SCREENSAVER);
-  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
   items = g_slist_prepend (items, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK (action_func_lock), mgr);
 
   mi = mi_new (_("Switch User Account\342\200\246"));
   mi_set_visible (mi, mode == SWITCHER_MODE_SWITCH);
-  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
   items = g_slist_prepend (items, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK (action_func_switch_to_greeter), mgr);
 
   mi = mgr->lock_mi = mi_new (_("Lock"));
   mi_set_visible (mi, mode == SWITCHER_MODE_LOCK);
-  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
   items = g_slist_prepend (items, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK (action_func_switch_to_lockscreen), mgr);
 
   mi = mgr->lock_switch_mi = mi_new (_("Lock/Switch Account\342\200\246"));
   mi_set_visible (mi, mode == SWITCHER_MODE_SWITCH_OR_LOCK);
-  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
   items = g_slist_prepend (items, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK (action_func_switch_to_lockscreen), mgr);
@@ -842,7 +845,7 @@ build_user_menuitems (SessionMenuMgr * mgr)
   mi_set_type (mi, USER_ITEM_TYPE);
   mi_set_visible (mi, !is_guest && guest_allowed);
   dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, _("Guest Session"));
-  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
   on_guest_logged_in_changed (mgr->users_dbus_facade, mgr);
   items = g_slist_prepend (items, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
@@ -899,7 +902,7 @@ build_user_menuitems (SessionMenuMgr * mgr)
         {
           AccountsUser * user = u->data;
           DbusmenuMenuitem * mi = user_menuitem_new (user, mgr);
-          dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+          dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
           items = g_slist_prepend (items, mi);
         }
       g_list_free (users);
@@ -907,7 +910,7 @@ build_user_menuitems (SessionMenuMgr * mgr)
 
   /* separator */
   mi = mi_new_separator ();
-  dbusmenu_menuitem_child_add_position (mgr->parent_mi, mi, pos++);
+  dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
   items = g_slist_prepend (items, mi);
 
   if (current_real_name != NULL)
@@ -927,7 +930,7 @@ update_user_menuitems (SessionMenuMgr * mgr)
   GSList * l;
   for (l=mgr->user_menuitems; l!=NULL; l=l->next)
     {
-      dbusmenu_menuitem_child_delete (mgr->parent_mi, l->data);
+      dbusmenu_menuitem_child_delete (mgr->top_mi, l->data);
     }
   g_slist_free (mgr->user_menuitems);
   mgr->user_menuitems = NULL;
@@ -1135,18 +1138,29 @@ get_switcher_mode (SessionMenuMgr * mgr)
 ****
 ***/
 
-SessionMenuMgr* session_menu_mgr_new (DbusmenuMenuitem  * parent_mi,
-                                      SessionDbus       * session_dbus,
+SessionMenuMgr* session_menu_mgr_new (SessionDbus       * session_dbus,
                                       gboolean            greeter_mode)
 {
   SessionMenuMgr* mgr = g_object_new (SESSION_TYPE_MENU_MGR, NULL);
-  mgr->parent_mi = parent_mi;
   mgr->greeter_mode = greeter_mode;
   mgr->session_dbus = session_dbus;
   build_admin_menuitems (mgr);
-  const guint n = g_list_length (dbusmenu_menuitem_get_children (parent_mi));
+  const guint n = g_list_length (dbusmenu_menuitem_get_children (mgr->top_mi));
   mgr->user_menuitem_index = n;
   update_user_menuitems (mgr);
   build_session_menuitems (mgr);
   return mgr;
+}
+
+/**
+ * session_menu_mgr_get_menu:
+ *
+ * Returns: (transfer none): the manager's menu.
+ */
+DbusmenuMenuitem *
+session_menu_mgr_get_menu (SessionMenuMgr * mgr)
+{
+  g_return_val_if_fail (IS_SESSION_MENU_MGR(mgr), NULL);
+
+  return mgr->top_mi;
 }

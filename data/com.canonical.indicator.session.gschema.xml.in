@@ -21,7 +21,7 @@
       <_description>Makes it so that the shutdown button doesn’t show in the session menu.</_description>
     </key>
     <key type="b" name="show-real-name-on-panel">
-      <default>true</default>
+      <default>false</default>
       <summary>Determine the visibility of the User's real name on the panel</summary>
       <description>Allow for the Removal of the users name from the panel</description>
     </key>

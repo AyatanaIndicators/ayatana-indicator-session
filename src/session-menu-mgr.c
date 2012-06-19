@@ -213,6 +213,9 @@ session_menu_mgr_dispose (GObject *object)
   g_clear_object (&mgr->top_mi);
   g_clear_object (&mgr->session_dbus);
 
+  g_slist_free (mgr->user_menuitems);
+  mgr->user_menuitems = NULL;
+
   G_OBJECT_CLASS (session_menu_mgr_parent_class)->dispose (object);
 }
 

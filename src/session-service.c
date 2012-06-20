@@ -24,7 +24,7 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <config.h>
+#include "config.h"
 
 #include <unistd.h>
 #include <locale.h>
@@ -34,11 +34,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gio/gdesktopappinfo.h>
 
 #include <libdbusmenu-glib/server.h>
-#include <libdbusmenu-glib/menuitem.h>
-#include <libdbusmenu-glib/client.h>
 
 #include <gtk/gtk.h>
-#include <libdbusmenu-gtk/menuitem.h>
 
 #include <libindicator/indicator-service.h>
 

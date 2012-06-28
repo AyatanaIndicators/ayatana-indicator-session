@@ -389,7 +389,7 @@ build_admin_menuitems (SessionMenuMgr * mgr)
     mi_set_visible (mi, show_settings);
     dbusmenu_menuitem_child_append (mgr->top_mi, mi);
 
-    mi = mi_new (_("System Settings"));
+    mi = mi_new (_("System Settings\342\200\246"));
     mi_set_visible (mi, show_settings);
     dbusmenu_menuitem_child_append (mgr->top_mi, mi);
     g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,

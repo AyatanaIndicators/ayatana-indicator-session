@@ -88,7 +88,6 @@ struct _UsersServiceDbusPrivate
   ConsoleKitSeat * seat_proxy;
   ConsoleKitManager * ck_manager_proxy;
   Accounts * accounts_proxy;
-  DisplayManagerSeat * display_proxy;
 };
 
 /***
@@ -113,7 +112,6 @@ users_service_dbus_dispose (GObject *object)
   UsersServiceDbusPrivate * priv = USERS_SERVICE_DBUS(object)->priv;
 
   g_clear_object (&priv->accounts_proxy);
-  g_clear_object (&priv->display_proxy);
   g_clear_object (&priv->seat_proxy);
   g_clear_object (&priv->ck_manager_proxy);
 
@@ -383,40 +381,6 @@ get_seat (UsersServiceDbus *service)
     }
 
   return seat;
-}
-
-/* lazy-create the display manager proxy */
-static DisplayManagerSeat *
-get_display_proxy (UsersServiceDbus * self)
-{
-  UsersServiceDbusPrivate * priv = self->priv;
-
-  if (priv->display_proxy == NULL)
-    {
-      const gchar * const seat = g_getenv ("XDG_SEAT_PATH");
-      g_debug ("%s lazy-creating the DisplayManager proxy for seat %s", G_STRLOC, seat);
-
-      GError * error = NULL;
-      DisplayManagerSeat * p = display_manager_seat_proxy_new_for_bus_sync (
-                                 G_BUS_TYPE_SYSTEM,
-                                 G_DBUS_PROXY_FLAGS_NONE,
-                                 "org.freedesktop.DisplayManager",
-                                 seat,
-                                 NULL,
-                                 &error);
-
-      if (error == NULL)
-        {
-          priv->display_proxy = p;
-        }
-      else
-        {
-          g_warning ("%s: %s", G_STRLOC, error->message);
-          g_error_free (error);
-        }
-    }
-
-  return priv->display_proxy;
 }
 
 /***
@@ -881,6 +845,30 @@ on_session_list (ConsoleKitSeat   * seat_proxy,
   g_debug ("%s done bootstrapping the session list", G_STRLOC);
 }
 
+static DisplayManagerSeat *
+create_display_proxy (UsersServiceDbus * self)
+{
+  const gchar * const seat = g_getenv ("XDG_SEAT_PATH");
+  g_debug ("%s creating a DisplayManager proxy for seat %s", G_STRLOC, seat);
+
+  GError * error = NULL;
+  DisplayManagerSeat * p = display_manager_seat_proxy_new_for_bus_sync (
+                             G_BUS_TYPE_SYSTEM,
+                             G_DBUS_PROXY_FLAGS_NONE,
+                             "org.freedesktop.DisplayManager",
+                             seat,
+                             NULL,
+                             &error);
+
+  if (error != NULL)
+    {
+      g_warning ("%s: %s", G_STRLOC, error->message);
+      g_error_free (error);
+    }
+
+  return p;
+}
+
 /***
 ****  Public API
 ***/
@@ -908,9 +896,9 @@ users_service_dbus_show_greeter (UsersServiceDbus * self)
 {
   g_return_if_fail (IS_USERS_SERVICE_DBUS(self));
 
-  display_manager_seat_call_switch_to_greeter_sync (get_display_proxy(self),
-                                                    NULL,
-                                                    NULL);
+  DisplayManagerSeat * dp = create_display_proxy (self);
+  display_manager_seat_call_switch_to_greeter_sync (dp, NULL, NULL);
+  g_clear_object (&dp);
 }
 
 /**
@@ -923,10 +911,9 @@ users_service_dbus_activate_guest_session (UsersServiceDbus * self)
 {
   g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
 
-  display_manager_seat_call_switch_to_guest_sync (get_display_proxy(self),
-                                                  "",
-                                                  NULL,
-                                                  NULL);
+  DisplayManagerSeat * dp = create_display_proxy (self);
+  display_manager_seat_call_switch_to_guest_sync (dp, "", NULL, NULL);
+  g_clear_object (&dp);
 }
 
 /**
@@ -941,11 +928,9 @@ users_service_dbus_activate_user_session (UsersServiceDbus * self,
   g_return_if_fail (IS_USERS_SERVICE_DBUS(self));
 
   const char * const username = accounts_user_get_user_name (user);
-  display_manager_seat_call_switch_to_user_sync (get_display_proxy(self),
-                                                 username,
-                                                 "",
-                                                 NULL,
-                                                 NULL);
+  DisplayManagerSeat * dp = create_display_proxy (self);
+  display_manager_seat_call_switch_to_user_sync (dp, username, "", NULL, NULL);
+  g_clear_object (&dp);
 }
 
 /**
@@ -958,7 +943,10 @@ users_service_dbus_guest_session_enabled (UsersServiceDbus * self)
 {
   g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), FALSE);
 
-  return display_manager_seat_get_has_guest_account (get_display_proxy(self));
+  DisplayManagerSeat * dp = create_display_proxy (self);
+  const gboolean enabled = display_manager_seat_get_has_guest_account (dp);
+  g_clear_object (&dp);
+  return enabled;
 }
 
 gboolean

@@ -960,6 +960,7 @@ action_func_spawn_async (const char * cmd)
 {
   GError * error = NULL;
 
+  g_debug ("%s calling \"%s\"", G_STRFUNC, cmd);
   g_spawn_command_line_async (cmd, &error);
 
   if (error != NULL)

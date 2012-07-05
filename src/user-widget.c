@@ -20,13 +20,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+ #include "config.h"
 #endif
 
-#include <glib/gi18n.h>
 #include <gtk/gtk.h>
-
-#include <math.h>
 
 #include <libindicator/indicator-image-helper.h>
 
@@ -48,13 +45,6 @@ struct _UserWidgetPrivate
 };
 
 #define USER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USER_WIDGET_TYPE, UserWidgetPrivate))
-
-typedef struct
-{
-  double r;
-  double g;
-  double b;
-} CairoColorRGB;
 
 /* Prototypes */
 static void user_widget_class_init    (UserWidgetClass *klass);

@@ -515,6 +515,8 @@ _color_shade (const CairoColorRGB *a, float k, CairoColorRGB *b)
 ****
 ***/
 
+static const int ICON_SIZE = 24;
+
 static void
 update_icon (UserWidget * self, DbusmenuMenuitem * mi)
 {
@@ -525,7 +527,7 @@ update_icon (UserWidget * self, DbusmenuMenuitem * mi)
   if (icon_name)
     {
       GError* error = NULL;
-      pixbuf = gdk_pixbuf_new_from_file_at_size (icon_name, 32, 32, &error);
+      pixbuf = gdk_pixbuf_new_from_file_at_size (icon_name, ICON_SIZE, ICON_SIZE, &error);
       if (error != NULL)
         {
           g_warning ("Couldn't load the image \"%s\": %s", icon_name, error->message);
@@ -544,7 +546,7 @@ update_icon (UserWidget * self, DbusmenuMenuitem * mi)
 
       pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
                                          USER_ITEM_ICON_DEFAULT,
-                                         32,
+                                         ICON_SIZE,
                                          GTK_ICON_LOOKUP_FORCE_SIZE,
                                          NULL);
     }

@@ -286,11 +286,11 @@ user_widget_set_twin_item (UserWidget * self, DbusmenuMenuitem * mi)
 }
 
  /**
- * transport_new:
- * @returns: a new #UserWidget.
- **/
+  * user_widget_new:
+  * @returns: a new #UserWidget.
+  **/
 GtkWidget*
-user_widget_new(DbusmenuMenuitem *item)
+user_widget_new (DbusmenuMenuitem *item)
 {
   GtkWidget* widget =  g_object_new(USER_WIDGET_TYPE, NULL);
   user_widget_set_twin_item ( USER_WIDGET(widget), item );

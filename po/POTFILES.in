@@ -1,12 +1,13 @@
 [encoding: UTF-8]
 data/com.canonical.indicator.session.gschema.xml.in
 data/extra-sessions/classic-desktop.desktop.in.in
-src/settings-helper.c
-src/lock-helper.c
-src/gtk-logout-helper.c
 src/dialog.c
+src/gen-session-dbus.xml.c
+src/gtk-logout-helper.c
 src/indicator-session.c
-src/session-service.c
-src/apt-watcher.c
+src/session-dbus.c
 src/session-menu-mgr.c
-src/udev-mgr.c
+src/session-service.c
+src/users-service-dbus.c
+src/user-widget.c
+

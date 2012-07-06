@@ -509,36 +509,52 @@ add_user_sessions (UsersServiceDbus *self, AccountsUser * user)
     }
 }
 
+/* returns true if this property is one we use */
+static gboolean
+is_interesting_user_property (const char * key)
+{
+  return !g_strcmp0 (key, "IconFile")
+      || !g_strcmp0 (key, "LoginFrequency")
+      || !g_strcmp0 (key, "RealName")
+      || !g_strcmp0 (key, "Uid")
+      || !g_strcmp0 (key, "UserName");
+}
+
 static void
-sync_proxy_properties (GDBusProxy * source, GDBusProxy * target)
+sync_user_properties (GDBusProxy * source, GDBusProxy * target)
 {
   gchar ** keys = g_dbus_proxy_get_cached_property_names (source);
 
   if (keys != NULL)
     {
       int i;
-      gboolean changed = FALSE;
       GVariantBuilder builder;
+      gboolean changed = FALSE;
       g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
 
       for (i=0; keys[i]; i++)
         {
           const gchar * const key = keys[i];
-          GVariant * oldval = g_dbus_proxy_get_cached_property (target, key);
-          GVariant * newval = g_dbus_proxy_get_cached_property (source, key);
 
-          /* if it's a basic type which has changed, or a nonbasic type
-             we can't easily compare, then update target's cached property */
-          if (!g_variant_type_is_basic(g_variant_get_type(newval)) || g_variant_compare(oldval,newval))
+          if (is_interesting_user_property (key))
             {
-              changed = TRUE;
-              g_debug ("updating property '%s'", key);
-              g_dbus_proxy_set_cached_property (target, key, newval);
-              g_variant_builder_add (&builder, "{sv}", key, newval);
-            }
+              GVariant * oldval = g_dbus_proxy_get_cached_property (target, key);
+              GVariant * newval = g_dbus_proxy_get_cached_property (source, key);
 
-          g_variant_unref (newval);
-          g_variant_unref (oldval);
+              /* all the properties we're interested in are
+                 basic types safe for g_variant_compare()... */
+              g_assert (g_variant_type_is_basic(g_variant_get_type(newval)));
+
+              if (g_variant_compare (oldval, newval))
+                {
+                  changed = TRUE;
+                  g_dbus_proxy_set_cached_property (target, key, newval);
+                  g_variant_builder_add (&builder, "{sv}", key, newval);
+                }
+
+              g_variant_unref (newval);
+              g_variant_unref (oldval);
+            }
         }
 
       if (changed)
@@ -568,7 +584,7 @@ on_user_changed (AccountsUser * user, UsersServiceDbus * service)
                           NULL);
   if (tmp != NULL)
     {
-      sync_proxy_properties (G_DBUS_PROXY(tmp), G_DBUS_PROXY(user));
+      sync_user_properties (G_DBUS_PROXY(tmp), G_DBUS_PROXY(user));
       g_object_unref (tmp);
     }
 }
@@ -598,7 +614,7 @@ add_user_from_object_path (UsersServiceDbus  * self,
 
       if (prev != NULL) /* we've already got this user... sync its properties */
         {
-          sync_proxy_properties (G_DBUS_PROXY(user), G_DBUS_PROXY(prev));
+          sync_user_properties (G_DBUS_PROXY(user), G_DBUS_PROXY(prev));
           g_object_unref (user);
           user = prev;
         }

@@ -137,7 +137,9 @@ if test "x$enable_tests" != "xno"; then
     if test "x$enable_tests" = "xyes"; then
         PKG_CHECK_MODULES([TEST_SERVICE],[indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                                           dbustest-1 >= $DBUSTEST_REQUIRED_VERSION
-                                          dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION])
+                                          dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION],
+                                          [enable_tests="yes"],
+                                          [enable_tests="no"])
     fi
 fi
 AM_CONDITIONAL([BUILD_TESTS],[test "x$enable_tests" = "xyes"])

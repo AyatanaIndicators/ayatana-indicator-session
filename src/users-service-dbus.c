@@ -510,26 +510,43 @@ add_user_sessions (UsersServiceDbus *self, AccountsUser * user)
 }
 
 static void
-copy_proxy_properties (GDBusProxy * source, GDBusProxy * target)
+sync_proxy_properties (GDBusProxy * source, GDBusProxy * target)
 {
   gchar ** keys = g_dbus_proxy_get_cached_property_names (source);
 
   if (keys != NULL)
     {
       int i;
+      gboolean changed = FALSE;
       GVariantBuilder builder;
       g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
 
       for (i=0; keys[i]; i++)
         {
           const gchar * const key = keys[i];
-          GVariant * value = g_dbus_proxy_get_cached_property (source, key);
-          g_dbus_proxy_set_cached_property (target, key, value);
-          g_variant_builder_add (&builder, "{sv}", key, value);
-          g_variant_unref (value);
+          GVariant * oldval = g_dbus_proxy_get_cached_property (target, key);
+          GVariant * newval = g_dbus_proxy_get_cached_property (source, key);
+
+          /* if it's a basic type which has changed, or a nonbasic type
+             we can't easily compare, then update target's cached property */
+          if (!g_variant_type_is_basic(g_variant_get_type(newval)) || g_variant_compare(oldval,newval))
+            {
+              changed = TRUE;
+              g_debug ("updating property '%s'", key);
+              g_dbus_proxy_set_cached_property (target, key, newval);
+              g_variant_builder_add (&builder, "{sv}", key, newval);
+            }
+
+          g_variant_unref (newval);
+          g_variant_unref (oldval);
         }
 
-      g_signal_emit_by_name (target, "g-properties-changed", g_variant_builder_end(&builder), keys);
+      if (changed)
+        {
+          g_signal_emit_by_name (target, "g-properties-changed", g_variant_builder_end(&builder), keys);
+        }
+
+      g_variant_builder_clear (&builder);
       g_strfreev (keys);
     }
 }
@@ -551,7 +568,7 @@ on_user_changed (AccountsUser * user, UsersServiceDbus * service)
                           NULL);
   if (tmp != NULL)
     {
-      copy_proxy_properties (G_DBUS_PROXY(tmp), G_DBUS_PROXY(user));
+      sync_proxy_properties (G_DBUS_PROXY(tmp), G_DBUS_PROXY(user));
       g_object_unref (tmp);
     }
 }
@@ -581,7 +598,7 @@ add_user_from_object_path (UsersServiceDbus  * self,
 
       if (prev != NULL) /* we've already got this user... sync its properties */
         {
-          copy_proxy_properties (G_DBUS_PROXY(user), G_DBUS_PROXY(prev));
+          sync_proxy_properties (G_DBUS_PROXY(user), G_DBUS_PROXY(prev));
           g_object_unref (user);
           user = prev;
         }

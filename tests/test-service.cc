@@ -19,7 +19,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <libindicator/indicator-service-test.h>
 
-#include "dbus-shared-names.h"
+#include "shared-names.h"
 
 /***
 ****

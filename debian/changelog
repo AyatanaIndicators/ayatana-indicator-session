@@ -1,3 +1,17 @@
+indicator-session (12.10.0-0ubuntu1) quantal; urgency=low
+
+  * New upstream release:
+    - new design, merge user and session menus and drop devices entries
+  * debian/control.in:
+    - drop Build-depends on libgudev-1.0-devb
+    - drop gtk2 binary and Build-Depends
+    - replace outdated Conflicts, Replaces, Breaks after the LTS
+    - updated glib requirement
+  * debian/rules:
+    - drop the multibuild, we only build for gtk3
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 11 Jul 2012 19:53:28 +0200
+
 indicator-session (0.3.96-0ubuntu2) quantal; urgency=low
 
   * Recommend packagekit-system-interface instead of

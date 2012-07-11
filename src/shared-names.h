@@ -23,33 +23,12 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __DBUS_SHARED_NAMES_H__
 #define __DBUS_SHARED_NAMES_H__ 
 
-typedef enum {
-  UP_TO_DATE,
-  CHECKING_FOR_UPDATES,
-  UPDATES_AVAILABLE,
-  UPGRADE_IN_PROGRESS, 
-  FINISHED, 
-  RESTART_NEEDED,
-  DONT_KNOW
-}AptState;
-
-typedef enum {
-  SIMULATION,
-  REAL
-}TransactionType;
-
-#define INDICATOR_USERS_DBUS_NAME  INDICATOR_SESSION_DBUS_NAME
-#define INDICATOR_USERS_DBUS_OBJECT "/com/canonical/indicator/users/menu"
-#define INDICATOR_USERS_SERVICE_DBUS_OBJECT "/org/gnome/DisplayManager/UserManager"
-#define INDICATOR_USERS_SERVICE_DBUS_INTERFACE "org.gnome.DisplayManager.UserManager"
-
 #define INDICATOR_SESSION_DBUS_NAME  "com.canonical.indicator.session"
 #define INDICATOR_SESSION_DBUS_OBJECT "/com/canonical/indicator/session/menu"
 #define INDICATOR_SESSION_DBUS_VERSION  0
 
 #define INDICATOR_SESSION_SERVICE_DBUS_OBJECT "/com/canonical/indicator/session/service"
 #define INDICATOR_SESSION_SERVICE_DBUS_IFACE  "com.canonical.indicator.session.service"
-
 #define USER_ITEM_TYPE            "x-canonical-user-item"
 #define USER_ITEM_PROP_NAME       "user-item-name"
 #define USER_ITEM_PROP_LOGGED_IN  "user-item-logged-in"
@@ -65,5 +44,14 @@ typedef enum {
 #define ICON_RESTART              "system-devices-panel-alert"
 #define GREETER_ICON_DEFAULT      "system-shutdown-panel"
 #define GREETER_ICON_RESTART      "system-shutdown-panel-restart"
+
+/* the session indicator's settings */
+#define SESSION_SCHEMA                "com.canonical.indicator.session"
+#define SUPPRESS_KEY                  "suppress-logout-restart-shutdown"
+#define LOGOUT_KEY                    "suppress-logout-menuitem"
+#define RESTART_KEY                   "suppress-restart-menuitem"
+#define SHUTDOWN_KEY                  "suppress-shutdown-menuitem"
+#define SHOW_USER_MENU                "user-show-menu"
+
 
 #endif /* __DBUS_SHARED_NAMES_H__ */

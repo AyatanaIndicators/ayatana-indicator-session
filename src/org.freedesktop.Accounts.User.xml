@@ -2,6 +2,7 @@
 "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
 "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd" >
 <node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
   <interface name="org.freedesktop.Accounts.User">
 
   <method name="SetUserName">
@@ -125,10 +126,10 @@
         <doc:para>
           Sets the users language.
         </doc:para>
-        <doc:language>
+        <doc:para>
           The expectation is that display managers will start the
           users session with this locale.
-        </doc:language>
+        </doc:para>
       </doc:description>
       <doc:permission>
         The caller needs one of the following PolicyKit authorizations:
@@ -148,6 +149,46 @@
         <doc:error name="org.freedesktop.Accounts.Error.Failed">if the operation failed</doc:error>
       </doc:errors>
     </doc:doc>
+  </method>
+
+  <method name="SetXSession">
+    <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="user_set_x_session"/>
+    <arg name="x_session" direction="in" type="s">
+      <doc:doc>
+        <doc:summary>
+          The new xsession to start (e.g. "gnome")
+        </doc:summary>
+      </doc:doc>
+    </arg>
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+          Sets the users x session.
+        </doc:para>
+        <doc:para>
+          The expectation is that display managers will log the user in to this
+          specified session, if available.
+        </doc:para>
+      </doc:description>
+      <doc:permission>
+        The caller needs one of the following PolicyKit authorizations:
+        <doc:list>
+          <doc:item>
+            <doc:term>org.freedesktop.accounts.change-own-user-data</doc:term>
+            <doc:definition>To change his own language</doc:definition>
+          </doc:item>
+          <doc:item>
+            <doc:term>org.freedesktop.accounts.user-administration</doc:term>
+            <doc:definition>To change the language of another user</doc:definition>
+          </doc:item>
+        </doc:list>
+      </doc:permission>
+      <doc:errors>
+        <doc:error name="org.freedesktop.Accounts.Error.PermissionDenied">if the caller lacks the appropriate PolicyKit authorization</doc:error>
+        <doc:error name="org.freedesktop.Accounts.Error.Failed">if the operation failed</doc:error>
+      </doc:errors>
+   </doc:doc>
   </method>
 
   <method name="SetLocation">
@@ -339,10 +380,6 @@
             <doc:item>
               <doc:term>1</doc:term>
               <doc:definition>Administrator</doc:definition>
-            </doc:item>
-            <doc:item>
-              <doc:term>2</doc:term>
-              <doc:definition>Supervised user</doc:definition>
             </doc:item>
           </doc:list>
         </doc:summary>
@@ -541,10 +578,6 @@
               <doc:term>1</doc:term>
               <doc:definition>Administrator</doc:definition>
             </doc:item>
-            <doc:item>
-              <doc:term>2</doc:term>
-              <doc:definition>Supervised user</doc:definition>
-            </doc:item>
           </doc:list>
         </doc:para>
       </doc:description>
@@ -586,6 +619,16 @@
       <doc:description>
         <doc:para>
           The users language, as a locale specification like "de_DE.UTF-8".
+        </doc:para>
+      </doc:description>
+    </doc:doc>
+  </property>
+
+  <property name="XSession" type="s" access="read">
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+          The users x session.
         </doc:para>
       </doc:description>
     </doc:doc>
@@ -670,6 +713,18 @@
       <doc:description>
         <doc:para>
            Whether automatic login is enabled for the user.
+        </doc:para>
+      </doc:description>
+    </doc:doc>
+  </property>
+
+  <property name="SystemAccount" type="b" access="read">
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+           Whether this is a 'system' account, like 'root' or 'nobody'.
+           System accounts should normally not appear in lists of
+           users, and ListCachedUsers will not include such accounts.
         </doc:para>
       </doc:description>
     </doc:doc>

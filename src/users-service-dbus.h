@@ -3,6 +3,7 @@
  *
  * Authors:
  *     Cody Russell <crussell@canonical.com>
+ *     Charles Kerr <charles.kerr@canonical.com>
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 3, as published
@@ -22,69 +23,74 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <libdbusmenu-glib/menuitem.h>
+
+#include "dbus-user.h" /* for AccountsUser */
 
 G_BEGIN_DECLS
 
-#define USERS_SERVICE_DBUS_TYPE         (users_service_dbus_get_type ())
-#define USERS_SERVICE_DBUS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbus))
-#define USERS_SERVICE_DBUS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k), USERS_SERVICE_DBUS_TYPE, UsersServiceDbusClass))
-#define IS_USERS_SERVICE_DBUS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), USERS_SERVICE_DBUS_TYPE))
-#define IS_USERS_SERVICE_DBUS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), USERS_SERVICE_DBUS_TYPE))
-#define USERS_SERVICE_DBUS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbusClass))
+#define USERS_SERVICE_DBUS_TYPE  (users_service_dbus_get_type ())
+#define USERS_SERVICE_DBUS(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), USERS_SERVICE_DBUS_TYPE, UsersServiceDbus))
+#define IS_USERS_SERVICE_DBUS(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), USERS_SERVICE_DBUS_TYPE))
 
-typedef struct _UsersServiceDbus      UsersServiceDbus;
-typedef struct _UsersServiceDbusClass UsersServiceDbusClass;
-typedef struct _UserData              UserData;
+typedef struct _UsersServiceDbus        UsersServiceDbus;
+typedef struct _UsersServiceDbusClass   UsersServiceDbusClass;
+typedef struct _UsersServiceDbusPrivate UsersServiceDbusPrivate;
 
-struct _UserData
-{
-  gint64   uid;
-  gchar   *user_name;
-  gchar   *real_name;
-  gchar   *icon_file;
-
-  GList   *sessions;
-
-  /* Whether the real name here conflicts with another in the system */
-  gboolean real_name_conflict;
-  /* The menuitem representing this user if there is one. */
-  DbusmenuMenuitem * menuitem;
-
-  UsersServiceDbus *service;
-};
-
-/* XXX - MAXIMUM_USERS should be set to 7 once we've
- *       got some gdm issues worked out.
+/**
+ * A facade class which interacts with multiple DBus services to
+ * track info which is useful to the interactor's user menu:
+ *
+ *  1. A list of users to add to the user menu.
+ *
+ *     Each user is an AccountsUser object, which is a GDBusProxy
+ *     to an org.freedesktop.Accounts.User object.
+ *
+ *     We initially build this list by calling org.freedesktop.Accounts'
+ *     GetCachedUsers method. We also monitor o.f.Accounts' UserAdded
+ *     and UserDeleted and update the list accordingly.
+ *
+ *  2. Track which users currently have X sessions.
+ *     This is used for the menuitems' USER_ITEM_PROP_LOGGED_IN property.
+ *
+ *     We initially build this list by calling org.freedesktop.ConsoleKit.Seat's
+ *     GetDevices method. We also monitor the seat for SessionAdded and
+ *     SessionRemoved and update the list accordingly.
+ *
+ *  3. Provide an API for user switching and guest sessions.
+ *     These are typically pass-through functions to GDBusProxies.
+ *
  */
-#define MINIMUM_USERS           0
-
-struct _UsersServiceDbus {
+struct _UsersServiceDbus
+{
+  /*< private >*/
   GObject parent;
+  UsersServiceDbusPrivate * priv;
 };
 
-struct _UsersServiceDbusClass {
+struct _UsersServiceDbusClass
+{
   GObjectClass parent_class;
 
   /* Signals */
-  void     (* user_added)         (UsersServiceDbus *self, const gchar *user_id, gpointer user_data);
-  void     (* user_deleted)       (UsersServiceDbus *self, const gchar *user_id, gpointer user_data);
+  void (* user_list_changed)       (UsersServiceDbus*, gpointer);
+  void (* user_logged_in_changed)  (UsersServiceDbus*, AccountsUser*, gpointer);
+  void (* guest_logged_in_changed) (UsersServiceDbus*, gpointer);
 };
 
-GType users_service_dbus_get_type  (void) G_GNUC_CONST;
+GType     users_service_dbus_get_type               (void) G_GNUC_CONST;
 
-UserData *users_service_dbus_get_user_by_username  (UsersServiceDbus *self,
-                                                    const gchar *username);
-GList    *users_service_dbus_get_user_list         (UsersServiceDbus *self);
-gboolean  users_service_dbus_show_greeter          (UsersServiceDbus *self);
-gboolean  users_service_dbus_can_activate_session  (UsersServiceDbus *self);
-gboolean  users_service_dbus_activate_user_session (UsersServiceDbus *self,
-                                                    UserData         *user);
-gboolean  users_service_dbus_activate_guest_session (UsersServiceDbus *self);
-void      users_service_dbus_set_guest_item        (UsersServiceDbus * self,
-                                                    DbusmenuMenuitem * mi);
+GList   * users_service_dbus_get_user_list          (UsersServiceDbus * self);
 
-gboolean users_service_dbus_guest_session_enabled (UsersServiceDbus * self);
+gboolean  users_service_dbus_is_guest_logged_in     (UsersServiceDbus * self);
+gboolean  users_service_dbus_is_user_logged_in      (UsersServiceDbus * self,
+                                                     AccountsUser     * user);
+
+void      users_service_dbus_show_greeter           (UsersServiceDbus * self);
+gboolean  users_service_dbus_guest_session_enabled  (UsersServiceDbus * self);
+gboolean  users_service_dbus_can_activate_session   (UsersServiceDbus * self);
+void      users_service_dbus_activate_guest_session (UsersServiceDbus * self);
+void      users_service_dbus_activate_user_session  (UsersServiceDbus * self,
+                                                     AccountsUser     * user);
 
 G_END_DECLS
 

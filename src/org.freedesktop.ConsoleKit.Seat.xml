@@ -101,7 +101,7 @@ seat at a time.</doc:para>
     </method>
 
     <signal name="ActiveSessionChanged">
-      <arg name="ssid" type="o">
+      <arg name="ssid" type="s">
         <doc:doc>
           <doc:summary>Session ID</doc:summary>
         </doc:doc>

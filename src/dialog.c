@@ -7,16 +7,16 @@ Copyright 2010 Canonical Ltd.
 Authors:
     Ted Gould <ted@canonical.com>
 
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib/gi18n.h>
 
-#include "consolekit-manager-client.h"
+#include "dbus-consolekit-manager.h"
 #include "dialog.h"
 
 /* Strings */
@@ -34,7 +34,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 static const gchar * title_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("title", "Log Out"),
 	/* LOGOUT_DIALOG_RESTART, */	NC_("title", "Restart"),
-	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("title", "Shut Down")
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("title", "Switch Off")
 };
 
 static const gchar * body_strings[LOGOUT_DIALOG_TYPE_CNT] = {
@@ -46,7 +46,7 @@ static const gchar * body_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 static const gchar * button_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("button", "Log Out"),
 	/* LOGOUT_DIALOG_RESTART, */	NC_("button", "Restart"),
-	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button", "Shut Down")
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button", "Switch Off")
 };
 
 /* TRANSLATORS: These strings have an ellipsis so that the user knows
@@ -54,7 +54,7 @@ static const gchar * button_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 static const gchar * button_auth_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("button auth", "Log Out"),
 	/* LOGOUT_DIALOG_RESTART, */	NC_("button auth", "Restart…"),
-	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button auth", "Shut Down…")
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button auth", "Switch Off…")
 };
 
 /* TRANSLATORS: This button appears on the logout dialog when
@@ -137,30 +137,31 @@ check_restart_required (void)
 static gboolean
 ck_check_allowed (LogoutDialogType type)
 {
-	DBusGConnection * system_bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, NULL);
-	g_return_val_if_fail(system_bus != NULL, TRUE);
+	gboolean allowed = TRUE;
 
-	DBusGProxy * ck_proxy = dbus_g_proxy_new_for_name (system_bus,
-	                                                   "org.freedesktop.ConsoleKit",
-	                                                   "/org/freedesktop/ConsoleKit/Manager",
-	                                                   "org.freedesktop.ConsoleKit.Manager");
-	g_return_val_if_fail(ck_proxy != NULL, TRUE);
+	ConsoleKitManager * ck_proxy = console_kit_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+	                                                                           G_DBUS_PROXY_FLAGS_NONE,
+	                                                                           "org.freedesktop.ConsoleKit",
+	                                                                           "/org/freedesktop/ConsoleKit/Manager",
+	                                                                           NULL,
+	                                                                           NULL);
+	if (ck_proxy != NULL)
+	{
+		switch (type) {
+		case LOGOUT_DIALOG_TYPE_RESTART:
+			console_kit_manager_call_can_restart_sync (ck_proxy, &allowed, NULL, NULL);
+			break;
+		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
+			console_kit_manager_call_can_stop_sync (ck_proxy, &allowed, NULL, NULL);
+			break;
+		default:
+			break;
+		}
 
-	gboolean retval = TRUE;
-	switch (type) {
-	case LOGOUT_DIALOG_TYPE_RESTART:
-		org_freedesktop_ConsoleKit_Manager_can_restart(ck_proxy, &retval, NULL);
-		break;
-	case LOGOUT_DIALOG_TYPE_SHUTDOWN:
-		org_freedesktop_ConsoleKit_Manager_can_stop(ck_proxy, &retval, NULL);
-		break;
-	default:
-		break;
+		g_object_unref(ck_proxy);
 	}
 
-	g_object_unref(ck_proxy);
-
-	return retval;
+	return allowed;
 }
 
 LogoutDialog *
@@ -225,17 +226,17 @@ logout_dialog_new (LogoutDialogType type)
 		                       button_text, GTK_RESPONSE_OK,
 		                       NULL);
 	}
-  
-  if (type == LOGOUT_DIALOG_TYPE_SHUTDOWN){
-  	const gchar * restart_text;
+
+	if (type == LOGOUT_DIALOG_TYPE_SHUTDOWN) {
+		const gchar * restart_text;
 		restart_text = g_dpgettext2 (NULL, "button", button_strings[LOGOUT_DIALOG_TYPE_RESTART]);
-		gtk_dialog_add_button (GTK_DIALOG(dialog), restart_text, GTK_RESPONSE_HELP);    
-  }
+		gtk_dialog_add_button (GTK_DIALOG(dialog), restart_text, GTK_RESPONSE_HELP);
+	}
 
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
-        /* The following  is a workaround to fix an issue in GtkMessageDialog 
-           in which the user can tab through the text in addition to 
+        /* The following  is a workaround to fix an issue in GtkMessageDialog
+           in which the user can tab through the text in addition to
            the buttons. */
         GtkWidget *message_area = gtk_message_dialog_get_message_area(GTK_MESSAGE_DIALOG(dialog));
         GList *children = gtk_container_get_children(GTK_CONTAINER(message_area));

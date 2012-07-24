@@ -28,6 +28,7 @@ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 # Dependencies 
 ###########################
 
+GLIB_REQUIRED_VERSION=2.33
 GTK_REQUIRED_VERSION=3.0
 INDICATOR_REQUIRED_VERSION=0.3.19
 DBUSMENUGTK_REQUIRED_VERSION=0.5.90
@@ -36,14 +37,16 @@ DBUSTEST_REQUIRED_VERSION=0.0.5
 DBUSMENUGLIB_REQUIRED_VERSION=0.1.1
 
 
-PKG_CHECK_MODULES(APPLET, gtk+-3.0 >= $GTK_REQUIRED_VERSION
+PKG_CHECK_MODULES(APPLET, glib-2.0 >= $GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= $GTK_REQUIRED_VERSION
                           indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
 AC_SUBST(APPLET_CFLAGS)
 AC_SUBST(APPLET_LIBS)
 
 
-PKG_CHECK_MODULES(SESSIONSERVICE, dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+PKG_CHECK_MODULES(SESSIONSERVICE, glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0

@@ -97,7 +97,7 @@ webcredentials_mgr_init (WebcredentialsMgr *self)
                                   DBUSMENU_CLIENT_TYPES_DEFAULT);
   dbusmenu_menuitem_property_set (self->menu_item,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
-                                  _("Web Accounts…"));
+                                  _("Online Accounts\342\200\246"));
   g_signal_connect (self->menu_item,
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK (on_menu_item_activated),

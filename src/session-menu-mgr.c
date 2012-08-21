@@ -33,6 +33,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "session-menu-mgr.h"
 #include "shared-names.h"
 #include "users-service-dbus.h"
+#include "webcredentials-mgr.h"
 
 #define DEBUG_SHOW_ALL FALSE
 
@@ -88,6 +89,8 @@ struct _SessionMenuMgr
   DbusmenuMenuitem * lock_mi;
   DbusmenuMenuitem * lock_switch_mi;
   DbusmenuMenuitem * guest_mi;
+  DbusmenuMenuitem * online_accounts_mi;
+  DbusmenuMenuitem * online_accounts_separator;
   DbusmenuMenuitem * logout_mi;
   DbusmenuMenuitem * suspend_mi;
   DbusmenuMenuitem * hibernate_mi;
@@ -113,6 +116,7 @@ struct _SessionMenuMgr
   DBusUPower * upower_proxy;
   SessionDbus * session_dbus;
   UsersServiceDbus * users_dbus_facade;
+  WebcredentialsMgr * webcredentials_mgr;
 };
 
 static SwitcherMode get_switcher_mode         (SessionMenuMgr *);
@@ -192,6 +196,9 @@ session_menu_mgr_init (SessionMenuMgr *mgr)
                     G_CALLBACK(on_guest_logged_in_changed), mgr);
 
   init_upower_proxy (mgr);
+
+  /* Online accounts menu item */
+  mgr->webcredentials_mgr = webcredentials_mgr_new ();
 }
 
 static void
@@ -212,6 +219,7 @@ session_menu_mgr_dispose (GObject *object)
   g_clear_object (&mgr->users_dbus_facade);
   g_clear_object (&mgr->top_mi);
   g_clear_object (&mgr->session_dbus);
+  g_clear_object (&mgr->webcredentials_mgr);
 
   g_slist_free (mgr->user_menuitems);
   mgr->user_menuitems = NULL;
@@ -412,6 +420,10 @@ update_session_menuitems (SessionMenuMgr * mgr)
   gboolean v;
   GSettings * s = mgr->indicator_settings;
 
+  v = !mgr->greeter_mode;
+  mi_set_visible (mgr->online_accounts_mi, v);
+  mi_set_visible (mgr->online_accounts_separator, v);
+
   v = !mgr->greeter_mode
    && !is_this_live_session()
    && !g_settings_get_boolean (mgr->lockdown_settings, "disable-log-out")
@@ -462,6 +474,13 @@ static void
 build_session_menuitems (SessionMenuMgr* mgr)
 {
   DbusmenuMenuitem * mi;
+
+  mi = mgr->online_accounts_mi =
+    webcredentials_mgr_get_menu_item (mgr->webcredentials_mgr);
+  dbusmenu_menuitem_child_append (mgr->top_mi, mi);
+
+  mi = mgr->online_accounts_separator = mi_new_separator ();
+  dbusmenu_menuitem_child_append (mgr->top_mi, mi);
 
   mi = mgr->logout_mi = mi_new (_("Log Out\342\200\246"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);

@@ -20,7 +20,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 
-#include "online_accounts-mgr.h"
+#include "online-accounts-mgr.h"
 
 #include <libdbusmenu-glib/client.h>
 

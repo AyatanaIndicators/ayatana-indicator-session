@@ -33,7 +33,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "session-menu-mgr.h"
 #include "shared-names.h"
 #include "users-service-dbus.h"
-#include "online_accounts-mgr.h"
+#include "online-accounts-mgr.h"
 
 #define DEBUG_SHOW_ALL FALSE
 

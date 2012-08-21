@@ -133,7 +133,9 @@ indicator_session_service_SOURCES = \
 	users-service-dbus.h \
 	users-service-dbus.c \
 	session-menu-mgr.h \
-	session-menu-mgr.c
+	session-menu-mgr.c \
+	webcredentials-mgr.c \
+	webcredentials-mgr.h
 
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \

@@ -33,7 +33,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "session-menu-mgr.h"
 #include "shared-names.h"
 #include "users-service-dbus.h"
-#include "webcredentials-mgr.h"
+#include "online_accounts-mgr.h"
 
 #define DEBUG_SHOW_ALL FALSE
 
@@ -116,7 +116,7 @@ struct _SessionMenuMgr
   DBusUPower * upower_proxy;
   SessionDbus * session_dbus;
   UsersServiceDbus * users_dbus_facade;
-  WebcredentialsMgr * webcredentials_mgr;
+  OnlineAccountsMgr * online_accounts_mgr;
 };
 
 static SwitcherMode get_switcher_mode         (SessionMenuMgr *);
@@ -198,7 +198,7 @@ session_menu_mgr_init (SessionMenuMgr *mgr)
   init_upower_proxy (mgr);
 
   /* Online accounts menu item */
-  mgr->webcredentials_mgr = webcredentials_mgr_new ();
+  mgr->online_accounts_mgr = online_accounts_mgr_new ();
 }
 
 static void
@@ -219,7 +219,7 @@ session_menu_mgr_dispose (GObject *object)
   g_clear_object (&mgr->users_dbus_facade);
   g_clear_object (&mgr->top_mi);
   g_clear_object (&mgr->session_dbus);
-  g_clear_object (&mgr->webcredentials_mgr);
+  g_clear_object (&mgr->online_accounts_mgr);
 
   g_slist_free (mgr->user_menuitems);
   mgr->user_menuitems = NULL;
@@ -476,7 +476,7 @@ build_session_menuitems (SessionMenuMgr* mgr)
   DbusmenuMenuitem * mi;
 
   mi = mgr->online_accounts_mi =
-    webcredentials_mgr_get_menu_item (mgr->webcredentials_mgr);
+    online_accounts_mgr_get_menu_item (mgr->online_accounts_mgr);
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
 
   mi = mgr->online_accounts_separator = mi_new_separator ();

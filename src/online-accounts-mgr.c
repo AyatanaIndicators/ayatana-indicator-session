@@ -20,25 +20,25 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 
-#include "webcredentials-mgr.h"
+#include "online_accounts-mgr.h"
 
 #include <libdbusmenu-glib/client.h>
 
-struct _WebcredentialsMgr
+struct _OnlineAccountsMgr
 {
   GObject parent_instance;
   GDBusProxy *proxy;
   DbusmenuMenuitem *menu_item;
 };
 
-#define WEBCREDENTIALS_OBJECT_PATH "/com/canonical/indicators/webcredentials"
-#define WEBCREDENTIALS_BUS_NAME "com.canonical.indicators.webcredentials"
-#define WEBCREDENTIALS_INTERFACE WEBCREDENTIALS_BUS_NAME
+#define ONLINE_ACCOUNTS_OBJECT_PATH "/com/canonical/indicators/webcredentials"
+#define ONLINE_ACCOUNTS_BUS_NAME "com.canonical.indicators.webcredentials"
+#define ONLINE_ACCOUNTS_INTERFACE ONLINE_ACCOUNTS_BUS_NAME
 
-G_DEFINE_TYPE (WebcredentialsMgr, webcredentials_mgr, G_TYPE_OBJECT);
+G_DEFINE_TYPE (OnlineAccountsMgr, online_accounts_mgr, G_TYPE_OBJECT);
 
 static void
-update_disposition (WebcredentialsMgr *self, GVariant *error_status_prop)
+update_disposition (OnlineAccountsMgr *self, GVariant *error_status_prop)
 {
   gboolean error_status;
 
@@ -54,7 +54,7 @@ static void
 on_properties_changed (GDBusProxy *proxy,
                        GVariant *changed_properties,
                        GStrv invalidated_properties,
-                       WebcredentialsMgr *self)
+                       OnlineAccountsMgr *self)
 {
   if (g_variant_n_children (changed_properties) > 0) {
     GVariantIter *iter;
@@ -74,19 +74,19 @@ on_properties_changed (GDBusProxy *proxy,
 static void
 on_menu_item_activated (DbusmenuMenuitem *menu_item,
                         guint timestamp,
-                        WebcredentialsMgr *self)
+                        OnlineAccountsMgr *self)
 {
   GError *error = NULL;
 
   if (!g_spawn_command_line_async("gnome-control-center credentials", &error))
   {
-    g_warning("Unable to show control centre: %s", error->message);
+    g_warning("Unable to show control center: %s", error->message);
     g_error_free(error);
   }
 }
 
 static void
-webcredentials_mgr_init (WebcredentialsMgr *self)
+online_accounts_mgr_init (OnlineAccountsMgr *self)
 {
   GError *error = NULL;
   GVariant *error_status_prop;
@@ -107,13 +107,13 @@ webcredentials_mgr_init (WebcredentialsMgr *self)
     g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
                                    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
                                    NULL,
-                                   WEBCREDENTIALS_BUS_NAME,
-                                   WEBCREDENTIALS_OBJECT_PATH,
-                                   WEBCREDENTIALS_INTERFACE,
+                                   ONLINE_ACCOUNTS_BUS_NAME,
+                                   ONLINE_ACCOUNTS_OBJECT_PATH,
+                                   ONLINE_ACCOUNTS_INTERFACE,
                                    NULL,
                                    &error);
   if (G_UNLIKELY (error != NULL)) {
-      g_warning ("Couldn't create webcredentials proxy: %s", error->message);
+      g_warning ("Couldn't create online_accounts proxy: %s", error->message);
       g_clear_error (&error);
       return;
   }
@@ -130,9 +130,9 @@ webcredentials_mgr_init (WebcredentialsMgr *self)
 }
 
 static void
-webcredentials_mgr_dispose (GObject *object)
+online_accounts_mgr_dispose (GObject *object)
 {
-  WebcredentialsMgr *self = WEBCREDENTIALS_MGR (object);
+  OnlineAccountsMgr *self = ONLINE_ACCOUNTS_MGR (object);
 
   if (self->proxy != NULL) {
     g_object_unref (self->proxy);
@@ -144,23 +144,23 @@ webcredentials_mgr_dispose (GObject *object)
     self->menu_item = NULL;
   }
 
-  G_OBJECT_CLASS (webcredentials_mgr_parent_class)->dispose (object);
+  G_OBJECT_CLASS (online_accounts_mgr_parent_class)->dispose (object);
 }
 
 static void
-webcredentials_mgr_class_init (WebcredentialsMgrClass *klass)
+online_accounts_mgr_class_init (OnlineAccountsMgrClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-  object_class->dispose = webcredentials_mgr_dispose;
+  object_class->dispose = online_accounts_mgr_dispose;
 }
 
-WebcredentialsMgr *webcredentials_mgr_new ()
+OnlineAccountsMgr *online_accounts_mgr_new ()
 {
-  return g_object_new (WEBCREDENTIALS_TYPE_MGR, NULL);
+  return g_object_new (ONLINE_ACCOUNTS_TYPE_MGR, NULL);
 }
 
-DbusmenuMenuitem *webcredentials_mgr_get_menu_item (WebcredentialsMgr *self)
+DbusmenuMenuitem *online_accounts_mgr_get_menu_item (OnlineAccountsMgr *self)
 {
-  g_return_val_if_fail (WEBCREDENTIALS_IS_MGR (self), NULL);
+  g_return_val_if_fail (ONLINE_ACCOUNTS_IS_MGR (self), NULL);
   return self->menu_item;
 }

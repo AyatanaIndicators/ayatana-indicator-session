@@ -36,7 +36,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator.h>
 #include <libindicator/indicator-object.h>
 #include <libindicator/indicator-service-manager.h>
-#include <libindicator/indicator-image-helper.h>
 
 #include "shared-names.h"
 #include "user-widget.h"
@@ -117,6 +116,8 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 static void
 indicator_session_init (IndicatorSession *self)
 {
+  const gchar * icon_name;
+
   self->settings = g_settings_new ("com.canonical.indicator.session");
 
   /* Now let's fire these guys up. */
@@ -131,9 +132,8 @@ indicator_session_init (IndicatorSession *self)
   self->entry.name_hint = PACKAGE;
   self->entry.accessible_desc = _("Session Menu");
   self->entry.label = GTK_LABEL (gtk_label_new ("User Name"));
-  self->entry.image = greeter_mode
-                    ? indicator_image_helper (GREETER_ICON_DEFAULT)
-                    : indicator_image_helper (ICON_DEFAULT);
+  icon_name = greeter_mode ? GREETER_ICON_DEFAULT : ICON_DEFAULT;
+  self->entry.image = GTK_IMAGE (gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_BUTTON));
   self->entry.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                     INDICATOR_SESSION_DBUS_OBJECT));
   g_settings_bind (self->settings, "show-real-name-on-panel",
@@ -341,7 +341,8 @@ receive_signal (GDBusProxy * proxy,
     }
   else if (!g_strcmp0(signal_name, "RestartRequired"))
     {
-      indicator_image_helper_update (self->entry.image, greeter_mode ? GREETER_ICON_RESTART : ICON_RESTART);
+      const gchar * icon_name = greeter_mode ? GREETER_ICON_RESTART : ICON_RESTART;
+      gtk_image_set_from_icon_name (GTK_IMAGE(self->entry.image), icon_name, GTK_ICON_SIZE_MENU);
       self->entry.accessible_desc = _("Device Menu (reboot required)");
       g_signal_emit (G_OBJECT(self), INDICATOR_OBJECT_SIGNAL_ACCESSIBLE_DESC_UPDATE_ID, 0, &self->entry);
     }

@@ -227,12 +227,6 @@ logout_dialog_new (LogoutDialogType type)
 		                       NULL);
 	}
 
-	if (type == LOGOUT_DIALOG_TYPE_SHUTDOWN) {
-		const gchar * restart_text;
-		restart_text = g_dpgettext2 (NULL, "button", button_strings[LOGOUT_DIALOG_TYPE_RESTART]);
-		gtk_dialog_add_button (GTK_DIALOG(dialog), restart_text, GTK_RESPONSE_HELP);
-	}
-
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
         /* The following  is a workaround to fix an issue in GtkMessageDialog

@@ -89,9 +89,8 @@ user_widget_init (UserWidget *self)
   // Create the UI elements.
   priv->user_image = gtk_image_new ();
   gtk_misc_set_alignment(GTK_MISC(priv->user_image), 0.0, 0.0);
-  gtk_misc_set_padding (GTK_MISC(priv->user_image),0, 4.0);
 
-  priv->user_name = gtk_label_new ("");
+  priv->user_name = gtk_label_new (NULL);
 
   priv->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
 
@@ -180,40 +179,43 @@ user_widget_primitive_draw_cb_gtk_3 (GtkWidget *widget,
 ****
 ***/
 
-static const int ICON_SIZE = 24;
-
 static void
 update_icon (UserWidget * self, DbusmenuMenuitem * mi)
 {
-  GdkPixbuf * pixbuf = NULL;
+  gboolean updated = FALSE;
+  GtkImage * image = GTK_IMAGE(self->priv->user_image);
 
-  /* first, try the menuitem's icon property */
+  /* first try the menuitem's icon property */
   const gchar * icon_name = dbusmenu_menuitem_property_get (mi, USER_ITEM_PROP_ICON);
-  if (icon_name)
+  if (icon_name != NULL)
     {
-      GError* error = NULL;
-      pixbuf = gdk_pixbuf_new_from_file_at_size (icon_name, ICON_SIZE, ICON_SIZE, &error);
-      if (error != NULL)
+      int width = 18; /* arbitrary default values */
+      int height = 18;
+      GError * err = NULL;
+      GdkPixbuf * pixbuf = NULL;
+
+      /* load the image */
+      gtk_icon_size_lookup (GTK_ICON_SIZE_MENU, &width, &height);
+      pixbuf = gdk_pixbuf_new_from_file_at_size (icon_name, width, height, &err);
+      if (err == NULL)
         {
-          g_warning ("Couldn't load the image \"%s\": %s", icon_name, error->message);
-          g_clear_error (&error);
+          gtk_image_set_from_pixbuf (image, pixbuf);
+          g_object_unref (pixbuf);
+          updated = TRUE;
+        }
+      else
+        {
+          g_warning ("Couldn't load the image \"%s\": %s", icon_name, err->message);
+          g_clear_error (&err);
         }
     }
 
-  /* as a fallback, try to use the default user icon */
-  if (pixbuf == NULL)
+  /* as a fallback, use the default user icon */
+  if (!updated)
     {
-      pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-                                         USER_ITEM_ICON_DEFAULT,
-                                         ICON_SIZE,
-                                         GTK_ICON_LOOKUP_FORCE_SIZE,
-                                         NULL);
-    }
-
-  if (pixbuf != NULL)
-    {
-      gtk_image_set_from_pixbuf (GTK_IMAGE(self->priv->user_image), pixbuf);
-      g_object_unref (pixbuf);
+      gtk_image_set_from_icon_name (image,
+                                    USER_ITEM_ICON_DEFAULT,
+                                    GTK_ICON_SIZE_MENU);
     }
 }
 
@@ -277,7 +279,9 @@ user_widget_set_twin_item (UserWidget * self, DbusmenuMenuitem * mi)
 
  /**
   * user_widget_new:
-  * @returns: a new #UserWidget.
+  * @item: the #DbusmenuMenuitem this widget will render.
+  *
+  * Returns: (transfer full): a new #UserWidget.
   **/
 GtkWidget*
 user_widget_new (DbusmenuMenuitem *item)

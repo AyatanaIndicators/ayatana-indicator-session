@@ -3109,7 +3109,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=indicator-session
- VERSION=12.10.0
+ VERSION=12.10.1
 
 
 cat >>confdefs.h <<_ACEOF
@@ -17061,6 +17061,7 @@ AM_BACKSLASH='\'
 # Dependencies
 ###########################
 
+GLIB_REQUIRED_VERSION=2.33
 GTK_REQUIRED_VERSION=3.0
 INDICATOR_REQUIRED_VERSION=0.3.19
 DBUSMENUGTK_REQUIRED_VERSION=0.5.90
@@ -17078,16 +17079,19 @@ if test -n "$APPLET_CFLAGS"; then
     pkg_cv_APPLET_CFLAGS="$APPLET_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-3.0 >= \$GTK_REQUIRED_VERSION
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= \$GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= \$GTK_REQUIRED_VERSION
                           indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= \$DBUSMENUGTK_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtk+-3.0 >= $GTK_REQUIRED_VERSION
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= $GTK_REQUIRED_VERSION
                           indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_APPLET_CFLAGS=`$PKG_CONFIG --cflags "gtk+-3.0 >= $GTK_REQUIRED_VERSION
+  pkg_cv_APPLET_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= $GTK_REQUIRED_VERSION
                           indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
@@ -17101,16 +17105,19 @@ if test -n "$APPLET_LIBS"; then
     pkg_cv_APPLET_LIBS="$APPLET_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-3.0 >= \$GTK_REQUIRED_VERSION
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= \$GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= \$GTK_REQUIRED_VERSION
                           indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= \$DBUSMENUGTK_REQUIRED_VERSION\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtk+-3.0 >= $GTK_REQUIRED_VERSION
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= $GTK_REQUIRED_VERSION
                           indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_APPLET_LIBS=`$PKG_CONFIG --libs "gtk+-3.0 >= $GTK_REQUIRED_VERSION
+  pkg_cv_APPLET_LIBS=`$PKG_CONFIG --libs "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= $GTK_REQUIRED_VERSION
                           indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
@@ -17133,18 +17140,21 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        APPLET_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtk+-3.0 >= $GTK_REQUIRED_VERSION
+	        APPLET_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= $GTK_REQUIRED_VERSION
                           indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION" 2>&1`
         else
-	        APPLET_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtk+-3.0 >= $GTK_REQUIRED_VERSION
+	        APPLET_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= $GTK_REQUIRED_VERSION
                           indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$APPLET_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (gtk+-3.0 >= $GTK_REQUIRED_VERSION
+	as_fn_error $? "Package requirements (glib-2.0 >= $GLIB_REQUIRED_VERSION
+                          gtk+-3.0 >= $GTK_REQUIRED_VERSION
                           indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                           dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION) were not met:
 
@@ -17191,13 +17201,15 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
     pkg_cv_SESSIONSERVICE_CFLAGS="$SESSIONSERVICE_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib-0.4 >= \$DBUSMENUGLIB_REQUIRED_VERSION
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= \$GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= \$DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= \$DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0
                                   indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION
                                   packagekit-glib2\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0
@@ -17206,7 +17218,8 @@ if test -n "$SESSIONSERVICE_CFLAGS"; then
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_SESSIONSERVICE_CFLAGS=`$PKG_CONFIG --cflags "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+  pkg_cv_SESSIONSERVICE_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0
@@ -17223,13 +17236,15 @@ if test -n "$SESSIONSERVICE_LIBS"; then
     pkg_cv_SESSIONSERVICE_LIBS="$SESSIONSERVICE_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbusmenu-glib-0.4 >= \$DBUSMENUGLIB_REQUIRED_VERSION
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= \$GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= \$DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= \$DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0
                                   indicator3-0.4 >= \$INDICATOR_REQUIRED_VERSION
                                   packagekit-glib2\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0
@@ -17238,7 +17253,8 @@ if test -n "$SESSIONSERVICE_LIBS"; then
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_SESSIONSERVICE_LIBS=`$PKG_CONFIG --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+  pkg_cv_SESSIONSERVICE_LIBS=`$PKG_CONFIG --libs "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0
@@ -17264,14 +17280,16 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0
                                   indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                                   packagekit-glib2" 2>&1`
         else
-	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+	        SESSIONSERVICE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0
@@ -17281,7 +17299,8 @@ fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$SESSIONSERVICE_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
+	as_fn_error $? "Package requirements (glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                  dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
                                   dbus-glib-1
                                   gio-unix-2.0

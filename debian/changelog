@@ -1,11 +1,11 @@
-indicator-session (12.10.1-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (12.10.1-0ubuntu1) quantal; urgency=low
 
   * New upstream release:
     - Menu items for users are too tall (lp: #1024395)
     - should update glib requirement (lp: #1023533)
   * Updating package to use current standards (dh9)
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 23 Aug 2012 16:05:12 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 23 Aug 2012 16:30:12 +0200
 
 indicator-session (12.10.0-0ubuntu1) quantal; urgency=low
 

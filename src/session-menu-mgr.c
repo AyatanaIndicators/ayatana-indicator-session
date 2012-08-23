@@ -90,7 +90,6 @@ struct _SessionMenuMgr
   DbusmenuMenuitem * lock_switch_mi;
   DbusmenuMenuitem * guest_mi;
   DbusmenuMenuitem * online_accounts_mi;
-  DbusmenuMenuitem * online_accounts_separator;
   DbusmenuMenuitem * logout_mi;
   DbusmenuMenuitem * suspend_mi;
   DbusmenuMenuitem * hibernate_mi;
@@ -370,6 +369,29 @@ mi_new (const char * label)
   return mi;
 }
 
+static void
+check_online_accounts_status (SessionMenuMgr * mgr, DbusmenuMenuitem * mi)
+{
+  const gchar *disposition;
+  gboolean on_alert;
+
+  disposition =
+    dbusmenu_menuitem_property_get (mi, DBUSMENU_MENUITEM_PROP_DISPOSITION);
+  on_alert = g_strcmp0 (disposition, DBUSMENU_MENUITEM_DISPOSITION_ALERT) == 0;
+
+  mi_set_visible (mi, on_alert);
+}
+
+static void
+on_online_accounts_changed (SessionMenuMgr * mgr, const gchar * property,
+                            GVariant *value, DbusmenuMenuitem *mi)
+{
+  if (g_strcmp0 (property, DBUSMENU_MENUITEM_PROP_DISPOSITION) == 0)
+  {
+    check_online_accounts_status(mgr, mi);
+  }
+}
+
 /***
 ****  Admin Menuitems
 ****  <https://wiki.ubuntu.com/SystemMenu#Admin_items>
@@ -404,6 +426,14 @@ build_admin_menuitems (SessionMenuMgr * mgr)
                               G_CALLBACK(action_func_spawn_async),
                               CMD_SYSTEM_SETTINGS);
 
+    mi = mgr->online_accounts_mi =
+      online_accounts_mgr_get_menu_item (mgr->online_accounts_mgr);
+    dbusmenu_menuitem_child_append (mgr->top_mi, mi);
+    g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
+                              G_CALLBACK(on_online_accounts_changed),
+                              mgr);
+    check_online_accounts_status (mgr, mi);
+
     mi = mi_new_separator ();
     dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   }
@@ -419,10 +449,6 @@ update_session_menuitems (SessionMenuMgr * mgr)
 {
   gboolean v;
   GSettings * s = mgr->indicator_settings;
-
-  v = !mgr->greeter_mode;
-  mi_set_visible (mgr->online_accounts_mi, v);
-  mi_set_visible (mgr->online_accounts_separator, v);
 
   v = !mgr->greeter_mode
    && !is_this_live_session()
@@ -474,13 +500,6 @@ static void
 build_session_menuitems (SessionMenuMgr* mgr)
 {
   DbusmenuMenuitem * mi;
-
-  mi = mgr->online_accounts_mi =
-    online_accounts_mgr_get_menu_item (mgr->online_accounts_mgr);
-  dbusmenu_menuitem_child_append (mgr->top_mi, mi);
-
-  mi = mgr->online_accounts_separator = mi_new_separator ();
-  dbusmenu_menuitem_child_append (mgr->top_mi, mi);
 
   mi = mgr->logout_mi = mi_new (_("Log Out\342\200\246"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);

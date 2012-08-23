@@ -51,9 +51,10 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 TESTS = test-service$(EXEEXT)
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.am.strings \
+	$(srcdir)/Makefile.in
 check_PROGRAMS = test-service$(EXEEXT)
 subdir = tests
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -310,6 +311,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+CLEANFILES = $(TESTS)
+
+# stock UMB tests on user-visible strings
 AM_CPPFLAGS = \
 	$(GTEST_CPPFLAGS) \
 	$(XORG_GTEST_CPPFLAGS) \
@@ -335,7 +339,7 @@ all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .cc .cpp .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/Makefile.am.strings $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -356,6 +360,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
+$(srcdir)/Makefile.am.strings:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -703,6 +708,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -798,6 +804,38 @@ uninstall-am:
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am
 
+
+#####
+# Tests for there being proper ellipsis instead of three periods in a row
+#####
+test-ellipsis: $(top_srcdir)/po
+	@echo "#!/bin/bash" > $@
+	@echo "(cd $(top_srcdir)/po && make $(GETTEXT_PACKAGE).pot)" >> $@
+	@echo "grep -c -e \"^msgid.*\.\.\.\\\"\" $(top_srcdir)/po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"Ellipsis found in user visible strings\" >&2 && exit 1" >> $@
+	@echo "exit 0" >> $@
+	@chmod +x $@
+
+#####
+# Tests for there being a space before an ellipsis
+#####
+test-space-ellipsis: $(top_srcdir)/po
+	@echo "#!/bin/bash" > $@
+	@echo "(cd $(top_srcdir)/po && make $(GETTEXT_PACKAGE).pot)" >> $@
+	@echo "grep -c -e \"^msgid.* …\\\"\" $(top_srcdir)/po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"Space before ellipsis found in user visible strings\" >&2 && exit 1" >> $@
+	@echo "exit 0" >> $@
+	@chmod +x $@
+
+#####
+# Tests for ASCII quote types
+#####
+test-ascii-quotes: $(top_srcdir)/po
+	@echo "#!/bin/bash" > $@
+	@echo "(cd $(top_srcdir)/po && make $(GETTEXT_PACKAGE).pot)" >> $@
+	@echo "grep -c -e \"^msgid \\\".*'.*\\\"\" $(top_srcdir)/po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"ASCII apostrophy found in user visible strings\" >&2 && exit 1" >> $@
+	@echo "grep -c -e \"^msgid \\\".*\\\".*\\\"\" $(top_srcdir)/po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"ASCII quote found in user visible strings\" >&2 && exit 1" >> $@
+	@echo "grep -c -e \"^msgid \\\".*\\\`.*\\\"\" $(top_srcdir)/po/$(GETTEXT_PACKAGE).pot > /dev/null && echo \"ASCII backtick found in user visible strings\" >&2 && exit 1" >> $@
+	@echo "exit 0" >> $@
+	@chmod +x $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

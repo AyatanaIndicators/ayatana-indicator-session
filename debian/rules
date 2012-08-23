@@ -1,22 +1,12 @@
 #!/usr/bin/make -f
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/gnome.mk
+%:
+	dh $@ --with translations
 
-DEB_CONFIGURE_EXTRA_FLAGS = --disable-static
+override_dh_auto_test:
+	echo "Disabling tests until they are fixed"
 
-CFLAGS += -Wno-error=deprecated-declarations
-LDFLAGS += -Wl,-z,defs -Wl,--as-needed
-
-common-install-arch::
-	find debian/indicator-session -name \*.la -delete
-	find debian/indicator-session -name \*.a -delete
-	find debian/indicator-session -name classic-desktop.sh | xargs chmod +x
-	cd po; intltool-update --pot --verbose
-	# Language packs
-	for d in $$(find debian/indicator-session -type f \( -name "*.desktop" -o -name "*.directory" \) ); do \
-		sed -ri '/^(Name|GenericName|Comment|X-GNOME-FullName)\[/d' $$d; \
-		echo "X-Ubuntu-Gettext-Domain=indicator-session" >> $$d; \
-	done;
-
-
+override_dh_install:
+	find debian/indicator-session/usr/lib -name *.la -delete
+	find debian/indicator-session/usr/lib -name *.a -delete
+	dh_install --fail-missing

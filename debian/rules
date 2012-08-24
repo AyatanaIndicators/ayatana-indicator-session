@@ -3,9 +3,6 @@
 %:
 	dh $@ --with translations
 
-override_dh_auto_test:
-	echo "Disabling tests until they are fixed"
-
 override_dh_install:
 	find debian/indicator-session/usr/lib -name *.la -delete
 	find debian/indicator-session/usr/lib -name *.a -delete

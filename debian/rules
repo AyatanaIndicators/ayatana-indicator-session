@@ -7,3 +7,6 @@ override_dh_install:
 	find debian/indicator-session/usr/lib -name *.la -delete
 	find debian/indicator-session/usr/lib -name *.a -delete
 	dh_install --fail-missing
+
+override_dh_auto_configure:
+	dh_auto_configure -- --libexecdir="\$${prefix}/lib/indicator-session"

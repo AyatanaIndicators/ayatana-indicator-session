@@ -1,3 +1,12 @@
+indicator-session (12.10.1-0ubuntu3) UNRELEASED; urgency=low
+
+  * debian/rules:
+    - set libexecdir to a non multiarch location, other components look 
+      to the standard path for the logout dialog helper, that's a workaround
+      until the binary is moved to bin (lp: #1041410)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 27 Aug 2012 14:46:08 +0200
+
 indicator-session (12.10.1-0ubuntu2) quantal; urgency=low
 
   * Backported upstream fix for the testsuit

@@ -5,6 +5,7 @@ src/dialog.c
 src/gen-session-dbus.xml.c
 src/gtk-logout-helper.c
 src/indicator-session.c
+src/online-accounts-mgr.c
 src/session-dbus.c
 src/session-menu-mgr.c
 src/session-service.c

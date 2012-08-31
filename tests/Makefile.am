@@ -14,7 +14,9 @@ AM_CXXFLAGS = $(GTEST_CXXFLAGS)
 
 TESTS = test-service
 check_PROGRAMS = test-service
-test_service_SOURCES = test-service.cc
+test_service_SOURCES = \
+	test-service.cc \
+	gtest-dbus-helper.h
 test_service_LDADD = $(TEST_SERVICE_LIBS) libgtest.a $(XORG_GTEST_MAIN_LIBS) $(X11_LIBS)
 test_service_CPPFLAGS = \
 	$(TEST_SERVICE_CFLAGS) \

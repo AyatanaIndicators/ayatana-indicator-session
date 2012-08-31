@@ -41,7 +41,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RESTART_ITEM_ICON         "restart-icon"
 
 #define ICON_DEFAULT              "system-devices-panel"
-#define ICON_RESTART              "system-devices-panel-alert"
+#define ICON_INFO                 "system-devices-panel-information"
+#define ICON_ALERT                "system-devices-panel-alert"
+
 #define GREETER_ICON_DEFAULT      "system-shutdown-panel"
 #define GREETER_ICON_RESTART      "system-shutdown-panel-restart"
 

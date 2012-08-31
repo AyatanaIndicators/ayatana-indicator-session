@@ -1,0 +1,13 @@
+12.10.2
+ - Add an 'Online Accounts' menuitem (lp: #1044464)
+ - Add disposition highlighting to the indicator icon (lp: #1044015)
+ - Fix build issue in the unit tests directory (lp: #1040678)
+ - Remove the Restart button from the shutdown dialog (lp: #1027952)
+ 
+12.10.1
+ - Fix user menuitems' icon sizes (lp: #1024395)
+ - Make explicit in configure.ac that we need a newer glib (lp: #1023533)
+ - Separate testing-strings into a separate Makefile.am for reuse
+
+12.10.0
+ - First version of the 12.10 System Menu redesign

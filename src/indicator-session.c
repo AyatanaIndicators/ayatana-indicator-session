@@ -441,6 +441,8 @@ indicator_session_update_a11y_from_disposition (IndicatorSession * indicator,
     a11y = g_strdup_printf (_("System %s (Attention Required)"), username);
   else if (show_name)
     a11y = g_strdup_printf (_("System %s"), username);
+  else if (need_attn)
+    a11y = g_strdup  (_("System (Attention Required)"));
   else
     a11y = g_strdup (_("System"));
 

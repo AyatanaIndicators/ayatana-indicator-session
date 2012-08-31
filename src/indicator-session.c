@@ -84,7 +84,7 @@ static gboolean build_restart_item (DbusmenuMenuitem * newitem,
                                     DbusmenuClient * client,
                                     gpointer user_data);
 static void on_menu_layout_updated (DbusmenuClient * client, IndicatorSession * session);
-static void indicator_session_update_icon (IndicatorSession * self);
+static void indicator_session_update_icon_and_a11y (IndicatorSession * self);
 static void indicator_session_update_users_label (IndicatorSession* self,
                                                   const gchar* name);
 static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
@@ -135,10 +135,16 @@ indicator_session_init (IndicatorSession *self)
   self->entry.image = GTK_IMAGE (gtk_image_new());
   self->entry.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                     INDICATOR_SESSION_DBUS_OBJECT));
-  indicator_session_update_icon (self);
+  indicator_session_update_icon_and_a11y (self);
   g_settings_bind (self->settings, "show-real-name-on-panel",
                    self->entry.label, "visible",
                    G_SETTINGS_BIND_GET);
+
+  /* show-real-name-on-panel affects the a11y string */
+  g_signal_connect_swapped (self->settings,
+                            "notify::show-real-name-on-panel",
+                            G_CALLBACK(indicator_session_update_icon_and_a11y),
+                            self);
 
   gtk_widget_show (GTK_WIDGET(self->entry.menu));
   gtk_widget_show (GTK_WIDGET(self->entry.image));
@@ -422,16 +428,36 @@ enum
 };
   
 static void
-indicator_session_update_from_disposition (IndicatorSession * indicator,
-                                           int                disposition)
+indicator_session_update_a11y_from_disposition (IndicatorSession * indicator,
+                                                int                disposition)
+{
+  GString * a11y = g_string_new (_("System"));
+
+  if (g_settings_get_boolean (indicator->settings, "show-real-name-on-panel"))
+    {
+      const gchar * username = gtk_label_get_text (indicator->entry.label);
+      g_string_append_printf (a11y, " %s", username);
+    }
+
+  if (disposition != DISPOSITION_NORMAL)
+    {
+      g_string_append (a11y, _(" (Attention Required)"));
+    }
+
+  g_debug (G_STRLOC" setting a11y to \"%s\"", a11y->str);
+  g_clear_pointer (&indicator->entry.accessible_desc, g_free);
+  indicator->entry.accessible_desc = g_string_free (a11y, FALSE);
+  g_signal_emit (indicator,
+                 INDICATOR_OBJECT_SIGNAL_ACCESSIBLE_DESC_UPDATE_ID,
+                 0,
+                 &indicator->entry);
+}
+
+static void
+indicator_session_update_icon_from_disposition (IndicatorSession * indicator,
+                                                int                disposition)
 {
   const gchar * icon;
-  const gchar * a11y;
-
-  if (disposition == DISPOSITION_NORMAL)
-    a11y = _("Session Menu");
-  else
-    a11y = _("Session Menu (attention required)");
 
   if (greeter_mode)
     {
@@ -450,17 +476,12 @@ indicator_session_update_from_disposition (IndicatorSession * indicator,
         icon = ICON_ALERT;
     }
 
-  g_debug (G_STRLOC" setting icon to \"%s\", a11y to \"%s\"", icon, a11y);
+  g_debug (G_STRLOC" setting icon to \"%s\"", icon);
   gtk_image_set_from_icon_name (GTK_IMAGE(indicator->entry.image),
                                 icon,
                                 GTK_ICON_SIZE_BUTTON);
-  indicator->entry.accessible_desc = a11y;
-  g_signal_emit (indicator,
-                 INDICATOR_OBJECT_SIGNAL_ACCESSIBLE_DESC_UPDATE_ID,
-                 0,
-                 &indicator->entry);
 }
-
+  
 static int
 calculate_disposition (IndicatorSession * indicator)
 {
@@ -492,10 +513,11 @@ calculate_disposition (IndicatorSession * indicator)
 }
 
 static void
-indicator_session_update_icon (IndicatorSession * indicator)
+indicator_session_update_icon_and_a11y (IndicatorSession * indicator)
 {
   const int disposition = calculate_disposition (indicator);
-  indicator_session_update_from_disposition (indicator, disposition);
+  indicator_session_update_a11y_from_disposition (indicator, disposition);
+  indicator_session_update_icon_from_disposition (indicator, disposition);
 }
 
 static void
@@ -505,7 +527,7 @@ on_menuitem_property_changed (DbusmenuMenuitem * mi,
                               gpointer           indicator)
 {
   if (!g_strcmp0 (property, DBUSMENU_MENUITEM_PROP_DISPOSITION))
-    indicator_session_update_icon (indicator);
+    indicator_session_update_icon_and_a11y (indicator);
 }
 
 static void

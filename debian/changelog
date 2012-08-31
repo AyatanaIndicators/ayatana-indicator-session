@@ -1,11 +1,11 @@
-indicator-session (12.10.2-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (12.10.2-0ubuntu1) quantal; urgency=low
 
   * New upstream release:
     - Add an 'Online Accounts' menuitem (lp: #1044464)
     - Add disposition highlighting to the indicator icon (lp: #1044015)
     - Remove the Restart button from the shutdown dialog (lp: #1027952)
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 31 Aug 2012 19:29:24 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 31 Aug 2012 19:38:05 +0200
 
 indicator-session (12.10.1-0ubuntu3) quantal; urgency=low
 

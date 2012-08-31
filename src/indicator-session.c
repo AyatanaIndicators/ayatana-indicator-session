@@ -431,22 +431,22 @@ static void
 indicator_session_update_a11y_from_disposition (IndicatorSession * indicator,
                                                 int                disposition)
 {
-  GString * a11y = g_string_new (_("System"));
+  gchar * a11y;
+  const gchar * username = gtk_label_get_text (indicator->entry.label);
+  const gboolean need_attn = disposition != DISPOSITION_NORMAL;
+  const gboolean show_name = g_settings_get_boolean (indicator->settings,
+                                                     "show-real-name-on-panel");
 
-  if (g_settings_get_boolean (indicator->settings, "show-real-name-on-panel"))
-    {
-      const gchar * username = gtk_label_get_text (indicator->entry.label);
-      g_string_append_printf (a11y, " %s", username);
-    }
+  if (show_name && need_attn)
+    a11y = g_strdup_printf (_("System %s (Attention Required)"), username);
+  else if (show_name)
+    a11y = g_strdup_printf (_("System %s"), username);
+  else
+    a11y = g_strdup (_("System"));
 
-  if (disposition != DISPOSITION_NORMAL)
-    {
-      g_string_append (a11y, _(" (Attention Required)"));
-    }
-
-  g_debug (G_STRLOC" setting a11y to \"%s\"", a11y->str);
+  g_debug (G_STRLOC" setting a11y to \"%s\"", a11y);
   g_clear_pointer (&indicator->entry.accessible_desc, g_free);
-  indicator->entry.accessible_desc = g_string_free (a11y, FALSE);
+  indicator->entry.accessible_desc = a11y;
   g_signal_emit (indicator,
                  INDICATOR_OBJECT_SIGNAL_ACCESSIBLE_DESC_UPDATE_ID,
                  0,

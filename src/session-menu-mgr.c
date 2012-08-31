@@ -33,6 +33,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "session-menu-mgr.h"
 #include "shared-names.h"
 #include "users-service-dbus.h"
+#include "online-accounts-mgr.h"
 
 #define DEBUG_SHOW_ALL FALSE
 
@@ -88,6 +89,7 @@ struct _SessionMenuMgr
   DbusmenuMenuitem * lock_mi;
   DbusmenuMenuitem * lock_switch_mi;
   DbusmenuMenuitem * guest_mi;
+  DbusmenuMenuitem * online_accounts_mi;
   DbusmenuMenuitem * logout_mi;
   DbusmenuMenuitem * suspend_mi;
   DbusmenuMenuitem * hibernate_mi;
@@ -113,6 +115,7 @@ struct _SessionMenuMgr
   DBusUPower * upower_proxy;
   SessionDbus * session_dbus;
   UsersServiceDbus * users_dbus_facade;
+  OnlineAccountsMgr * online_accounts_mgr;
 };
 
 static SwitcherMode get_switcher_mode         (SessionMenuMgr *);
@@ -192,6 +195,9 @@ session_menu_mgr_init (SessionMenuMgr *mgr)
                     G_CALLBACK(on_guest_logged_in_changed), mgr);
 
   init_upower_proxy (mgr);
+
+  /* Online accounts menu item */
+  mgr->online_accounts_mgr = online_accounts_mgr_new ();
 }
 
 static void
@@ -212,6 +218,7 @@ session_menu_mgr_dispose (GObject *object)
   g_clear_object (&mgr->users_dbus_facade);
   g_clear_object (&mgr->top_mi);
   g_clear_object (&mgr->session_dbus);
+  g_clear_object (&mgr->online_accounts_mgr);
 
   g_slist_free (mgr->user_menuitems);
   mgr->user_menuitems = NULL;
@@ -362,6 +369,29 @@ mi_new (const char * label)
   return mi;
 }
 
+static void
+check_online_accounts_status (SessionMenuMgr * mgr, DbusmenuMenuitem * mi)
+{
+  const gchar *disposition;
+  gboolean on_alert;
+
+  disposition =
+    dbusmenu_menuitem_property_get (mi, DBUSMENU_MENUITEM_PROP_DISPOSITION);
+  on_alert = g_strcmp0 (disposition, DBUSMENU_MENUITEM_DISPOSITION_ALERT) == 0;
+
+  mi_set_visible (mi, on_alert);
+}
+
+static void
+on_online_accounts_changed (SessionMenuMgr * mgr, const gchar * property,
+                            GVariant *value, DbusmenuMenuitem *mi)
+{
+  if (g_strcmp0 (property, DBUSMENU_MENUITEM_PROP_DISPOSITION) == 0)
+  {
+    check_online_accounts_status(mgr, mi);
+  }
+}
+
 /***
 ****  Admin Menuitems
 ****  <https://wiki.ubuntu.com/SystemMenu#Admin_items>
@@ -395,6 +425,14 @@ build_admin_menuitems (SessionMenuMgr * mgr)
     g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                               G_CALLBACK(action_func_spawn_async),
                               CMD_SYSTEM_SETTINGS);
+
+    mi = mgr->online_accounts_mi =
+      online_accounts_mgr_get_menu_item (mgr->online_accounts_mgr);
+    dbusmenu_menuitem_child_append (mgr->top_mi, mi);
+    g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED,
+                              G_CALLBACK(on_online_accounts_changed),
+                              mgr);
+    check_online_accounts_status (mgr, mi);
 
     mi = mi_new_separator ();
     dbusmenu_menuitem_child_append (mgr->top_mi, mi);

@@ -147,7 +147,8 @@ am_indicator_session_service_OBJECTS = $(am__objects_2) \
 	indicator_session_service-session-dbus.$(OBJEXT) \
 	indicator_session_service-gen-session-dbus.xml.$(OBJEXT) \
 	indicator_session_service-users-service-dbus.$(OBJEXT) \
-	indicator_session_service-session-menu-mgr.$(OBJEXT)
+	indicator_session_service-session-menu-mgr.$(OBJEXT) \
+	indicator_session_service-online-accounts-mgr.$(OBJEXT)
 indicator_session_service_OBJECTS =  \
 	$(am_indicator_session_service_OBJECTS)
 indicator_session_service_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -461,7 +462,9 @@ indicator_session_service_SOURCES = \
 	users-service-dbus.h \
 	users-service-dbus.c \
 	session-menu-mgr.h \
-	session-menu-mgr.c
+	session-menu-mgr.c \
+	online-accounts-mgr.c \
+	online-accounts-mgr.h
 
 indicator_session_service_CFLAGS = \
 	$(SESSIONSERVICE_CFLAGS) \
@@ -658,6 +661,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-dbus-upower.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-dbus-user.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-gen-session-dbus.xml.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-online-accounts-mgr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-dbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-menu-mgr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_session_service-session-service.Po@am__quote@
@@ -909,6 +913,20 @@ indicator_session_service-session-menu-mgr.obj: session-menu-mgr.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='session-menu-mgr.c' object='indicator_session_service-session-menu-mgr.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-session-menu-mgr.obj `if test -f 'session-menu-mgr.c'; then $(CYGPATH_W) 'session-menu-mgr.c'; else $(CYGPATH_W) '$(srcdir)/session-menu-mgr.c'; fi`
+
+indicator_session_service-online-accounts-mgr.o: online-accounts-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-online-accounts-mgr.o -MD -MP -MF $(DEPDIR)/indicator_session_service-online-accounts-mgr.Tpo -c -o indicator_session_service-online-accounts-mgr.o `test -f 'online-accounts-mgr.c' || echo '$(srcdir)/'`online-accounts-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-online-accounts-mgr.Tpo $(DEPDIR)/indicator_session_service-online-accounts-mgr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='online-accounts-mgr.c' object='indicator_session_service-online-accounts-mgr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-online-accounts-mgr.o `test -f 'online-accounts-mgr.c' || echo '$(srcdir)/'`online-accounts-mgr.c
+
+indicator_session_service-online-accounts-mgr.obj: online-accounts-mgr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -MT indicator_session_service-online-accounts-mgr.obj -MD -MP -MF $(DEPDIR)/indicator_session_service-online-accounts-mgr.Tpo -c -o indicator_session_service-online-accounts-mgr.obj `if test -f 'online-accounts-mgr.c'; then $(CYGPATH_W) 'online-accounts-mgr.c'; else $(CYGPATH_W) '$(srcdir)/online-accounts-mgr.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_session_service-online-accounts-mgr.Tpo $(DEPDIR)/indicator_session_service-online-accounts-mgr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='online-accounts-mgr.c' object='indicator_session_service-online-accounts-mgr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_session_service_CFLAGS) $(CFLAGS) -c -o indicator_session_service-online-accounts-mgr.obj `if test -f 'online-accounts-mgr.c'; then $(CYGPATH_W) 'online-accounts-mgr.c'; else $(CYGPATH_W) '$(srcdir)/online-accounts-mgr.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

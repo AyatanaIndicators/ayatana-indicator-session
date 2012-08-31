@@ -63,6 +63,7 @@ struct _IndicatorSession
   GCancellable * service_proxy_cancel;
   GDBusProxy * service_proxy;
   GSettings * settings;
+  DbusmenuClient * menu_client;
 };
 
 static gboolean greeter_mode;
@@ -82,6 +83,8 @@ static gboolean build_restart_item (DbusmenuMenuitem * newitem,
                                     DbusmenuMenuitem * parent,
                                     DbusmenuClient * client,
                                     gpointer user_data);
+static void on_menu_layout_updated (DbusmenuClient * client, IndicatorSession * session);
+static void indicator_session_update_icon (IndicatorSession * self);
 static void indicator_session_update_users_label (IndicatorSession* self,
                                                   const gchar* name);
 static void service_connection_cb (IndicatorServiceManager * sm, gboolean connected, gpointer user_data);
@@ -116,8 +119,6 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 static void
 indicator_session_init (IndicatorSession *self)
 {
-  const gchar * icon_name;
-
   self->settings = g_settings_new ("com.canonical.indicator.session");
 
   /* Now let's fire these guys up. */
@@ -130,12 +131,11 @@ indicator_session_init (IndicatorSession *self)
   greeter_mode = !g_strcmp0(g_getenv("INDICATOR_GREETER_MODE"), "1");
 
   self->entry.name_hint = PACKAGE;
-  self->entry.accessible_desc = _("Session Menu");
   self->entry.label = GTK_LABEL (gtk_label_new ("User Name"));
-  icon_name = greeter_mode ? GREETER_ICON_DEFAULT : ICON_DEFAULT;
-  self->entry.image = GTK_IMAGE (gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_BUTTON));
+  self->entry.image = GTK_IMAGE (gtk_image_new());
   self->entry.menu = GTK_MENU (dbusmenu_gtkmenu_new(INDICATOR_SESSION_DBUS_NAME,
                                                     INDICATOR_SESSION_DBUS_OBJECT));
+  indicator_session_update_icon (self);
   g_settings_bind (self->settings, "show-real-name-on-panel",
                    self->entry.label, "visible",
                    G_SETTINGS_BIND_GET);
@@ -146,14 +146,17 @@ indicator_session_init (IndicatorSession *self)
   g_object_ref_sink (self->entry.image);
 
   // set up the handlers
-  DbusmenuClient * menu_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->entry.menu)));
-  dbusmenu_client_add_type_handler (menu_client,
+  self->menu_client = DBUSMENU_CLIENT(dbusmenu_gtkmenu_get_client(DBUSMENU_GTKMENU(self->entry.menu)));
+  g_signal_connect (self->menu_client, "layout-updated",
+                    G_CALLBACK(on_menu_layout_updated), self);
+
+  dbusmenu_client_add_type_handler (self->menu_client,
                                     USER_ITEM_TYPE,
                                     new_user_item);
-  dbusmenu_client_add_type_handler (menu_client,
+  dbusmenu_client_add_type_handler (self->menu_client,
                                     RESTART_ITEM_TYPE,
                                     build_restart_item);
-  dbusmenu_gtkclient_set_accel_group (DBUSMENU_GTKCLIENT(menu_client),
+  dbusmenu_gtkclient_set_accel_group (DBUSMENU_GTKCLIENT(self->menu_client),
                                       gtk_accel_group_new());
 }
 
@@ -339,13 +342,6 @@ receive_signal (GDBusProxy * proxy,
       g_variant_get (parameters, "(&s)", &username);
       indicator_session_update_users_label (self, username);	
     }
-  else if (!g_strcmp0(signal_name, "RestartRequired"))
-    {
-      const gchar * icon_name = greeter_mode ? GREETER_ICON_RESTART : ICON_RESTART;
-      gtk_image_set_from_icon_name (GTK_IMAGE(self->entry.image), icon_name, GTK_ICON_SIZE_MENU);
-      self->entry.accessible_desc = _("Device Menu (reboot required)");
-      g_signal_emit (G_OBJECT(self), INDICATOR_OBJECT_SIGNAL_ACCESSIBLE_DESC_UPDATE_ID, 0, &self->entry);
-    }
 }
 
 
@@ -411,4 +407,126 @@ indicator_session_update_users_label (IndicatorSession * self,
                                       const gchar      * name)
 {
   gtk_label_set_text (self->entry.label, name ? name : "");
+}
+
+/***
+**** Disposition
+***/
+
+enum
+{
+  DISPOSITION_NORMAL,
+  DISPOSITION_INFO,
+  DISPOSITION_WARNING,
+  DISPOSITION_ALERT
+};
+  
+static void
+indicator_session_update_from_disposition (IndicatorSession * indicator,
+                                           int                disposition)
+{
+  const gchar * icon;
+  const gchar * a11y;
+
+  if (disposition == DISPOSITION_NORMAL)
+    a11y = _("Session Menu");
+  else
+    a11y = _("Session Menu (attention required)");
+
+  if (greeter_mode)
+    {
+      if (disposition == DISPOSITION_NORMAL)
+        icon = GREETER_ICON_DEFAULT;
+      else
+        icon = GREETER_ICON_RESTART;
+    }
+  else
+    {
+      if (disposition == DISPOSITION_NORMAL)
+        icon = ICON_DEFAULT;
+      else if (disposition == DISPOSITION_INFO)
+        icon = ICON_INFO;
+      else
+        icon = ICON_ALERT;
+    }
+
+  g_debug (G_STRLOC" setting icon to \"%s\", a11y to \"%s\"", icon, a11y);
+  gtk_image_set_from_icon_name (GTK_IMAGE(indicator->entry.image),
+                                icon,
+                                GTK_ICON_SIZE_BUTTON);
+  indicator->entry.accessible_desc = a11y;
+  g_signal_emit (indicator,
+                 INDICATOR_OBJECT_SIGNAL_ACCESSIBLE_DESC_UPDATE_ID,
+                 0,
+                 &indicator->entry);
+}
+
+static int
+calculate_disposition (IndicatorSession * indicator)
+{
+  GList * l;
+  DbusmenuMenuitem * root = dbusmenu_client_get_root (indicator->menu_client);
+  GList * children = dbusmenu_menuitem_get_children (root);
+  int ret = DISPOSITION_NORMAL;
+
+  for (l=children; l!=NULL; l=l->next)
+    {
+      int val;
+      const gchar * key = DBUSMENU_MENUITEM_PROP_DISPOSITION;
+      const gchar * val_str = dbusmenu_menuitem_property_get (l->data, key);
+
+      if (!g_strcmp0 (val_str, DBUSMENU_MENUITEM_DISPOSITION_ALERT))
+        val = DISPOSITION_ALERT;
+      else if (!g_strcmp0 (val_str, DBUSMENU_MENUITEM_DISPOSITION_WARNING))
+        val = DISPOSITION_WARNING;
+      else if (!g_strcmp0 (val_str, DBUSMENU_MENUITEM_DISPOSITION_INFORMATIVE))
+        val = DISPOSITION_INFO;
+      else
+        val = DISPOSITION_NORMAL;
+
+      if (ret < val)
+        ret = val;
+    }
+
+  return ret;
+}
+
+static void
+indicator_session_update_icon (IndicatorSession * indicator)
+{
+  const int disposition = calculate_disposition (indicator);
+  indicator_session_update_from_disposition (indicator, disposition);
+}
+
+static void
+on_menuitem_property_changed (DbusmenuMenuitem * mi,
+                              gchar            * property,
+                              GValue           * value,
+                              gpointer           indicator)
+{
+  if (!g_strcmp0 (property, DBUSMENU_MENUITEM_PROP_DISPOSITION))
+    indicator_session_update_icon (indicator);
+}
+
+static void
+on_menu_layout_updated (DbusmenuClient * client, IndicatorSession * session)
+{
+  GList * l;
+  DbusmenuMenuitem * root = dbusmenu_client_get_root (client);
+  GList * children = dbusmenu_menuitem_get_children (root);
+  static GQuark tag = 0;
+
+  if (G_UNLIKELY (tag == 0))
+    {
+      tag = g_quark_from_static_string ("x-tagged-by-indicator-session");
+    }
+
+  for (l=children; l!=NULL; l=l->next)
+    {
+      if (g_object_get_qdata (l->data, tag) == NULL)
+        {
+          g_object_set_qdata (l->data, tag, GINT_TO_POINTER(1));
+          g_signal_connect (l->data, "property-changed", G_CALLBACK(on_menuitem_property_changed), session);
+        }
+    }
 }

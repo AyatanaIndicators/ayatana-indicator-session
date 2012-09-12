@@ -1,11 +1,11 @@
-indicator-session (12.10.2-0ubuntu2) UNRELEASED; urgency=low
+indicator-session (12.10.2-0ubuntu2) quantal; urgency=low
 
   * Change the menu to say 'Shut Down' instead of 'Switch Off' by default,
     since the latter is completely non-idiomatic in American English; and
     update the translations for commonwealth English in the package to
     preserve the preferred wording for en_GB.  LP: #1029036.
 
- -- Steve Langasek <steve.langasek@ubuntu.com>  Wed, 12 Sep 2012 11:48:39 -0700
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Wed, 12 Sep 2012 11:50:03 -0700
 
 indicator-session (12.10.2-0ubuntu1) quantal; urgency=low
 

@@ -34,7 +34,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 static const gchar * title_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("title", "Log Out"),
 	/* LOGOUT_DIALOG_RESTART, */	NC_("title", "Restart"),
-	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("title", "Switch Off")
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("title", "Shut Down")
 };
 
 static const gchar * body_strings[LOGOUT_DIALOG_TYPE_CNT] = {
@@ -46,7 +46,7 @@ static const gchar * body_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 static const gchar * button_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("button", "Log Out"),
 	/* LOGOUT_DIALOG_RESTART, */	NC_("button", "Restart"),
-	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button", "Switch Off")
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button", "Shut Down")
 };
 
 /* TRANSLATORS: These strings have an ellipsis so that the user knows
@@ -54,7 +54,7 @@ static const gchar * button_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 static const gchar * button_auth_strings[LOGOUT_DIALOG_TYPE_CNT] = {
 	/* LOGOUT_DIALOG_LOGOUT, */ 	NC_("button auth", "Log Out"),
 	/* LOGOUT_DIALOG_RESTART, */	NC_("button auth", "Restart…"),
-	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button auth", "Switch Off…")
+	/* LOGOUT_DIALOG_SHUTDOWN, */	NC_("button auth", "Shut Down…")
 };
 
 /* TRANSLATORS: This button appears on the logout dialog when

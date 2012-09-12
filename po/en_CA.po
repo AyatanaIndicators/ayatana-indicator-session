@@ -70,7 +70,7 @@ msgstr "Lock Screen"
 #: ../data/indicator-session-shutdown.desktop.in.in.h:1
 #: ../src/settings-helper.c:86 ../src/device-menu-mgr.c:716
 msgid "Shut Down"
-msgstr "Shut Down"
+msgstr "Switch Off"
 
 #: ../data/indicator-session-logout.desktop.in.in.h:1
 #: ../src/settings-helper.c:84 ../src/device-menu-mgr.c:672
@@ -92,7 +92,7 @@ msgstr "Restart…"
 
 #: ../src/settings-helper.c:90 ../src/device-menu-mgr.c:721
 msgid "Shut Down…"
-msgstr "Shut Down…"
+msgstr "Switch Off…"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:35
@@ -110,7 +110,7 @@ msgstr "Restart"
 #: ../src/dialog.c:37
 msgctxt "title"
 msgid "Shut Down"
-msgstr "Shut Down"
+msgstr "Switch Off"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:41
@@ -130,7 +130,7 @@ msgstr ""
 msgid ""
 "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
-"Are you sure you want to close all programs and shut down the computer?"
+"Are you sure you want to close all programs and switch off the computer?"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:47
@@ -148,7 +148,7 @@ msgstr "Restart"
 #: ../src/dialog.c:49
 msgctxt "button"
 msgid "Shut Down"
-msgstr "Shut Down"
+msgstr "Switch Off"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:55
@@ -166,7 +166,7 @@ msgstr ""
 #: ../src/dialog.c:57
 msgctxt "button auth"
 msgid "Shut Down…"
-msgstr ""
+msgstr "Switch Off…"
 
 #. TRANSLATORS: This button appears on the logout dialog when
 #. there are updates that require restart.  It will do a restart

@@ -42,7 +42,7 @@ msgstr "Remove the Restart item from the session menu"
 
 #: ../data/com.canonical.indicator.session.gschema.xml.in.h:6
 msgid "Remove the shutdown item from the session menu"
-msgstr "Remove the Shut Down item from the session menu"
+msgstr "Remove the Switch Off item from the session menu"
 
 #: ../data/com.canonical.indicator.session.gschema.xml.in.h:7
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -72,7 +72,7 @@ msgstr "Lock Screen"
 #: ../data/indicator-session-shutdown.desktop.in.in.h:1
 #: ../src/settings-helper.c:86 ../src/device-menu-mgr.c:716
 msgid "Shut Down"
-msgstr "Shut Down"
+msgstr "Switch Off"
 
 #: ../data/indicator-session-logout.desktop.in.in.h:1
 #: ../src/settings-helper.c:84 ../src/device-menu-mgr.c:672
@@ -94,7 +94,7 @@ msgstr "Restart…"
 
 #: ../src/settings-helper.c:90 ../src/device-menu-mgr.c:721
 msgid "Shut Down…"
-msgstr "Shut Down…"
+msgstr "Switch Off…"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:35
@@ -112,7 +112,7 @@ msgstr "Restart"
 #: ../src/dialog.c:37
 msgctxt "title"
 msgid "Shut Down"
-msgstr "Shut Down"
+msgstr "Switch Off"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:41
@@ -132,7 +132,7 @@ msgstr ""
 msgid ""
 "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
-"Are you sure you want to close all programs and shut down the computer?"
+"Are you sure you want to close all programs and switch off the computer?"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:47
@@ -150,7 +150,7 @@ msgstr "Restart"
 #: ../src/dialog.c:49
 msgctxt "button"
 msgid "Shut Down"
-msgstr "Shut Down"
+msgstr "Switch Off"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:55
@@ -168,7 +168,7 @@ msgstr "Restart…"
 #: ../src/dialog.c:57
 msgctxt "button auth"
 msgid "Shut Down…"
-msgstr "Shut Down…"
+msgstr "Switch Off…"
 
 #. TRANSLATORS: This button appears on the logout dialog when
 #. there are updates that require restart.  It will do a restart

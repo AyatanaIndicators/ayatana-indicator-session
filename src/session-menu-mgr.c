@@ -506,7 +506,7 @@ build_session_menuitems (SessionMenuMgr* mgr)
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(action_func_spawn_async), CMD_LOGOUT);
 
-  mi = mgr->suspend_mi = mi_new ("Suspend");
+  mi = mgr->suspend_mi = mi_new (_("Suspend"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(action_func_suspend), mgr);

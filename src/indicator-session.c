@@ -488,7 +488,7 @@ indicator_session_update_icon_from_disposition (IndicatorSession * indicator,
     }
 
   if (gtk_icon_theme_has_icon (indicator->icon_theme, icon) == FALSE)
-    icon = "system-shutdown"; // or some other fallback icon
+    icon = "gtk-missing-image";
 
   g_debug (G_STRLOC" setting icon to \"%s\"", icon);
   gtk_image_set_from_icon_name (GTK_IMAGE(indicator->entry.image),

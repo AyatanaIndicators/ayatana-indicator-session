@@ -38,7 +38,7 @@ dbus_display_manager_sources = \
 	dbus-display-manager.h
 
 $(dbus_display_manager_sources): display-manager.xml
-	gdbus-codegen \
+	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
 	    --generate-c-code dbus-display-manager \
 	    $^
@@ -48,7 +48,7 @@ dbus_consolekit_manager_sources = \
 	dbus-consolekit-manager.h
 
 $(dbus_consolekit_manager_sources): org.freedesktop.ConsoleKit.Manager.xml
-	gdbus-codegen \
+	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
 	    --generate-c-code dbus-consolekit-manager \
 	    $^
@@ -58,7 +58,7 @@ dbus_consolekit_seat_sources = \
 	dbus-consolekit-seat.h
 
 $(dbus_consolekit_seat_sources): org.freedesktop.ConsoleKit.Seat.xml
-	gdbus-codegen \
+	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
 	    --generate-c-code dbus-consolekit-seat \
 	    $^
@@ -68,7 +68,7 @@ dbus_consolekit_session_sources = \
 	dbus-consolekit-session.h
 
 $(dbus_consolekit_session_sources): org.freedesktop.ConsoleKit.Session.xml
-	gdbus-codegen \
+	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
 	    --generate-c-code dbus-consolekit-session \
 	    $^
@@ -78,7 +78,7 @@ dbus_accounts_sources = \
 	dbus-accounts.h
 
 $(dbus_accounts_sources): org.freedesktop.Accounts.xml
-	gdbus-codegen \
+	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
 	    --generate-c-code dbus-accounts \
 	    $^
@@ -88,7 +88,7 @@ dbus_user_sources = \
 	dbus-user.h
 
 $(dbus_user_sources): org.freedesktop.Accounts.User.xml
-	gdbus-codegen \
+	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
 	    --generate-c-code dbus-user \
 	    $^
@@ -98,7 +98,7 @@ dbus_upower_sources = \
         dbus-upower.h
 
 $(dbus_upower_sources): upower.xml
-	gdbus-codegen \
+	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
 	    --generate-c-code dbus-upower \
 	    --c-namespace DBus \

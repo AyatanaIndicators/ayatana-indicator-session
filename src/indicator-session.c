@@ -313,8 +313,6 @@ new_user_item (DbusmenuMenuitem * newitem,
   g_debug ("%s (\"%s\")", __func__,
            dbusmenu_menuitem_property_get (newitem,
                                            USER_ITEM_PROP_NAME));
-  gtk_widget_show_all (user_item);
-
   return TRUE;
 }
 

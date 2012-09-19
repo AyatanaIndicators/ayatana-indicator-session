@@ -1,3 +1,12 @@
+indicator-session (12.10.3-0ubuntu1) quantal; urgency=low
+
+  * New upstream release.
+    - 12.10.0 showed "Guest user" even when disabled in lightdm (LP: #1049902)
+    - Provide a fallback if theme's missing the session menu icon (LP: #1029036)
+    - Fix some strings that hadn't been marked for translation
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 19 Sep 2012 15:59:23 -0400
+
 indicator-session (12.10.2-0ubuntu3) quantal; urgency=low
 
   * Cherry-pick upstream:

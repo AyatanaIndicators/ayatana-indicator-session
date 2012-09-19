@@ -1,3 +1,9 @@
+12.10.3
+ - By default, use 'Shut Down' instead of 'Switch Off' (lp: #1029036)
+ - 12.10.0 showed "Guest user" even when disabled in lightdm (lp: #1049902)
+ - Provide a fallback if theme's missing the session menu icon (lp: #1029036)
+ - Fix some strings that hadn't been marked for translation
+
 12.10.2
  - Add an 'Online Accounts' menuitem (lp: #1044464)
  - Add disposition highlighting to the indicator icon (lp: #1044015)

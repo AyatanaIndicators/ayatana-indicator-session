@@ -255,3 +255,4 @@ dbus-upower.c
 dbus-upower.h
 dbus-user.c
 dbus-user.h
+tests/test-service

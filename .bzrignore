@@ -50,7 +50,7 @@ src/status-provider-mc5-marshal.h
 data/indicator-session.schemas
 src/accounts-service-client.h
 src/accounts-service-user-client.h
-indicator-session-[0-9].[0-9].[0-9].tar.gz
+indicator-session-[0-9]*.[0-9]*.[0-9]*.tar.gz
 indicator-session-[0-9].[0-9].tar.gz
 indicator-session-[0-9].[0-9].[0-9].tar.gz.asc
 indicator-session-[0-9].[0-9].tar.gz.asc

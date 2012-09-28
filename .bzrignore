@@ -241,3 +241,17 @@ po/ta_LK.gmo
 po/tt.gmo
 po/ur.gmo
 po/vec.gmo
+dbus-accounts.c
+dbus-accounts.h
+dbus-consolekit-manager.c
+dbus-consolekit-manager.h
+dbus-consolekit-seat.c
+dbus-consolekit-seat.h
+dbus-consolekit-session.c
+dbus-consolekit-session.h
+dbus-display-manager.c
+dbus-display-manager.h
+dbus-upower.c
+dbus-upower.h
+dbus-user.c
+dbus-user.h

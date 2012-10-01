@@ -490,8 +490,7 @@ update_confirmation_labels (SessionMenuMgr * mgr)
   mi_set_label (mgr->shutdown_mi, confirm_needed ? _("Shut Down\342\200\246")
                                                  : _("Shut Down"));
 
-  dbusmenu_menuitem_property_set (mgr->restart_mi, RESTART_ITEM_LABEL,
-                                  confirm_needed ? _("Restart\342\200\246")
+  mi_set_label (mgr->restart_mi, confirm_needed ? _("Restart\342\200\246")
                                                  : _("Restart"));
 }
 
@@ -515,9 +514,7 @@ build_session_menuitems (SessionMenuMgr* mgr)
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(action_func_hibernate), mgr);
 
-  mi = mgr->restart_mi = dbusmenu_menuitem_new ();
-  mi_set_type (mi, RESTART_ITEM_TYPE);
-  dbusmenu_menuitem_property_set (mi, RESTART_ITEM_LABEL, _("Restart\342\200\246"));
+  mi = mgr->restart_mi = mi_new (_("Restart\342\200\246"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                             G_CALLBACK(action_func_spawn_async), CMD_RESTART);

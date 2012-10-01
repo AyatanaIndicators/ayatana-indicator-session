@@ -80,10 +80,6 @@ static gboolean new_user_item (DbusmenuMenuitem * newitem,
                                DbusmenuMenuitem * parent,
                                DbusmenuClient * client,
                                gpointer user_data);
-static gboolean build_restart_item (DbusmenuMenuitem * newitem,
-                                    DbusmenuMenuitem * parent,
-                                    DbusmenuClient * client,
-                                    gpointer user_data);
 static void on_menu_layout_updated (DbusmenuClient * client, IndicatorSession * session);
 static void indicator_session_update_icon_callback (GtkWidget * widget, gpointer callback_data);
 static void indicator_session_update_icon_and_a11y (IndicatorSession * self);
@@ -168,9 +164,6 @@ indicator_session_init (IndicatorSession *self)
   dbusmenu_client_add_type_handler (self->menu_client,
                                     USER_ITEM_TYPE,
                                     new_user_item);
-  dbusmenu_client_add_type_handler (self->menu_client,
-                                    RESTART_ITEM_TYPE,
-                                    build_restart_item);
   dbusmenu_gtkclient_set_accel_group (DBUSMENU_GTKCLIENT(self->menu_client),
                                       gtk_accel_group_new());
 }
@@ -316,7 +309,6 @@ new_user_item (DbusmenuMenuitem * newitem,
   return TRUE;
 }
 
-
 static void
 user_real_name_get_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 {
@@ -355,64 +347,6 @@ receive_signal (GDBusProxy * proxy,
       g_variant_get (parameters, "(&s)", &username);
       indicator_session_update_users_label (self, username);	
     }
-}
-
-
-
-
-static void
-restart_property_change (DbusmenuMenuitem * item,
-                         const gchar * property,
-                         GVariant * variant,
-                         gpointer user_data)
-{
-	DbusmenuGtkClient * client = DBUSMENU_GTKCLIENT(user_data);
-	GtkMenuItem * gmi = dbusmenu_gtkclient_menuitem_get(client, item);
-
-	if (g_strcmp0(property, RESTART_ITEM_LABEL) == 0) {
-		gtk_menu_item_set_label(gmi, g_variant_get_string(variant, NULL));
-	} else if (g_strcmp0(property, RESTART_ITEM_ICON) == 0) {
-		GtkWidget * image = gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(gmi));
-
-		GIcon * gicon = g_themed_icon_new_with_default_fallbacks(g_variant_get_string(variant, NULL));
-		if (image == NULL) {
-			image = gtk_image_new_from_gicon(gicon, GTK_ICON_SIZE_MENU);
-			gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(gmi), image);
-		} else {
-			gtk_image_set_from_gicon(GTK_IMAGE(image), gicon, GTK_ICON_SIZE_MENU);
-		}
-		g_object_unref(G_OBJECT(gicon));
-	}
-	return;
-}
-
-static gboolean
-build_restart_item (DbusmenuMenuitem * newitem,
-                    DbusmenuMenuitem * parent,
-                    DbusmenuClient * client,
-                    gpointer user_data)
-{
-	GtkMenuItem * gmi = GTK_MENU_ITEM(gtk_image_menu_item_new());
-	if (gmi == NULL) {
-		return FALSE;
-	}
-
-	dbusmenu_gtkclient_newitem_base(DBUSMENU_GTKCLIENT(client), newitem, gmi, parent);
-
-	g_signal_connect(G_OBJECT(newitem), DBUSMENU_MENUITEM_SIGNAL_PROPERTY_CHANGED, G_CALLBACK(restart_property_change), client);
-
-	GVariant * variant;
-	variant = dbusmenu_menuitem_property_get_variant(newitem, RESTART_ITEM_LABEL);
-	if (variant != NULL) {
-		restart_property_change(newitem, RESTART_ITEM_LABEL, variant, client);
-	}
-
-	variant = dbusmenu_menuitem_property_get_variant(newitem, RESTART_ITEM_ICON);
-	if (variant != NULL) {
-		restart_property_change(newitem, RESTART_ITEM_ICON, variant, client);
-	}
-
-	return TRUE;
 }
 
 static void

@@ -318,7 +318,6 @@ init_upower_proxy (SessionMenuMgr * mgr)
           g_clear_error (&error);
         }
 
-      on_upower_properties_changed (mgr);
       g_signal_connect_swapped (mgr->upower_proxy, "changed",
                                 G_CALLBACK(on_upower_properties_changed), mgr);
     }
@@ -1193,6 +1192,11 @@ session_menu_mgr_new (SessionDbus  * session_dbus,
   mgr->user_menuitem_index = n;
   update_user_menuitems (mgr);
   build_session_menuitems (mgr);
+
+  /* After we have the session menu items built we can look to
+     align them with UPower */
+  on_upower_properties_changed (mgr);
+
   return mgr;
 }
 

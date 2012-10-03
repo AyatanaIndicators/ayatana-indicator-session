@@ -36,10 +36,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USER_ITEM_PROP_ICON       "user-item-icon-path"
 #define USER_ITEM_ICON_DEFAULT    "avatar-default"
 
-#define RESTART_ITEM_TYPE         "x-canonical-restart-item"
-#define RESTART_ITEM_LABEL        "restart-label"
-#define RESTART_ITEM_ICON         "restart-icon"
-
 #define ICON_DEFAULT              "system-devices-panel"
 #define ICON_INFO                 "system-devices-panel-information"
 #define ICON_ALERT                "system-devices-panel-alert"

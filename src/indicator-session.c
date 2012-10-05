@@ -379,8 +379,11 @@ indicator_session_update_a11y_from_disposition (IndicatorSession * indicator,
                                                      "show-real-name-on-panel");
 
   if (show_name && need_attn)
+    /* Translators: the name of the menu ("System"), followed by the user's name,
+       followed by a hint that an item in this menu requires an action from the user */
     a11y = g_strdup_printf (_("System %s (Attention Required)"), username);
   else if (show_name)
+    /* Translators: the name of the menu ("System"), followed by the user's name */
     a11y = g_strdup_printf (_("System %s"), username);
   else if (need_attn)
     a11y = g_strdup  (_("System (Attention Required)"));

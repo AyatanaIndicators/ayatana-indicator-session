@@ -247,23 +247,27 @@ session_menu_mgr_class_init (SessionMenuMgrClass * klass)
 static void
 on_upower_properties_changed (SessionMenuMgr * mgr)
 {
-  gboolean b;
   gboolean need_refresh = FALSE;
 
-  /* suspend */
-  b = dbus_upower_get_can_suspend (mgr->upower_proxy);
-  if (mgr->can_suspend != b)
+  if (mgr->upower_proxy != NULL)
     {
-      mgr->can_suspend = b;
-      need_refresh = TRUE;
-    }
+      gboolean b;
 
-  /* hibernate */
-  b = dbus_upower_get_can_hibernate (mgr->upower_proxy);
-  if (mgr->can_hibernate != b)
-    {
-      mgr->can_hibernate = b;
-      need_refresh = TRUE;
+      /* suspend */
+      b = dbus_upower_get_can_suspend (mgr->upower_proxy);
+      if (mgr->can_suspend != b)
+        {
+          mgr->can_suspend = b;
+          need_refresh = TRUE;
+        }
+
+      /* hibernate */
+      b = dbus_upower_get_can_hibernate (mgr->upower_proxy);
+      if (mgr->can_hibernate != b)
+        {
+          mgr->can_hibernate = b;
+          need_refresh = TRUE;
+        }
     }
 
   if (need_refresh)

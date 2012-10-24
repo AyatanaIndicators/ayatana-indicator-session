@@ -65,7 +65,8 @@ typedef enum
   SWITCHER_MODE_SCREENSAVER,
   SWITCHER_MODE_LOCK,
   SWITCHER_MODE_SWITCH,
-  SWITCHER_MODE_SWITCH_OR_LOCK
+  SWITCHER_MODE_SWITCH_OR_LOCK,
+  SWITCHER_MODE_NONE
 }
 SwitcherMode;
 
@@ -956,9 +957,12 @@ build_user_menuitems (SessionMenuMgr * mgr)
   g_list_free (users);
 
   /* separator */
-  mi = mi_new_separator ();
-  dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
-  items = g_slist_prepend (items, mi);
+  if (mode != SWITCHER_MODE_SCREENSAVER && !is_guest && guest_allowed)
+    {
+      mi = mi_new_separator ();
+      dbusmenu_menuitem_child_add_position (mgr->top_mi, mi, pos++);
+      items = g_slist_prepend (items, mi);
+    }
 
   if (current_real_name != NULL)
     {
@@ -1147,7 +1151,7 @@ get_switcher_mode (SessionMenuMgr * mgr)
 
   if (!can_lock && !can_switch) /* hmm, quite an extreme lockdown */
     {
-      mode = SWITCHER_MODE_SCREENSAVER;
+      mode = SWITCHER_MODE_NONE;
     }
   else if (is_this_live_session()) /* live sessions can't lock or switch */
     {

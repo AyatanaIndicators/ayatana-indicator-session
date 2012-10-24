@@ -40,9 +40,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define ICON_INFO                 "system-devices-panel-information"
 #define ICON_ALERT                "system-devices-panel-alert"
 
-#define GREETER_ICON_DEFAULT      "system-shutdown-panel"
-#define GREETER_ICON_RESTART      "system-shutdown-panel-restart"
-
 /* the session indicator's settings */
 #define SESSION_SCHEMA                "com.canonical.indicator.session"
 #define SUPPRESS_KEY                  "suppress-logout-restart-shutdown"

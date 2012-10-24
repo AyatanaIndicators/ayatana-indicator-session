@@ -67,8 +67,6 @@ struct _IndicatorSession
   GtkIconTheme * icon_theme;
 };
 
-static gboolean greeter_mode;
-
 GType indicator_session_get_type (void);
 
 /* Indicator stuff */
@@ -125,8 +123,6 @@ indicator_session_init (IndicatorSession *self)
   g_signal_connect (G_OBJECT(self->service),
                     INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE,
                     G_CALLBACK(service_connection_cb), self);
-
-  greeter_mode = !g_strcmp0(g_getenv("INDICATOR_GREETER_MODE"), "1");
 
   self->entry.name_hint = PACKAGE;
   self->entry.label = GTK_LABEL (gtk_label_new ("User Name"));
@@ -405,22 +401,12 @@ indicator_session_update_icon_from_disposition (IndicatorSession * indicator,
 {
   const gchar * icon;
 
-  if (greeter_mode)
-    {
-      if (disposition == DISPOSITION_NORMAL)
-        icon = GREETER_ICON_DEFAULT;
-      else
-        icon = GREETER_ICON_RESTART;
-    }
+  if (disposition == DISPOSITION_NORMAL)
+    icon = ICON_DEFAULT;
+  else if (disposition == DISPOSITION_INFO)
+    icon = ICON_INFO;
   else
-    {
-      if (disposition == DISPOSITION_NORMAL)
-        icon = ICON_DEFAULT;
-      else if (disposition == DISPOSITION_INFO)
-        icon = ICON_INFO;
-      else
-        icon = ICON_ALERT;
-    }
+    icon = ICON_ALERT;
 
   if (gtk_icon_theme_has_icon (indicator->icon_theme, icon) == FALSE)
     icon = "gtk-missing-image";

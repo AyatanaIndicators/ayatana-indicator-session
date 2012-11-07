@@ -28,6 +28,7 @@ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 # Dependencies 
 ###########################
 
+GIO_REQUIRED_VERSION=2.33
 GLIB_REQUIRED_VERSION=2.33
 GTK_REQUIRED_VERSION=3.0
 INDICATOR_REQUIRED_VERSION=0.3.19
@@ -138,16 +139,15 @@ if test "x$enable_tests" != "xno"; then
         AC_MSG_ERROR([tests were requested but gtest is not installed.])
     fi
     if test "x$enable_tests" = "xyes"; then
-        PKG_CHECK_MODULES([TEST_SERVICE],[indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
-                                          dbustest-1 >= $DBUSTEST_REQUIRED_VERSION
-                                          dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION],
-                                          [enable_tests="yes"],
-                                          [enable_tests="no"])
+        PKG_CHECK_MODULES([TEST_SERVICE],[glib-2.0 >= $GLIB_REQUIRED_VERSION
+                                          gio-2.0 >= $GIO_REQUIRED_VERSION],
+                                         [enable_tests="yes"],
+                                         [enable_tests="no"])
     fi
 fi
 AM_CONDITIONAL([BUILD_TESTS],[test "x$enable_tests" = "xyes"])
 AC_SUBST([TEST_SERVICE_CFLAGS])
-AC_SUBST([TEST_SERVICE_LDFLAGS])
+AC_SUBST([TEST_SERVICE_LIBS])
 
 ##############################
 # Custom Junk
@@ -214,6 +214,7 @@ data/icons/scalable/actions/Makefile
 data/icons/scalable/status/Makefile
 data/extra-sessions/Makefile
 tests/Makefile
+tests/indicator-session.service
 po/Makefile.in
 ])
 

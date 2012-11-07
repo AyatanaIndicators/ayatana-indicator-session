@@ -81,19 +81,6 @@ class ClientTest : public ::testing::Test
       g_clear_object (&test_dbus);
       g_clear_pointer (&main_loop, g_main_loop_unref);
     }
-
-  protected:
-
-    void CallIndicatorServiceMethod (const gchar * method)
-    {
-      GVariant * response;
-
-      ASSERT_TRUE (session_bus != NULL);
-      //ASSERT_TRUE (service_proxy != NULL);
-      //ASSERT_TRUE (ServiceProxyIsOwned ());
-
-      g_clear_pointer (&response, g_variant_unref);
-    }
 };
 
 /***
@@ -115,6 +102,8 @@ TEST_F (ClientTest, TestCanStartService)
   GVariant * result;
   const gchar * name;
 
+  // call GetUserRealName(), which as a side effect should activate
+  // indicator-session-service via the .service file in the tests/ directory
   error = NULL;
   result = g_dbus_connection_call_sync (session_bus,
                                         INDICATOR_SESSION_DBUS_NAME,
@@ -142,7 +131,7 @@ TEST_F (ClientTest, TestCanStartService)
   ASSERT_STREQ (g_get_real_name(), name);
   g_clear_pointer (&result, g_variant_unref);
 
-  /* call the IndicatorService object's Shutdown() method for a clean shutdown */
+  // call IndicatorService's Shutdown() method for a clean exit
   result = g_dbus_connection_call_sync (session_bus,
                                         INDICATOR_SESSION_DBUS_NAME,
                                         "/org/ayatana/indicator/service",

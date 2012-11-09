@@ -46,14 +46,16 @@ class ClientTest : public ::testing::Test
       session_bus = NULL;
       main_loop = NULL;
 
-      static bool ran_once_init = false;
-      if (!ran_once_init)
+      static bool first_run = true;
+      if (first_run)
         {
           g_type_init();
           g_setenv ("INDICATOR_SERVICE_SHUTDOWN_TIMEOUT", "1000", TRUE);
           g_unsetenv ("INDICATOR_ALLOW_NO_WATCHERS");
           g_unsetenv ("INDICATOR_SERVICE_REPLACE_MODE");
-          ran_once_init = true;
+          g_setenv ("GSETTINGS_SCHEMA_DIR", SCHEMA_DIR, TRUE);
+          g_setenv ("GSETTINGS_BACKEND", "memory", TRUE);
+          first_run = false;
         }
 
       main_loop = g_main_loop_new (NULL, FALSE);

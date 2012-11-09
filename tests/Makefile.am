@@ -18,14 +18,16 @@ nodist_libgtest_a_SOURCES = \
 AM_CPPFLAGS = $(GTEST_CPPFLAGS) -I${top_srcdir}/src -Wall -Werror
 AM_CXXFLAGS = $(GTEST_CXXFLAGS)
 
+###
+###
+###
+
 BUILT_SOURCES += gschemas.compiled
 CLEANFILES += gschemas.compiled
 gschemas.compiled: Makefile
-        @glib-compile-schemas --targetdir=$(abs_builddir) $(top_builddir)/data
+	$(AM_V_at) cp -f $(top_builddir)/data/*gschema.xml .
+	$(AM_V_GEN) $(GLIB_COMPILE_SCHEMAS) --targetdir=. .
 
-###
-###
-###
 
 TESTS += test-service
 check_PROGRAMS += test-service
@@ -34,6 +36,7 @@ test_service_LDADD = \
 	$(TEST_SERVICE_LIBS) \
 	libgtest.a
 test_service_CPPFLAGS = \
+	-DSCHEMA_DIR="\"$(top_builddir)/tests/\"" \
 	-DINDICATOR_SERVICE_DIR="\"$(abs_builddir)\"" \
 	-DINDICATOR_SERVICE_PATH="\"$(top_builddir)/src/indicator-session-service\"" \
 	$(TEST_SERVICE_CFLAGS) \

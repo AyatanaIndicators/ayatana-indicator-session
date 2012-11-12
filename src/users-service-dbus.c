@@ -927,11 +927,16 @@ users_service_dbus_get_user_list (UsersServiceDbus * self)
 void
 users_service_dbus_show_greeter (UsersServiceDbus * self)
 {
+  DisplayManagerSeat * dp;
+
   g_return_if_fail (IS_USERS_SERVICE_DBUS(self));
 
-  DisplayManagerSeat * dp = create_display_proxy (self);
-  display_manager_seat_call_switch_to_greeter_sync (dp, NULL, NULL);
-  g_clear_object (&dp);
+  dp = create_display_proxy (self);
+  if (dp != NULL)
+    {
+      display_manager_seat_call_switch_to_greeter_sync (dp, NULL, NULL);
+      g_clear_object (&dp);
+    }
 }
 
 /**
@@ -942,11 +947,16 @@ users_service_dbus_show_greeter (UsersServiceDbus * self)
 void
 users_service_dbus_activate_guest_session (UsersServiceDbus * self)
 {
-  g_return_if_fail(IS_USERS_SERVICE_DBUS(self));
+  DisplayManagerSeat * dp;
 
-  DisplayManagerSeat * dp = create_display_proxy (self);
-  display_manager_seat_call_switch_to_guest_sync (dp, "", NULL, NULL);
-  g_clear_object (&dp);
+  g_return_if_fail (IS_USERS_SERVICE_DBUS(self));
+
+  dp = create_display_proxy (self);
+  if (dp != NULL)
+    {
+      display_manager_seat_call_switch_to_guest_sync (dp, "", NULL, NULL);
+      g_clear_object (&dp);
+    }
 }
 
 /**
@@ -958,12 +968,17 @@ void
 users_service_dbus_activate_user_session (UsersServiceDbus * self,
                                           AccountsUser     * user)
 {
+  DisplayManagerSeat * dp;
+
   g_return_if_fail (IS_USERS_SERVICE_DBUS(self));
 
-  const char * const username = accounts_user_get_user_name (user);
-  DisplayManagerSeat * dp = create_display_proxy (self);
-  display_manager_seat_call_switch_to_user_sync (dp, username, "", NULL, NULL);
-  g_clear_object (&dp);
+  dp = create_display_proxy (self);
+  if (dp != NULL)
+    {
+      const char * const username = accounts_user_get_user_name (user);
+      display_manager_seat_call_switch_to_user_sync (dp, username, "", NULL, NULL);
+      g_clear_object (&dp);
+    }
 }
 
 /**
@@ -974,11 +989,18 @@ users_service_dbus_activate_user_session (UsersServiceDbus * self,
 gboolean
 users_service_dbus_guest_session_enabled (UsersServiceDbus * self)
 {
-  g_return_val_if_fail(IS_USERS_SERVICE_DBUS(self), FALSE);
+  DisplayManagerSeat * dp;
+  gboolean enabled = FALSE;
 
-  DisplayManagerSeat * dp = create_display_proxy (self);
-  const gboolean enabled = display_manager_seat_get_has_guest_account (dp);
-  g_clear_object (&dp);
+  g_return_val_if_fail (IS_USERS_SERVICE_DBUS(self), enabled);
+
+  dp = create_display_proxy (self);
+  if (dp != NULL)
+    {
+      enabled = display_manager_seat_get_has_guest_account (dp);
+      g_clear_object (&dp);
+    }
+
   return enabled;
 }
 

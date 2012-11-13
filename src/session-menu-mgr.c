@@ -775,6 +775,7 @@ user_menuitem_new (AccountsUser * user, SessionMenuMgr * mgr)
   /* set the is-current-user property */
   const gboolean is_current_user =
               !g_strcmp0 (g_get_user_name(), accounts_user_get_user_name(user));
+
   dbusmenu_menuitem_property_set_bool (mi,
                                        USER_ITEM_PROP_IS_CURRENT_USER,
                                        is_current_user);
@@ -1077,9 +1078,14 @@ static void
 action_func_switch_to_user (AccountsUser * user)
 {
   SessionMenuMgr * mgr = user_get_mgr (user);
+
   g_return_if_fail (mgr != NULL);
-  action_func_lock (mgr);
-  users_service_dbus_activate_user_session (mgr->users_dbus_facade, user);
+
+  if (g_strcmp0 (g_get_user_name(), accounts_user_get_user_name(user)) != 0)
+    {
+      action_func_lock (mgr);
+      users_service_dbus_activate_user_session (mgr->users_dbus_facade, user);
+    }
 }
 
 static void

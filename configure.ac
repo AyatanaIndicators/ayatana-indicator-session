@@ -1,10 +1,7 @@
-
-AC_INIT(src/indicator-session.c)
-
-AC_PREREQ(2.53)
-
-AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-session, 12.10.4)
+AC_INIT([indicator-session],[12.10.4])
+AC_CONFIG_SRCDIR([src/session-menu-mgr.c])
+AM_INIT_AUTOMAKE([check-news])
+AC_CONFIG_HEADERS([config.h])
 
 AM_MAINTAINER_MODE
 
@@ -16,8 +13,8 @@ AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CXX
 AM_PROG_CC_C_O
-AC_STDC_HEADERS
-AC_PROG_LIBTOOL
+AC_HEADER_STDC
+LT_INIT
 
 AC_SUBST(VERSION)
 AC_CONFIG_MACRO_DIR([m4])

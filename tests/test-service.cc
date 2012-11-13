@@ -107,7 +107,6 @@ TEST_F (ClientTest, TestCanStartService)
   // call GetUserRealName(), which as a side effect should activate
   // indicator-session-service via the .service file in the tests/ directory
   error = NULL;
-g_message ("calling g_dbus_connection_call_sync");
   result = g_dbus_connection_call_sync (session_bus,
                                         INDICATOR_SESSION_DBUS_NAME,
                                         INDICATOR_SESSION_SERVICE_DBUS_OBJECT,
@@ -119,7 +118,6 @@ g_message ("calling g_dbus_connection_call_sync");
                                         -1,
                                         NULL,
                                         &error);
-g_message ("done calling g_dbus_connection_call_sync");
 
   EXPECT_TRUE (error == NULL);
   ASSERT_TRUE (result != NULL);
@@ -136,7 +134,6 @@ g_message ("done calling g_dbus_connection_call_sync");
   g_clear_pointer (&result, g_variant_unref);
 
   // call IndicatorService's Shutdown() method for a clean exit
-g_message ("calling g_dbus_connection_call_sync");
   result = g_dbus_connection_call_sync (session_bus,
                                         INDICATOR_SESSION_DBUS_NAME,
                                         "/org/ayatana/indicator/service",
@@ -145,6 +142,5 @@ g_message ("calling g_dbus_connection_call_sync");
                                         NULL,
                                         G_DBUS_CALL_FLAGS_NONE,
                                         -1, NULL, NULL);
-g_message ("calling g_clear_pointer");
   g_clear_pointer (&result, g_variant_unref);
 }

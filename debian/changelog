@@ -4,6 +4,9 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
     - Add DPKG_GENSYMBOLS_CHECK_LEVEL=4.
     - Use the dh sequencer with autoreconf.
     - Override dh_autoreconf to run autogen.sh.
+  * debian/control:
+    - Add dh-autoreconf to Build-Depends.
+    - Adjust style to be consistent and use trailing commas in lists. 
 
  -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Wed, 14 Nov 2012 15:22:44 -0500
 

@@ -3,6 +3,7 @@ Section: gnome
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9),
+               dh-autoreconf,
                dh-translations,
                libgtk-3-dev,
                libglib2.0-dev (>= 2.33),
@@ -26,9 +27,9 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          upower,
-         gnome-settings-daemon
+         gnome-settings-daemon,
 Recommends: indicator-applet (>= 0.2) | indicator-renderer, 
-            packagekit-system-interface | packagekit
+            packagekit-system-interface | packagekit,
 Suggests: lightdm
 Description: indicator showing session management, status and user switching
  This indicator is designed to be placed on the right side of a panel and

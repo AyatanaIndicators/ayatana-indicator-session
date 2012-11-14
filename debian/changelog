@@ -7,6 +7,7 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
   * debian/control:
     - Add dh-autoreconf to Build-Depends.
     - Adjust style to be consistent and use trailing commas in lists. 
+    - Update Vcs-Bzr and Vcs-Browser fields and add notice for uploaders.
 
  -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Wed, 14 Nov 2012 15:22:44 -0500
 

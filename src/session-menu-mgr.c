@@ -700,9 +700,10 @@ update_user_menuitem_name (DbusmenuMenuitem * mi, AccountsUser * user)
   GString * gstr = g_string_new (accounts_user_get_real_name (user));
 
   if (user_has_name_collision (user))
-    {
-      g_string_append_printf (gstr, " (%s)", accounts_user_get_user_name(user));
-    }
+    g_string_append_printf (gstr, " (%s)", accounts_user_get_user_name(user));
+
+  if (!gstr->len)
+    g_string_assign (gstr, accounts_user_get_user_name(user));
 
   dbusmenu_menuitem_property_set (mi, USER_ITEM_PROP_NAME, gstr->str);
   g_string_free (gstr, TRUE);

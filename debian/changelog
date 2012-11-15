@@ -10,6 +10,8 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
     - Add dh-autoreconf to Build-Depends.
     - Add gnome-common to Build-Depends.
     - Add libdbustest1-dev, dbus-test-runner to Build-Depends.
+    - Explicitly list libgtest-dev in Build-Depends, even though it does get
+      pulled in via libxorg-gtest-dev.
     - Adjust style to be consistent and use trailing commas in lists. 
     - Update Vcs-Bzr and Vcs-Browser fields and add notice for uploaders.
 

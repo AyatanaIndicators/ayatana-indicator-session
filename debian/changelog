@@ -14,6 +14,13 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
       pulled in via libxorg-gtest-dev.
     - Adjust style to be consistent and use trailing commas in lists. 
     - Update Vcs-Bzr and Vcs-Browser fields and add notice for uploaders.
+  * Automatic snapshot from revision 373 (bootstrap):
+    - Check to make sure that create_display_proxy() succeeded before using the
+      proxy pointer that gets returned. (LP: #1078119)
+    - Don't lock the session when clicking on the current user. (LP: #1024392)
+    - Hide 'start screen saver' action, if it's locked down. (LP: #1066825)
+    - Use the same icons in the greeter as in the user session (LP: #1049244)
+    - Test upower_proxy for NULL before using it. (LP: #1061844)
 
  -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Wed, 14 Nov 2012 15:22:44 -0500
 

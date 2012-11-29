@@ -26,28 +26,43 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <locale.h>
 #include <glib.h>
 #include <glib/gi18n.h> /* textdomain(), bindtextdomain() */
-#include <dbus/dbus-glib.h>
 #include <gtk/gtk.h>
 #include "dialog.h"
 #include "shared-names.h"
 
+static GVariant *
+call_console_kit (const gchar *method, GVariant *parameters, GError **error)
+{
+	GDBusConnection * bus = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, error);
+	if (!bus)
+	{
+		g_variant_unref (parameters);
+		return NULL;
+	}
+
+	GVariant *result = g_dbus_connection_call_sync(bus,
+	                                               "org.freedesktop.ConsoleKit",
+	                                               "/org/freedesktop/ConsoleKit/Manager",
+	                                               "org.freedesktop.ConsoleKit.Manager",
+	                                               method,
+	                                               parameters,
+	                                               NULL,
+	                                               G_DBUS_CALL_FLAGS_NONE,
+	                                               -1,
+	                                               NULL,
+	                                               error);
+	g_object_unref (bus);
+
+	return result;
+}
+
 static void
 consolekit_fallback (LogoutDialogType action)
 {
-	g_debug("Falling back to using ConsoleKit for action");
-
-	DBusGConnection * sbus = dbus_g_bus_get(DBUS_BUS_SYSTEM, NULL);
-	g_return_if_fail(sbus != NULL); /* worst case */
-	DBusGProxy * proxy = dbus_g_proxy_new_for_name(sbus, "org.freedesktop.ConsoleKit",
-	                                                     "/org/freedesktop/ConsoleKit/Manager",
-	                                                     "org.freedesktop.ConsoleKit.Manager");
-
-	if (proxy == NULL) {
-		g_warning("Unable to get consolekit proxy");
-		return;
-	}
-
 	GError * error = NULL;
+	GVariant *result = NULL;
+
+	g_debug("Falling back to using ConsoleKit for action");
 
 	switch (action) {
 		case LOGOUT_DIALOG_TYPE_LOG_OUT:
@@ -55,80 +70,79 @@ consolekit_fallback (LogoutDialogType action)
 			break;
 		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
 			g_debug("Telling ConsoleKit to 'Stop'");
-			dbus_g_proxy_call(proxy,
-			                  "Stop",
-			                  &error,
-			                  G_TYPE_INVALID,
-			                  G_TYPE_INVALID);
+			result = call_console_kit ("Stop", g_variant_new ("()"), &error);
 			break;
 		case LOGOUT_DIALOG_TYPE_RESTART:
 			g_debug("Telling ConsoleKit to 'Restart'");
-			dbus_g_proxy_call(proxy,
-			                  "Restart",
-			                  &error,
-			                  G_TYPE_INVALID,
-			                  G_TYPE_INVALID);
+			result = call_console_kit ("Restart", g_variant_new ("()"), &error);
 			break;
 		default:
 			g_warning("Unknown action");
 			break;
 	}
 
-	g_object_unref(proxy);
+	if (!result) {
+		if (error != NULL) {
+			g_warning ("ConsoleKit action failed: %s", error->message);
+		} else {
+			g_warning ("ConsoleKit action failed: unknown error");
+		}
 
-	if (error != NULL) {
-		g_warning("Unable to signal ConsoleKit");
-		g_error_free(error);
+		consolekit_fallback(action);
 	}
+	else
+		g_variant_unref (result);
+	g_clear_error (&error);
 
 	return;
+}
+
+static GVariant *
+call_gnome_session (const gchar *method, GVariant *parameters, GError **error)
+{
+	GDBusConnection * bus = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, error);
+	if (!bus)
+	{
+		g_variant_unref (parameters);
+		return NULL;
+	}
+  
+	GVariant *result = g_dbus_connection_call_sync(bus,
+	                                               "org.gnome.SessionManager",
+	                                               "/org/gnome/SessionManager",
+	                                               "org.gnome.SessionManager",
+	                                               method,
+	                                               parameters,
+	                                               NULL,
+	                                               G_DBUS_CALL_FLAGS_NONE,
+	                                               G_MAXINT,
+	                                               NULL,
+	                                               error);
+	g_object_unref (bus);
+
+	return result;
 }
 
 static void
 session_action (LogoutDialogType action)
 {
-	DBusGConnection * sbus;
-	DBusGProxy * sm_proxy;
 	GError * error = NULL;
-	gboolean res = FALSE;
-	
-	sbus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-	if (sbus == NULL) {
-		g_warning("Unable to get DBus session bus.");
-		return;
-	}
-	sm_proxy = dbus_g_proxy_new_for_name_owner (sbus,
-                                            	"org.gnome.SessionManager",
-                                            	"/org/gnome/SessionManager",
-                                            	"org.gnome.SessionManager",
-                                           	 	&error);
-	if (sm_proxy == NULL) {
-		g_warning("Unable to get DBus proxy to SessionManager interface: %s", error->message);
-		g_error_free(error);
+	GVariant *result = NULL;
 
-		consolekit_fallback(action);
-		return;
-	}		
-	
-	g_clear_error (&error);
-	
 	if (action == LOGOUT_DIALOG_TYPE_LOG_OUT) {
 		g_debug("Asking Session manager to 'Logout'");
-		res = dbus_g_proxy_call_with_timeout (sm_proxy, "Logout", INT_MAX, &error,
-											  G_TYPE_UINT, 1, G_TYPE_INVALID, G_TYPE_INVALID);
+		result = call_gnome_session ("Logout", g_variant_new ("(u)", 1), &error);
 	} else if (action == LOGOUT_DIALOG_TYPE_SHUTDOWN) {
 		g_debug("Asking Session manager to 'RequestShutdown'");
-		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestShutdown", INT_MAX, &error,
-											  G_TYPE_INVALID, G_TYPE_INVALID);
+		result = call_gnome_session ("RequestShutdown", g_variant_new ("()"), &error);
 	} else if (action == LOGOUT_DIALOG_TYPE_RESTART) {
 		g_debug("Asking Session manager to 'RequestReboot'");
-		res = dbus_g_proxy_call_with_timeout (sm_proxy, "RequestReboot", INT_MAX, &error,
-											  G_TYPE_INVALID, G_TYPE_INVALID);
+		result = call_gnome_session ("RequestReboot", g_variant_new ("()"), &error);
 	} else {
 		g_warning ("Unknown session action");
 	}
 	
-	if (!res) {
+	if (!result) {
 		if (error != NULL) {
 			g_warning ("SessionManager action failed: %s", error->message);
 		} else {
@@ -137,8 +151,8 @@ session_action (LogoutDialogType action)
 
 		consolekit_fallback(action);
 	}
-	
-	g_object_unref(sm_proxy);
+	else
+		g_variant_unref (result);
 	g_clear_error (&error);
 	
 	return;

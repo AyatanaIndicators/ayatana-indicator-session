@@ -46,7 +46,6 @@ AC_SUBST(APPLET_LIBS)
 PKG_CHECK_MODULES(SESSIONSERVICE, glib-2.0 >= $GLIB_REQUIRED_VERSION
                                   dbusmenu-glib-0.4 >= $DBUSMENUGLIB_REQUIRED_VERSION
                                   dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION
-                                  dbus-glib-1
                                   gio-unix-2.0
                                   indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                                   packagekit-glib2)

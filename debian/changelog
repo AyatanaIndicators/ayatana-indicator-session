@@ -12,7 +12,7 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
     - Adjust style to be consistent and use trailing commas in lists. 
     - Update Vcs-Bzr and Vcs-Browser fields and add notice for uploaders.
     - Remove libpackagekit-glib2-dev and libpolkit-gobject-1-dev
-      from Build-Depends.
+      from Build-Depends. (LP: #1085100)
     - Remove packagekit from Recommends
   * Automatic snapshot from revision 373 (bootstrap):
     - Check to make sure that create_display_proxy() succeeded before using the

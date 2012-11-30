@@ -1,5 +1,6 @@
 indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
 
+  [ Mathieu Trudel-Lapierre ]
   * debian/rules:
     - Add DPKG_GENSYMBOLS_CHECK_LEVEL=4.
     - Use the dh sequencer with autoreconf.
@@ -18,7 +19,11 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
     - Use the same icons in the greeter as in the user session (LP: #1049244)
     - Test upower_proxy for NULL before using it. (LP: #1061844)
 
- -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Wed, 14 Nov 2012 15:22:44 -0500
+  [ Sebastien Bacher ]
+  * debian/control:
+    - clean deprecated Build-Depends on gconf and dbusglib
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 30 Nov 2012 11:11:49 +0100
 
 indicator-session (12.10.4-0ubuntu1) quantal; urgency=low
 

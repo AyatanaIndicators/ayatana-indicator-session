@@ -21,6 +21,9 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
     - Hide 'start screen saver' action, if it's locked down. (LP: #1066825)
     - Use the same icons in the greeter as in the user session (LP: #1049244)
     - Test upower_proxy for NULL before using it. (LP: #1061844)
+  * Move TestCanStartService into a separate make target "localcheck"; so that
+    the other tests can successfully run, and this one be used as an
+    integration check.
 
   [ Sebastien Bacher ]
   * debian/control:

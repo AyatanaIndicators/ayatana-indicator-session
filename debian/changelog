@@ -26,6 +26,10 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
   * debian/control:
     - clean deprecated Build-Depends on gconf and dbusglib
 
+  [ Didier Roche ]
+  * run tests not under fakeroot for dbus tests (which don't seem to be able to
+    run easily under dbus-test-runner)
+
  -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 30 Nov 2012 11:11:49 +0100
 
 indicator-session (12.10.4-0ubuntu1) quantal; urgency=low

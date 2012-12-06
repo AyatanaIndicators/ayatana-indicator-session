@@ -1,0 +1,3 @@
+#!/bin/sh
+
+dbus-test-runner -t tests/test-service

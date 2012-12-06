@@ -1,0 +1,3 @@
+Tests: start-service
+Depends: dbus-test-runner, indicator-session
+Restrictions: build-needed

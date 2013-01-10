@@ -23,6 +23,7 @@ Homepage: https://launchpad.net/indicator-session
 # and sync up the code again.
 Vcs-Bzr: https://code.launchpad.net/~indicator-applet-developers/indicator-session/trunk.13.04
 Vcs-Browser: https://bazaar.launchpad.net/~indicator-applet-developers/indicator-session/trunk.13.04/files
+XS-Testsuite: autopkgtest
 
 Package: indicator-session
 Architecture: any

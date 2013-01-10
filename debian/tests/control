@@ -1,0 +1,3 @@
+Tests: start-service
+Depends: python3-aptdaemon.test, accountsservice, consolekit, indicator-session
+Restrictions: build-needed

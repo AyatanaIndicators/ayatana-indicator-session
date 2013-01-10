@@ -1,0 +1,12 @@
+#!/bin/sh
+
+dbus-daemon --fork --print-address=4 --config-file /usr/share/aptdaemon/tests/dbus.conf --print-pid=5 4>/tmp/bus-addr 5>/tmp/pid-bus
+
+DBUS_SYSTEM_BUS_ADDRESS=`cat /tmp/bus-addr`
+
+/usr/sbin/console-kit-daemon &
+
+/usr/lib/accountsservice/accounts-daemon &
+
+tests/test-service
+

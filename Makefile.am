@@ -40,6 +40,4 @@ dist-hook:
 			echo Failed to generate AUTHORS: not a branch >&2; \
 	fi
 
-localcheck:
-
 include $(top_srcdir)/Makefile.am.coverage

@@ -1,12 +1,20 @@
 #!/bin/sh
 
-dbus-daemon --fork --print-address=4 --config-file /usr/share/aptdaemon/tests/dbus.conf --print-pid=5 4>/tmp/bus-addr 5>/tmp/pid-bus
+set -x
+set -e
 
-DBUS_SYSTEM_BUS_ADDRESS=`cat /tmp/bus-addr`
+if [ ! -d /var/run/dbus ]; then
+	mkdir /var/run/dbus
+fi
+
+dbus-daemon --fork --print-address=4 --config-file /etc/dbus-1/system.conf --print-pid=5 4>/tmp/system-bus-addr 5>/tmp/system-bus-pid
+dbus-daemon --fork --session --print-address=4 --config-file 4>/tmp/session-bus-addr
+
+DBUS_SYSTEM_BUS_ADDRESS=`cat /tmp/system-bus-addr`
+DBUS_SESSION_BUS_ADDRESS=`cat /tmp/session-bus-addr`
 
 /usr/sbin/console-kit-daemon &
-
 /usr/lib/accountsservice/accounts-daemon &
 
-tests/test-service
+make -C tests integrationcheck
 

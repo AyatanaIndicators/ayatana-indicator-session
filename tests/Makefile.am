@@ -3,8 +3,8 @@ CLEANFILES =
 BUILT_SOURCES =
 check_PROGRAMS =
 
-localcheckdir = .
-localcheck_PROGRAMS =
+integrationcheckdir = .
+integrationcheck_PROGRAMS =
 
 ###
 ###
@@ -32,10 +32,10 @@ gschemas.compiled: Makefile
 	$(AM_V_GEN) $(GLIB_COMPILE_SCHEMAS) --targetdir=. .
 
 
-localcheck:
+integrationcheck:
 	./test-service
 
-localcheck_PROGRAMS += test-service
+integrationcheck_PROGRAMS += test-service
 test_service_SOURCES = test-service.cc
 test_service_LDADD = \
 	$(TEST_SERVICE_LIBS) \

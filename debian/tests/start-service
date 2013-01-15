@@ -13,6 +13,7 @@ dbus-daemon --fork --session --print-address=4 --config-file 4>/tmp/session-bus-
 DBUS_SYSTEM_BUS_ADDRESS=`cat /tmp/system-bus-addr`
 DBUS_SESSION_BUS_ADDRESS=`cat /tmp/session-bus-addr`
 
+/usr/lib/policykit-1/polkitd 2>&1 &
 /usr/sbin/console-kit-daemon &
 /usr/lib/accountsservice/accounts-daemon &
 

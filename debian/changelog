@@ -29,6 +29,8 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
   * Move TestCanStartService into a separate make target "localcheck"; so that
     the other tests can successfully run, and this one be used as an
     integration check.
+  * debian/control: temporarily comment out the XS-Testsuite entry to disable
+    autopkgtest until the tests really work properly.
 
   [ Sebastien Bacher ]
   * debian/control:

@@ -71,8 +71,6 @@ is_greeter_mode (void)
 int
 main (int argc, char ** argv)
 {
-  g_type_init();
-
   /* Setting up i18n and gettext.
      Apparently we need all of these. */
   setlocale (LC_ALL, "");

@@ -49,7 +49,6 @@ class ClientTest : public ::testing::Test
       static bool first_run = true;
       if (first_run)
         {
-          g_type_init();
           g_setenv ("INDICATOR_SERVICE_SHUTDOWN_TIMEOUT", "1000", TRUE);
           g_unsetenv ("INDICATOR_ALLOW_NO_WATCHERS");
           g_unsetenv ("INDICATOR_SERVICE_REPLACE_MODE");

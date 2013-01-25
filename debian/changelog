@@ -1,4 +1,4 @@
-indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
+indicator-session (12.10.5daily13.01.25-0ubuntu1) raring; urgency=low
 
   [ Mathieu Trudel-Lapierre ]
   * debian/rules:
@@ -41,7 +41,19 @@ indicator-session (12.10.5-0ubuntu1) UNRELEASED; urgency=low
   * run tests not under fakeroot for dbus tests (which don't seem to be able to
     run easily under dbus-test-runner)
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 30 Nov 2012 11:11:49 +0100
+  [ Charles Kerr ]
+  * Tests hanging (LP: #1074065)
+  * User-switching item is blank if there's no display name (LP:
+    #1076271)
+  * unnecessary dependencies on polkit and packagekit (LP: #1085100)
+
+  [ Robert Ancell ]
+  * Replace dbus-glib with GDBus (LP: #1084756)
+
+  [ Automatic PS uploader ]
+  * Automatic snapshot from revision 382
+
+ -- Automatic PS uploader <ps-jenkins@lists.canonical.com>  Fri, 25 Jan 2013 02:01:17 +0000
 
 indicator-session (12.10.4-0ubuntu1) quantal; urgency=low
 

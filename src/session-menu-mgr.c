@@ -1191,6 +1191,10 @@ call_session_manager_method (const gchar * method_name, GVariant * parameters)
                               G_DBUS_CALL_FLAGS_NONE, -1, NULL,
                               &error);
     }
+  else if (parameters != NULL)
+    {
+      g_variant_unref (parameters);
+    }
 
   if (error != NULL)
     {

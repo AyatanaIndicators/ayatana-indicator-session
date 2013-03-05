@@ -135,6 +135,7 @@ static void action_func_lock                  (SessionMenuMgr *);
 static void action_func_suspend               (SessionMenuMgr *);
 static void action_func_hibernate             (SessionMenuMgr *);
 static void action_func_shutdown              (SessionMenuMgr *);
+static void action_func_logout                (SessionMenuMgr *);
 static void action_func_switch_to_lockscreen  (SessionMenuMgr *);
 static void action_func_switch_to_greeter     (SessionMenuMgr *);
 static void action_func_switch_to_guest       (SessionMenuMgr *);
@@ -549,7 +550,7 @@ build_session_menuitems (SessionMenuMgr* mgr)
   mi = mgr->logout_mi = mi_new (_("Log Out\342\200\246"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                            G_CALLBACK(action_func_spawn_async), CMD_LOGOUT);
+                            G_CALLBACK(action_func_logout), mgr);
 
   mi = mgr->suspend_mi = mi_new (_("Suspend"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
@@ -1171,42 +1172,62 @@ action_func_hibernate (SessionMenuMgr * mgr)
 }
 
 static void
+call_session_manager_method (const gchar * method_name, GVariant * parameters)
+{
+  GError * error = NULL;
+  GDBusProxy * proxy = g_dbus_proxy_new_for_bus_sync (
+                         G_BUS_TYPE_SESSION,
+                         G_DBUS_PROXY_FLAGS_NONE,
+                         NULL,
+                         "org.gnome.SessionManager",
+                         "/org/gnome/SessionManager",
+                         "org.gnome.SessionManager",
+                         NULL,
+                         &error);
+
+  if (error == NULL)
+    {
+      g_dbus_proxy_call_sync (proxy, method_name, parameters,
+                              G_DBUS_CALL_FLAGS_NONE, -1, NULL,
+                              &error);
+    }
+
+  if (error != NULL)
+    {
+      g_warning ("Error shutting down: %s", error->message);
+      g_clear_error (&error);
+    }
+
+  g_clear_object (&proxy);
+}
+
+static void
 action_func_shutdown (SessionMenuMgr * mgr)
 {
   if (mgr->shell_mode)
     {
-      GError * error = NULL;
-      GDBusProxy * proxy = g_dbus_proxy_new_for_bus_sync (
-                             G_BUS_TYPE_SESSION,
-                             G_DBUS_PROXY_FLAGS_NONE,
-                             NULL,
-                             "org.gnome.SessionManager",
-                             "/org/gnome/SessionManager",
-                             "org.gnome.SessionManager",
-                             NULL,
-                             &error);
-
-      if (error == NULL)
-        {
-          /* We call 'Reboot' method instead of 'Shutdown' because
-           * Unity SessionManager handles the Shutdown request as a more
-           * general request as the default SessionManager dialog would do */
-          g_dbus_proxy_call_sync (proxy, "Reboot",
-                                  NULL, G_DBUS_CALL_FLAGS_NONE, -1, NULL,
-                                  &error);
-        }
-
-      if (error != NULL)
-        {
-          g_warning ("Error shutting down: %s", error->message);
-          g_clear_error (&error);
-        }
-
-      g_clear_object (&proxy);
+      /* We call 'Reboot' method instead of 'Shutdown' because
+       * Unity SessionManager handles the Shutdown request as a more
+       * general request as the default SessionManager dialog would do */
+      call_session_manager_method ("Reboot", NULL);
     }
   else
     {
       action_func_spawn_async (CMD_SHUTDOWN);
+    }
+}
+
+static void
+action_func_logout (SessionMenuMgr * mgr)
+{
+  if (mgr->shell_mode)
+    {
+      guint interactive_mode = 0;
+      call_session_manager_method ("Logout", g_variant_new ("(u)", interactive_mode));
+    }
+  else
+    {
+      action_func_spawn_async (CMD_LOGOUT);
     }
 }
 

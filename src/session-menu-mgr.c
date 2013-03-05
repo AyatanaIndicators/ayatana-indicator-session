@@ -110,8 +110,10 @@ struct _SessionMenuMgr
   gboolean allow_hibernate;
   gboolean allow_suspend;
 
+  gboolean shell_mode;
   gboolean greeter_mode;
 
+  guint shell_name_watcher;
   GCancellable * cancellable;
   DBusUPower * upower_proxy;
   SessionDbus * session_dbus;
@@ -122,6 +124,7 @@ struct _SessionMenuMgr
 static SwitcherMode get_switcher_mode         (SessionMenuMgr *);
 
 static void init_upower_proxy                 (SessionMenuMgr *);
+static void init_shell_watcher                (SessionMenuMgr *);
 
 static void update_screensaver_shortcut       (SessionMenuMgr *);
 static void update_user_menuitems             (SessionMenuMgr *);
@@ -196,6 +199,7 @@ session_menu_mgr_init (SessionMenuMgr *mgr)
                     G_CALLBACK(on_guest_logged_in_changed), mgr);
 
   init_upower_proxy (mgr);
+  init_shell_watcher (mgr);
 
   /* Online accounts menu item */
   mgr->online_accounts_mgr = online_accounts_mgr_new ();
@@ -223,6 +227,11 @@ session_menu_mgr_dispose (GObject *object)
 
   g_slist_free (mgr->user_menuitems);
   mgr->user_menuitems = NULL;
+
+  if (mgr->shell_name_watcher)
+    {
+      g_bus_unwatch_name (mgr->shell_name_watcher);
+    }
 
   G_OBJECT_CLASS (session_menu_mgr_parent_class)->dispose (object);
 }
@@ -326,6 +335,37 @@ init_upower_proxy (SessionMenuMgr * mgr)
       g_signal_connect_swapped (mgr->upower_proxy, "changed",
                                 G_CALLBACK(on_upower_properties_changed), mgr);
     }
+}
+
+static void
+on_shell_name_appeared (GDBusConnection *connection, const gchar *name,
+                        const gchar *name_owner, gpointer user_data)
+{
+  SessionMenuMgr * mgr = SESSION_MENU_MGR(user_data);
+
+  g_debug("Shell appeared");
+  mgr->shell_mode = TRUE;
+  update_session_menuitems (mgr);
+}
+
+static void
+on_shell_name_vanished (GDBusConnection *connection, const gchar *name, gpointer user_data)
+{
+  SessionMenuMgr * mgr = SESSION_MENU_MGR(user_data);
+
+  g_debug("Shell vanished");
+  mgr->shell_mode = FALSE;
+  update_session_menuitems (mgr);
+}
+
+static void
+init_shell_watcher (SessionMenuMgr * mgr)
+{
+  mgr->shell_name_watcher = g_bus_watch_name (G_BUS_TYPE_SESSION, "org.gnome.Shell",
+                                              G_BUS_NAME_WATCHER_FLAGS_NONE,
+                                              on_shell_name_appeared,
+                                              on_shell_name_vanished,
+                                              mgr, NULL);
 }
 
 /***
@@ -468,7 +508,8 @@ update_session_menuitems (SessionMenuMgr * mgr)
    && mgr->allow_hibernate;
   mi_set_visible (mgr->hibernate_mi, v);
 
-  v = HAVE_RESTART_CMD
+  v = !mgr->shell_mode
+   && HAVE_RESTART_CMD
    && !g_settings_get_boolean (s, "suppress-restart-menuitem");
   mi_set_visible (mgr->restart_mi, v);
 

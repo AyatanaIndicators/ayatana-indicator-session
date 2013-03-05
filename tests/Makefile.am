@@ -39,6 +39,7 @@ integrationcheck_PROGRAMS += test-service
 test_service_SOURCES = test-service.cc
 test_service_LDADD = \
 	$(TEST_SERVICE_LIBS) \
+	$(XORG_GTEST_LDFLAGS) \
 	libgtest.a
 test_service_CPPFLAGS = \
 	-DSCHEMA_DIR="\"$(top_builddir)/tests/\"" \

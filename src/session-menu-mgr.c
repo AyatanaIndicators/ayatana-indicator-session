@@ -1172,9 +1172,10 @@ action_func_hibernate (SessionMenuMgr * mgr)
     }
 }
 
-static void
+static gboolean
 call_session_manager_method (const gchar * method_name, GVariant * parameters)
 {
+  gboolean result = TRUE;
   GError * error = NULL;
   GDBusProxy * proxy = g_dbus_proxy_new_for_bus_sync (
                          G_BUS_TYPE_SESSION,
@@ -1199,32 +1200,38 @@ call_session_manager_method (const gchar * method_name, GVariant * parameters)
 
   if (error != NULL)
     {
+      result = FALSE;
       g_warning ("Error shutting down: %s", error->message);
       g_clear_error (&error);
     }
 
   g_clear_object (&proxy);
+
+  return result;
 }
 
 static void
 action_func_shutdown (SessionMenuMgr * mgr)
 {
+  gboolean result = FALSE;
+
   if (mgr->shell_mode)
     {
       if (g_settings_get_boolean (mgr->indicator_settings,
                                   "suppress-logout-restart-shutdown"))
         {
-          call_session_manager_method ("Shutdown", NULL);
+          result = call_session_manager_method ("Shutdown", NULL);
         }
       else
         {
           /* We call 'Reboot' method instead of 'Shutdown' because
            * Unity SessionManager handles the Shutdown request as a more
            * general request as the default SessionManager dialog would do */
-          call_session_manager_method ("Reboot", NULL);
+          result = call_session_manager_method ("Reboot", NULL);
         }
     }
-  else
+
+  if (!result)
     {
       action_func_spawn_async (CMD_SHUTDOWN);
     }
@@ -1233,13 +1240,16 @@ action_func_shutdown (SessionMenuMgr * mgr)
 static void
 action_func_logout (SessionMenuMgr * mgr)
 {
+  gboolean result = FALSE;
+
   if (mgr->shell_mode)
     {
       guint interactive_mode = 0;
-      call_session_manager_method ("Logout",
-                                   g_variant_new ("(u)", interactive_mode));
+      result = call_session_manager_method ("Logout",
+                                            g_variant_new ("(u)", interactive_mode));
     }
-  else
+
+  if (!result)
     {
       action_func_spawn_async (CMD_LOGOUT);
     }
@@ -1248,11 +1258,14 @@ action_func_logout (SessionMenuMgr * mgr)
 static void
 action_func_reboot (SessionMenuMgr * mgr)
 {
+  gboolean result = FALSE;
+
   if (mgr->shell_mode)
     {
-      call_session_manager_method ("Reboot", NULL);
+      result = call_session_manager_method ("Reboot", NULL);
     }
-  else
+
+  if (!result)
     {
       action_func_spawn_async (CMD_RESTART);
     }

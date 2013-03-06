@@ -178,6 +178,8 @@ session_menu_mgr_init (SessionMenuMgr *mgr)
   s = g_settings_new ("com.canonical.indicator.session");
   g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",
                             G_CALLBACK(update_confirmation_labels), mgr);
+  g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",
+                            G_CALLBACK(update_session_menuitems), mgr);
   g_signal_connect_swapped (s, "changed::suppress-logout-menuitem",
                             G_CALLBACK(update_session_menuitems), mgr);
   g_signal_connect_swapped (s, "changed::suppress-restart-menuitem",
@@ -511,8 +513,8 @@ update_session_menuitems (SessionMenuMgr * mgr)
    && mgr->allow_hibernate;
   mi_set_visible (mgr->hibernate_mi, v);
 
-  v = !mgr->shell_mode
-   && HAVE_RESTART_CMD
+  v = (!mgr->shell_mode || g_settings_get_boolean (s, "suppress-logout-restart-shutdown"))
+   && (HAVE_RESTART_CMD || mgr->shell_mode)
    && !g_settings_get_boolean (s, "suppress-restart-menuitem");
   mi_set_visible (mgr->restart_mi, v);
 

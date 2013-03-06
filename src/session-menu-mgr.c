@@ -135,6 +135,7 @@ static void action_func_lock                  (SessionMenuMgr *);
 static void action_func_suspend               (SessionMenuMgr *);
 static void action_func_hibernate             (SessionMenuMgr *);
 static void action_func_shutdown              (SessionMenuMgr *);
+static void action_func_reboot                (SessionMenuMgr *);
 static void action_func_logout                (SessionMenuMgr *);
 static void action_func_switch_to_lockscreen  (SessionMenuMgr *);
 static void action_func_switch_to_greeter     (SessionMenuMgr *);
@@ -565,7 +566,7 @@ build_session_menuitems (SessionMenuMgr* mgr)
   mi = mgr->restart_mi = mi_new (_("Restart\342\200\246"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                            G_CALLBACK(action_func_spawn_async), CMD_RESTART);
+                            G_CALLBACK(action_func_reboot), mgr);
 
   mi = mgr->shutdown_mi = mi_new (_("Shut Down\342\200\246"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
@@ -1210,7 +1211,8 @@ action_func_shutdown (SessionMenuMgr * mgr)
 {
   if (mgr->shell_mode)
     {
-      if (g_settings_get_boolean (mgr->indicator_settings, "suppress-logout-restart-shutdown"))
+      if (g_settings_get_boolean (mgr->indicator_settings,
+                                  "suppress-logout-restart-shutdown"))
         {
           call_session_manager_method ("Shutdown", NULL);
         }
@@ -1234,11 +1236,25 @@ action_func_logout (SessionMenuMgr * mgr)
   if (mgr->shell_mode)
     {
       guint interactive_mode = 0;
-      call_session_manager_method ("Logout", g_variant_new ("(u)", interactive_mode));
+      call_session_manager_method ("Logout",
+                                   g_variant_new ("(u)", interactive_mode));
     }
   else
     {
       action_func_spawn_async (CMD_LOGOUT);
+    }
+}
+
+static void
+action_func_reboot (SessionMenuMgr * mgr)
+{
+  if (mgr->shell_mode)
+    {
+      call_session_manager_method ("Reboot", NULL);
+    }
+  else
+    {
+      action_func_spawn_async (CMD_RESTART);
     }
 }
 

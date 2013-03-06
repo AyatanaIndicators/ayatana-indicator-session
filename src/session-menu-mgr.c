@@ -1210,10 +1210,17 @@ action_func_shutdown (SessionMenuMgr * mgr)
 {
   if (mgr->shell_mode)
     {
-      /* We call 'Reboot' method instead of 'Shutdown' because
-       * Unity SessionManager handles the Shutdown request as a more
-       * general request as the default SessionManager dialog would do */
-      call_session_manager_method ("Reboot", NULL);
+      if (g_settings_get_boolean (mgr->indicator_settings, "suppress-logout-restart-shutdown"))
+        {
+          call_session_manager_method ("Shutdown", NULL);
+        }
+      else
+        {
+          /* We call 'Reboot' method instead of 'Shutdown' because
+           * Unity SessionManager handles the Shutdown request as a more
+           * general request as the default SessionManager dialog would do */
+          call_session_manager_method ("Reboot", NULL);
+        }
     }
   else
     {

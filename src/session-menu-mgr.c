@@ -110,8 +110,10 @@ struct _SessionMenuMgr
   gboolean allow_hibernate;
   gboolean allow_suspend;
 
+  gboolean shell_mode;
   gboolean greeter_mode;
 
+  guint shell_name_watcher;
   GCancellable * cancellable;
   DBusUPower * upower_proxy;
   SessionDbus * session_dbus;
@@ -122,6 +124,7 @@ struct _SessionMenuMgr
 static SwitcherMode get_switcher_mode         (SessionMenuMgr *);
 
 static void init_upower_proxy                 (SessionMenuMgr *);
+static void init_shell_watcher                (SessionMenuMgr *);
 
 static void update_screensaver_shortcut       (SessionMenuMgr *);
 static void update_user_menuitems             (SessionMenuMgr *);
@@ -131,6 +134,9 @@ static void update_confirmation_labels        (SessionMenuMgr *);
 static void action_func_lock                  (SessionMenuMgr *);
 static void action_func_suspend               (SessionMenuMgr *);
 static void action_func_hibernate             (SessionMenuMgr *);
+static void action_func_shutdown              (SessionMenuMgr *);
+static void action_func_reboot                (SessionMenuMgr *);
+static void action_func_logout                (SessionMenuMgr *);
 static void action_func_switch_to_lockscreen  (SessionMenuMgr *);
 static void action_func_switch_to_greeter     (SessionMenuMgr *);
 static void action_func_switch_to_guest       (SessionMenuMgr *);
@@ -172,6 +178,8 @@ session_menu_mgr_init (SessionMenuMgr *mgr)
   s = g_settings_new ("com.canonical.indicator.session");
   g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",
                             G_CALLBACK(update_confirmation_labels), mgr);
+  g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",
+                            G_CALLBACK(update_session_menuitems), mgr);
   g_signal_connect_swapped (s, "changed::suppress-logout-menuitem",
                             G_CALLBACK(update_session_menuitems), mgr);
   g_signal_connect_swapped (s, "changed::suppress-restart-menuitem",
@@ -196,6 +204,7 @@ session_menu_mgr_init (SessionMenuMgr *mgr)
                     G_CALLBACK(on_guest_logged_in_changed), mgr);
 
   init_upower_proxy (mgr);
+  init_shell_watcher (mgr);
 
   /* Online accounts menu item */
   mgr->online_accounts_mgr = online_accounts_mgr_new ();
@@ -223,6 +232,11 @@ session_menu_mgr_dispose (GObject *object)
 
   g_slist_free (mgr->user_menuitems);
   mgr->user_menuitems = NULL;
+
+  if (mgr->shell_name_watcher)
+    {
+      g_bus_unwatch_name (mgr->shell_name_watcher);
+    }
 
   G_OBJECT_CLASS (session_menu_mgr_parent_class)->dispose (object);
 }
@@ -326,6 +340,37 @@ init_upower_proxy (SessionMenuMgr * mgr)
       g_signal_connect_swapped (mgr->upower_proxy, "changed",
                                 G_CALLBACK(on_upower_properties_changed), mgr);
     }
+}
+
+static void
+on_shell_name_appeared (GDBusConnection *connection, const gchar *name,
+                        const gchar *name_owner, gpointer user_data)
+{
+  SessionMenuMgr * mgr = SESSION_MENU_MGR(user_data);
+
+  g_debug("Shell appeared");
+  mgr->shell_mode = TRUE;
+  update_session_menuitems (mgr);
+}
+
+static void
+on_shell_name_vanished (GDBusConnection *connection, const gchar *name, gpointer user_data)
+{
+  SessionMenuMgr * mgr = SESSION_MENU_MGR(user_data);
+
+  g_debug("Shell vanished");
+  mgr->shell_mode = FALSE;
+  update_session_menuitems (mgr);
+}
+
+static void
+init_shell_watcher (SessionMenuMgr * mgr)
+{
+  mgr->shell_name_watcher = g_bus_watch_name (G_BUS_TYPE_SESSION, "org.gnome.Shell",
+                                              G_BUS_NAME_WATCHER_FLAGS_NONE,
+                                              on_shell_name_appeared,
+                                              on_shell_name_vanished,
+                                              mgr, NULL);
 }
 
 /***
@@ -468,7 +513,8 @@ update_session_menuitems (SessionMenuMgr * mgr)
    && mgr->allow_hibernate;
   mi_set_visible (mgr->hibernate_mi, v);
 
-  v = HAVE_RESTART_CMD
+  v = (!mgr->shell_mode || g_settings_get_boolean (s, "suppress-logout-restart-shutdown"))
+   && (HAVE_RESTART_CMD || mgr->shell_mode)
    && !g_settings_get_boolean (s, "suppress-restart-menuitem");
   mi_set_visible (mgr->restart_mi, v);
 
@@ -507,7 +553,7 @@ build_session_menuitems (SessionMenuMgr* mgr)
   mi = mgr->logout_mi = mi_new (_("Log Out\342\200\246"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                            G_CALLBACK(action_func_spawn_async), CMD_LOGOUT);
+                            G_CALLBACK(action_func_logout), mgr);
 
   mi = mgr->suspend_mi = mi_new (_("Suspend"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
@@ -522,12 +568,12 @@ build_session_menuitems (SessionMenuMgr* mgr)
   mi = mgr->restart_mi = mi_new (_("Restart\342\200\246"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                            G_CALLBACK(action_func_spawn_async), CMD_RESTART);
+                            G_CALLBACK(action_func_reboot), mgr);
 
   mi = mgr->shutdown_mi = mi_new (_("Shut Down\342\200\246"));
   dbusmenu_menuitem_child_append (mgr->top_mi, mi);
   g_signal_connect_swapped (mi, DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
-                            G_CALLBACK(action_func_spawn_async), CMD_SHUTDOWN);
+                            G_CALLBACK(action_func_shutdown), mgr);
 
   update_confirmation_labels (mgr);
   update_session_menuitems (mgr);
@@ -1125,6 +1171,105 @@ action_func_hibernate (SessionMenuMgr * mgr)
     {
       g_warning ("%s: %s", G_STRFUNC, error->message);
       g_clear_error (&error);
+    }
+}
+
+static gboolean
+call_session_manager_method (const gchar * method_name, GVariant * parameters)
+{
+  gboolean result = TRUE;
+  GError * error = NULL;
+  GDBusProxy * proxy = g_dbus_proxy_new_for_bus_sync (
+                         G_BUS_TYPE_SESSION,
+                         G_DBUS_PROXY_FLAGS_NONE,
+                         NULL,
+                         "org.gnome.SessionManager",
+                         "/org/gnome/SessionManager",
+                         "org.gnome.SessionManager",
+                         NULL,
+                         &error);
+
+  if (error == NULL)
+    {
+      g_dbus_proxy_call_sync (proxy, method_name, parameters,
+                              G_DBUS_CALL_FLAGS_NONE, -1, NULL,
+                              &error);
+    }
+  else if (parameters != NULL)
+    {
+      g_variant_unref (parameters);
+    }
+
+  if (error != NULL)
+    {
+      result = FALSE;
+      g_warning ("Error shutting down: %s", error->message);
+      g_clear_error (&error);
+    }
+
+  g_clear_object (&proxy);
+
+  return result;
+}
+
+static void
+action_func_shutdown (SessionMenuMgr * mgr)
+{
+  gboolean result = FALSE;
+
+  if (mgr->shell_mode)
+    {
+      if (g_settings_get_boolean (mgr->indicator_settings,
+                                  "suppress-logout-restart-shutdown"))
+        {
+          result = call_session_manager_method ("Shutdown", NULL);
+        }
+      else
+        {
+          /* We call 'Reboot' method instead of 'Shutdown' because
+           * Unity SessionManager handles the Shutdown request as a more
+           * general request as the default SessionManager dialog would do */
+          result = call_session_manager_method ("Reboot", NULL);
+        }
+    }
+
+  if (!result)
+    {
+      action_func_spawn_async (CMD_SHUTDOWN);
+    }
+}
+
+static void
+action_func_logout (SessionMenuMgr * mgr)
+{
+  gboolean result = FALSE;
+
+  if (mgr->shell_mode)
+    {
+      guint interactive_mode = 0;
+      result = call_session_manager_method ("Logout",
+                                            g_variant_new ("(u)", interactive_mode));
+    }
+
+  if (!result)
+    {
+      action_func_spawn_async (CMD_LOGOUT);
+    }
+}
+
+static void
+action_func_reboot (SessionMenuMgr * mgr)
+{
+  gboolean result = FALSE;
+
+  if (mgr->shell_mode)
+    {
+      result = call_session_manager_method ("Reboot", NULL);
+    }
+
+  if (!result)
+    {
+      action_func_spawn_async (CMD_RESTART);
     }
 }
 

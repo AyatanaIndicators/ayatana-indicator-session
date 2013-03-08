@@ -1,3 +1,13 @@
+indicator-session (12.10.5daily13.03.08-0ubuntu1) raring; urgency=low
+
+  [ Marco Trevisan (Treviño) ]
+  * New unity style shutdown dialogues (LP: #882041)
+
+  [ Automatic PS uploader ]
+  * Automatic snapshot from revision 386
+
+ -- Automatic PS uploader <ps-jenkins@lists.canonical.com>  Fri, 08 Mar 2013 02:02:14 +0000
+
 indicator-session (12.10.5daily13.03.06-0ubuntu1) raring; urgency=low
 
   [ Mathieu Trudel-Lapierre ]

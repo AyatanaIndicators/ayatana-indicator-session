@@ -1,0 +1,454 @@
+/*
+ * Copyright 2013 Canonical Ltd.
+ *
+ * Authors:
+ *   Charles Kerr <charles.kerr@canonical.com>
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 3, as published
+ * by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranties of
+ * MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "gtest-mock-dbus-fixture.h"
+
+#include "backend.h"
+#include "backend-dbus/backend-dbus.h"
+
+/***
+****
+***/
+
+class Actions: public GTestMockDBusFixture
+{
+  private:
+
+    typedef GTestMockDBusFixture super;
+
+  protected:
+
+    GCancellable * cancellable;
+    IndicatorSessionActions * actions;
+
+    virtual void SetUp ()
+    {
+      super :: SetUp ();
+
+      // init 'actions'
+      cancellable = g_cancellable_new ();
+      actions = 0;
+      backend_get (cancellable, &actions, NULL, NULL);
+      g_assert (actions != 0);
+      wait_msec (100);
+    }
+
+    virtual void TearDown ()
+    {
+      g_cancellable_cancel (cancellable);
+      g_clear_object (&cancellable);
+      g_clear_object (&actions);
+
+      super :: TearDown ();
+    }
+};
+
+/***
+****
+***/
+
+TEST_F (Actions, HelloWorld)
+{
+  ASSERT_TRUE (true);
+}
+
+namespace
+{
+  static gboolean toggle_can_switch (gpointer settings)
+  {
+    const char * key = "disable-user-switching";
+    gboolean b = g_settings_get_boolean (G_SETTINGS(settings), key);
+    g_settings_set_boolean (G_SETTINGS(settings), key, !b);
+    return G_SOURCE_REMOVE;
+  }
+}
+
+TEST_F (Actions, CanSwitch)
+{
+  const char * schema_id = "org.gnome.desktop.lockdown";
+  const char * settings_key = "disable-user-switching";
+  GSettings * s = g_settings_new (schema_id);
+
+  for (int i=0; i<3; ++i)
+    {
+      bool b;
+      gboolean b2;
+
+      b = ck_seat->can_activate_sessions() && !g_settings_get_boolean (s, settings_key);
+      ASSERT_EQ (b, indicator_session_actions_can_switch (actions));
+      g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_SWITCH, &b2, NULL);
+      ASSERT_EQ (b, b2);
+
+      g_idle_add (toggle_can_switch, s);
+      wait_for_signal (actions, "notify::" INDICATOR_SESSION_ACTIONS_PROP_CAN_SWITCH);
+    }
+
+  g_object_unref (s);
+}
+
+namespace
+{
+  static gboolean toggle_can_lock (gpointer settings)
+  {
+    const char * key = "disable-lock-screen";
+    gboolean b = g_settings_get_boolean (G_SETTINGS(settings), key);
+    g_settings_set_boolean (G_SETTINGS(settings), key, !b);
+    return G_SOURCE_REMOVE;
+  }
+}
+
+TEST_F (Actions, CanLock)
+{
+  const char * schema_id = "org.gnome.desktop.lockdown";
+  const char * settings_key = "disable-lock-screen";
+  GSettings * s = g_settings_new (schema_id);
+
+  for (int i=0; i<3; ++i)
+    {
+      bool b;
+      gboolean b2;
+
+      b = g_settings_get_boolean (s, settings_key);
+      ASSERT_EQ (b, !indicator_session_actions_can_lock (actions));
+      g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_LOCK, &b2, NULL);
+      ASSERT_EQ (b, !b2);
+
+      g_idle_add (toggle_can_lock, s);
+      wait_for_signal (actions, "notify::" INDICATOR_SESSION_ACTIONS_PROP_CAN_LOCK);
+    }
+
+  g_object_unref (s);
+}
+
+namespace
+{
+  static gboolean toggle_can_logout (gpointer settings)
+  {
+    const char * key = "disable-log-out";
+    gboolean b = g_settings_get_boolean (G_SETTINGS(settings), key);
+    g_settings_set_boolean (G_SETTINGS(settings), key, !b);
+    return G_SOURCE_REMOVE;
+  }
+}
+
+TEST_F (Actions, CanLogout)
+{
+  const char * schema_id = "org.gnome.desktop.lockdown";
+  const char * settings_key = "disable-log-out";
+  GSettings * s = g_settings_new (schema_id);
+
+  for (int i=0; i<3; ++i)
+    {
+      bool b;
+      gboolean b2;
+
+      b = g_settings_get_boolean (s, settings_key);
+      ASSERT_EQ (b, !indicator_session_actions_can_logout (actions));
+      g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_LOGOUT, &b2, NULL);
+      ASSERT_EQ (b, !b2);
+
+      g_idle_add (toggle_can_logout, s);
+      wait_for_signal (actions, "notify::" INDICATOR_SESSION_ACTIONS_PROP_CAN_LOGOUT);
+    }
+
+  g_object_unref (s);
+}
+
+TEST_F (Actions, CanSuspend)
+{
+  bool b;
+  bool can;
+  bool allowed;
+  gboolean b2;
+
+  can = upower->can_suspend ();
+  allowed = upower->suspend_allowed ();
+  b = can && allowed;
+
+  ASSERT_EQ (b, indicator_session_actions_can_suspend (actions));
+  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_SUSPEND, &b2, NULL);
+  ASSERT_EQ (b, b2);
+
+  for (int i=0; i<2; ++i)
+    {
+      can = !can;
+      b = can && allowed;
+
+      upower->set_can_suspend (can);
+      wait_for_signal (actions, "notify::" INDICATOR_SESSION_ACTIONS_PROP_CAN_SUSPEND);
+      ASSERT_EQ (b, indicator_session_actions_can_suspend (actions));
+      g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_SUSPEND, &b2, NULL);
+      ASSERT_EQ (b, b2);
+    }
+}
+
+TEST_F (Actions, CanHibernate)
+{
+  bool b;
+  bool can;
+  bool allowed;
+  gboolean b2;
+
+  can = upower->can_hibernate ();
+  allowed = upower->hibernate_allowed ();
+  b = can && allowed;
+
+  ASSERT_EQ (b, indicator_session_actions_can_hibernate (actions));
+  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_HIBERNATE, &b2, NULL);
+  ASSERT_EQ (b, b2);
+
+#if 0
+  for (int i=0; i<2; ++i)
+    {
+      b = !b;
+      upower->set_can_hibernate (b);
+      wait_for_signal (actions, "notify::" INDICATOR_SESSION_ACTIONS_PROP_CAN_HIBERNATE);
+      ASSERT_EQ (b, indicator_session_actions_can_hibernate (actions));
+      g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_HIBERNATE, &b2, NULL);
+      ASSERT_EQ (b, b2);
+    }
+#endif
+}
+
+TEST_F (Actions, Restart)
+{
+  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+
+  // confirm that user is prompted
+  // and that no action is taken when the user cancels the dialog
+  indicator_session_actions_restart (actions);
+  wait_msec (50);
+  ASSERT_TRUE (end_session_dialog->is_open());
+  end_session_dialog->cancel();
+  wait_msec (50);
+  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+
+  // confirm that user is prompted
+  // and that no action is taken when the user cancels the dialog
+  indicator_session_actions_restart (actions);
+  wait_msec (50);
+  ASSERT_TRUE (end_session_dialog->is_open ());
+  end_session_dialog->confirm_reboot ();
+  wait_msec (100);
+  ASSERT_EQ (MockConsoleKitManager::Restart, ck_manager->last_action());
+
+  // confirm that we try to restart w/o prompting
+  // if the EndSessionDialog isn't available
+  delete end_session_dialog;
+  end_session_dialog = 0;
+  ck_manager->clear_last_action ();
+  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+  wait_msec (50);
+  indicator_session_actions_restart (actions);
+  wait_msec (50);
+  ASSERT_EQ (MockConsoleKitManager::Restart, ck_manager->last_action());
+}
+
+TEST_F (Actions, Shutdown)
+{
+  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+
+  // confirm that user is prompted
+  // and that no action is taken when the user cancels the dialog
+  indicator_session_actions_shutdown (actions);
+  wait_msec (50);
+  ASSERT_TRUE (end_session_dialog->is_open());
+  end_session_dialog->cancel();
+  wait_msec (50);
+  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+
+  // confirm that user is prompted
+  // and that no action is taken when the user cancels the dialog
+  indicator_session_actions_shutdown (actions);
+  wait_msec (50);
+  ASSERT_TRUE (end_session_dialog->is_open ());
+  end_session_dialog->confirm_shutdown ();
+  wait_msec (100);
+  ASSERT_EQ (MockConsoleKitManager::Shutdown, ck_manager->last_action());
+
+  // confirm that we try to shutdown w/o prompting
+  // if the EndSessionDialog isn't available
+  delete end_session_dialog;
+  end_session_dialog = 0;
+  ck_manager->clear_last_action ();
+  wait_msec (50);
+  indicator_session_actions_shutdown (actions);
+  wait_msec (50);
+  ASSERT_EQ (MockConsoleKitManager::Shutdown, ck_manager->last_action());
+}
+
+TEST_F (Actions, Logout)
+{
+  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+
+  // confirm that user is prompted
+  // and that no action is taken when the user cancels the dialog
+  indicator_session_actions_logout (actions);
+  wait_msec (50);
+  ASSERT_TRUE (end_session_dialog->is_open());
+  end_session_dialog->cancel();
+  wait_msec (50);
+  ASSERT_EQ (MockSessionManager::None, session_manager->last_action ());
+
+  // confirm that user is prompted
+  // and that no action is taken when the user cancels the dialog
+  indicator_session_actions_shutdown (actions);
+  wait_msec (50);
+  ASSERT_TRUE (end_session_dialog->is_open ());
+  end_session_dialog->confirm_logout ();
+  wait_msec (100);
+  ASSERT_EQ (MockSessionManager::LogoutQuiet, session_manager->last_action ());
+
+  // confirm that we try to call SessionManager::LogoutNormal
+  // if the EndSessionDialog isn't available
+  delete end_session_dialog;
+  end_session_dialog = 0;
+  wait_msec (50);
+  indicator_session_actions_logout (actions);
+  wait_msec (50);
+  ASSERT_EQ (MockSessionManager::LogoutNormal, session_manager->last_action ());
+}
+
+TEST_F (Actions, Suspend)
+{
+  ASSERT_EQ (MockUPower::None, upower->last_action());
+  indicator_session_actions_suspend (actions);
+  wait_msec (50);
+  ASSERT_EQ (MockUPower::Suspend, upower->last_action());
+}
+
+TEST_F (Actions, Hibernate)
+{
+  ASSERT_EQ (MockUPower::None, upower->last_action());
+  indicator_session_actions_hibernate (actions);
+  wait_msec (50);
+  ASSERT_EQ (MockUPower::Hibernate, upower->last_action());
+}
+
+TEST_F (Actions, SwitchToScreensaver)
+{
+  ASSERT_EQ (MockScreenSaver::None, screen_saver->last_action());
+  indicator_session_actions_switch_to_screensaver (actions);
+  wait_msec (50);
+  ASSERT_EQ (MockScreenSaver::Lock, screen_saver->last_action());
+}
+
+TEST_F (Actions, SwitchToGreeter)
+{
+  ASSERT_NE (MockDisplayManagerSeat::GREETER, dm_seat->last_action());
+  indicator_session_actions_switch_to_greeter (actions);
+  wait_msec (50);
+  ASSERT_EQ (MockDisplayManagerSeat::GREETER, dm_seat->last_action());
+}
+
+TEST_F (Actions, SwitchToGuest)
+{
+  // allow guests
+  dm_seat->set_guest_allowed (true);
+  MockUser * guest_user;
+  MockConsoleKitSession * guest_ck_session;
+
+  // set up a guest
+  guest_user = new MockUser (loop, conn, "guest-zzbEVV", "Guest", 10);
+  guest_user->set_system_account (true);
+  accounts->add_user (guest_user);
+  guest_ck_session = ck_seat->add_session_by_user (guest_user);
+
+  // try to switch to guest
+  indicator_session_actions_switch_to_guest (actions);
+  wait_for_signal (ck_seat->skeleton(), "active-session-changed");
+  ASSERT_EQ (guest_ck_session, ck_manager->current_session());
+  wait_msec (50);
+}
+
+TEST_F (Actions, SwitchToUsername)
+{
+  const char * const dr1_username = "whartnell";
+  const char * const dr2_username = "ptroughton";
+  MockUser * dr1_user;
+  MockUser * dr2_user;
+  MockConsoleKitSession * dr1_session;
+  MockConsoleKitSession * dr2_session;
+
+  dr1_user = accounts->find_by_username (dr1_username);
+  dr1_session = ck_seat->add_session_by_user (dr1_user);
+
+  dr2_user = accounts->find_by_username (dr2_username);
+  dr2_session = ck_seat->add_session_by_user (dr2_user);
+
+  indicator_session_actions_switch_to_username (actions, dr1_username);
+  wait_for_signal (ck_seat->skeleton(), "active-session-changed");
+  ASSERT_EQ (dr1_session, ck_manager->current_session());
+  wait_msec (50);
+
+  indicator_session_actions_switch_to_username (actions, dr2_username);
+  wait_for_signal (ck_seat->skeleton(), "active-session-changed");
+  ASSERT_EQ (dr2_session, ck_manager->current_session());
+  wait_msec (50);
+
+  indicator_session_actions_switch_to_username (actions, dr1_username);
+  wait_for_signal (ck_seat->skeleton(), "active-session-changed");
+  ASSERT_EQ (dr1_session, ck_manager->current_session());
+  wait_msec (50);
+}
+
+TEST_F (Actions, HasOnlineAccountError)
+{
+  bool b;
+  gboolean gb;
+
+  b = webcredentials->has_error ();
+  ASSERT_EQ (b, indicator_session_actions_has_online_account_error (actions));
+  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_HAS_ONLINE_ACCOUNT_ERROR, &gb, NULL);
+  ASSERT_EQ (b, gb);
+
+  b = !b;
+  webcredentials->set_error (b);
+  wait_msec (50);
+  ASSERT_EQ (b, indicator_session_actions_has_online_account_error (actions));
+  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_HAS_ONLINE_ACCOUNT_ERROR, &gb, NULL);
+  ASSERT_EQ (b, gb);
+
+  b = !b;
+  webcredentials->set_error (b);
+  wait_msec (50);
+  ASSERT_EQ (b, indicator_session_actions_has_online_account_error (actions));
+  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_HAS_ONLINE_ACCOUNT_ERROR, &gb, NULL);
+  ASSERT_EQ (b, gb);
+}
+
+TEST_F (Actions, CanPrompt)
+{
+  gboolean b;
+
+  ASSERT_TRUE (indicator_session_actions_can_prompt (actions));
+
+  delete end_session_dialog;
+  end_session_dialog = 0;
+  wait_msec (50);
+  ASSERT_FALSE (indicator_session_actions_can_prompt (actions));
+  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_PROMPT, &b, NULL);
+  ASSERT_FALSE (b);
+
+  end_session_dialog = new MockEndSessionDialog (loop, conn);
+  wait_msec (50);
+  ASSERT_TRUE (indicator_session_actions_can_prompt (actions));
+  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_PROMPT, &b, NULL);
+  ASSERT_TRUE (b);
+}

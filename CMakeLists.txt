@@ -46,6 +46,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}/src)
 
 add_subdirectory (src)
 add_subdirectory (data)
+add_subdirectory (po)
 
 if (${enable_tests})
   set (GTEST_SOURCE_DIR /usr/src/gtest/src)

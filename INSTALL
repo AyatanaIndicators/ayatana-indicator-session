@@ -14,52 +14,66 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-Build dependencies
-------------------
+Compile-time build dependencies
+-------------------------------
+ - gettext (gettext 0.18.1.1-10ubuntu3 or later)
+ - glib (libglib2.0, 2.35.4 or later)
+ - cmake (cmake, 2.8.9 or later)
+ - gcovr (gcovr, 2.4 or later)
+ - lcov (lcov, 1.9 or later)
+ - google test (libgtest-dev, 1.6.0 or later)
+ - cppcheck (cppcheck)
 
-List of packages required to build and test the code:
-- gettext (gettext 0.18.1.1-10ubuntu3 or later)
-- glib (libglib2.0, 2.35.4 or later)
-- cmake (cmake, 2.8.9 or later)
-- gcovr (gcovr, 2.4 or later)
-- lcov (lcov, 1.9 or later)
-- google test (libgtest-dev, 1.6.0 or later)
-- cppcheck (cppcheck)
+Runtime DBus dependencies
+-------------------------
+ - com.canonical.indicators.webcredentials
+ - org.freedesktop.Accounts
+ - org.freedesktop.Accounts.User
+ - org.freedesktop.ConsoleKit.Manager
+ - org.freedesktop.ConsoleKit.Seat
+ - org.freedesktop.ConsoleKit.Session
+ - org.freedesktop.DisplayManager.Seat
+ - org.freedesktop.UPower
+ - org.gnome.ScreenSaver
+ - org.gnome.SessionManager
+ - org.gnome.SessionManager.EndSessionDialog
 
 Building the code
 -----------------
-
 The simplest case is:
-
-    $ cd indicator-session-X.Y.Z
-    $ mkdir build
-    $ cd build
-    $ cmake ..
-    $ make
+ $ cd indicator-session-X.Y.Z
+ $ mkdir build
+ $ cd build
+ $ cmake ..
+ $ make
 
 Running the tests
 -----------------
-
-    $ cd indicator-session-X.Y.Z
-    $ mkdir build
-    $ cd build
-    $ cmake ..
-    $ make
-    $ make test
-    $ make cppcheck
+ $ cd indicator-session-X.Y.Z
+ $ mkdir build
+ $ cd build
+ $ cmake ..
+ $ make
+ $ make test
+ $ make cppcheck
 
 Generating Test Coverage Reports
 --------------------------------
-
-    $ cd indicator-session-X.Y.Z
-    $ mkdir build-coverage
-    $ cd build-coverage
-    $ cmake -DCMAKE_BUILD_TYPE=coverage ..
-    $ make
-    $ make coverage-html
+ $ cd indicator-session-X.Y.Z
+ $ mkdir build-coverage
+ $ cd build-coverage
+ $ cmake -DCMAKE_BUILD_TYPE=coverage ..
+ $ make
+ $ make coverage-html
 
 Installation
 ------------
+
+what gets installed
+LC_ALL=C /usr/bin/intltool-merge  -x -u --no-translations com.canonical.indicator.session.gschema.xml.in com.canonical.indicator.session.gschema.xml
+
+
+
 
 FIXME: not tested
 To get files that form part of an installation, run a "make install"

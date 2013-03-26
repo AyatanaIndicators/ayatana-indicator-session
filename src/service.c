@@ -1082,7 +1082,7 @@ my_get_property (GObject     * o,
 static void
 my_set_property (GObject       * o,
                  guint           property_id,
-                 const GValue  * value          G_GNUC_UNUSED,
+                 const GValue  * value,
                  GParamSpec    * pspec)
 {
   IndicatorSessionService * self = INDICATOR_SESSION_SERVICE (o);

@@ -52,8 +52,8 @@ typedef struct _UsersServiceDbusPrivate UsersServiceDbusPrivate;
  *  2. Track which users currently have X sessions.
  *     This is used for the menuitems' USER_ITEM_PROP_LOGGED_IN property.
  *
- *     We initially build this list by calling org.freedesktop.ConsoleKit.Seat's
- *     GetDevices method. We also monitor the seat for SessionAdded and
+ *     We initially build this list by calling org.freedesktop.login1's
+ *     ListSessions method. We also monitor the seat for SessionNew and
  *     SessionRemoved and update the list accordingly.
  *
  *  3. Provide an API for user switching and guest sessions.
@@ -87,7 +87,6 @@ gboolean  users_service_dbus_is_user_logged_in      (UsersServiceDbus * self,
 
 void      users_service_dbus_show_greeter           (UsersServiceDbus * self);
 gboolean  users_service_dbus_guest_session_enabled  (UsersServiceDbus * self);
-gboolean  users_service_dbus_can_activate_session   (UsersServiceDbus * self);
 void      users_service_dbus_activate_guest_session (UsersServiceDbus * self);
 void      users_service_dbus_activate_user_session  (UsersServiceDbus * self,
                                                      AccountsUser     * user);

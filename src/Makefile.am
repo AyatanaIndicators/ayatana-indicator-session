@@ -43,34 +43,34 @@ $(dbus_display_manager_sources): display-manager.xml
 	    --generate-c-code dbus-display-manager \
 	    $^
 
-dbus_consolekit_manager_sources = \
-	dbus-consolekit-manager.c \
-	dbus-consolekit-manager.h
+dbus_login1_manager_sources = \
+	dbus-login1-manager.c \
+	dbus-login1-manager.h
 
-$(dbus_consolekit_manager_sources): org.freedesktop.ConsoleKit.Manager.xml
+$(dbus_login1_manager_sources):	org.freedesktop.login1.Manager.xml
 	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
-	    --generate-c-code dbus-consolekit-manager \
+	    --generate-c-code dbus-login1-manager \
 	    $^
 
-dbus_consolekit_seat_sources = \
-	dbus-consolekit-seat.c \
-	dbus-consolekit-seat.h
+dbus_login1_session_sources = \
+	dbus-login1-session.c \
+	dbus-login1-session.h
 
-$(dbus_consolekit_seat_sources): org.freedesktop.ConsoleKit.Seat.xml
+$(dbus_login1_session_sources):	org.freedesktop.login1.Session.xml
 	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
-	    --generate-c-code dbus-consolekit-seat \
+	    --generate-c-code dbus-login1-session \
 	    $^
 
-dbus_consolekit_session_sources = \
-	dbus-consolekit-session.c \
-	dbus-consolekit-session.h
+dbus_login1_user_sources = \
+	dbus-login1-user.c \
+	dbus-login1-user.h
 
-$(dbus_consolekit_session_sources): org.freedesktop.ConsoleKit.Session.xml
+$(dbus_login1_user_sources):	org.freedesktop.login1.User.xml
 	$(AM_V_GEN) gdbus-codegen \
 	    --interface-prefix org.freedesktop \
-	    --generate-c-code dbus-consolekit-session \
+	    --generate-c-code dbus-login1-user \
 	    $^
 
 dbus_accounts_sources = \
@@ -92,7 +92,7 @@ $(dbus_user_sources): org.freedesktop.Accounts.User.xml
 	    --interface-prefix org.freedesktop \
 	    --generate-c-code dbus-user \
 	    $^
-	
+
 dbus_upower_sources = \
         dbus-upower.c \
         dbus-upower.h
@@ -120,9 +120,9 @@ gen-%.xml.h: %.xml
 
 indicator_session_service_SOURCES = \
 	$(dbus_accounts_sources) \
-	$(dbus_consolekit_manager_sources) \
-	$(dbus_consolekit_seat_sources) \
-	$(dbus_consolekit_session_sources) \
+	$(dbus_login1_manager_sources) \
+	$(dbus_login1_user_sources) \
+	$(dbus_login1_session_sources) \
 	$(dbus_display_manager_sources) \
 	$(dbus_upower_sources) \
 	$(dbus_user_sources) \
@@ -156,7 +156,7 @@ indicator_session_service_LDFLAGS = \
 
 if BUILD_GTKLOGOUTHELPER
 gtk_logout_helper_SOURCES = \
-	$(dbus_consolekit_manager_sources) \
+	$(dbus_login1_manager_sources) \
 	gtk-logout-helper.c \
 	dialog.c \
 	dialog.h
@@ -185,9 +185,9 @@ endif
 
 BUILT_SOURCES = \
 	$(dbus_accounts_sources) \
-	$(dbus_consolekit_manager_sources) \
-	$(dbus_consolekit_seat_sources) \
-	$(dbus_consolekit_session_sources) \
+	$(dbus_login1_manager_sources) \
+	$(dbus_login1_user_sources) \
+	$(dbus_login1_session_sources) \
 	$(dbus_display_manager_sources) \
 	$(dbus_upower_sources) \
 	$(dbus_user_sources) \
@@ -198,9 +198,9 @@ EXTRA_DIST += \
 	display-manager.xml \
 	org.freedesktop.Accounts.User.xml \
 	org.freedesktop.Accounts.xml \
-	org.freedesktop.ConsoleKit.Manager.xml \
-	org.freedesktop.ConsoleKit.Seat.xml \
-	org.freedesktop.ConsoleKit.Session.xml \
+	org.freedesktop.login1.Manager.xml \
+	org.freedesktop.login1.Session.xml \
+	org.freedesktop.login1.User.xml \
 	session-dbus.xml \
 	upower.xml
 

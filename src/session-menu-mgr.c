@@ -878,10 +878,6 @@ is_user_switching_allowed (SessionMenuMgr * mgr)
     }
 
   /* maybe the seat doesn't support activation */
-  if (!users_service_dbus_can_activate_session (mgr->users_dbus_facade))
-    {
-      return FALSE;
-    }
 
   return TRUE;
 }

@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib/gi18n.h>
 
-#include "dbus-consolekit-manager.h"
+#include "dbus-login1-manager.h"
 #include "dialog.h"
 
 /* Strings */
@@ -133,35 +133,35 @@ check_restart_required (void)
 	return g_file_test("/var/run/reboot-required", G_FILE_TEST_EXISTS);
 }
 
-/* Checks with console kit to see if we can do what we want */
+/* Checks with logind to see if we can do what we want */
 static gboolean
-ck_check_allowed (LogoutDialogType type)
+logind_check_allowed (LogoutDialogType type)
 {
-	gboolean allowed = TRUE;
+	gchar * allowed = NULL;
 
-	ConsoleKitManager * ck_proxy = console_kit_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-	                                                                           G_DBUS_PROXY_FLAGS_NONE,
-	                                                                           "org.freedesktop.ConsoleKit",
-	                                                                           "/org/freedesktop/ConsoleKit/Manager",
-	                                                                           NULL,
-	                                                                           NULL);
-	if (ck_proxy != NULL)
+	Login1Manager * manager_proxy = login1_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+	                                                                       G_DBUS_PROXY_FLAGS_NONE,
+	                                                                       "org.freedesktop.login1",
+	                                                                       "/org/freedesktop/login1",
+	                                                                       NULL,
+	                                                                       NULL);
+	if (manager_proxy != NULL)
 	{
 		switch (type) {
 		case LOGOUT_DIALOG_TYPE_RESTART:
-			console_kit_manager_call_can_restart_sync (ck_proxy, &allowed, NULL, NULL);
+			login1_manager_call_can_reboot_sync (manager_proxy, &allowed, NULL, NULL);
 			break;
 		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
-			console_kit_manager_call_can_stop_sync (ck_proxy, &allowed, NULL, NULL);
+			login1_manager_call_can_power_off_sync (manager_proxy, &allowed, NULL, NULL);
 			break;
 		default:
 			break;
 		}
 
-		g_object_unref(ck_proxy);
+		g_object_unref(manager_proxy);
 	}
 
-	return allowed;
+	return g_strcmp0 (allowed, "yes") == 0;
 }
 
 LogoutDialog *
@@ -188,9 +188,9 @@ logout_dialog_new (LogoutDialogType type)
 
 	gboolean allowed = FALSE;
 	if (type == LOGOUT_DIALOG_TYPE_LOG_OUT) {
-		allowed = ck_check_allowed(LOGOUT_DIALOG_TYPE_RESTART);
+		allowed = logind_check_allowed(LOGOUT_DIALOG_TYPE_RESTART);
 	} else {
-		allowed = ck_check_allowed(type);
+		allowed = logind_check_allowed(type);
 	}
 
 	gboolean restart_required = FALSE;

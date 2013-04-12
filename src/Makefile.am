@@ -93,17 +93,6 @@ $(dbus_user_sources): org.freedesktop.Accounts.User.xml
 	    --generate-c-code dbus-user \
 	    $^
 
-dbus_upower_sources = \
-        dbus-upower.c \
-        dbus-upower.h
-
-$(dbus_upower_sources): upower.xml
-	$(AM_V_GEN) gdbus-codegen \
-	    --interface-prefix org.freedesktop \
-	    --generate-c-code dbus-upower \
-	    --c-namespace DBus \
-	    $^
-
 gen-%.xml.c: %.xml
 	@echo "Building $@ from $<"
 	@echo "const char * _$(subst -,_,$(subst .,_,$(basename $(notdir $<)))) = " > $@
@@ -124,7 +113,6 @@ indicator_session_service_SOURCES = \
 	$(dbus_login1_user_sources) \
 	$(dbus_login1_session_sources) \
 	$(dbus_display_manager_sources) \
-	$(dbus_upower_sources) \
 	$(dbus_user_sources) \
 	session-service.c \
 	session-dbus.c \
@@ -189,7 +177,6 @@ BUILT_SOURCES = \
 	$(dbus_login1_user_sources) \
 	$(dbus_login1_session_sources) \
 	$(dbus_display_manager_sources) \
-	$(dbus_upower_sources) \
 	$(dbus_user_sources) \
 	gen-session-dbus.xml.c \
 	gen-session-dbus.xml.h
@@ -201,7 +188,6 @@ EXTRA_DIST += \
 	org.freedesktop.login1.Manager.xml \
 	org.freedesktop.login1.Session.xml \
 	org.freedesktop.login1.User.xml \
-	session-dbus.xml \
-	upower.xml
+	session-dbus.xml
 
 CLEANFILES += $(BUILT_SOURCES)

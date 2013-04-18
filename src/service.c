@@ -808,6 +808,10 @@ rebuild_soon (IndicatorSessionService * self, int section)
 
   if (p->rebuild_id == 0)
     {
+      /* Change events seem to come over the bus in small bursts. This msec
+         value is an arbitrary number that tries to be large enough to fold
+         multiple events into a single rebuild, but small enough that the
+         user won't notice any lag. */
       static const int REBUILD_INTERVAL_MSEC = 500;
 
       p->rebuild_id = g_timeout_add (REBUILD_INTERVAL_MSEC,

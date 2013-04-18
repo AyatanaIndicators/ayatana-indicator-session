@@ -108,6 +108,7 @@ struct _IndicatorSessionServicePrivate
   guint rebuild_id;
   int rebuild_flags;
   GDBusConnection * conn;
+  GCancellable * cancellable;
 
   gboolean replace;
 };
@@ -950,9 +951,10 @@ indicator_session_service_init (IndicatorSessionService * self)
   self->priv = p;
 
   /* init the backend objects */
-  backend_get (g_cancellable_new (), &p->backend_actions,
-                                     &p->backend_users,
-                                     &p->backend_guest);
+  p->cancellable = g_cancellable_new ();
+  backend_get (p->cancellable, &p->backend_actions,
+                               &p->backend_users,
+                               &p->backend_guest);
 
   /* init our key-to-User table */
   p->users = g_hash_table_new_full (g_str_hash,
@@ -1101,6 +1103,12 @@ my_dispose (GObject * o)
   priv_t * p = self->priv;
 
   unexport (self);
+
+  if (p->cancellable != NULL)
+    {
+      g_cancellable_cancel (p->cancellable);
+      g_clear_object (&p->cancellable);
+    }
 
   if (p->rebuild_id)
     {

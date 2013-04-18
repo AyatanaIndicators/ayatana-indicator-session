@@ -229,21 +229,6 @@ set_account_manager (IndicatorSessionUsersDbus * self, Accounts * a)
     }
 }
 
-#if 0
-static void
-create_accounts_proxy (IndicatorSessionUsersDbus * self)
-{
-  const char * name = "org.freedesktop.Accounts";
-  const char * path = "/org/freedesktop/Accounts";
-  GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES;
-
-  accounts_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
-                              flags, name, path,
-                              self->priv->cancellable,
-                              on_accounts_proxy_ready, self);
-}
-#endif
-
 /**
  *  SEAT / SESSION TRACKING
  *
@@ -771,17 +756,6 @@ indicator_session_users_dbus_init (IndicatorSessionUsersDbus * self)
   p->uid_to_sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal,
                                               NULL,
                                               (GDestroyNotify)g_hash_table_destroy);
-
-#if 0
-  console_kit_manager_proxy_new_for_bus (
-                               G_BUS_TYPE_SYSTEM,
-                               G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
-                               "org.freedesktop.ConsoleKit",
-                               "/org/freedesktop/ConsoleKit/Manager",
-                               p->cancellable,
-                               on_console_kit_manager_proxy_ready,
-                               self);
-#endif
 }
 
 /***

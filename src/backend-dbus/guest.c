@@ -379,30 +379,6 @@ set_display_manager_seat (IndicatorSessionGuestDbus * self, DisplayManagerSeat *
     }
 }
 
-#if 0
-static void
-on_display_manager_seat_proxy_ready (GObject * o, GAsyncResult * res, gpointer gself)
-{
-  GError * err;
-  DisplayManagerSeat * seat;
-  g_debug ("%s %s", G_STRLOC, G_STRFUNC);
-
-  err = NULL;
-  seat = display_manager_seat_proxy_new_for_bus_finish (res, &err);
-  if (err != NULL)
-    {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
-      g_error_free (err);
-    }
-  else
-    {
-      set_display_manager_seat (INDICATOR_SESSION_GUEST_DBUS(gself), seat);
-    }
-
-  g_clear_object (&seat);
-}
-#endif
-
 static void
 on_switch_to_guest_done (GObject * o, GAsyncResult * res, gpointer unused G_GNUC_UNUSED)
 {
@@ -529,16 +505,6 @@ indicator_session_guest_dbus_init (IndicatorSessionGuestDbus * self)
                                    IndicatorSessionGuestDbusPriv);
   p->cancellable = g_cancellable_new ();
   self->priv = p;
-
-#if 0
-  display_manager_seat_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
-                                          G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
-                                          "org.freedesktop.DisplayManager",
-                                          g_getenv ("XDG_SEAT_PATH"),
-                                          self->priv->cancellable,
-                                          on_display_manager_seat_proxy_ready,
-                                          self);
-#endif
 }
 
 /***

@@ -60,6 +60,13 @@ parse_command_line (int * argc, char *** argv)
 ****
 ***/
 
+static void
+on_name_lost (gpointer instance, gpointer loop)
+{
+  g_debug ("exiting: service couldn't acquire or lost ownership of busname");
+  g_main_loop_quit ((GMainLoop*)loop);
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -76,6 +83,8 @@ main (int argc, char ** argv)
   /* run */
   service = indicator_session_service_new (replace);
   loop = g_main_loop_new (NULL, FALSE);
+  g_signal_connect (service, INDICATOR_SESSION_SERVICE_SIGNAL_NAME_LOST,
+                    G_CALLBACK(on_name_lost), loop);
   g_main_loop_run (loop);
 
   /* cleanup */

@@ -37,6 +37,15 @@ G_DEFINE_TYPE (IndicatorSessionService,
                indicator_session_service,
                G_TYPE_OBJECT)
 
+/* signals enum */
+enum
+{
+  NAME_LOST,
+  LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
 enum
 {
   PROP_0,
@@ -910,9 +919,13 @@ on_name_lost (GDBusConnection * connection G_GNUC_UNUSED,
               const gchar     * name,
               gpointer          gself)
 {
+  IndicatorSessionService * self = INDICATOR_SESSION_SERVICE (gself);
+
   g_debug ("%s %s name lost %s", G_STRLOC, G_STRFUNC, name);
 
-  unexport (INDICATOR_SESSION_SERVICE (gself));
+  unexport (self);
+
+  g_signal_emit (self, signals[NAME_LOST], 0, NULL);
 }
 
 /***
@@ -1132,6 +1145,14 @@ indicator_session_service_class_init (IndicatorSessionServiceClass * klass)
   object_class->set_property = my_set_property;
 
   g_type_class_add_private (klass, sizeof (IndicatorSessionServicePrivate));
+
+  signals[NAME_LOST] = g_signal_new (INDICATOR_SESSION_SERVICE_SIGNAL_NAME_LOST,
+                                     G_TYPE_FROM_CLASS(klass),
+                                     G_SIGNAL_RUN_LAST,
+                                     G_STRUCT_OFFSET (IndicatorSessionServiceClass, name_lost),
+                                     NULL, NULL,
+                                     g_cclosure_marshal_VOID__VOID,
+                                     G_TYPE_NONE, 0);
 
   properties[PROP_0] = NULL;
 

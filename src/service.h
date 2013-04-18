@@ -36,6 +36,9 @@ typedef struct _IndicatorSessionService         IndicatorSessionService;
 typedef struct _IndicatorSessionServiceClass    IndicatorSessionServiceClass;
 typedef struct _IndicatorSessionServicePrivate  IndicatorSessionServicePrivate;
 
+/* signal keys */
+#define INDICATOR_SESSION_SERVICE_SIGNAL_NAME_LOST   "name-lost"
+
 /**
  * The Indicator Session Service.
  */
@@ -49,6 +52,10 @@ struct _IndicatorSessionService
 struct _IndicatorSessionServiceClass
 {
   GObjectClass parent_class;
+
+  /* signals */
+
+  void (* name_lost)(IndicatorSessionService * self);
 };
 
 /***

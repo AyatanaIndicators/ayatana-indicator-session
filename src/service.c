@@ -67,18 +67,18 @@ enum
 
 enum
 {
-  FORM_DESKTOP,
-  FORM_GREETER,
-  N_FORMS
+  PROFILE_DESKTOP,
+  PROFILE_GREETER,
+  N_PROFILES
 };
 
-static const char * const menu_names[N_FORMS] =
+static const char * const menu_names[N_PROFILES] =
 {
   "desktop",
   "desktop_greeter"
 };
 
-struct FormMenuInfo
+struct ProfileMenuInfo
 {
   /* the root level -- the header is the only child of this */
   GMenu * menu;
@@ -100,7 +100,7 @@ struct _IndicatorSessionServicePrivate
   GSettings * keybinding_settings;
   GSimpleActionGroup * actions;
   guint actions_export_id;
-  struct FormMenuInfo menus[N_FORMS];
+  struct ProfileMenuInfo menus[N_PROFILES];
   GSimpleAction * header_action;
   GSimpleAction * user_switcher_action;
   GSimpleAction * guest_switcher_action;
@@ -542,7 +542,7 @@ create_session_section (IndicatorSessionService * self)
 }
 
 static void
-create_menu (IndicatorSessionService * self, int form_factor)
+create_menu (IndicatorSessionService * self, int profile)
 {
   GMenu * menu;
   GMenu * submenu;
@@ -551,17 +551,17 @@ create_menu (IndicatorSessionService * self, int form_factor)
   int i;
   int n = 0;
 
-  g_assert (0<=form_factor && form_factor<N_FORMS);
-  g_assert (self->priv->menus[form_factor].menu == NULL);
+  g_assert (0<=profile && profile<N_PROFILES);
+  g_assert (self->priv->menus[profile].menu == NULL);
 
-  if (form_factor == FORM_DESKTOP)
+  if (profile == PROFILE_DESKTOP)
     {
       sections[n++] = create_admin_section ();
       sections[n++] = create_settings_section (self);
       sections[n++] = create_switch_section (self);
       sections[n++] = create_session_section (self);
     }
-  else if (form_factor == FORM_GREETER)
+  else if (profile == PROFILE_GREETER)
     {
       sections[n++] = create_session_section (self);
     }
@@ -585,8 +585,8 @@ create_menu (IndicatorSessionService * self, int form_factor)
   g_menu_append_item (menu, header);
   g_object_unref (header);
 
-  self->priv->menus[form_factor].menu = menu;
-  self->priv->menus[form_factor].submenu = submenu;
+  self->priv->menus[profile].menu = menu;
+  self->priv->menus[profile].submenu = submenu;
 }
 
 /***
@@ -768,8 +768,8 @@ static void
 rebuild_now (IndicatorSessionService * self, int sections)
 {
   priv_t * p = self->priv;
-  struct FormMenuInfo * desktop = &p->menus[FORM_DESKTOP];
-  struct FormMenuInfo * greeter = &p->menus[FORM_GREETER];
+  struct ProfileMenuInfo * desktop = &p->menus[PROFILE_DESKTOP];
+  struct ProfileMenuInfo * greeter = &p->menus[PROFILE_GREETER];
 
   if (sections & SECTION_HEADER)
     {
@@ -864,10 +864,10 @@ on_bus_acquired (GDBusConnection * connection,
     }
 
   /* export the menus */
-  for (i=0; i<N_FORMS; ++i)
+  for (i=0; i<N_PROFILES; ++i)
     {
       char * path = g_strdup_printf ("%s/%s", BUS_PATH, menu_names[i]);
-      struct FormMenuInfo * menu = &p->menus[i];
+      struct ProfileMenuInfo * menu = &p->menus[i];
 
       if (menu->menu == NULL)
         create_menu (self, i);
@@ -896,7 +896,7 @@ unexport (IndicatorSessionService * self)
   priv_t * p = self->priv;
 
   /* unexport the menus */
-  for (i=0; i<N_FORMS; ++i)
+  for (i=0; i<N_PROFILES; ++i)
     {
       guint * id = &self->priv->menus[i].export_id;
 
@@ -1130,7 +1130,7 @@ my_dispose (GObject * o)
   g_clear_object (&p->keybinding_settings);
   g_clear_object (&p->actions);
 
-  for (i=0; i<N_FORMS; ++i)
+  for (i=0; i<N_PROFILES; ++i)
     g_clear_object (&p->menus[i].menu);
 
   g_clear_object (&p->header_action);

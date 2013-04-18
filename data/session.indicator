@@ -1,0 +1,4 @@
+[Indicator Service]
+Name=indicator-session
+BusName=com.canonical.indicator.session-test
+ObjectPath=/com/canonical/indicator/session

@@ -277,18 +277,10 @@ static GMenuModel *
 create_admin_section (void)
 {
   GMenu * menu;
-  GMenuItem * item;
 
   menu = g_menu_new ();
-
-  item = g_menu_item_new (_("About This Computer"), "indicator.about");
-  g_menu_append_item (menu, item);
-  g_object_unref (G_OBJECT(item));
-
-  item = g_menu_item_new (_("Ubuntu Help"), "indicator.help");
-  g_menu_append_item (menu, item);
-  g_object_unref (G_OBJECT(item));
-
+  g_menu_append (menu, _("About This Computer"), "indicator.about");
+  g_menu_append (menu, _("Ubuntu Help"), "indicator.help");
   return G_MENU_MODEL (menu);
 }
 
@@ -296,21 +288,12 @@ static GMenuModel *
 create_settings_section (IndicatorSessionService * self)
 {
   GMenu * menu;
-  GMenuItem * item;
   priv_t * p = self->priv;
 
   menu = g_menu_new ();
-
-  item = g_menu_item_new (_("System Settings\342\200\246"), "indicator.settings");
-  g_menu_append_item (menu, item);
-  g_object_unref (G_OBJECT(item));
-
+  g_menu_append (menu, _("System Settings\342\200\246"), "indicator.settings");
   if (indicator_session_actions_has_online_account_error (p->backend_actions))
-    {
-      item = g_menu_item_new (_("Online Accounts\342\200\246"), "indicator.online-accounts");
-      g_menu_append_item (menu, item);
-      g_object_unref (G_OBJECT(item));
-    }
+      g_menu_append (menu, _("Online Accounts\342\200\246"), "indicator.online-accounts");
 
   return G_MENU_MODEL (menu);
 }
@@ -478,11 +461,7 @@ create_switch_section (IndicatorSessionService * self)
   g_object_unref (G_OBJECT(item));
  
   if (indicator_session_guest_is_allowed (p->backend_guest))
-    {
-      item = g_menu_item_new (_("Guest Session"), "indicator.switch-to-guest");
-      g_menu_append_item (menu, item);
-      g_object_unref (G_OBJECT(item));
-    }
+    g_menu_append (menu, _("Guest Session"), "indicator.switch-to-guest");
 
   /* build an array of all the users we know of */
   users = g_ptr_array_new ();
@@ -519,7 +498,6 @@ static GMenuModel *
 create_session_section (IndicatorSessionService * self)
 {
   GMenu * menu;
-  GMenuItem * item;
   const priv_t * const p = self->priv;
   GSettings * const s = p->indicator_settings;
   const gboolean ellipsis = use_ellipsis (self);
@@ -528,40 +506,26 @@ create_session_section (IndicatorSessionService * self)
 
   if (indicator_session_actions_can_logout (p->backend_actions) && !g_settings_get_boolean (s, "suppress-logout-menuitem"))
     {
-      item = g_menu_item_new (ellipsis ? _("Log Out\342\200\246")
-                                       : _("Log Out"), "indicator.logout");
-      g_menu_append_item (menu, item);
-      g_object_unref (G_OBJECT(item));
+      const char * label = ellipsis ? _("Log Out\342\200\246") : _("Log Out");
+      g_menu_append (menu, label, "indicator.logout");
     }
 
   if (indicator_session_actions_can_suspend (p->backend_actions))
-    {
-      item = g_menu_item_new (_("Suspend"), "indicator.suspend");
-      g_menu_append_item (menu, item);
-      g_object_unref (G_OBJECT(item));
-    }
+    g_menu_append (menu, _("Suspend"), "indicator.suspend");
 
   if (indicator_session_actions_can_hibernate (p->backend_actions))
-    {
-      item = g_menu_item_new (_("Hibernate"), "indicator.hibernate");
-      g_menu_append_item (menu, item);
-      g_object_unref (G_OBJECT(item));
-    }
+    g_menu_append (menu, _("Hibernate"), "indicator.hibernate");
 
   if (!g_settings_get_boolean (s, "suppress-restart-menuitem"))
     {
-      item = g_menu_item_new (ellipsis ? _("Restart\342\200\246")
-                                       : _("Restart"), "indicator.restart");
-      g_menu_append_item (menu, item);
-      g_object_unref (G_OBJECT(item));
+      const char * label = ellipsis ? _("Restart\342\200\246") : _("Restart");
+      g_menu_append (menu, label, "indicator.restart");
     }
 
   if (!g_settings_get_boolean (s, "suppress-shutdown-menuitem"))
     {
-      item = g_menu_item_new (ellipsis ? _("Shutdown\342\200\246")
-                                       : _("Shutdown"), "indicator.shutdown");
-      g_menu_append_item (menu, item);
-      g_object_unref (G_OBJECT(item));
+      const char * label = ellipsis ? _("Shutdown\342\200\246") : _("Shutdown");
+      g_menu_append (menu, label, "indicator.shutdown");
     }
 
   return G_MENU_MODEL (menu);

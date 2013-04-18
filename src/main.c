@@ -66,8 +66,6 @@ main (int argc, char ** argv)
   GMainLoop * loop;
   IndicatorSessionService * service;
 
-  signal (SIGPIPE, SIG_IGN);
-
   /* boilerplate i18n */
   setlocale (LC_ALL, "");
   bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);

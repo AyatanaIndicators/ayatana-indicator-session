@@ -741,8 +741,13 @@ init_gactions (IndicatorSessionService * self)
 ****
 ***/
 
+/**
+ * A small helper function for rebuild_now().
+ * - removes the previous section
+ * - adds and unrefs the new section
+ */
 static void
-replace_section (GMenu * parent, int pos, GMenuModel * new_section)
+rebuild_section (GMenu * parent, int pos, GMenuModel * new_section)
 {
   g_menu_remove (parent, pos);
   g_menu_insert_section (parent, pos, NULL, new_section);
@@ -763,24 +768,24 @@ rebuild_now (IndicatorSessionService * self, int sections)
 
   if (sections & SECTION_ADMIN)
     {
-      replace_section (desktop->submenu, 0, create_admin_section());
+      rebuild_section (desktop->submenu, 0, create_admin_section());
     }
 
   if (sections & SECTION_SETTINGS)
     {
-      replace_section (desktop->submenu, 1, create_settings_section(self));
+      rebuild_section (desktop->submenu, 1, create_settings_section(self));
     }
 
   if (sections & SECTION_SWITCH)
     {
-      replace_section (desktop->submenu, 2, create_switch_section(self));
+      rebuild_section (desktop->submenu, 2, create_switch_section(self));
       update_switch_actions (self);
     }
 
   if (sections & SECTION_SESSION)
     {
-      replace_section (desktop->submenu, 3, create_session_section(self));
-      replace_section (greeter->submenu, 0, create_session_section(self));
+      rebuild_section (desktop->submenu, 3, create_session_section(self));
+      rebuild_section (greeter->submenu, 0, create_session_section(self));
     }
 }
 

@@ -124,11 +124,21 @@ void indicator_session_users_notify_is_live_session (IndicatorSessionUsers * sel
 
 gboolean indicator_session_users_is_live_session (IndicatorSessionUsers * users);
 
-/* get a list of user keys */
+/**
+ * Get a list of user keys.
+ *
+ * Return value: (transfer full): a NULL-terminated array of user keys.
+ * Free with g_strfreev() when done.
+ */
 GStrv indicator_session_users_get_keys (IndicatorSessionUsers * users);
 
-/* get information about a particular user.
-   call indicator_session_user_free() when done with the returned struct. */
+/**
+ * Get information about a particular user.
+ *
+ * Return value: (transfer full): an IndicatorSessionUser struct
+ * populated with information about the specified user.
+ * Free with indicator_session_user_free() when done.
+ */
 IndicatorSessionUser *
 indicator_session_users_get_user (IndicatorSessionUsers * users,
                                   const gchar           * key);

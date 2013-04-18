@@ -1102,6 +1102,12 @@ my_dispose (GObject * o)
   IndicatorSessionService * self = INDICATOR_SESSION_SERVICE(o);
   priv_t * p = self->priv;
 
+  if (p->own_id)
+    {
+      g_bus_unown_name (p->own_id);
+      p->own_id = 0;
+    }
+
   unexport (self);
 
   if (p->cancellable != NULL)
@@ -1114,12 +1120,6 @@ my_dispose (GObject * o)
     {
       g_source_remove (p->rebuild_id);
       p->rebuild_id = 0;
-    }
-
-  if (p->own_id)
-    {
-      g_bus_unown_name (p->own_id);
-      p->own_id = 0;
     }
 
   g_clear_pointer (&p->users, g_hash_table_destroy);

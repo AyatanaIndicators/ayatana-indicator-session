@@ -468,7 +468,7 @@ create_switch_section (IndicatorSessionService * self)
   g_menu_item_set_attribute (item, "accel", "s", str);
   g_free (str);
   g_menu_append_item (menu, item);
-  g_object_unref (G_OBJECT(item));
+  g_object_unref (item);
  
   if (indicator_session_guest_is_allowed (p->backend_guest))
     g_menu_append (menu, _("Guest Session"), "indicator.switch-to-guest");
@@ -496,7 +496,7 @@ create_switch_section (IndicatorSessionService * self)
       item = g_menu_item_new (u->real_name, NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
       g_menu_append_item (menu, item);
-      g_object_unref (G_OBJECT(item));
+      g_object_unref (item);
     }
 
   /* cleanup */
@@ -571,19 +571,19 @@ create_menu (IndicatorSessionService * self, int form_factor)
   for (i=0; i<n; ++i)
     {
       g_menu_append_section (submenu, NULL, sections[i]);
-      g_object_unref (G_OBJECT(sections[i]));
+      g_object_unref (sections[i]);
     }
 
   /* add submenu to the header */
   header = g_menu_item_new (NULL, "indicator._header");
   g_menu_item_set_attribute (header, "x-canonical-type", "s", "com.canonical.indicator.root");
   g_menu_item_set_submenu (header, G_MENU_MODEL (submenu));
-  g_object_unref (G_OBJECT(submenu));
+  g_object_unref (submenu);
 
   /* add header to the menu */
   menu = g_menu_new ();
   g_menu_append_item (menu, header);
-  g_object_unref (G_OBJECT(header));
+  g_object_unref (header);
 
   self->priv->menus[form_factor].menu = menu;
   self->priv->menus[form_factor].submenu = submenu;
@@ -761,7 +761,7 @@ rebuild_section (GMenu * parent, int pos, GMenuModel * new_section)
 {
   g_menu_remove (parent, pos);
   g_menu_insert_section (parent, pos, NULL, new_section);
-  g_object_unref (G_OBJECT(new_section));
+  g_object_unref (new_section);
 }
 
 static void

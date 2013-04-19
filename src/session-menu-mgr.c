@@ -104,7 +104,7 @@ struct _SessionMenuMgr
   GSettings * indicator_settings;
   GSettings * keybinding_settings;
 
-  /* cached settings taken from the upower proxy */
+  /* cached settings taken from the logind proxy */
   gboolean can_hibernate;
   gboolean can_suspend;
 
@@ -121,7 +121,7 @@ struct _SessionMenuMgr
 
 static SwitcherMode get_switcher_mode         (SessionMenuMgr *);
 
-static void init_upower_proxy                 (SessionMenuMgr *);
+static void init_login1_proxy                 (SessionMenuMgr *);
 static void init_shell_watcher                (SessionMenuMgr *);
 
 static void update_screensaver_shortcut       (SessionMenuMgr *);
@@ -201,7 +201,7 @@ session_menu_mgr_init (SessionMenuMgr *mgr)
   g_signal_connect (mgr->users_dbus_facade, "guest-logged-in-changed",
                     G_CALLBACK(on_guest_logged_in_changed), mgr);
 
-  init_upower_proxy (mgr);
+  init_login1_proxy (mgr);
   init_shell_watcher (mgr);
 
   /* Online accounts menu item */
@@ -249,12 +249,11 @@ session_menu_mgr_class_init (SessionMenuMgrClass * klass)
 static gboolean
 can_perform_operation (gchar * permission)
 {
-  return g_strcmp0 ("yes", permission) == 0 ||
-    g_strcmp0 ("allowed", permission) == 0;
+  return g_strcmp0 ("yes", permission) == 0;
 }
 
 static void
-init_upower_proxy (SessionMenuMgr * mgr)
+init_login1_proxy (SessionMenuMgr * mgr)
 {
   /* default values */
   mgr->can_suspend = TRUE;

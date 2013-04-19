@@ -293,7 +293,7 @@ init_login1_proxy (SessionMenuMgr * mgr)
 	  mgr->can_suspend = can_perform_operation (can_suspend);
 	}
 
-      login1_manager_call_can_suspend_sync (mgr->login1_manager_proxy,
+      login1_manager_call_can_hibernate_sync (mgr->login1_manager_proxy,
 					    &can_hibernate,
 					    NULL,
 					    &error);

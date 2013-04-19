@@ -70,11 +70,11 @@ logind_fallback (LogoutDialogType action)
 			break;
 		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
 			g_debug("Telling logind to 'PowerOff'");
-			result = call_logind ("PowerOff", g_variant_new ("(b)", TRUE), &error);
+			result = call_logind ("PowerOff", g_variant_new ("(b)", FALSE), &error);
 			break;
 		case LOGOUT_DIALOG_TYPE_RESTART:
 			g_debug("Telling logind to 'Reboot'");
-			result = call_logind ("Reboot", g_variant_new ("(b)", TRUE), &error);
+			result = call_logind ("Reboot", g_variant_new ("(b)", FALSE), &error);
 			break;
 		default:
 			g_warning("Unknown action");

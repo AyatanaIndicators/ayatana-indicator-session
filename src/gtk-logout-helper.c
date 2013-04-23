@@ -31,7 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "shared-names.h"
 
 static GVariant *
-call_console_kit (const gchar *method, GVariant *parameters, GError **error)
+call_logind (const gchar *method, GVariant *parameters, GError **error)
 {
 	GDBusConnection * bus = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, error);
 	if (!bus)
@@ -41,9 +41,9 @@ call_console_kit (const gchar *method, GVariant *parameters, GError **error)
 	}
 
 	GVariant *result = g_dbus_connection_call_sync(bus,
-	                                               "org.freedesktop.ConsoleKit",
-	                                               "/org/freedesktop/ConsoleKit/Manager",
-	                                               "org.freedesktop.ConsoleKit.Manager",
+	                                               "org.freedesktop.login1",
+	                                               "/org/freedesktop/login1",
+	                                               "org.freedesktop.login1.Manager",
 	                                               method,
 	                                               parameters,
 	                                               NULL,
@@ -57,24 +57,24 @@ call_console_kit (const gchar *method, GVariant *parameters, GError **error)
 }
 
 static void
-consolekit_fallback (LogoutDialogType action)
+logind_fallback (LogoutDialogType action)
 {
 	GError * error = NULL;
 	GVariant *result = NULL;
 
-	g_debug("Falling back to using ConsoleKit for action");
+	g_debug("Falling back to using logind for action");
 
 	switch (action) {
 		case LOGOUT_DIALOG_TYPE_LOG_OUT:
-			g_warning("Unable to fallback to ConsoleKit for logout as it's a session issue.  We need some sort of session handler.");
+			g_warning("Unable to fallback to logind for logout as it's a session issue.  We need some sort of session handler.");
 			break;
 		case LOGOUT_DIALOG_TYPE_SHUTDOWN:
-			g_debug("Telling ConsoleKit to 'Stop'");
-			result = call_console_kit ("Stop", g_variant_new ("()"), &error);
+			g_debug("Telling logind to 'PowerOff'");
+			result = call_logind ("PowerOff", g_variant_new ("(b)", FALSE), &error);
 			break;
 		case LOGOUT_DIALOG_TYPE_RESTART:
-			g_debug("Telling ConsoleKit to 'Restart'");
-			result = call_console_kit ("Restart", g_variant_new ("()"), &error);
+			g_debug("Telling logind to 'Reboot'");
+			result = call_logind ("Reboot", g_variant_new ("(b)", FALSE), &error);
 			break;
 		default:
 			g_warning("Unknown action");
@@ -83,12 +83,10 @@ consolekit_fallback (LogoutDialogType action)
 
 	if (!result) {
 		if (error != NULL) {
-			g_warning ("ConsoleKit action failed: %s", error->message);
+			g_warning ("logind action failed: %s", error->message);
 		} else {
-			g_warning ("ConsoleKit action failed: unknown error");
+			g_warning ("logind action failed: unknown error");
 		}
-
-		consolekit_fallback(action);
 	}
 	else
 		g_variant_unref (result);
@@ -149,7 +147,7 @@ session_action (LogoutDialogType action)
 			g_warning ("SessionManager action failed: unknown error");
 		}
 
-		consolekit_fallback(action);
+		logind_fallback(action);
 	}
 	else
 		g_variant_unref (result);

@@ -29,7 +29,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/client.h>
 #include <libdbusmenu-gtk/menuitem.h>
 
-#include "dbus-upower.h"
+#include "dbus-login1-manager.h"
 #include "session-menu-mgr.h"
 #include "shared-names.h"
 #include "users-service-dbus.h"
@@ -37,8 +37,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define DEBUG_SHOW_ALL FALSE
 
-#define UPOWER_ADDRESS    "org.freedesktop.UPower"
-#define UPOWER_PATH       "/org/freedesktop/UPower"
+#define LOGIN1_MANAGER_ADDRESS    "org.freedesktop.login1"
+#define LOGIN1_MANAGER_PATH       "/org/freedesktop/login1"
 
 #define CMD_HELP            "yelp"
 #define CMD_INFO            "gnome-control-center info"
@@ -77,7 +77,7 @@ SwitcherMode;
  * This is a pretty straightforward class: it creates the menumodel
  * and listens for events that can affect the model's properties.
  *
- * Simple event sources, such as GSettings and a UPower DBus proxy,
+ * Simple event sources, such as GSettings and a logind DBus proxy,
  * are handled here. More involved event sources are delegated to the
  * UsersServiceDBus facade class.
  */
@@ -104,18 +104,16 @@ struct _SessionMenuMgr
   GSettings * indicator_settings;
   GSettings * keybinding_settings;
 
-  /* cached settings taken from the upower proxy */
+  /* cached settings taken from the logind proxy */
   gboolean can_hibernate;
   gboolean can_suspend;
-  gboolean allow_hibernate;
-  gboolean allow_suspend;
 
   gboolean shell_mode;
   gboolean greeter_mode;
 
   guint shell_name_watcher;
   GCancellable * cancellable;
-  DBusUPower * upower_proxy;
+  Login1Manager * login1_manager_proxy;
   SessionDbus * session_dbus;
   UsersServiceDbus * users_dbus_facade;
   OnlineAccountsMgr * online_accounts_mgr;
@@ -123,7 +121,7 @@ struct _SessionMenuMgr
 
 static SwitcherMode get_switcher_mode         (SessionMenuMgr *);
 
-static void init_upower_proxy                 (SessionMenuMgr *);
+static void init_login1_proxy                 (SessionMenuMgr *);
 static void init_shell_watcher                (SessionMenuMgr *);
 
 static void update_screensaver_shortcut       (SessionMenuMgr *);
@@ -203,7 +201,7 @@ session_menu_mgr_init (SessionMenuMgr *mgr)
   g_signal_connect (mgr->users_dbus_facade, "guest-logged-in-changed",
                     G_CALLBACK(on_guest_logged_in_changed), mgr);
 
-  init_upower_proxy (mgr);
+  init_login1_proxy (mgr);
   init_shell_watcher (mgr);
 
   /* Online accounts menu item */
@@ -224,7 +222,7 @@ session_menu_mgr_dispose (GObject *object)
   g_clear_object (&mgr->indicator_settings);
   g_clear_object (&mgr->lockdown_settings);
   g_clear_object (&mgr->keybinding_settings);
-  g_clear_object (&mgr->upower_proxy);
+  g_clear_object (&mgr->login1_manager_proxy);
   g_clear_object (&mgr->users_dbus_facade);
   g_clear_object (&mgr->top_mi);
   g_clear_object (&mgr->session_dbus);
@@ -248,97 +246,67 @@ session_menu_mgr_class_init (SessionMenuMgrClass * klass)
   object_class->dispose = session_menu_mgr_dispose;
 }
 
-/***
-****  UPower Proxy:
-****
-****  1. While bootstrapping, we invoke the AllowSuspend and AllowHibernate
-****     methods to find out whether or not those features are allowed.
-****  2. While bootstrapping, we get the CanSuspend and CanHibernate properties
-****     and also listen for property changes.
-****  3. These four values are used to set suspend and hibernate's visibility.
-****
-***/
-
-static void
-on_upower_properties_changed (SessionMenuMgr * mgr)
+static gboolean
+can_perform_operation (gchar * permission)
 {
-  gboolean need_refresh = FALSE;
-
-  if (mgr->upower_proxy != NULL)
-    {
-      gboolean b;
-
-      /* suspend */
-      b = dbus_upower_get_can_suspend (mgr->upower_proxy);
-      if (mgr->can_suspend != b)
-        {
-          mgr->can_suspend = b;
-          need_refresh = TRUE;
-        }
-
-      /* hibernate */
-      b = dbus_upower_get_can_hibernate (mgr->upower_proxy);
-      if (mgr->can_hibernate != b)
-        {
-          mgr->can_hibernate = b;
-          need_refresh = TRUE;
-        }
-    }
-
-  if (need_refresh)
-    {
-      update_session_menuitems (mgr);
-    }
+  return g_strcmp0 ("yes", permission) == 0;
 }
 
 static void
-init_upower_proxy (SessionMenuMgr * mgr)
+init_login1_proxy (SessionMenuMgr * mgr)
 {
   /* default values */
   mgr->can_suspend = TRUE;
   mgr->can_hibernate = TRUE;
-  mgr->allow_suspend = TRUE;
-  mgr->allow_hibernate = TRUE;
+
+  gchar * can_suspend;
+  gchar * can_hibernate;
 
   mgr->cancellable = g_cancellable_new ();
 
   GError * error = NULL;
-  mgr->upower_proxy = dbus_upower_proxy_new_for_bus_sync (
+  mgr->login1_manager_proxy = login1_manager_proxy_new_for_bus_sync (
                          G_BUS_TYPE_SYSTEM,
                          G_DBUS_PROXY_FLAGS_NONE,
-                         UPOWER_ADDRESS,
-                         UPOWER_PATH,
+                         LOGIN1_MANAGER_ADDRESS,
+                         LOGIN1_MANAGER_PATH,
                          NULL,
                          &error);
   if (error != NULL)
     {
-      g_warning ("Error creating upower proxy: %s", error->message);
+      g_warning ("Error creating logind proxy: %s", error->message);
       g_clear_error (&error);
     }
   else
     {
-      dbus_upower_call_suspend_allowed_sync (mgr->upower_proxy,
-                                             &mgr->allow_suspend,
-                                             NULL,
-                                             &error);
+      login1_manager_call_can_suspend_sync (mgr->login1_manager_proxy,
+					    &can_suspend,
+					    NULL,
+					    &error);
       if (error != NULL)
         {
           g_warning ("%s: %s", G_STRFUNC, error->message);
           g_clear_error (&error);
         }
+      else
+	{
+	  mgr->can_suspend = can_perform_operation (can_suspend);
+	}
 
-      dbus_upower_call_hibernate_allowed_sync (mgr->upower_proxy,
-                                               &mgr->allow_hibernate,
-                                               NULL,
-                                               &error);
+      login1_manager_call_can_hibernate_sync (mgr->login1_manager_proxy,
+					    &can_hibernate,
+					    NULL,
+					    &error);
       if (error != NULL)
         {
           g_warning ("%s: %s", G_STRFUNC, error->message);
           g_clear_error (&error);
         }
+      else
+	{
+	  mgr->can_hibernate = can_perform_operation (can_hibernate);
+	}
 
-      g_signal_connect_swapped (mgr->upower_proxy, "changed",
-                                G_CALLBACK(on_upower_properties_changed), mgr);
     }
 }
 
@@ -505,13 +473,9 @@ update_session_menuitems (SessionMenuMgr * mgr)
    && !g_settings_get_boolean (s, "suppress-logout-menuitem");
   mi_set_visible (mgr->logout_mi, v);
 
-  v = mgr->can_suspend
-   && mgr->allow_suspend;
-  mi_set_visible (mgr->suspend_mi, v);
+  mi_set_visible (mgr->suspend_mi, mgr->can_suspend);
 
-  v = mgr->can_hibernate
-   && mgr->allow_hibernate;
-  mi_set_visible (mgr->hibernate_mi, v);
+  mi_set_visible (mgr->hibernate_mi, mgr->can_hibernate);
 
   v = (!mgr->shell_mode || g_settings_get_boolean (s, "suppress-logout-restart-shutdown"))
    && (HAVE_RESTART_CMD || mgr->shell_mode)
@@ -878,10 +842,6 @@ is_user_switching_allowed (SessionMenuMgr * mgr)
     }
 
   /* maybe the seat doesn't support activation */
-  if (!users_service_dbus_can_activate_session (mgr->users_dbus_facade))
-    {
-      return FALSE;
-    }
 
   return TRUE;
 }
@@ -1147,9 +1107,10 @@ action_func_suspend (SessionMenuMgr * mgr)
 {
   GError * error = NULL;
 
-  dbus_upower_call_suspend_sync (mgr->upower_proxy,
-                                 mgr->cancellable,
-                                 &error);
+  login1_manager_call_suspend_sync (mgr->login1_manager_proxy,
+				    TRUE,
+				    mgr->cancellable,
+				    &error);
 
   if (error != NULL)
     {
@@ -1163,9 +1124,10 @@ action_func_hibernate (SessionMenuMgr * mgr)
 {
   GError * error = NULL;
 
-  dbus_upower_call_hibernate_sync (mgr->upower_proxy,
-                                   mgr->cancellable,
-                                   &error);
+  login1_manager_call_hibernate_sync (mgr->login1_manager_proxy,
+				      TRUE,
+				      mgr->cancellable,
+				      &error);
 
   if (error != NULL)
     {
@@ -1349,10 +1311,6 @@ session_menu_mgr_new (SessionDbus  * session_dbus,
   mgr->user_menuitem_index = n;
   update_user_menuitems (mgr);
   build_session_menuitems (mgr);
-
-  /* After we have the session menu items built we can look to
-     align them with UPower */
-  on_upower_properties_changed (mgr);
 
   return mgr;
 }

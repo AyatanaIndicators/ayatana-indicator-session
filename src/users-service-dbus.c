@@ -30,16 +30,15 @@
 #include <pwd.h> /* getpwuid() */
 
 #include "dbus-accounts.h"
-#include "dbus-consolekit-manager.h"
-#include "dbus-consolekit-seat.h"
-#include "dbus-consolekit-session.h"
+#include "dbus-login1-manager.h"
+#include "dbus-login1-session.h"
+#include "dbus-login1-user.h"
 #include "dbus-display-manager.h"
 #include "dbus-user.h"
 #include "shared-names.h"
 #include "users-service-dbus.h"
 
-#define CK_ADDR             "org.freedesktop.ConsoleKit"
-#define CK_SESSION_IFACE    "org.freedesktop.ConsoleKit.Session"
+#define LOGIND_ADDR             "org.freedesktop.login1"
 
 /**
 ***
@@ -57,17 +56,19 @@ static void     on_user_deleted      (Accounts          * o,
                                       const gchar       * user_object_path,
                                       UsersServiceDbus  * service);
 
-static void     on_session_added     (ConsoleKitSeat    * seat,
-                                      const gchar       * ssid,
-                                      UsersServiceDbus  * service);
+static void     on_session_added     (Login1Manager      * proxy,
+                                      const gchar        * ssid,
+                                      const gchar        * path,
+                                      UsersServiceDbus   * service);
 
-static void     on_session_removed   (ConsoleKitSeat    * seat,
-                                      const gchar       * ssid,
-                                      UsersServiceDbus  * service);
+static void     on_session_removed   (Login1Manager      * proxy,
+                                      const gchar        * ssid,
+                                      const gchar        * path,
+                                      UsersServiceDbus   * service);
 
-static void     on_session_list      (ConsoleKitSeat    * seat,
-                                      GAsyncResult      * result,
-                                      UsersServiceDbus  * service);
+static void     on_session_list      (Login1Manager      * proxy,
+                                      GAsyncResult       * result,
+                                      UsersServiceDbus   * service);
 
 /***
 ****  Priv Struct
@@ -85,8 +86,7 @@ struct _UsersServiceDbusPrivate
   GHashTable * users;
 
   GCancellable * cancellable;
-  ConsoleKitSeat * seat_proxy;
-  ConsoleKitManager * ck_manager_proxy;
+  Login1Manager * manager_proxy;
   Accounts * accounts_proxy;
 };
 
@@ -112,8 +112,7 @@ users_service_dbus_dispose (GObject *object)
   UsersServiceDbusPrivate * priv = USERS_SERVICE_DBUS(object)->priv;
 
   g_clear_object (&priv->accounts_proxy);
-  g_clear_object (&priv->seat_proxy);
-  g_clear_object (&priv->ck_manager_proxy);
+  g_clear_object (&priv->manager_proxy);
 
   if (priv->cancellable != NULL)
     {
@@ -211,14 +210,14 @@ users_service_dbus_init (UsersServiceDbus *self)
                                     g_object_unref);
 
   /**
-  ***  create the consolekit manager proxy...
+  ***  create the logind manager proxy...
   **/
 
-  p->ck_manager_proxy = console_kit_manager_proxy_new_for_bus_sync (
+  p->manager_proxy = login1_manager_proxy_new_for_bus_sync (
                              G_BUS_TYPE_SYSTEM,
                              G_DBUS_PROXY_FLAGS_NONE,
-                             "org.freedesktop.ConsoleKit",
-                             "/org/freedesktop/ConsoleKit/Manager",
+                             "org.freedesktop.login1",
+                             "/org/freedesktop/login1",
                              NULL,
                              &error);
   if (error != NULL)
@@ -229,36 +228,13 @@ users_service_dbus_init (UsersServiceDbus *self)
 
   p->seat = get_seat (self);
 
-  /**
-  ***  create the consolekit seat proxy...
-  **/
+  g_signal_connect (p->manager_proxy, "session-new",
+                    G_CALLBACK (on_session_added), self);
+  g_signal_connect (p->manager_proxy, "session-removed",
+                    G_CALLBACK (on_session_removed), self);
 
-  if (p->seat != NULL)
-    {
-      ConsoleKitSeat * proxy = console_kit_seat_proxy_new_for_bus_sync (
-                                 G_BUS_TYPE_SYSTEM,
-                                 G_DBUS_PROXY_FLAGS_NONE,
-                                 "org.freedesktop.ConsoleKit",
-                                 p->seat,
-                                 NULL,
-                                 &error);
-
-      if (error != NULL)
-        {
-          g_warning ("Failed to connect to the ConsoleKit seat: %s", error->message);
-          g_clear_error (&error);
-        }
-      else
-        {
-          g_signal_connect (proxy, "session-added",
-                            G_CALLBACK (on_session_added), self);
-          g_signal_connect (proxy, "session-removed",
-                            G_CALLBACK (on_session_removed), self);
-          console_kit_seat_call_get_sessions (proxy, p->cancellable,
-                            (GAsyncReadyCallback)on_session_list, self);
-          p->seat_proxy = proxy;
-        }
-    }
+  login1_manager_call_list_sessions (p->manager_proxy, p->cancellable,
+                    (GAsyncReadyCallback) on_session_list, self);
 
   /**
   ***  create the accounts manager proxy...
@@ -311,16 +287,17 @@ emit_guest_login_changed (UsersServiceDbus * self)
 ****
 ***/
 
-static ConsoleKitSession*
-create_consolekit_session_proxy (const char * ssid)
+static Login1User*
+create_login1_user_proxy (const char * path)
 {
+  
   GError * error = NULL;
 
-  ConsoleKitSession * p = console_kit_session_proxy_new_for_bus_sync (
+  Login1User * p = login1_user_proxy_new_for_bus_sync (
                             G_BUS_TYPE_SYSTEM,
                             G_DBUS_PROXY_FLAGS_NONE,
-                            CK_ADDR,
-                            ssid,
+                            LOGIND_ADDR,
+                            path,
                             NULL,
                             &error);
   if (error != NULL)
@@ -332,54 +309,107 @@ create_consolekit_session_proxy (const char * ssid)
   return p;
 }
 
-static gchar *
-get_seat_from_session_proxy (ConsoleKitSession * session_proxy)
+static Login1User *
+create_login1_user_proxy_from_uid (UsersServiceDbus * self,
+                                   guint64 uid)
 {
-  gchar * seat = NULL;
-
+  Login1Manager * manager = self->priv->manager_proxy;
+  Login1User * user_proxy = NULL;
+  gchar * user_object_path = NULL;
   GError * error = NULL;
-  console_kit_session_call_get_seat_id_sync (session_proxy,
-                                             &seat,
-                                             NULL,
-                                             &error);
+
+  login1_manager_call_get_user_sync (manager, uid, &user_object_path, NULL,
+      &error);
+
   if (error != NULL)
     {
-      g_debug ("%s: %s", G_STRLOC, error->message);
+      g_warning ("%s: %s", G_STRLOC, error->message);
       g_error_free (error);
     }
 
+  if (user_object_path != NULL)
+    user_proxy = create_login1_user_proxy (user_object_path);
+
+  return user_proxy;
+
+}
+
+static Login1Session *
+create_login1_session_proxy (const char * path)
+{
+  GError * error = NULL;
+
+  Login1Session * p = login1_session_proxy_new_for_bus_sync (
+                            G_BUS_TYPE_SYSTEM,
+                            G_DBUS_PROXY_FLAGS_NONE,
+                            LOGIND_ADDR,
+                            path,
+                            NULL,
+                            &error);
+  if (error != NULL)
+    {
+      g_warning ("%s: %s", G_STRLOC, error->message);
+      g_error_free (error);
+    }
+
+  return p;
+}
+
+
+static gchar *
+get_seat_from_session_proxy (Login1Session * session_proxy)
+{
+  gchar * seat;
+  GVariant * seatobj = login1_session_get_seat (session_proxy);
+
+  g_variant_get (seatobj, "(so)", &seat, NULL);
+
   return seat;
+}
+
+static const gchar *
+get_display_from_session_proxy (Login1Session * session_proxy)
+{
+  const gchar * display;
+  display = login1_session_get_display (session_proxy);
+  return display;
 }
 
 static gchar *
 get_seat (UsersServiceDbus *service)
 {
   gchar * seat = NULL;
-  gchar * ssid = NULL;
+  gchar * path = NULL;
   GError * error = NULL;
   UsersServiceDbusPrivate * priv = service->priv;
+  Login1Session * session_proxy = NULL;
+  pid_t pid = getpid();
 
-  console_kit_manager_call_get_current_session_sync (priv->ck_manager_proxy,
-                                                     &ssid,
-                                                     NULL,
-                                                     &error);
+  login1_manager_call_get_session_by_pid_sync (priv->manager_proxy,
+                                               pid,
+                                               &path,
+                                               NULL,
+                                               &error);
+
 
   if (error != NULL)
     {
       g_debug ("%s: %s", G_STRLOC, error->message);
       g_error_free (error);
+      goto out;
     }
-  else
+
+  session_proxy = create_login1_session_proxy (path);
+
+  if (!session_proxy)
     {
-      ConsoleKitSession * session = create_consolekit_session_proxy (ssid);
-
-      if (session != NULL)
-        {
-          seat = get_seat_from_session_proxy (session);
-          g_object_unref (session);
-        }
+      g_debug ("%s: Could't get session proxy object", G_STRLOC);
     }
 
+  seat = get_seat_from_session_proxy (session_proxy);
+
+out:
+  g_object_unref (session_proxy);
   return seat;
 }
 
@@ -434,9 +464,10 @@ user_count_sessions (AccountsUser * user)
 static void
 add_user_session (UsersServiceDbus  * service,
                   AccountsUser      * user,
-                  const gchar       * ssid)
+                  const gchar       * ssid,
+                  const gchar       * path)
 {
-  ConsoleKitSession * session_proxy = create_consolekit_session_proxy (ssid);
+  Login1Session * session_proxy = create_login1_session_proxy (path);
   if (session_proxy != NULL)
     {
       UsersServiceDbusPrivate * priv = service->priv;
@@ -446,12 +477,8 @@ add_user_session (UsersServiceDbus  * service,
       if (seat && priv->seat && !g_strcmp0 (seat, priv->seat))
         {
           /* does this session have a display? */
-          gchar * display = NULL;
-          console_kit_session_call_get_x11_display_sync (session_proxy,
-                                                         &display,
-                                                         NULL, NULL);
-          const gboolean has_display = display && *display;
-          g_free (display);
+          const gchar * display = get_display_from_session_proxy (session_proxy);
+          const gboolean has_display = g_strcmp0 ("", display) != 0;
 
           if (has_display)
             {
@@ -480,33 +507,30 @@ add_user_sessions (UsersServiceDbus *self, AccountsUser * user)
   const char * username = accounts_user_get_user_name (user);
   g_debug ("%s adding %s (%i)", G_STRLOC, username, (int)uid);
 
-  GError * error = NULL;
-  gchar ** sessions = NULL;
-  console_kit_manager_call_get_sessions_for_unix_user_sync (
-                                              self->priv->ck_manager_proxy,
-                                              uid,
-                                              &sessions,
-                                              NULL,
-                                              &error);
+  GVariant * sessions = NULL;
 
-  if (error != NULL)
+  Login1User * user_proxy = create_login1_user_proxy_from_uid (self, uid);
+
+  if (user_proxy != NULL)
     {
-      g_debug ("%s: %s", G_STRLOC, error->message);
-      g_error_free (error);
+      sessions = login1_user_get_sessions (user_proxy);
     }
-  else if (sessions != NULL)
-    {
-      int i;
 
-      for (i=0; sessions[i]; i++)
+  if (sessions != NULL)
+    {
+      GVariantIter iter;
+      g_variant_iter_init (&iter, sessions);
+      gchar * id;
+      gchar * object_path;
+
+      while (g_variant_iter_loop (&iter, "(so)", &id, &object_path))
         {
-          const char * const ssid = sessions[i];
-          g_debug ("%s adding %s's session %s", G_STRLOC, username, ssid);
-          add_user_session (self, user, ssid);
+          g_debug ("%s adding %s's session %s", G_STRLOC, username, id);
+          add_user_session (self, user, id, object_path);
         }
-
-      g_strfreev (sessions);
     }
+
+  g_object_unref (user_proxy);
 }
 
 /* returns true if this property is one we use */
@@ -723,9 +747,10 @@ find_user_from_username (UsersServiceDbus  * self,
 ***/
 
 static void
-on_session_removed (ConsoleKitSeat   * seat_proxy,
-                    const gchar      * ssid,
-                    UsersServiceDbus * service)
+on_session_removed (Login1Manager * proxy,
+                    const gchar        * ssid,
+                    const gchar        * path,
+                    UsersServiceDbus   * service)
 {
   g_return_if_fail (IS_USERS_SERVICE_DBUS (service));
 
@@ -757,42 +782,25 @@ on_session_removed (ConsoleKitSeat   * seat_proxy,
 }
 
 static gchar*
-get_unix_username_from_ssid (UsersServiceDbus * self,
-                             const gchar      * ssid)
+get_unix_username_from_path (UsersServiceDbus * self,
+                             const gchar      * path)
 {
-  gchar * username = NULL;
 
-  ConsoleKitSession * session_proxy = create_consolekit_session_proxy (ssid);
+  Login1Session * session_proxy = create_login1_session_proxy (path);
   if (session_proxy != NULL)
     {
-      guint uid = 0;
-      GError * error = NULL;
-      console_kit_session_call_get_unix_user_sync (session_proxy,
-                                                   &uid,
-                                                   NULL, &error);
-      if (error != NULL)
-        {
-          g_warning ("%s: %s", G_STRLOC, error->message);
-          g_clear_error (&error);
-        }
-      else
-        {
-          errno = 0;
-          const struct passwd * pwent = getpwuid (uid);
-          if (pwent == NULL)
-            {
-              g_warning ("Failed to lookup user id %d: %s", (int)uid, g_strerror(errno));
-            }
-          else
-            {
-              username = g_strdup (pwent->pw_name);
-            }
-        }
+      gchar * username = g_strdup (login1_session_get_name (session_proxy));
+
+      g_debug ("%s Getting username for %s: %s", G_STRLOC, path, username);
 
       g_object_unref (session_proxy);
-    }
 
-  return username;
+      return username;
+    } 
+      else 
+    {
+      return NULL;
+    }
 }
 
 static gboolean
@@ -810,13 +818,14 @@ is_guest_username (const char * username)
 /* If the new session belongs to 'guest', update our guest_ssid.
    Otherwise, call add_user_session() to update our session tables */
 static void
-on_session_added (ConsoleKitSeat   * seat_proxy G_GNUC_UNUSED,
-                  const gchar      * ssid,
-                  UsersServiceDbus * service)
+on_session_added (Login1Manager * proxy G_GNUC_UNUSED,
+                  const gchar        * ssid,
+                  const gchar        * path,
+                  UsersServiceDbus   * service)
 {
   g_return_if_fail (IS_USERS_SERVICE_DBUS(service));
 
-  gchar * username = get_unix_username_from_ssid (service, ssid);
+  gchar * username = get_unix_username_from_path (service, path);
   g_debug ("%s %s() username %s has new session %s", G_STRLOC, G_STRFUNC, username, ssid);
 
   if (is_guest_username (username))
@@ -834,45 +843,59 @@ on_session_added (ConsoleKitSeat   * seat_proxy G_GNUC_UNUSED,
 
       if (user != NULL)
         {
-          add_user_session (service, user, ssid);
+          add_user_session (service, user, ssid, path);
           emit_user_login_changed (service, user);
         }
     }
 
-  g_free (username);
 }
 
 /* Receives a list of sessions and calls on_session_added() for each of them */
 static void
-on_session_list (ConsoleKitSeat   * seat_proxy,
+on_session_list (Login1Manager    * proxy,
                  GAsyncResult     * result,
                  UsersServiceDbus * self)
 {
   GError * error = NULL;
-  gchar ** sessions = NULL;
+  GVariant * sessions;
   g_debug ("%s bootstrapping the session list", G_STRLOC);
 
-  console_kit_seat_call_get_sessions_finish (seat_proxy,
-                                             &sessions,
-                                             result,
-                                             &error);
+  login1_manager_call_list_sessions_finish (proxy,
+                                            &sessions,
+                                            result,
+                                            &error);
 
   if (error != NULL)
     {
       g_debug ("%s: %s", G_STRLOC, error->message);
       g_error_free (error);
     }
-  else if (sessions != NULL)
+  else
     {
-      int i;
+      GVariantIter * iter;
+      gchar * seat;
+      gchar * path;
 
-      for (i=0; sessions[i]; i++)
+      g_variant_get (sessions, "a(susso)", &iter);
+
+      while (g_variant_iter_loop (iter, 
+                  "(susso)",
+                  NULL,
+                  NULL,
+                  NULL,
+                  &seat,
+                  &path))
         {
-          g_debug ("%s adding initial session '%s'", G_STRLOC, sessions[i]);
-          on_session_added (seat_proxy, sessions[i], self);
+          if (g_strcmp0 (seat, self->priv->seat) == 0)
+            {
+              g_debug ("%s adding initial session '%s'", G_STRLOC, path);
+              on_session_added (proxy, seat, path, self);
+            }
         }
 
-      g_strfreev (sessions);
+      g_variant_iter_free (iter);
+      g_variant_unref (sessions);
+
     }
 
   g_debug ("%s done bootstrapping the session list", G_STRLOC);
@@ -1002,27 +1025,6 @@ users_service_dbus_guest_session_enabled (UsersServiceDbus * self)
     }
 
   return enabled;
-}
-
-gboolean
-users_service_dbus_can_activate_session (UsersServiceDbus * self)
-{
-  gboolean can_activate = FALSE;
-
-  g_return_val_if_fail (IS_USERS_SERVICE_DBUS(self), can_activate);
-
-  GError * error = NULL;
-  console_kit_seat_call_can_activate_sessions_sync (self->priv->seat_proxy,
-                                                    &can_activate,
-                                                    NULL,
-                                                    &error);
-  if (error != NULL)
-    {
-      g_warning ("%s: %s", G_STRLOC, error->message);
-      g_error_free (error);
-    }
-
-  return can_activate;
 }
 
 gboolean

@@ -30,7 +30,7 @@ Package: indicator-session
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         upower,
+         systemd-services,
          gnome-settings-daemon,
 Recommends: indicator-applet (>= 0.2) | indicator-renderer, 
 Suggests: lightdm

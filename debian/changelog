@@ -1,3 +1,11 @@
+indicator-session (12.10.5daily13.03.08-0ubuntu2) UNRELEASED; urgency=low
+
+  * Stop using ConsoleKit and UPower for session tracking and
+    shutdown/reboot/suspend/hibernate; migrate to logind. 
+  * Remove upower dependency and depend on systemd-services.
+
+ -- Iain Lane <iain.lane@canonical.com>  Thu, 02 May 2013 18:06:00 +0100
+
 indicator-session (12.10.5daily13.03.08-0ubuntu1) raring; urgency=low
 
   [ Marco Trevisan (Treviño) ]

@@ -1,3 +1,9 @@
+indicator-session (12.10.5daily13.05.02-0ubuntu1) saucy; urgency=low
+
+  * Automatic snapshot from revision 388
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 02 May 2013 22:59:05 +0000
+
 indicator-session (12.10.5daily13.03.08-0ubuntu1) raring; urgency=low
 
   [ Marco Trevisan (Treviño) ]

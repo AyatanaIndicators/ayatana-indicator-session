@@ -1,3 +1,9 @@
+indicator-session (12.10.5daily13.05.02-0ubuntu2) UNRELEASED; urgency=low
+
+  * Remove upower dependency and depend on systemd-services.
+
+ -- Iain Lane <iain.lane@canonical.com>  Thu, 02 May 2013 18:06:00 +0100
+
 indicator-session (12.10.5daily13.05.02-0ubuntu1) saucy; urgency=low
 
   * Automatic snapshot from revision 388

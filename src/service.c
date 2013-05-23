@@ -471,7 +471,15 @@ create_switch_section (IndicatorSessionService * self)
   g_object_unref (item);
  
   if (indicator_session_guest_is_allowed (p->backend_guest))
-    g_menu_append (menu, _("Guest Session"), "indicator.switch-to-guest");
+    {
+      GMenuItem *item;
+
+      item = g_menu_item_new (_("Guest Session"), "indicator.switch-to-guest");
+      g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.guest-menu-item");
+      g_menu_append_item (menu, item);
+
+      g_object_unref (item);
+    }
 
   /* build an array of all the users we know of */
   users = g_ptr_array_new ();
@@ -495,6 +503,7 @@ create_switch_section (IndicatorSessionService * self)
       const IndicatorSessionUser * u = g_ptr_array_index (users, i);
       item = g_menu_item_new (u->real_name, NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
+      g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.user-menu-item");
       g_menu_append_item (menu, item);
       g_object_unref (item);
     }

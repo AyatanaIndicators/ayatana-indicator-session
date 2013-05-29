@@ -2,13 +2,6 @@ SUBDIRS = \
 	icons \
 	extra-sessions
 
-dbus_servicesdir = $(DBUSSERVICEDIR)
-service_in_files =  indicator-session.service.in
-dbus_services_DATA = $(service_in_files:.service.in=.service)
-
-%.service: %.service.in
-	sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@
-
 upstart_jobsdir = $(datadir)/upstart/sessions/
 upstart_jobs_in_files = indicator-session.conf.in
 upstart_jobs_DATA = $(upstart_jobs_in_files:.conf.in=.conf)
@@ -26,11 +19,9 @@ convertdir = $(datadir)/GConf/gsettings
 dist_convert_DATA = indicator-session.convert
 
 EXTRA_DIST =					\
-	$(service_in_files)			\
 	$(upstart_jobs_in_files)	\
 	$(gsettings_SCHEMAS:.xml=.xml.in)
 
 CLEANFILES =					\
-	$(dbus_services_DATA)		\
 	$(upstart_jobs_DATA)		\
 	$(gsettings_SCHEMAS)

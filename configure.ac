@@ -106,17 +106,6 @@ AC_SUBST(INDICATORDIR)
 AC_SUBST(INDICATORICONSDIR)
 
 ###########################
-# DBus Service Info
-###########################
-
-if test "x$with_localinstall" = "xyes"; then
-	DBUSSERVICEDIR="${datadir}/dbus-1/services/"
-else
-	DBUSSERVICEDIR=`$PKG_CONFIG --variable=session_bus_services_dir dbus-1`
-fi
-AC_SUBST(DBUSSERVICEDIR)
-
-###########################
 # Google Test framework
 ###########################
 

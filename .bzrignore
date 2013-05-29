@@ -253,3 +253,4 @@ dbus-display-manager.h
 dbus-user.c
 dbus-user.h
 tests/test-service
+indicator-session.conf

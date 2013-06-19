@@ -68,7 +68,9 @@ log_and_clear_error (GError ** err, const char * loc, const char * func)
 {
   if (*err)
     {
-      g_warning ("%s %s: %s", loc, func, (*err)->message);
+      if (!g_error_matches (*err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", loc, func, (*err)->message);
+
       g_clear_error (err);
     }
 }
@@ -591,14 +593,6 @@ my_dispose (GObject * o)
   G_OBJECT_CLASS (indicator_session_actions_dbus_parent_class)->dispose (o);
 }
 
-static void
-my_finalize (GObject * o)
-{
-  /*IndicatorSessionActionsDbus * u = INDICATOR_SESSION_ACTIONS_DBUS (o);*/
-
-  G_OBJECT_CLASS (indicator_session_actions_dbus_parent_class)->finalize (o);
-}
-
 /***
 ****  GObject Boilerplate
 ***/
@@ -612,7 +606,6 @@ indicator_session_actions_dbus_class_init (IndicatorSessionActionsDbusClass * kl
 
   object_class = G_OBJECT_CLASS (klass);
   object_class->dispose = my_dispose;
-  object_class->finalize = my_finalize;
 
   actions_class = INDICATOR_SESSION_ACTIONS_CLASS (klass);
   actions_class->can_lock = my_can_lock;

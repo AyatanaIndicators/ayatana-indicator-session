@@ -95,7 +95,9 @@ on_active_uid_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gse
 
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else
@@ -140,7 +142,10 @@ on_active_session_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gp
 
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
+      g_error_free (err);
     }
   else
     {
@@ -253,7 +258,9 @@ on_user_proxy_ready (GObject       * o     G_GNUC_UNUSED,
 
   if (err != NULL)
     {
-      g_warning ("%s: %s", G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s: %s", G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else if (is_guest (user))
@@ -290,7 +297,9 @@ on_user_list_ready (GObject * o, GAsyncResult * res, gpointer gself)
   accounts_call_list_cached_users_finish (ACCOUNTS(o), &paths, res, &err);
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else
@@ -389,7 +398,9 @@ on_switch_to_guest_done (GObject * o, GAsyncResult * res, gpointer unused G_GNUC
   display_manager_seat_call_switch_to_guest_finish (DISPLAY_MANAGER_SEAT(o), res, &err);
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
       g_error_free (err);
     }
 }
@@ -416,14 +427,6 @@ my_dispose (GObject * o)
   g_clear_object (&self->priv->guest);
 
   G_OBJECT_CLASS (indicator_session_guest_dbus_parent_class)->dispose (o);
-}
-
-static void
-my_finalize (GObject * o)
-{
-  /*IndicatorSessionGuestDbus * u = INDICATOR_SESSION_GUEST_DBUS (o);*/
-
-  G_OBJECT_CLASS (indicator_session_guest_dbus_parent_class)->finalize (o);
 }
 
 static gboolean
@@ -483,7 +486,6 @@ indicator_session_guest_dbus_class_init (IndicatorSessionGuestDbusClass * klass)
 
   object_class = G_OBJECT_CLASS (klass);
   object_class->dispose = my_dispose;
-  object_class->finalize = my_finalize;
 
   guest_class = INDICATOR_SESSION_GUEST_CLASS (klass);
   guest_class->is_allowed = my_is_allowed;

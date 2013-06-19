@@ -154,7 +154,9 @@ on_user_proxy_ready (GObject       * o        G_GNUC_UNUSED,
   user = accounts_user_proxy_new_for_bus_finish (res, &err);
   if (err != NULL)
     {
-      g_warning ("%s: %s", G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s: %s", G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else
@@ -187,7 +189,9 @@ on_user_list_ready (GObject * o, GAsyncResult * res, gpointer gself)
   accounts_call_list_cached_users_finish (ACCOUNTS(o), &paths, res, &err);
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else
@@ -317,7 +321,9 @@ on_session_proxy_uid_ready (GObject       * o,
   console_kit_session_call_get_unix_user_finish (session, &uid, res, &err);
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else if (uid)
@@ -347,7 +353,9 @@ on_session_x11_display_ready (GObject       * o,
   console_kit_session_call_get_x11_display_finish (session, &gui, res, &err);
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else
@@ -378,7 +386,9 @@ on_session_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer 
   session = console_kit_session_proxy_new_finish (res, &err);
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else if (session != NULL)
@@ -417,7 +427,9 @@ on_session_list_ready (GObject * o, GAsyncResult * res, gpointer gself)
                                              &sessions, res, &err);
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else
@@ -508,7 +520,9 @@ on_seat_active_session_ready (GObject * o, GAsyncResult * res, gpointer gself)
   console_kit_seat_call_get_active_session_finish (seat, &ssid, res, &err);
   if (err != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
+
       g_error_free (err);
     }
   else if (ssid != NULL)

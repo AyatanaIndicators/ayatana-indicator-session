@@ -91,7 +91,8 @@ on_user_proxy_ready (GObject       * o       G_GNUC_UNUSED,
 
   if (data->error != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
+      if (!g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
     }
   else
     {
@@ -112,7 +113,8 @@ on_user_path_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gdat
 
   if (data->error != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
+      if (!g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
     }
   else if (path != NULL)
     {
@@ -141,7 +143,8 @@ on_uid_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gdata)
   console_kit_session_call_get_unix_user_finish (data->current_session, &uid, res, &data->error);
   if (data->error != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
+      if (!g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
     }
   else if (uid)
     {
@@ -165,7 +168,7 @@ on_seat_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gda
 
   data->current_seat = console_kit_seat_proxy_new_for_bus_finish (res, &data->error);
 
-  if (data->error != NULL)
+  if (data->error && !g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
 
   finish_callback (data);
@@ -182,7 +185,8 @@ on_sid_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gdata)
 
   if (data->error != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
+      if (!g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
     }
   else if (sid != NULL)
     {
@@ -210,7 +214,8 @@ on_session_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer 
   data->current_session = console_kit_session_proxy_new_finish (res, &data->error);
   if (data->error != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
+      if (!g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
     }
   else
     {
@@ -243,7 +248,8 @@ on_current_session_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointe
                                                        &data->error);
   if (data->error != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
+      if (!g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
     }
   else if (ssid)
     {
@@ -275,7 +281,8 @@ on_display_manager_seat_proxy_ready (GObject      * o         G_GNUC_UNUSED,
 
   if (data->error != NULL)
     {
-      g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
+      if (!g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
     }
   else if (seat != NULL)
     {
@@ -302,7 +309,8 @@ on_console_kit_manager_proxy_ready (GObject      * o       G_GNUC_UNUSED,
 
       if (data->error != NULL)
         {
-          g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
+          if (!g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+            g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
         }
       else
         {
@@ -330,7 +338,7 @@ on_accounts_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer
     {
       data->account_manager = accounts_proxy_new_for_bus_finish (res, &data->error);
 
-      if (data->error != NULL)
+      if (data->error && !g_error_matches (data->error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
         g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, data->error->message);
     }
 

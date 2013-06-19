@@ -1,3 +1,16 @@
+indicator-session (12.10.5daily13.06.19-0ubuntu1) saucy; urgency=low
+
+  [ Mathieu Trudel-Lapierre ]
+  * Fix linking with pthreads for gtest.
+
+  [ Jeremy Bicha ]
+  * recommend gnome-screensaver for the Lock Screen feature.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 393
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 19 Jun 2013 02:01:25 +0000
+
 indicator-session (12.10.5daily13.05.06.1-0ubuntu1) saucy; urgency=low
 
   [ Iain Lane ]

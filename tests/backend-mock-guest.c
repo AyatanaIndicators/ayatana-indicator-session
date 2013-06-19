@@ -71,7 +71,7 @@ my_is_active (IndicatorSessionGuest * self)
 }
 
 static void
-my_switch_to_guest (IndicatorSessionGuest * self)
+my_switch_to_guest (IndicatorSessionGuest * self G_GNUC_UNUSED)
 {
   g_message ("%s %s FIXME", G_STRLOC, G_STRFUNC);
 }

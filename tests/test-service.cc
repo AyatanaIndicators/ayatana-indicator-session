@@ -170,7 +170,7 @@ class ServiceTest: public GTestDBusFixture
 
       // wait for the service to show up on the bus
       const guint watch_id = g_bus_watch_name_on_connection (conn,
-                                                             "com.canonical.indicator.session-test",
+                                                             "com.canonical.indicator.session",
                                                              G_BUS_NAME_WATCHER_FLAGS_NONE,
                                                              on_name_appeared, // quits the loop
                                                              NULL, this, NULL);
@@ -182,10 +182,10 @@ class ServiceTest: public GTestDBusFixture
 
       // get the actions & menus that the service exported.
       action_group = g_dbus_action_group_get (conn,
-                                              "com.canonical.indicator.session-test",
+                                              "com.canonical.indicator.session",
                                               "/com/canonical/indicator/session");
       menu_model = g_dbus_menu_model_get (conn,
-                                          "com.canonical.indicator.session-test",
+                                          "com.canonical.indicator.session",
                                           "/com/canonical/indicator/session/desktop");
       // the actions are added asynchronously, so wait for the actions
       if (!g_action_group_has_action (G_ACTION_GROUP(action_group), "about"))

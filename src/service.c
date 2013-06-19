@@ -23,8 +23,7 @@
 #include "backend.h"
 #include "service.h"
 
-/* FIXME: remove -test */
-#define BUS_NAME "com.canonical.indicator.session-test"
+#define BUS_NAME "com.canonical.indicator.session"
 #define BUS_PATH "/com/canonical/indicator/session"
 
 #define ICON_DEFAULT "system-devices-panel"

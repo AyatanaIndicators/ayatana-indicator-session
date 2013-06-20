@@ -4,7 +4,7 @@ code
  - fix deprecated/dead APIs use in backend
 
 cmake
- - add cmake rule to install .indicator file
- - add cmake rule to install dbus service file
+ x add cmake rule to install .indicator file
+ x add cmake rule to install dbus service file
  - icon installation
  - test schema installation

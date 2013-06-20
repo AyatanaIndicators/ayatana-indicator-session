@@ -8,5 +8,5 @@ cmake
  x add cmake rule to install dbus service file
  x add cmake rule to install indicator-session-service
  x gsettings schema validation
- - icon installation
+ x icon installation
  - test schema installation

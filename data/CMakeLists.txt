@@ -40,3 +40,18 @@ set (UNITY_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share/unity")
 
 install (FILES ${UNITY_INDICATOR_PATH} DESTINATION "${UNITY_INSTALL_PREFIX}/indicators")
 
+
+##
+##  Icons
+##
+
+if(${LOCAL_INSTALL})
+  set (ICON_PREFIX "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/libindicator/icons/")
+else()
+  EXEC_PROGRAM(${PKG_CONFIG_EXECUTABLE} ARGS indicator3-0.4 --variable iconsdir OUTPUT_VARIABLE ICON_PREFIX)
+endif()
+set (ICON_DIR "${ICON_PREFIX}/hicolor")
+message ("Installing icons to ${ICON_DIR}")
+install (DIRECTORY icons
+         DESTINATION ${ICON_DIR}
+         FILES_MATCHING PATTERN "*.png" PATTERN "*.svg")

@@ -9,8 +9,9 @@ include (GNUInstallDirs)
 configure_file (indicator-session.service.in indicator-session.service)
 
 # .indicator file
-# (NOOP)
-#
+install(FILES com.canonical.indicator.session
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/unity/indicators)
+
 # FIXME install files
 #install(FILES
 #${CMAKE_CURRENT_BINARY_DIR}/indicator-datetime.service

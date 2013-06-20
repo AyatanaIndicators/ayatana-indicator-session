@@ -1,4 +1,6 @@
 code
+ x x-canonical-type for user/guest menuitems
+ x remove the --replace command-line argument
  - fix deprecated/dead APIs use in backend
 
 cmake

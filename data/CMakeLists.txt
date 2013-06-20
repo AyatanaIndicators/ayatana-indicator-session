@@ -1,24 +1,42 @@
-# schema
-configure_file (com.canonical.indicator.session.gschema.xml.in
-                com.canonical.indicator.session.gschema.xml)
-include (GSettings)
-add_schemas(clinica-schemas ${CMAKE_SOURCE_DIR}/data/com.canonical.indicator.session.gschema.xml)
+##
+##  GSettings schema
+##
 
-# .service file
-set(SERVICE_NAME "indicator-session.service")
-set(SERVICE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${SERVICE_NAME}")
-set(pkglibexecdir "${CMAKE_INSTALL_FULL_LIBEXECDIR}/indicator-session")
-configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/${SERVICE_NAME}.in" "${SERVICE_PATH}")
-install (FILES ${SERVICE_PATH}
-         DESTINATION ${DBUSSERVICEDIR})
+set (SCHEMA_NAME "com.canonical.indicator.session.gschema.xml")
+set (SCHEMA_PATH "${CMAKE_CURRENT_BINARY_DIR}/${SCHEMA_NAME}")
+set (SCHEMA_PATH_IN "${CMAKE_CURRENT_SOURCE_DIR}/${SCHEMA_NAME}.in")
 
-# .indicator file
-install(FILES com.canonical.indicator.session
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/unity/indicators)
+# generate the .xml file using intltool
+set (ENV{LC_ALL} "C") 
+execute_process (COMMAND intltool-merge -x -u --no-translations ${SCHEMA_PATH_IN} ${SCHEMA_PATH})
 
-# FIXME install files
-#
-#install(FILES
-#datetime-dialog.ui
-#DESTINATION share/indicatore-datetime # FIXME this too.
-#)
+# let UseGSettings do the rest
+add_schema (${SCHEMA_PATH})
+
+
+##
+##  DBus Service File
+##
+
+set (SERVICE_NAME "${CMAKE_PROJECT_NAME}.service")
+set (SERVICE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${SERVICE_NAME}")
+set (SERVICE_PATH_IN "${CMAKE_CURRENT_SOURCE_DIR}/${SERVICE_NAME}.in")
+
+# build it
+set (pkglibexecdir "${PROJECT_LIBEXECDIR}")
+configure_file ("${SERVICE_PATH_IN}" "${SERVICE_PATH}")
+
+# install it
+install (FILES ${SERVICE_PATH} DESTINATION ${DBUSSERVICEDIR})
+
+
+##
+##  Unity Indicator File
+##
+
+set (UNITY_INDICATOR_NAME "com.canonical.indicator.session")
+set (UNITY_INDICATOR_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${UNITY_INDICATOR_NAME}")
+set (UNITY_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share/unity")
+
+install (FILES ${UNITY_INDICATOR_PATH} DESTINATION "${UNITY_INSTALL_PREFIX}/indicators")
+

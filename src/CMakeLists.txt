@@ -14,6 +14,7 @@ set_target_properties (libindicatorsessionservice PROPERTIES COMPILE_FLAGS " -g 
 include_directories(${SERVICE_INCLUDE_DIRS})
 link_directories(${SERVICE_LIBRARY_DIRS})
 
-add_executable (indicator-session-service main.c)
-target_link_libraries (indicator-session-service libindicatorsessionservice backenddbus ${SERVICE_LIBRARIES} ${GCOV_LIBS})
-
+set (SERVICE_EXEC "indicator-session-service")
+add_executable (${SERVICE_EXEC} main.c)
+target_link_libraries (${SERVICE_EXEC} libindicatorsessionservice backenddbus ${SERVICE_LIBRARIES} ${GCOV_LIBS})
+install (TARGETS ${SERVICE_EXEC} RUNTIME DESTINATION ${PROJECT_LIBEXECDIR})

@@ -47,19 +47,11 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}/src)
 
 # Workaround for libexecdir on debian
 if (EXISTS "/etc/debian_version") 
-  set(CMAKE_INSTALL_LIBEXECDIR ${CMAKE_INSTALL_LIBDIR})
-  set(CMAKE_INSTALL_FULL_LIBEXECDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBEXECDIR}")
-endif()
-message("Installing libexec files to ${CMAKE_INSTALL_FULL_LIBEXECDIR}")
+  set (CMAKE_INSTALL_LIBEXECDIR ${CMAKE_INSTALL_LIBDIR})
+  set (CMAKE_INSTALL_FULL_LIBEXECDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBEXECDIR}")
+endif ()
 set (PROJECT_LIBEXECDIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}/${CMAKE_PROJECT_NAME}")
-
-if(${LOCAL_INSTALL})
-  set(DBUSSERVICEDIR "${CMAKE_INSTALL_DATADIR}/dbus-1/services/")
-else()
-  EXEC_PROGRAM(${PKG_CONFIG_EXECUTABLE} ARGS dbus-1 --variable session_bus_services_dir OUTPUT_VARIABLE DBUSSERVICEDIR )
-endif()
-message("Installing DBus services to ${DBUSSERVICEDIR}")
-
+message (STATUS "${PROJECT_LIBEXECDIR} is the libexec install dir")
 
 add_subdirectory (src)
 add_subdirectory (data)

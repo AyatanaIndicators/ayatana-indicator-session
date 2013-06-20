@@ -161,12 +161,7 @@ class ServiceTest: public GTestDBusFixture
       // Start an IndicatorSessionService and wait for it to appear on the bus.
       // This way our calls to g_dbus_*_get() in the next paragraph won't activate
       // a second copy of the service...
-      service = indicator_session_service_new (true);
-
-      // confirm that the property got set
-      gboolean replace = FALSE;
-      g_object_get (service, "replace", &replace, NULL);
-      ASSERT_TRUE (replace);
+      service = indicator_session_service_new ();
 
       // wait for the service to show up on the bus
       const guint watch_id = g_bus_watch_name_on_connection (conn,

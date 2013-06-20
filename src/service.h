@@ -64,7 +64,7 @@ struct _IndicatorSessionServiceClass
 
 GType indicator_session_service_get_type (void);
 
-IndicatorSessionService * indicator_session_service_new (gboolean replace);
+IndicatorSessionService * indicator_session_service_new (void);
 
 G_END_DECLS
 

@@ -46,7 +46,6 @@ static guint signals[LAST_SIGNAL] = { 0 };
 enum
 {
   PROP_0,
-  PROP_REPLACE,
   PROP_MAX_USERS,
   PROP_LAST
 };
@@ -106,8 +105,6 @@ struct _IndicatorSessionServicePrivate
   int rebuild_flags;
   GDBusConnection * conn;
   GCancellable * cancellable;
-
-  gboolean replace;
 };
 
 typedef IndicatorSessionServicePrivate priv_t;
@@ -1013,23 +1010,10 @@ indicator_session_service_init (IndicatorSessionService * self)
   gp = p->keybinding_settings;
   g_signal_connect_swapped (gp, "changed::screensaver",
                             G_CALLBACK(rebuild_switch_section_soon), self);
-}
-
-static void
-my_constructed (GObject * o)
-{
-  GBusNameOwnerFlags owner_flags;
-  IndicatorSessionService * self = INDICATOR_SESSION_SERVICE(o);
-
-  /* own the name in constructed() instead of init() so that
-     we'll know the value of the 'replace' property */
-  owner_flags = G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT;
-  if (self->priv->replace)
-    owner_flags |= G_BUS_NAME_OWNER_FLAGS_REPLACE;
 
   self->priv->own_id = g_bus_own_name (G_BUS_TYPE_SESSION,
                                        BUS_NAME,
-                                       owner_flags,
+                                       G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT,
                                        on_bus_acquired,
                                        NULL,
                                        on_name_lost,
@@ -1051,10 +1035,6 @@ my_get_property (GObject     * o,
  
   switch (property_id)
     {
-      case PROP_REPLACE:
-        g_value_set_boolean (value, self->priv->replace);
-        break;
-
       case PROP_MAX_USERS:
         g_value_set_uint (value, self->priv->max_users);
         break;
@@ -1074,10 +1054,6 @@ my_set_property (GObject       * o,
 
   switch (property_id)
     {
-      case PROP_REPLACE:
-        self->priv->replace = g_value_get_boolean (value);
-        break;
-
       case PROP_MAX_USERS:
         self->priv->max_users = g_value_get_uint (value);
         rebuild_switch_section_soon (self);
@@ -1145,7 +1121,6 @@ indicator_session_service_class_init (IndicatorSessionServiceClass * klass)
   GObjectClass * object_class = G_OBJECT_CLASS (klass);
 
   object_class->dispose = my_dispose;
-  object_class->constructed = my_constructed;
   object_class->get_property = my_get_property;
   object_class->set_property = my_set_property;
 
@@ -1161,14 +1136,6 @@ indicator_session_service_class_init (IndicatorSessionServiceClass * klass)
 
   properties[PROP_0] = NULL;
 
-  properties[PROP_REPLACE] = g_param_spec_boolean ("replace",
-                                                   "Replace Service",
-                                                   "Replace existing service",
-                                                   FALSE,
-                                                   G_PARAM_READWRITE |
-                                                   G_PARAM_CONSTRUCT_ONLY |
-                                                   G_PARAM_STATIC_STRINGS);
-
   properties[PROP_MAX_USERS] = g_param_spec_uint ("max-users",
                                                   "Max Users",
                                                   "Max visible users",
@@ -1181,11 +1148,9 @@ indicator_session_service_class_init (IndicatorSessionServiceClass * klass)
 }
 
 IndicatorSessionService *
-indicator_session_service_new (gboolean replace)
+indicator_session_service_new (void)
 {
-  GObject * o = g_object_new (INDICATOR_TYPE_SESSION_SERVICE,
-                              "replace", replace,
-                              NULL);
+  GObject * o = g_object_new (INDICATOR_TYPE_SESSION_SERVICE, NULL);
 
   return INDICATOR_SESSION_SERVICE (o);
 }

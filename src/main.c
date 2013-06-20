@@ -29,46 +29,16 @@
 ****
 ***/
 
-static gboolean replace = FALSE;
-
-static void
-parse_command_line (int * argc, char *** argv)
-{
-  GError * error;
-  GOptionContext * option_context;
-
-  static GOptionEntry entries[] =
-  {
-    { "replace", 'r', 0, G_OPTION_ARG_NONE, &replace, "Replace the currently-running service", NULL },
-    { NULL }
-  };
-
-  error = NULL;
-  option_context = g_option_context_new ("- indicator-session service");
-  g_option_context_add_main_entries (option_context, entries, GETTEXT_PACKAGE);
-  if (!g_option_context_parse (option_context, argc, argv, &error))
-    {
-      g_print ("option parsing failed: %s\n", error->message);
-      g_error_free (error);
-      exit (EXIT_FAILURE);
-    }
-
-  g_option_context_free (option_context);
-}
-
-/***
-****
-***/
-
 static void
 on_name_lost (gpointer instance, gpointer loop)
 {
-  g_debug ("exiting: service couldn't acquire or lost ownership of busname");
-  g_main_loop_quit ((GMainLoop*)loop);
+  g_warning ("exiting: service couldn't acquire, or lost ownership of, busname");
+
+  g_main_loop_quit (loop);
 }
 
 int
-main (int argc, char ** argv)
+main (int argc G_GNUC_UNUSED, char ** argv G_GNUC_UNUSED)
 {
   GMainLoop * loop;
   IndicatorSessionService * service;
@@ -78,10 +48,8 @@ main (int argc, char ** argv)
   bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
   textdomain (GETTEXT_PACKAGE);
 
-  parse_command_line (&argc, &argv);
-
   /* run */
-  service = indicator_session_service_new (replace);
+  service = indicator_session_service_new ();
   loop = g_main_loop_new (NULL, FALSE);
   g_signal_connect (service, INDICATOR_SESSION_SERVICE_SIGNAL_NAME_LOST,
                     G_CALLBACK(on_name_lost), loop);

@@ -35,7 +35,7 @@ and (4) a Logged In Mark.
 
    1. You can test for the Active Session Mark by checking the action's state.
       The state is a dictionary whose "is-active" key yields a boolean.
-      If the booelan is true, show the Active Session Mark.
+      If the boolean is true, show the Active Session Mark.
 
    2. The guest user should use a fallback icon such as "avatar-default."
 

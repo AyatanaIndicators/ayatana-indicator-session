@@ -498,6 +498,16 @@ create_switch_section (IndicatorSessionService * self)
       item = g_menu_item_new (u->real_name, NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
       g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.user-menu-item");
+
+      if (u->icon_file != NULL)
+        {
+          GFile * file = g_file_new_for_path (u->icon_file);
+          GIcon * icon = g_file_icon_new (file);
+          g_menu_item_set_attribute_value (item, G_MENU_ATTRIBUTE_ICON, g_icon_serialize (icon));
+          g_clear_object (&icon);
+          g_clear_object (&file);
+        }
+
       g_menu_append_item (menu, item);
       g_object_unref (item);
     }

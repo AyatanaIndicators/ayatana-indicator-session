@@ -18,7 +18,7 @@
  */
 
 #include "mock-display-manager-seat.h"
-#include "mock-consolekit-seat.h"
+#include "mock-login1-seat.h"
 
 namespace
 {
@@ -79,10 +79,10 @@ MockDisplayManagerSeat :: handle_switch_to_guest (DisplayManagerSeat    * o,
 void
 MockDisplayManagerSeat :: switch_to_guest ()
 {
-  g_assert (my_ck_seat != 0);
+  g_assert (my_login1_seat != 0);
 
   my_last_action = GUEST;
-  my_ck_seat->switch_to_guest ();
+  my_login1_seat->switch_to_guest ();
 }
 
 gboolean
@@ -100,16 +100,16 @@ MockDisplayManagerSeat :: handle_switch_to_user (DisplayManagerSeat    * o,
 void
 MockDisplayManagerSeat :: switch_to_user (const char * username)
 {
-  g_assert (my_ck_seat != 0);
+  g_assert (my_login1_seat != 0);
 
   my_last_action = USER;
-  my_ck_seat->switch_to_user (username);
+  my_login1_seat->switch_to_user (username);
 }
 
 void
-MockDisplayManagerSeat :: set_consolekit_seat (MockConsoleKitSeat * seat)
+MockDisplayManagerSeat :: set_login1_seat (MockLogin1Seat * seat)
 {
-  my_ck_seat = seat;
+  my_login1_seat = seat;
 }
 
 /***
@@ -120,7 +120,6 @@ MockDisplayManagerSeat :: MockDisplayManagerSeat (GMainLoop       * loop,
                                                   GDBusConnection * connection):
   MockObject (loop, connection, DISPLAY_MANAGER_NAME, next_unique_path()),
   my_skeleton (display_manager_seat_skeleton_new ()),
-  my_ck_seat (0),
   my_last_action (NONE)
 {
   g_signal_connect (my_skeleton, "handle-switch-to-guest",
@@ -135,6 +134,6 @@ MockDisplayManagerSeat :: MockDisplayManagerSeat (GMainLoop       * loop,
 
 MockDisplayManagerSeat :: ~MockDisplayManagerSeat ()
 {
-  g_signal_handlers_disconnect_by_data (my_skeleton, this);
+  //g_signal_handlers_disconnect_by_data (my_skeleton, this);
   g_clear_object (&my_skeleton);
 }

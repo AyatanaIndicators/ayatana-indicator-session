@@ -20,14 +20,12 @@
 #include "gtest-dbus-fixture.h"
 
 #include "mock-accounts.h"
-#include "mock-consolekit-manager.h"
-#include "mock-consolekit-seat.h"
-#include "mock-consolekit-session.h"
+#include "mock-login1-manager.h"
+#include "mock-login1-seat.h"
 #include "mock-display-manager-seat.h"
 #include "mock-end-session-dialog.h"
 #include "mock-screen-saver.h"
 #include "mock-session-manager.h"
-#include "mock-upower.h"
 #include "mock-user.h"
 #include "mock-webcredentials.h"
 
@@ -47,10 +45,8 @@ class GTestMockDBusFixture: public GTestDBusFixture
     MockSessionManager * session_manager;
     MockDisplayManagerSeat * dm_seat;
     MockAccounts * accounts;
-    MockConsoleKitSession * ck_session;
-    MockConsoleKitSeat * ck_seat;
-    MockConsoleKitManager * ck_manager;
-    MockUPower * upower;
+    MockLogin1Manager * login1_manager;
+    MockLogin1Seat * login1_seat;
     MockEndSessionDialog * end_session_dialog;
     MockWebcredentials * webcredentials;
 
@@ -64,19 +60,18 @@ class GTestMockDBusFixture: public GTestDBusFixture
       end_session_dialog = new MockEndSessionDialog (loop, conn);
       session_manager = new MockSessionManager (loop, conn);
       screen_saver = new MockScreenSaver (loop, conn);
-      upower = new MockUPower (loop, conn);
       dm_seat = new MockDisplayManagerSeat (loop, conn);
       g_setenv ("XDG_SEAT_PATH", dm_seat->path(), TRUE);
       dm_seat->set_guest_allowed (false);
+      login1_manager = new MockLogin1Manager (loop, conn);
+      login1_seat = new MockLogin1Seat (loop, conn, true);
+      login1_manager->add_seat (login1_seat);
       accounts = build_accounts_mock ();
-      ck_manager = new MockConsoleKitManager (loop, conn);
-      ck_seat = new MockConsoleKitSeat (loop, conn, true);
       MockUser * user = accounts->find_by_username ("msmith");
-      ck_session = ck_seat->add_session_by_user (user);
-      ck_manager->add_seat (ck_seat);
-      dm_seat->set_consolekit_seat (ck_seat);
+      const int session_tag = login1_manager->add_session (login1_seat, user);
+      dm_seat->set_login1_seat (login1_seat);
       dm_seat->switch_to_user (user->username());
-      ASSERT_EQ (ck_session, ck_manager->current_session());
+      ASSERT_EQ (session_tag, login1_seat->active_session());
     }
 
   protected:
@@ -84,9 +79,8 @@ class GTestMockDBusFixture: public GTestDBusFixture
     virtual void TearDown ()
     {
       delete accounts;
-      delete ck_manager;
+      delete login1_manager;
       delete dm_seat;
-      delete upower;
       delete screen_saver;
       delete session_manager;
       delete end_session_dialog;

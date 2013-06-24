@@ -90,7 +90,7 @@ TEST_F (Actions, CanSwitch)
       bool b;
       gboolean b2;
 
-      b = ck_seat->can_activate_sessions() && !g_settings_get_boolean (s, settings_key);
+      b = login1_seat->can_activate_sessions() && !g_settings_get_boolean (s, settings_key);
       ASSERT_EQ (b, indicator_session_actions_can_switch (actions));
       g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_SWITCH, &b2, NULL);
       ASSERT_EQ (b, b2);
@@ -172,130 +172,88 @@ TEST_F (Actions, CanLogout)
 
 TEST_F (Actions, CanSuspend)
 {
-  bool b;
-  bool can;
-  bool allowed;
-  gboolean b2;
-
-  can = upower->can_suspend ();
-  allowed = upower->suspend_allowed ();
-  b = can && allowed;
-
-  ASSERT_EQ (b, indicator_session_actions_can_suspend (actions));
-  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_SUSPEND, &b2, NULL);
-  ASSERT_EQ (b, b2);
-
-  for (int i=0; i<2; ++i)
-    {
-      can = !can;
-      b = can && allowed;
-
-      upower->set_can_suspend (can);
-      wait_for_signal (actions, "notify::" INDICATOR_SESSION_ACTIONS_PROP_CAN_SUSPEND);
-      ASSERT_EQ (b, indicator_session_actions_can_suspend (actions));
-      g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_SUSPEND, &b2, NULL);
-      ASSERT_EQ (b, b2);
-    }
+  const std::string can_suspend = login1_manager->can_suspend ();
+  gboolean b = indicator_session_actions_can_suspend (actions);
+  ASSERT_EQ (b, can_suspend=="yes" || can_suspend=="challenge");
 }
 
 TEST_F (Actions, CanHibernate)
 {
-  bool b;
-  bool can;
-  bool allowed;
-  gboolean b2;
-
-  can = upower->can_hibernate ();
-  allowed = upower->hibernate_allowed ();
-  b = can && allowed;
-
-  ASSERT_EQ (b, indicator_session_actions_can_hibernate (actions));
-  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_HIBERNATE, &b2, NULL);
-  ASSERT_EQ (b, b2);
-
-#if 0
-  for (int i=0; i<2; ++i)
-    {
-      b = !b;
-      upower->set_can_hibernate (b);
-      wait_for_signal (actions, "notify::" INDICATOR_SESSION_ACTIONS_PROP_CAN_HIBERNATE);
-      ASSERT_EQ (b, indicator_session_actions_can_hibernate (actions));
-      g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_HIBERNATE, &b2, NULL);
-      ASSERT_EQ (b, b2);
-    }
-#endif
+  const std::string can_hibernate = login1_manager->can_hibernate ();
+  gboolean b = indicator_session_actions_can_hibernate (actions);
+  ASSERT_EQ (b, can_hibernate=="yes" || can_hibernate=="challenge");
 }
 
-TEST_F (Actions, Restart)
+TEST_F (Actions, Reboot)
 {
-  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+  ASSERT_TRUE (login1_manager->last_action().empty());
 
   // confirm that user is prompted
   // and that no action is taken when the user cancels the dialog
-  indicator_session_actions_restart (actions);
+  indicator_session_actions_reboot (actions);
   wait_msec (50);
   ASSERT_TRUE (end_session_dialog->is_open());
   end_session_dialog->cancel();
   wait_msec (50);
-  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+  ASSERT_TRUE (login1_manager->last_action().empty());
 
   // confirm that user is prompted
   // and that no action is taken when the user cancels the dialog
-  indicator_session_actions_restart (actions);
+  indicator_session_actions_reboot (actions);
   wait_msec (50);
   ASSERT_TRUE (end_session_dialog->is_open ());
   end_session_dialog->confirm_reboot ();
   wait_msec (100);
-  ASSERT_EQ (MockConsoleKitManager::Restart, ck_manager->last_action());
+  ASSERT_EQ (login1_manager->last_action(), "reboot");
 
-  // confirm that we try to restart w/o prompting
+  // confirm that we try to reboot w/o prompting
   // if the EndSessionDialog isn't available
   delete end_session_dialog;
   end_session_dialog = 0;
-  ck_manager->clear_last_action ();
-  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+  login1_manager->clear_last_action ();
+  ASSERT_TRUE (login1_manager->last_action().empty());
   wait_msec (50);
-  indicator_session_actions_restart (actions);
+  indicator_session_actions_reboot (actions);
   wait_msec (50);
-  ASSERT_EQ (MockConsoleKitManager::Restart, ck_manager->last_action());
+  ASSERT_EQ (login1_manager->last_action(), "reboot");
 }
 
-TEST_F (Actions, Shutdown)
+TEST_F (Actions, PowerOff)
 {
-  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+  ASSERT_TRUE (login1_manager->last_action().empty());
 
   // confirm that user is prompted
   // and that no action is taken when the user cancels the dialog
-  indicator_session_actions_shutdown (actions);
+  indicator_session_actions_power_off (actions);
   wait_msec (50);
   ASSERT_TRUE (end_session_dialog->is_open());
   end_session_dialog->cancel();
   wait_msec (50);
-  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+  ASSERT_TRUE (login1_manager->last_action().empty());
 
   // confirm that user is prompted
   // and that no action is taken when the user cancels the dialog
-  indicator_session_actions_shutdown (actions);
+  indicator_session_actions_power_off (actions);
   wait_msec (50);
   ASSERT_TRUE (end_session_dialog->is_open ());
   end_session_dialog->confirm_shutdown ();
   wait_msec (100);
-  ASSERT_EQ (MockConsoleKitManager::Shutdown, ck_manager->last_action());
+  ASSERT_EQ (login1_manager->last_action(), "power-off");
 
   // confirm that we try to shutdown w/o prompting
   // if the EndSessionDialog isn't available
   delete end_session_dialog;
   end_session_dialog = 0;
-  ck_manager->clear_last_action ();
+  login1_manager->clear_last_action ();
   wait_msec (50);
-  indicator_session_actions_shutdown (actions);
+  indicator_session_actions_power_off (actions);
   wait_msec (50);
-  ASSERT_EQ (MockConsoleKitManager::Shutdown, ck_manager->last_action());
+  ASSERT_EQ (login1_manager->last_action(), "power-off");
 }
 
 TEST_F (Actions, Logout)
 {
-  ASSERT_EQ (MockConsoleKitManager::None, ck_manager->last_action());
+  ASSERT_EQ (MockSessionManager::None, session_manager->last_action ());
 
   // confirm that user is prompted
   // and that no action is taken when the user cancels the dialog
@@ -308,7 +266,7 @@ TEST_F (Actions, Logout)
 
   // confirm that user is prompted
   // and that no action is taken when the user cancels the dialog
-  indicator_session_actions_shutdown (actions);
+  indicator_session_actions_logout (actions);
   wait_msec (50);
   ASSERT_TRUE (end_session_dialog->is_open ());
   end_session_dialog->confirm_logout ();
@@ -327,18 +285,18 @@ TEST_F (Actions, Logout)
 
 TEST_F (Actions, Suspend)
 {
-  ASSERT_EQ (MockUPower::None, upower->last_action());
+  ASSERT_TRUE (login1_manager->last_action().empty());
   indicator_session_actions_suspend (actions);
   wait_msec (50);
-  ASSERT_EQ (MockUPower::Suspend, upower->last_action());
+  ASSERT_EQ (login1_manager->last_action(), "suspend");
 }
 
 TEST_F (Actions, Hibernate)
 {
-  ASSERT_EQ (MockUPower::None, upower->last_action());
+  ASSERT_TRUE (login1_manager->last_action().empty());
   indicator_session_actions_hibernate (actions);
   wait_msec (50);
-  ASSERT_EQ (MockUPower::Hibernate, upower->last_action());
+  ASSERT_EQ (login1_manager->last_action(), "hibernate");
 }
 
 TEST_F (Actions, SwitchToScreensaver)
@@ -362,18 +320,19 @@ TEST_F (Actions, SwitchToGuest)
   // allow guests
   dm_seat->set_guest_allowed (true);
   MockUser * guest_user;
-  MockConsoleKitSession * guest_ck_session;
+  //int guest_session_tag;
+//  MockConsoleKitSession * guest_ck_session;
 
   // set up a guest
   guest_user = new MockUser (loop, conn, "guest-zzbEVV", "Guest", 10);
   guest_user->set_system_account (true);
   accounts->add_user (guest_user);
-  guest_ck_session = ck_seat->add_session_by_user (guest_user);
+  int guest_session_tag = login1_manager->add_session (login1_seat, guest_user);
 
   // try to switch to guest
   indicator_session_actions_switch_to_guest (actions);
-  wait_for_signal (ck_seat->skeleton(), "active-session-changed");
-  ASSERT_EQ (guest_ck_session, ck_manager->current_session());
+  wait_for_signal (login1_seat->skeleton(), "notify::active-session");
+  ASSERT_EQ (guest_session_tag, login1_seat->active_session());
   wait_msec (50);
 }
 
@@ -383,28 +342,28 @@ TEST_F (Actions, SwitchToUsername)
   const char * const dr2_username = "ptroughton";
   MockUser * dr1_user;
   MockUser * dr2_user;
-  MockConsoleKitSession * dr1_session;
-  MockConsoleKitSession * dr2_session;
+  int dr1_session;
+  int dr2_session;
 
   dr1_user = accounts->find_by_username (dr1_username);
-  dr1_session = ck_seat->add_session_by_user (dr1_user);
+  dr1_session = login1_manager->add_session (login1_seat, dr1_user);
 
   dr2_user = accounts->find_by_username (dr2_username);
-  dr2_session = ck_seat->add_session_by_user (dr2_user);
+  dr2_session = login1_manager->add_session (login1_seat, dr2_user);
 
   indicator_session_actions_switch_to_username (actions, dr1_username);
-  wait_for_signal (ck_seat->skeleton(), "active-session-changed");
-  ASSERT_EQ (dr1_session, ck_manager->current_session());
+  wait_for_signal (login1_seat->skeleton(), "notify::active-session");
+  ASSERT_EQ (dr1_session, login1_seat->active_session());
   wait_msec (50);
 
   indicator_session_actions_switch_to_username (actions, dr2_username);
-  wait_for_signal (ck_seat->skeleton(), "active-session-changed");
-  ASSERT_EQ (dr2_session, ck_manager->current_session());
+  wait_for_signal (login1_seat->skeleton(), "notify::active-session");
+  ASSERT_EQ (dr2_session, login1_seat->active_session());
   wait_msec (50);
 
   indicator_session_actions_switch_to_username (actions, dr1_username);
-  wait_for_signal (ck_seat->skeleton(), "active-session-changed");
-  ASSERT_EQ (dr1_session, ck_manager->current_session());
+  wait_for_signal (login1_seat->skeleton(), "notify::active-session");
+  ASSERT_EQ (dr1_session, login1_seat->active_session());
   wait_msec (50);
 }
 

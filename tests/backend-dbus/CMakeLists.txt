@@ -5,16 +5,16 @@ add_library (gtest STATIC
 set_target_properties (gtest PROPERTIES INCLUDE_DIRECTORIES
                        ${GTEST_INCLUDE_DIR})
 
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+
 # build desktopmock
 add_library (desktopmock STATIC
              mock-accounts.cc
              mock-accounts.h
-             mock-consolekit-manager.cc
-             mock-consolekit-manager.h
-             mock-consolekit-seat.cc
-             mock-consolekit-seat.h
-             mock-consolekit-session.cc
-             mock-consolekit-session.h
+             mock-login1-manager.cc
+             mock-login1-manager.h
+             mock-login1-seat.cc
+             mock-login1-seat.h
              mock-display-manager-seat.cc
              mock-display-manager-seat.h
              mock-end-session-dialog.cc
@@ -25,8 +25,6 @@ add_library (desktopmock STATIC
              mock-screen-saver.h
              mock-session-manager.cc
              mock-session-manager.h
-             mock-upower.cc
-             mock-upower.h
              mock-user.cc
              mock-user.h
              mock-webcredentials.cc

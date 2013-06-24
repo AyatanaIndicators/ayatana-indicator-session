@@ -23,7 +23,7 @@
 #include "mock-object.h" // parent class
 #include "backend-dbus/dbus-display-manager.h"
 
-class MockConsoleKitSeat;
+class MockLogin1Seat;
 
 class MockDisplayManagerSeat: public MockObject
 {
@@ -35,7 +35,7 @@ class MockDisplayManagerSeat: public MockObject
 
     void set_guest_allowed (bool b);
 
-    void set_consolekit_seat (MockConsoleKitSeat * ck_seat);
+    void set_login1_seat (MockLogin1Seat * login1_seat);
 
     void switch_to_guest ();
 
@@ -65,7 +65,7 @@ class MockDisplayManagerSeat: public MockObject
                                            gpointer gself);
 
     DisplayManagerSeat * my_skeleton;
-    MockConsoleKitSeat * my_ck_seat;
+    MockLogin1Seat * my_login1_seat;
     Action my_last_action;
 };
 

@@ -24,9 +24,8 @@
 #include <glib-object.h>
 
 #include "../guest.h" /* parent class */
-#include "dbus-accounts.h"
-#include "dbus-consolekit-seat.h"
-#include "dbus-consolekit-session.h"
+#include "dbus-login1-manager.h"
+#include "dbus-login1-seat.h"
 #include "dbus-display-manager.h"
 
 
@@ -61,11 +60,10 @@ GType indicator_session_guest_dbus_get_type (void);
 
 IndicatorSessionGuest * indicator_session_guest_dbus_new (void);
 
-void indicator_session_guest_dbus_set_proxies (IndicatorSessionGuestDbus *,
-                                               Accounts                  *,
-                                               DisplayManagerSeat        *,
-                                               ConsoleKitSeat            *,
-                                               ConsoleKitSession         *);
+void indicator_session_guest_dbus_set_proxies (IndicatorSessionGuestDbus * self,
+                                               Login1Manager             * login1_manager,
+                                               Login1Seat                * login1_seat,
+                                               DisplayManagerSeat        * display_manager_seat);
 
 G_END_DECLS
 

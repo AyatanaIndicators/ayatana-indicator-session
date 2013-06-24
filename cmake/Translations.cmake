@@ -1,7 +1,7 @@
 # Translations.cmake, CMake macros written for Marlin, feel free to re-use them
 
 macro(add_translations_directory NLS_PACKAGE)
-    add_custom_target (i18n ALL COMMENT “Building i18n messages.”)
+    add_custom_target (i18n ALL)
     find_program (MSGFMT_EXECUTABLE msgfmt)
     file (GLOB PO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.po)
     foreach (PO_INPUT ${PO_FILES})

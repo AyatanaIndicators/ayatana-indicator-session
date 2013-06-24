@@ -25,10 +25,6 @@ add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-login1-seat
                    org.freedesktop
                    ${CMAKE_CURRENT_SOURCE_DIR}/org.freedesktop.login1.Seat.xml)
 
-add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-login1-session
-                   org.freedesktop
-                   ${CMAKE_CURRENT_SOURCE_DIR}/org.freedesktop.login1.Session.xml)
-
 add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-login1-user
                    org.freedesktop
                    ${CMAKE_CURRENT_SOURCE_DIR}/org.freedesktop.login1.User.xml)

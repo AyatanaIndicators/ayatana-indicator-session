@@ -374,14 +374,14 @@ TEST_F (ServiceTest, Logout)
   test_simple_action ("logout");
 }
 
-TEST_F (ServiceTest, Shutdown)
+TEST_F (ServiceTest, PowerOff)
 {
-  test_simple_action ("shutdown");
+  test_simple_action ("power-off");
 }
 
-TEST_F (ServiceTest, Restart)
+TEST_F (ServiceTest, Reboot)
 {
-  test_simple_action ("restart");
+  test_simple_action ("reboot");
 }
 
 TEST_F (ServiceTest, SwitchToScreensaver)
@@ -477,8 +477,8 @@ TEST_F (ServiceTest, ConfirmationDisabledByBackend)
   // confirm that the ellipsis are correct
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-greeter"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.restart"));
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.shutdown"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.power-off"));
 
   // now toggle the can-prompt flag
   confirm_supported = !confirm_supported;
@@ -490,8 +490,8 @@ TEST_F (ServiceTest, ConfirmationDisabledByBackend)
   // confirm that the ellipsis are correct
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-greeter"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.restart"));
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.shutdown"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.power-off"));
 
   // cleanup
   g_settings_reset (mock_settings, confirm_supported_key);
@@ -509,8 +509,8 @@ TEST_F (ServiceTest, ConfirmationDisabledByUser)
   // confirm that the ellipsis are correct
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-greeter"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.restart"));
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.shutdown"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.power-off"));
 
   // now toggle the can-prompt flag
   confirm_disabled = !confirm_disabled;
@@ -522,8 +522,8 @@ TEST_F (ServiceTest, ConfirmationDisabledByUser)
   // confirm that the ellipsis are correct
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-greeter"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.restart"));
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.shutdown"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.power-off"));
 
   // cleanup
   g_settings_reset (indicator_settings, confirm_disabled_key);
@@ -542,8 +542,8 @@ TEST_F (ServiceTest, DefaultMenuItems)
   ASSERT_TRUE (find_menu_item_for_action ("indicator.logout", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.suspend", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.hibernate", NULL, NULL));
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.restart", NULL, NULL));
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.shutdown", NULL, NULL));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.reboot", NULL, NULL));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.power-off", NULL, NULL));
 }
 
 TEST_F (ServiceTest, OnlineAccountError)

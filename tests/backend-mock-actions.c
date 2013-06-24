@@ -80,15 +80,15 @@ my_hibernate (IndicatorSessionActions * self G_GNUC_UNUSED)
 }
 
 static void
-my_restart (IndicatorSessionActions * self G_GNUC_UNUSED)
+my_reboot (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  g_settings_set_string (mock_settings, "last-command", "restart");
+  g_settings_set_string (mock_settings, "last-command", "reboot");
 }
 
 static void
-my_shutdown (IndicatorSessionActions * self G_GNUC_UNUSED)
+my_power_off (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  g_settings_set_string (mock_settings, "last-command", "shutdown");
+  g_settings_set_string (mock_settings, "last-command", "power-off");
 }
 
 static void
@@ -185,8 +185,8 @@ indicator_session_actions_mock_class_init (IndicatorSessionActionsMockClass * kl
   actions_class->logout = my_logout;
   actions_class->suspend = my_suspend;
   actions_class->hibernate = my_hibernate;
-  actions_class->restart = my_restart;
-  actions_class->shutdown = my_shutdown;
+  actions_class->reboot = my_reboot;
+  actions_class->power_off = my_power_off;
   actions_class->settings = my_settings;
   actions_class->help = my_help;
   actions_class->about = my_about;

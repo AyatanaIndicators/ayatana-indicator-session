@@ -542,13 +542,13 @@ create_session_section (IndicatorSessionService * self)
   if (!g_settings_get_boolean (s, "suppress-restart-menuitem"))
     {
       const char * label = ellipsis ? _("Restart\342\200\246") : _("Restart");
-      g_menu_append (menu, label, "indicator.restart");
+      g_menu_append (menu, label, "indicator.reboot");
     }
 
   if (!g_settings_get_boolean (s, "suppress-shutdown-menuitem"))
     {
       const char * label = ellipsis ? _("Shutdown\342\200\246") : _("Shutdown");
-      g_menu_append (menu, label, "indicator.shutdown");
+      g_menu_append (menu, label, "indicator.power-off");
     }
 
   return G_MENU_MODEL (menu);
@@ -661,19 +661,19 @@ on_hibernate_activated (GSimpleAction * a      G_GNUC_UNUSED,
 }
 
 static void
-on_restart_activated (GSimpleAction * action G_GNUC_UNUSED,
-                      GVariant      * param  G_GNUC_UNUSED,
-                      gpointer        gself)
+on_reboot_activated (GSimpleAction * action G_GNUC_UNUSED,
+                     GVariant      * param  G_GNUC_UNUSED,
+                     gpointer        gself)
 {
-  indicator_session_actions_restart (get_backend_actions(gself));
+  indicator_session_actions_reboot (get_backend_actions(gself));
 }
 
 static void
-on_shutdown_activated (GSimpleAction * a     G_GNUC_UNUSED,
-                       GVariant      * param G_GNUC_UNUSED,
-                       gpointer        gself)
+on_power_off_activated (GSimpleAction * a     G_GNUC_UNUSED,
+                        GVariant      * param G_GNUC_UNUSED,
+                        gpointer        gself)
 {
-  indicator_session_actions_shutdown (get_backend_actions(gself));
+  indicator_session_actions_power_off (get_backend_actions(gself));
 }
 
 static void
@@ -724,8 +724,8 @@ init_gactions (IndicatorSessionService * self)
     { "logout",                 on_logout_activated       },
     { "suspend",                on_suspend_activated      },
     { "hibernate",              on_hibernate_activated    },
-    { "restart",                on_restart_activated      },
-    { "shutdown",               on_shutdown_activated     },
+    { "reboot",                 on_reboot_activated       },
+    { "power-off",              on_power_off_activated    },
     { "switch-to-screensaver",  on_screensaver_activated  },
     { "switch-to-greeter",      on_greeter_activated      }
   };

@@ -71,8 +71,8 @@ struct _IndicatorSessionActionsClass
   void  (*suspend)                     (IndicatorSessionActions * self);
   void  (*hibernate)                   (IndicatorSessionActions * self);
   void  (*logout)                      (IndicatorSessionActions * self);
-  void  (*restart)                     (IndicatorSessionActions * self);
-  void  (*shutdown)                    (IndicatorSessionActions * self);
+  void  (*reboot)                      (IndicatorSessionActions * self);
+  void  (*power_off)                   (IndicatorSessionActions * self);
   void  (*help)                        (IndicatorSessionActions * self);
   void  (*about)                       (IndicatorSessionActions * self);
   void  (*settings)                    (IndicatorSessionActions * self);
@@ -111,8 +111,8 @@ void indicator_session_actions_lock                            (IndicatorSession
 void indicator_session_actions_suspend                         (IndicatorSessionActions * self);
 void indicator_session_actions_hibernate                       (IndicatorSessionActions * self);
 void indicator_session_actions_logout                          (IndicatorSessionActions * self);
-void indicator_session_actions_restart                         (IndicatorSessionActions * self);
-void indicator_session_actions_shutdown                        (IndicatorSessionActions * self);
+void indicator_session_actions_reboot                          (IndicatorSessionActions * self);
+void indicator_session_actions_power_off                       (IndicatorSessionActions * self);
 
 void indicator_session_actions_help                            (IndicatorSessionActions * self);
 void indicator_session_actions_about                           (IndicatorSessionActions * self);

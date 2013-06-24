@@ -103,8 +103,8 @@ indicator_session_actions_class_init (IndicatorSessionActionsClass * klass)
   klass->logout = NULL;
   klass->suspend = NULL;
   klass->hibernate = NULL;
-  klass->restart = NULL;
-  klass->shutdown = NULL;
+  klass->reboot = NULL;
+  klass->power_off = NULL;
   klass->switch_to_screensaver = NULL;
   klass->switch_to_greeter = NULL;
   klass->switch_to_guest = NULL;
@@ -246,11 +246,11 @@ indicator_session_actions_logout (IndicatorSessionActions * self)
 }
 
 void
-indicator_session_actions_shutdown (IndicatorSessionActions * self)
+indicator_session_actions_power_off (IndicatorSessionActions * self)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS (self));
 
-  INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->shutdown (self);
+  INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->power_off (self);
 }
 
 void
@@ -270,11 +270,11 @@ indicator_session_actions_about (IndicatorSessionActions * self)
 }
 
 void
-indicator_session_actions_restart (IndicatorSessionActions * self)
+indicator_session_actions_reboot (IndicatorSessionActions * self)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS (self));
 
-  INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->restart (self);
+  INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->reboot (self);
 }
 
 void

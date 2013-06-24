@@ -17,35 +17,28 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "dbus-accounts.h"
-#include "dbus-consolekit-seat.h"
-#include "dbus-consolekit-session.h"
-#include "dbus-consolekit-manager.h"
 #include "dbus-user.h"
 
 #include "users.h"
 
 struct _IndicatorSessionUsersDbusPriv
 {
-  char * active_session_id;
-
+  Login1Manager * login1_manager;
+  Login1Seat * login1_seat;
+  DisplayManagerSeat * dm_seat;
   Accounts * accounts;
 
-  DisplayManagerSeat * dm_seat;
+  /* hash table of int uids to AccountsUser* */
+  GHashTable * uid_to_account;
 
-  ConsoleKitSeat * seat_proxy;
+  /* a hashset of int uids of users who are logged in */
+  GHashTable * logins;
 
-  /* user's dbus object path -> AccountsUser* */
-  GHashTable * path_to_user;
+  /* the user-id of the owner of the active session */
+  guint active_uid;
 
-  /* uint32 user-id --> user's dbus object path */
-  GHashTable * uid_to_user_path;
-
-  /* uint32 user-id --> hashset of ssid strings */
-  GHashTable * uid_to_sessions;
-
-  /* ssid string --> uint32 user-id */
-  GHashTable * session_to_uid;
+  /* true if this is a live session */
+  gboolean is_live;
 
   GCancellable * cancellable;
 };
@@ -60,33 +53,168 @@ G_DEFINE_TYPE (IndicatorSessionUsersDbus,
 ****
 ***/
 
-static void create_user_proxy_for_path    (IndicatorSessionUsersDbus * self,
-                                           const char                * path);
-
-static void create_session_proxy_for_ssid (IndicatorSessionUsersDbus * self,
-                                           const char                * ssid);
-
-static void
-emit_user_changed_for_path (IndicatorSessionUsersDbus * self, const char * path)
+static const gchar *
+get_public_key_for_uid (guint uid)
 {
-  AccountsUser * user = g_hash_table_lookup (self->priv->path_to_user, path);
-
-  if (user && !accounts_user_get_system_account (user))
-    indicator_session_users_changed (INDICATOR_SESSION_USERS(self), path);
+  static char buf[16];
+  g_snprintf (buf, sizeof(buf), "%u", uid);
+  return buf;
 }
 
 static void
-emit_user_changed_for_uid (IndicatorSessionUsersDbus * self, guint uid)
+emit_user_added (IndicatorSessionUsersDbus * self, guint uid)
 {
-  const char * path;
+  const gchar * const public_key = get_public_key_for_uid (uid);
+  indicator_session_users_added (INDICATOR_SESSION_USERS(self), public_key);
+}
 
-  if ((path = g_hash_table_lookup (self->priv->uid_to_user_path, GUINT_TO_POINTER(uid))))
-    emit_user_changed_for_path (self, path);
+static void
+emit_user_changed (IndicatorSessionUsersDbus * self, guint uid)
+{
+  const gchar * const public_key = get_public_key_for_uid (uid);
+  indicator_session_users_changed (INDICATOR_SESSION_USERS(self), public_key);
+}
+
+static void
+emit_user_removed (IndicatorSessionUsersDbus * self, guint uid)
+{
+  const gchar * const public_key = get_public_key_for_uid (uid);
+  indicator_session_users_removed (INDICATOR_SESSION_USERS(self), public_key);
 }
 
 /***
-****  ACCOUNT MANAGER / USER TRACKING
+****
 ***/
+
+static void
+set_is_live_session_flag (IndicatorSessionUsersDbus * self, gboolean b)
+{
+  priv_t * p = self->priv;
+
+  if (p->is_live != b)
+    {
+      p->is_live = b;
+
+      indicator_session_users_notify_is_live_session (INDICATOR_SESSION_USERS (self));
+    }
+}
+
+static void
+set_active_uid (IndicatorSessionUsersDbus * self, guint uid)
+{
+  priv_t * p = self->priv;
+
+  g_message ("%s %s setting active uid to %u", G_STRLOC, G_STRFUNC, uid);
+
+  if (p->active_uid != uid)
+    {
+      const guint old_uid = p->active_uid;
+
+      p->active_uid = uid;
+
+      if (old_uid)
+        emit_user_changed (self, old_uid);
+
+      if (uid)
+        emit_user_changed (self, uid);
+    }
+}
+
+static void
+set_logins (IndicatorSessionUsersDbus * self, GHashTable * logins)
+{
+  GHashTable * old_logins = self->priv->logins;
+  gpointer key;
+  GHashTableIter iter;
+
+  self->priv->logins = logins;
+
+  /* fire 'user changed' event for users who logged out */
+  g_hash_table_iter_init (&iter, old_logins);
+  while ((g_hash_table_iter_next (&iter, &key, NULL)))
+    if (!g_hash_table_contains (logins, key))
+      emit_user_changed (self, GPOINTER_TO_INT(key));
+
+  /* fire 'user changed' event for users who logged in */
+  g_hash_table_iter_init (&iter, logins);
+  while ((g_hash_table_iter_next (&iter, &key, NULL)))
+    if (!g_hash_table_contains (old_logins, key))
+      emit_user_changed (self, GPOINTER_TO_INT(key));
+
+  g_hash_table_destroy (old_logins);
+}
+
+/***
+****
+***/
+
+static GQuark
+get_connection_list_quark (void)
+{
+  static GQuark q = 0;
+
+  if (G_UNLIKELY (q == 0))
+    q = g_quark_from_static_string ("connection-ids");
+
+  return q;
+}
+
+static void
+object_unref_and_disconnect (gpointer instance)
+{
+  GSList * l;
+  GSList * ids;
+  const GQuark q = get_connection_list_quark ();
+
+  ids = g_object_steal_qdata (G_OBJECT(instance), q);
+  for (l=ids; l!=NULL; l=l->next)
+    {
+      gulong * handler_id = l->data;
+      g_signal_handler_disconnect (instance, *handler_id);
+      g_free (handler_id);
+    }
+
+  g_slist_free (ids);
+}
+
+static void
+object_add_connection (GObject * o, gulong connection_id)
+{
+  const GQuark q = get_connection_list_quark ();
+  GSList * ids;
+  gulong * ptr;
+
+  ptr = g_new (gulong, 1);
+  *ptr = connection_id;
+
+  ids = g_object_steal_qdata (o, q);
+  ids = g_slist_prepend (ids, ptr);
+  g_object_set_qdata (o, q, ids);
+}
+
+/***
+****
+***/
+
+static AccountsUser *
+get_user_for_uid (IndicatorSessionUsersDbus * self, guint uid)
+{
+  priv_t * p = self->priv;
+
+  return g_hash_table_lookup (p->uid_to_account, GUINT_TO_POINTER(uid));
+}
+
+static AccountsUser *
+get_user_for_public_key (IndicatorSessionUsersDbus * self, const char * public_key)
+{
+  return get_user_for_uid (self, g_ascii_strtoull (public_key, NULL, 10));
+}
+
+/***
+****  User Account Tracking
+***/
+
+static void create_user_proxy_for_path (IndicatorSessionUsersDbus *, const char *);
 
 /* called when a user proxy gets the 'Changed' signal */
 static void
@@ -94,7 +222,7 @@ on_user_changed (AccountsUser * user, gpointer gself)
 {
   /* Accounts.User doesn't update properties in the standard way,
    * so create a new proxy to pull in the new properties.
-   * The older proxy is freed when it's removed from our path_to_user hash */
+   * The older proxy is freed when it's replaced in our accounts hash */
   const char * path = g_dbus_proxy_get_object_path (G_DBUS_PROXY(user));
   create_user_proxy_for_path (gself, path);
 }
@@ -103,32 +231,24 @@ static void
 track_user (IndicatorSessionUsersDbus * self,
             AccountsUser              * user)
 {
-  priv_t * p;
-  const char * path;
+  priv_t * p = self->priv;
+  const guint32 uid = accounts_user_get_uid (user);
+  const gpointer uid_key = GUINT_TO_POINTER (uid);
   gboolean already_had_user;
+  gulong id;
 
-  p = self->priv;
+  already_had_user = g_hash_table_contains (p->uid_to_account, uid_key);
 
-  path = g_dbus_proxy_get_object_path (G_DBUS_PROXY(user));
-  already_had_user = g_hash_table_contains (p->path_to_user, path);
+  id = g_signal_connect (user, "changed", G_CALLBACK(on_user_changed), self);
+  object_add_connection (G_OBJECT(user), id);
+  g_hash_table_insert (p->uid_to_account, uid_key, user);
 
-  g_signal_connect (user, "changed", G_CALLBACK(on_user_changed), self);
-  g_hash_table_insert (p->path_to_user, g_strdup(path), user);
-
-  if (already_had_user)
+  if (!accounts_user_get_system_account (user))
     {
-      emit_user_changed_for_path (self, path);
-    }
-  else
-    {
-      const guint uid = (guint) accounts_user_get_uid (user);
-
-      g_hash_table_insert (p->uid_to_user_path,
-                           GUINT_TO_POINTER(uid),
-                           g_strdup(path));
-
-      if (!accounts_user_get_system_account (user))
-        indicator_session_users_added (INDICATOR_SESSION_USERS(self), path);
+      if (already_had_user)
+        emit_user_changed (self, uid);
+      else
+        emit_user_added (self, uid);
     }
 }
 
@@ -136,14 +256,28 @@ static void
 untrack_user (IndicatorSessionUsersDbus * self,
               const gchar               * path)
 {
-  g_hash_table_remove (self->priv->path_to_user, path);
+  guint uid;
+  gpointer key;
+  gpointer val;
+  GHashTableIter iter;
+  priv_t * p = self->priv;
 
-  indicator_session_users_removed (INDICATOR_SESSION_USERS(self), path);
+  uid = 0;
+  g_hash_table_iter_init (&iter, p->uid_to_account);
+  while (!uid && g_hash_table_iter_next (&iter, &key, &val))
+    if (!g_strcmp0 (path, g_dbus_proxy_get_object_path (val)))
+      uid = GPOINTER_TO_UINT (key);
+
+  if (uid)
+    {
+      g_hash_table_remove (p->uid_to_account, GUINT_TO_POINTER(uid)); 
+
+      emit_user_removed (self, uid);
+    }
 }
 
-
 static void
-on_user_proxy_ready (GObject       * o        G_GNUC_UNUSED,
+on_user_proxy_ready (GObject       * o G_GNUC_UNUSED,
                      GAsyncResult  * res,
                      gpointer        self)
 {
@@ -169,15 +303,15 @@ static void
 create_user_proxy_for_path (IndicatorSessionUsersDbus * self,
                             const char                * path)
 {
-  const char * name = "org.freedesktop.Accounts";
-  const GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES;
-
   accounts_user_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
-                                   flags, name, path,
+                                   G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
+                                   "org.freedesktop.Accounts",
+                                   path,
                                    self->priv->cancellable,
                                    on_user_proxy_ready, self);
 }
 
+/* create user proxies for everything in Account's user-list */
 static void
 on_user_list_ready (GObject * o, GAsyncResult * res, gpointer gself)
 {
@@ -233,348 +367,143 @@ set_account_manager (IndicatorSessionUsersDbus * self, Accounts * a)
     }
 }
 
-/**
- *  SEAT / SESSION TRACKING
- *
- *  There are two simple goals here:
- *
- *   1. Keep track of how many GUI sessions each user has
- *      so that we can set the 'is_logged_in' flag correctly
- *
- *   2. Also track which is the current session,
- *      so that we can compare it to those GUI sessions to
- *      set the 'is_current_session' flag correctly.
- *
- *  Now that you know the goals, these steps may make more sense:
- *
- *   1. create a ConsoleKitManager proxy
- *   2. ask it for the current session
- *   3. create a corresponding Session proxy
- *   4. ask that Session proxy for its seat
- *   5. create a corresponding Seat proxy
- *   6. connect to that seat's session-added / session-removed signals
- *   7. ask the seat for a list of its current sessions
- *   8. create corresponding Session proxies
- *   9. of them, look for the GUI sessions by checking their X11 properties
- *   10. for each GUI session, get the corresponding uid
- *   11. use the information to update our uid <--> GUI sessions tables
- */
-
-static void
-track_session (IndicatorSessionUsersDbus * self,
-               const char                * ssid,
-               guint                       uid)
-{
-  gpointer uid_key;
-  GHashTable * sessions;
-
-  uid_key = GUINT_TO_POINTER (uid);
-  sessions = g_hash_table_lookup (self->priv->uid_to_sessions, uid_key);
-  if (sessions == NULL)
-    {
-      sessions = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-      g_hash_table_insert (self->priv->uid_to_sessions, uid_key, sessions);
-    }
-
-  g_hash_table_add (sessions, g_strdup (ssid));
-  g_hash_table_insert (self->priv->session_to_uid, g_strdup(ssid), uid_key);
-
-  g_debug ("%s %s now tracking ssid:%s uid:%u. uid has %u tracked ssids.",
-           G_STRLOC, G_STRFUNC, ssid, uid, g_hash_table_size (sessions));
-
-  emit_user_changed_for_uid (self, uid);
-}
-
-static void
-untrack_session (IndicatorSessionUsersDbus * self,
-                 const char                * ssid)
-{
-  gpointer uidptr;
-  priv_t * p = self->priv;
-
-  if (g_hash_table_lookup_extended (p->session_to_uid, ssid, NULL, &uidptr))
-    {
-      const guint uid = GPOINTER_TO_UINT (uidptr);
-      GHashTable * sessions = g_hash_table_lookup (p->uid_to_sessions, uidptr);
-
-      g_hash_table_remove (p->session_to_uid, ssid);
-      g_hash_table_remove (sessions, ssid);
-      g_debug ("%s %s not tracking ssid:%s uid:%u. uid has %u tracked ssids.",
-               G_STRLOC, G_STRFUNC, ssid, uid,
-               sessions ? g_hash_table_size (sessions) : 0);
-
-      emit_user_changed_for_uid (self, uid);
-    }
-}
-
-static void
-on_session_proxy_uid_ready (GObject       * o,
-                            GAsyncResult  * res,
-                            gpointer        gself)
-{
-  guint uid;
-  GError * err;
-  ConsoleKitSession * session = CONSOLE_KIT_SESSION (o);
-
-  uid = 0;
-  err = NULL;
-  console_kit_session_call_get_unix_user_finish (session, &uid, res, &err);
-  if (err != NULL)
-    {
-      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
-
-      g_error_free (err);
-    }
-  else if (uid)
-    {
-      const char * path = g_dbus_proxy_get_object_path (G_DBUS_PROXY(session));
-      track_session (gself, path, uid);
-    }
-
-  g_object_unref (o);
-}
-
-static void
-on_session_x11_display_ready (GObject       * o,
-                              GAsyncResult  * res,
-                              gpointer        gself)
-{
-  priv_t * p;
-  GError * err;
-  gchar * gui;
-  ConsoleKitSession * session;
-
-  p = INDICATOR_SESSION_USERS_DBUS(gself)->priv;
-
-  err = NULL;
-  gui = NULL;
-  session = CONSOLE_KIT_SESSION (o);
-  console_kit_session_call_get_x11_display_finish (session, &gui, res, &err);
-  if (err != NULL)
-    {
-      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
-
-      g_error_free (err);
-    }
-  else
-    {
-      gboolean is_gui_session;
-
-      is_gui_session = gui && *gui;
-
-      if (!is_gui_session)
-        g_clear_object (&session);
-      else
-        console_kit_session_call_get_unix_user (session,
-                                                p->cancellable,
-                                                on_session_proxy_uid_ready,
-                                                gself);
-
-      g_free (gui);
-    }
-}
-
-static void
-on_session_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gself)
-{
-  GError * err;
-  ConsoleKitSession * session;
-
-  err = NULL;
-  session = console_kit_session_proxy_new_finish (res, &err);
-  if (err != NULL)
-    {
-      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
-
-      g_error_free (err);
-    }
-  else if (session != NULL)
-    {
-      priv_t * p = INDICATOR_SESSION_USERS_DBUS(gself)->priv;
-
-      console_kit_session_call_get_x11_display (session,
-                                                p->cancellable,
-                                                on_session_x11_display_ready,
-                                                gself);
-    }
-}
-
-static void
-create_session_proxy_for_ssid (IndicatorSessionUsersDbus * self,
-                               const char                * ssid)
-{
-  const char * name = "org.freedesktop.ConsoleKit";
-  GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES;
-
-  console_kit_session_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
-                                         flags, name, ssid,
-                                         self->priv->cancellable,
-                                         on_session_proxy_ready, self);
-}
-
-static void
-on_session_list_ready (GObject * o, GAsyncResult * res, gpointer gself)
-{
-  GError * err;
-  gchar ** sessions;
-
-  err = NULL;
-  sessions = NULL;
-  console_kit_seat_call_get_sessions_finish (CONSOLE_KIT_SEAT(o),
-                                             &sessions, res, &err);
-  if (err != NULL)
-    {
-      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
-
-      g_error_free (err);
-    }
-  else
-    {
-      int i;
-
-      for (i=0; sessions && sessions[i]; i++)
-        create_session_proxy_for_ssid (gself, sessions[i]);
-
-      g_strfreev (sessions);
-    }
-}
-
-static inline guint
-get_uid_for_session (IndicatorSessionUsersDbus * self, const char * ssid)
-{
-  guint uid = 0;
-  gpointer value;
-
-  if (ssid != NULL)
-    if ((value = g_hash_table_lookup (self->priv->session_to_uid, ssid)))
-      uid = GPOINTER_TO_UINT (value);
-
-  return uid;
-}
-
-/* it's a live session if username is 'ubuntu' and uid is 999 */
-static gboolean
-is_live_ssid (IndicatorSessionUsersDbus * self, const char * ssid)
-{
-  priv_t * p;
-  guint uid;
-
-  p = INDICATOR_SESSION_USERS_DBUS (self)->priv;
-  uid = get_uid_for_session (self, ssid);
-
-  if (uid == 999)
-    {
-      const char * path;
-      AccountsUser * user = NULL;
-
-      if ((path = g_hash_table_lookup (p->uid_to_user_path, GUINT_TO_POINTER (uid))))
-        user = g_hash_table_lookup (p->path_to_user, path);
-
-      return (user != NULL) && !g_strcmp0 (accounts_user_get_user_name(user), "ubuntu");
-    }
-
-  return FALSE;
-}
-
-
-static void
-set_active_session (IndicatorSessionUsersDbus * self, const char * ssid)
-{
-  priv_t * p = self->priv;
-  const guint old_uid = get_uid_for_session (self, p->active_session_id);
-  const guint new_uid = get_uid_for_session (self, ssid);
-  const gboolean old_live = is_live_ssid (self, p->active_session_id);
-  const gboolean new_live = is_live_ssid (self, ssid);
-
-  g_debug ("%s %s changing active_session_id from '%s' to '%s'",
-           G_STRLOC, G_STRFUNC, p->active_session_id, ssid);
-  g_free (p->active_session_id);
-  p->active_session_id = g_strdup (ssid);
-
-  if (old_uid != new_uid)
-    {
-      emit_user_changed_for_uid (self, old_uid);
-      emit_user_changed_for_uid (self, new_uid);
-    }
-
-  if (old_live != new_live)
-    {
-      indicator_session_users_notify_is_live_session (INDICATOR_SESSION_USERS(self));
-    }
-}
-
-static void
-on_seat_active_session_ready (GObject * o, GAsyncResult * res, gpointer gself)
-{
-  GError * err;
-  gchar * ssid;
-  ConsoleKitSeat * seat;
-
-  err = NULL;
-  ssid = NULL;
-  seat = CONSOLE_KIT_SEAT (o);
-  console_kit_seat_call_get_active_session_finish (seat, &ssid, res, &err);
-  if (err != NULL)
-    {
-      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, err->message);
-
-      g_error_free (err);
-    }
-  else if (ssid != NULL)
-    {
-      set_active_session (INDICATOR_SESSION_USERS_DBUS(gself), ssid);
-      g_free (ssid);
-    }
-}
-
-static void
-set_seat (IndicatorSessionUsersDbus * self, ConsoleKitSeat * seat)
-{
-  priv_t * p = self->priv;
-
-  if (p->seat_proxy != NULL)
-    {
-      g_signal_handlers_disconnect_by_data (p->seat_proxy, self);
-      g_clear_object (&p->seat_proxy);
-    }
-
-  if (seat != NULL)
-    {
-      p->seat_proxy = g_object_ref (seat);
-
-      /* ask the seat for a list of all the sessions */
-      console_kit_seat_call_get_sessions (seat,
-                                          p->cancellable,
-                                          on_session_list_ready,
-                                          self);
-
-      /* ask the seat for the name of the active session */
-      console_kit_seat_call_get_active_session (p->seat_proxy,
-                                                p->cancellable,
-                                                on_seat_active_session_ready,
-                                                self);
-
-      /* listen for session changes in this seat */
-      g_signal_connect_swapped (seat, "session-added",
-                                G_CALLBACK(create_session_proxy_for_ssid),self);
-      g_signal_connect_swapped (seat, "session-removed",
-                                G_CALLBACK(untrack_session), self);
-      g_signal_connect_swapped (seat, "active-session-changed",
-                                G_CALLBACK(set_active_session), self);
-    }
-}
-
 /***
 ****
 ***/
 
+/* Based on the login1 manager's list of current sessions,
+   update our 'logins', 'is_live', and 'active_uid' fields */
 static void
-set_dm_seat (IndicatorSessionUsersDbus * self, DisplayManagerSeat * dm_seat)
+on_login1_manager_session_list_ready (GObject      * o,
+                                      GAsyncResult * res,
+                                      gpointer       gself)
+{
+  GVariant * sessions;
+  GError * err;
+
+  sessions = NULL;
+  err = NULL;
+  login1_manager_call_list_sessions_finish (LOGIN1_MANAGER(o),
+                                            &sessions,
+                                            res,
+                                            &err);
+
+  if (err != NULL)
+    {
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s: %s", G_STRFUNC, err->message);
+
+      g_error_free (err);
+    }
+  else
+    {
+      const gchar * const current_seat_id = g_getenv ("XDG_SEAT");
+      const gchar * const current_session_id = g_getenv ("XDG_SESSION_ID");
+      IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS (gself);
+      const gchar * session_id = NULL;
+      guint32 uid = 0;
+      const gchar * user_name = NULL;
+      const gchar * seat_id = NULL;
+      const gchar * path = NULL;
+      gboolean is_live_session = FALSE;
+      GHashTable * logins = g_hash_table_new (g_direct_hash, g_direct_equal);
+      GVariantIter iter;
+
+      g_message ("%s %s %s", G_STRLOC, G_STRFUNC, g_variant_print (sessions, TRUE));
+
+      g_variant_iter_init (&iter, sessions);
+      while (g_variant_iter_loop (&iter, "(&su&s&s&o)", &session_id,
+                                                        &uid,
+                                                        &user_name,
+                                                        &seat_id,
+                                                        &path))
+        {
+          /* only track sessions on our seat */
+          if (g_strcmp0 (seat_id, current_seat_id))
+            continue;
+
+          if ((uid==999) && !g_strcmp0 (user_name,"ubuntu"))
+            is_live_session = TRUE;
+
+          if (!g_strcmp0 (session_id, current_session_id))
+            set_active_uid (self, uid);
+
+          /* only count user accounts and the live session */
+          if (uid >= 999)
+            g_hash_table_add (logins, GINT_TO_POINTER(uid));
+        }
+
+      set_is_live_session_flag (self, is_live_session);
+      set_logins (self, logins);
+
+      g_variant_unref (sessions);
+    }
+}
+
+static void
+update_session_list (IndicatorSessionUsersDbus * self)
+{
+  priv_t * p = self->priv;
+
+  if (p->login1_manager != NULL)
+    {
+      login1_manager_call_list_sessions (p->login1_manager,
+                                         p->cancellable,
+                                         on_login1_manager_session_list_ready,
+                                         self);
+    }
+}
+
+static void
+set_login1_manager (IndicatorSessionUsersDbus * self, Login1Manager * login1_manager)
+{
+  priv_t * p = self->priv;
+
+  if (p->login1_manager != NULL)
+    {
+      g_signal_handlers_disconnect_by_data (p->login1_manager, self);
+
+      g_clear_object (&p->login1_manager);
+    }
+
+  if (login1_manager != NULL)
+    {
+      p->login1_manager = g_object_ref (login1_manager);
+
+      g_signal_connect_swapped (login1_manager, "session-new",
+                                G_CALLBACK(update_session_list), self);
+      g_signal_connect_swapped (login1_manager, "session-removed",
+                                G_CALLBACK(update_session_list), self);
+      update_session_list (self);
+    }
+}
+
+static void
+set_login1_seat (IndicatorSessionUsersDbus * self,
+                 Login1Seat                * login1_seat)
+{
+  priv_t * p = self->priv;
+
+  if (p->login1_seat != NULL)
+    {
+      g_signal_handlers_disconnect_by_data (p->login1_seat, self);
+
+      g_clear_object (&p->login1_seat);
+    }
+
+  if (login1_seat != NULL)
+    {
+      p->login1_seat = g_object_ref (login1_seat);
+
+      g_signal_connect_swapped (login1_seat, "notify::active-session",
+                                G_CALLBACK(update_session_list), self);
+      update_session_list (self);
+    }
+}
+
+static void
+set_display_manager_seat (IndicatorSessionUsersDbus * self,
+                          DisplayManagerSeat        * dm_seat)
 {
   priv_t * p = self->priv;
 
@@ -584,20 +513,106 @@ set_dm_seat (IndicatorSessionUsersDbus * self, DisplayManagerSeat * dm_seat)
     p->dm_seat = g_object_ref (dm_seat);
 }
 
+/***
+****  IndicatorSessionUsers virtual functions
+***/
+
+/* switch to (or create) a session for the specified user */
 static void
-activate_username (IndicatorSessionUsersDbus * self, const char * username)
+my_activate_user (IndicatorSessionUsers * users, const char * public_key)
 {
+  IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS(users);
   priv_t * p = self->priv;
-  const char * session = "";
+  AccountsUser * au;
+  const char * username;
 
-  g_return_if_fail (p->dm_seat != NULL);
+  au = get_user_for_public_key (self, public_key);
+  username = au ? accounts_user_get_user_name (au) : NULL;
 
-  display_manager_seat_call_switch_to_user (p->dm_seat, username, session,
-                                            p->cancellable, NULL, NULL);
+  if (!username)
+    {
+      g_warning ("%s %s can't find user for '%s'", G_STRLOC, G_STRFUNC, public_key);
+    }
+  else
+    {
+      g_return_if_fail (p->dm_seat != NULL);
+
+      display_manager_seat_call_switch_to_user (p->dm_seat,
+                                                username,
+                                                "",
+                                                p->cancellable,
+                                                NULL,
+                                                NULL);
+    }
+}
+
+/* returns true if this is a live session */
+static gboolean
+my_is_live_session (IndicatorSessionUsers * users)
+{
+  g_return_val_if_fail (INDICATOR_IS_SESSION_USERS_DBUS(users), FALSE);
+
+  return INDICATOR_SESSION_USERS_DBUS(users)->priv->is_live;
+}
+
+/* get a list of public keys for the users that we know about */
+static GStrv
+my_get_keys (IndicatorSessionUsers * users)
+{
+  int i;
+  priv_t * p;
+  gchar ** keys;
+  GHashTableIter iter;
+  gpointer uid;
+  gpointer user;
+  GHashTable * h;
+
+  g_return_val_if_fail (INDICATOR_IS_SESSION_USERS_DBUS(users), NULL);
+  p = INDICATOR_SESSION_USERS_DBUS (users)->priv;
+
+  i = 0;
+  h = p->uid_to_account;
+  keys = g_new (gchar*, g_hash_table_size(h)+1);
+  g_hash_table_iter_init (&iter, h);
+  while (g_hash_table_iter_next (&iter, &uid, &user))
+    if (!accounts_user_get_system_account (user))
+      keys[i++] = g_strdup (get_public_key_for_uid ((guint)uid));
+  keys[i] = NULL;
+
+  return keys;
+}
+
+/* build a new struct populated with info on the specified user */
+static IndicatorSessionUser *
+my_get_user (IndicatorSessionUsers * users, const gchar * public_key)
+{
+  IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS (users);
+  priv_t * p = self->priv;
+  IndicatorSessionUser * ret;
+  AccountsUser * au;
+
+  ret = NULL;
+  au = get_user_for_public_key (self, public_key);
+
+  if (au && !accounts_user_get_system_account(au))
+    {
+      const guint uid = accounts_user_get_uid (au);
+
+      ret = g_new0 (IndicatorSessionUser, 1);
+      ret->uid = uid;
+      ret->user_name = g_strdup (accounts_user_get_user_name (au));
+      ret->real_name = g_strdup (accounts_user_get_real_name (au));
+      ret->icon_file = g_strdup (accounts_user_get_icon_file (au));
+      ret->login_frequency = accounts_user_get_login_frequency (au);
+      ret->is_logged_in = g_hash_table_contains (p->logins, GINT_TO_POINTER(uid));
+      ret->is_current_user = uid == p->active_uid;
+    }
+
+  return ret;
 }
 
 /***
-****
+****  GObject virtual functions
 ***/
 
 static void
@@ -612,14 +627,12 @@ my_dispose (GObject * o)
       g_clear_object (&p->cancellable);
     }
 
-  set_seat (self, NULL);
-  set_dm_seat (self, NULL);
   set_account_manager (self, NULL);
+  set_display_manager_seat (self, NULL);
+  set_login1_seat (self, NULL);
+  set_login1_manager (self, NULL);
 
-  g_clear_pointer (&p->path_to_user, g_hash_table_destroy);
-  g_clear_pointer (&p->session_to_uid, g_hash_table_destroy);
-  g_clear_pointer (&p->uid_to_sessions, g_hash_table_destroy);
-  g_clear_pointer (&p->uid_to_user_path, g_hash_table_destroy);
+  g_hash_table_remove_all (p->uid_to_account);
 
   G_OBJECT_CLASS (indicator_session_users_dbus_parent_class)->dispose (o);
 }
@@ -627,107 +640,16 @@ my_dispose (GObject * o)
 static void
 my_finalize (GObject * o)
 {
-  IndicatorSessionUsersDbus * u = INDICATOR_SESSION_USERS_DBUS (o);
+  IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS (o);
+  priv_t * p = self->priv;
 
-  g_free (u->priv->active_session_id);
+  g_hash_table_destroy (p->logins);
+  g_hash_table_destroy (p->uid_to_account);
 
   G_OBJECT_CLASS (indicator_session_users_dbus_parent_class)->finalize (o);
 }
 
 static void
-my_activate_user (IndicatorSessionUsers * users, const char * key)
-{
-  priv_t * p;
-  const char * username = 0;
-
-  p = INDICATOR_SESSION_USERS_DBUS (users)->priv;
-  if (p != 0)
-    {
-      AccountsUser * au = g_hash_table_lookup (p->path_to_user, key);
-
-      if (au != NULL)
-        username = accounts_user_get_user_name (au);
-    }
-
-  if (username != 0)
-    activate_username (INDICATOR_SESSION_USERS_DBUS(users), username);
-  else
-    g_warning ("%s %s can't find user for '%s'", G_STRLOC, G_STRFUNC, key);
-}
-
-static gboolean
-my_is_live_session (IndicatorSessionUsers * users)
-{
-  IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS(users);
-
-  return is_live_ssid (self, self->priv->active_session_id);
-}
-
-static GStrv
-my_get_keys (IndicatorSessionUsers * users)
-{
-  int i;
-  priv_t * p;
-  gchar ** keys;
-  GHashTableIter iter;
-  gpointer path;
-  gpointer user;
-
-  g_return_val_if_fail (INDICATOR_IS_SESSION_USERS_DBUS(users), NULL);
-  p = INDICATOR_SESSION_USERS_DBUS (users)->priv;
-
-  i = 0;
-  keys = g_new (gchar*, g_hash_table_size(p->path_to_user)+1);
-  g_hash_table_iter_init (&iter, p->path_to_user);
-  while (g_hash_table_iter_next (&iter, &path, &user))
-    if (!accounts_user_get_system_account (user))
-      keys[i++] = g_strdup (path);
-  keys[i] = NULL;
-
-  return keys;
-}
-
-static IndicatorSessionUser *
-my_get_user (IndicatorSessionUsers * users, const gchar * key)
-{
-  priv_t * p;
-  AccountsUser * au;
-  IndicatorSessionUser * ret = NULL;
-
-  p = INDICATOR_SESSION_USERS_DBUS (users)->priv;
-
-  au = g_hash_table_lookup (p->path_to_user, key);
-  if (au && !accounts_user_get_system_account(au))
-    {
-      const guint uid = (guint) accounts_user_get_uid (au);
-      GHashTable * s;
-
-      ret = g_new0 (IndicatorSessionUser, 1);
-
-      s = g_hash_table_lookup (p->uid_to_sessions, GUINT_TO_POINTER(uid));
-      if (s == NULL)
-        {
-          ret->is_logged_in = FALSE;
-          ret->is_current_user = FALSE;
-        }
-      else
-        {
-          ret->is_logged_in = g_hash_table_size (s) > 0;
-          ret->is_current_user = g_hash_table_contains (s, p->active_session_id);
-        }
-
-      ret->uid = uid;
-      ret->user_name = g_strdup (accounts_user_get_user_name (au));
-      ret->real_name = g_strdup (accounts_user_get_real_name (au));
-      ret->icon_file = g_strdup (accounts_user_get_icon_file (au));
-      ret->login_frequency = accounts_user_get_login_frequency (au);
-    }
-
-  return ret;
-}
-
-static void
-/* cppcheck-suppress unusedFunction */
 indicator_session_users_dbus_class_init (IndicatorSessionUsersDbusClass * klass)
 {
   GObjectClass * object_class;
@@ -747,7 +669,6 @@ indicator_session_users_dbus_class_init (IndicatorSessionUsersDbusClass * klass)
 }
 
 static void
-/* cppcheck-suppress unusedFunction */
 indicator_session_users_dbus_init (IndicatorSessionUsersDbus * self)
 {
   priv_t * p;
@@ -758,18 +679,12 @@ indicator_session_users_dbus_init (IndicatorSessionUsersDbus * self)
   self->priv = p;
   p->cancellable = g_cancellable_new ();
 
-  p->path_to_user = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                           g_free, g_object_unref);
+  p->uid_to_account = g_hash_table_new_full (g_direct_hash,
+                                             g_direct_equal,
+                                             NULL,
+                                             object_unref_and_disconnect);
 
-  p->uid_to_user_path = g_hash_table_new_full (g_direct_hash, g_direct_equal,
-                                               NULL, g_free);
-
-  p->session_to_uid = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                             g_free, NULL);
-
-  p->uid_to_sessions = g_hash_table_new_full (g_direct_hash, g_direct_equal,
-                                              NULL,
-                                              (GDestroyNotify)g_hash_table_destroy);
+  p->logins = g_hash_table_new (g_direct_hash, g_direct_equal);
 }
 
 /***
@@ -786,13 +701,15 @@ indicator_session_users_dbus_new (void)
 
 void
 indicator_session_users_dbus_set_proxies (IndicatorSessionUsersDbus * self,
-                                          Accounts                  * accounts,
+                                          Login1Manager             * login1_manager,
+                                          Login1Seat                * login1_seat,
                                           DisplayManagerSeat        * dm_seat,
-                                          ConsoleKitSeat            * seat)
+                                          Accounts                  * accounts)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_USERS_DBUS (self));
 
+  set_login1_manager (self, login1_manager);
+  set_login1_seat (self, login1_seat);
+  set_display_manager_seat (self, dm_seat);
   set_account_manager (self, accounts);
-  set_seat (self, seat);
-  set_dm_seat (self, dm_seat);
 }

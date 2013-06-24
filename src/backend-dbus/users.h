@@ -25,7 +25,8 @@
 
 #include "../users.h" /* parent class */
 #include "dbus-accounts.h"
-#include "dbus-consolekit-seat.h"
+#include "dbus-login1-manager.h"
+#include "dbus-login1-seat.h"
 #include "dbus-display-manager.h"
 
 G_BEGIN_DECLS
@@ -60,9 +61,10 @@ GType indicator_session_users_dbus_get_type (void);
 IndicatorSessionUsers * indicator_session_users_dbus_new (void);
 
 void indicator_session_users_dbus_set_proxies (IndicatorSessionUsersDbus *,
-                                               Accounts                  *,
+                                               Login1Manager             *,
+                                               Login1Seat                *,
                                                DisplayManagerSeat        *,
-                                               ConsoleKitSeat            *);
+                                               Accounts                  *);
 
 
 

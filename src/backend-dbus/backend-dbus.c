@@ -31,38 +31,36 @@ struct dbus_world_data
   IndicatorSessionGuestDbus   * guest;
 };
 
-static void
-on_proxies_ready (ConsoleKitManager  * ck_manager,
+static void 
+on_proxies_ready (Login1Manager      * login1_manager,
+                  Login1Seat         * login1_seat,
+                  DisplayManagerSeat * display_manager_seat, 
                   Accounts           * account_manager,
-                  DisplayManagerSeat * dm_seat,
-                  ConsoleKitSeat     * ck_seat,
-                  ConsoleKitSession  * ck_session,
-                  AccountsUser       * active_user G_GNUC_UNUSED,
-                  const GError       * error,
+                  GCancellable       * cancellable,
                   gpointer             gdata)
 {
   struct dbus_world_data * data = gdata;
 
-  if (error == NULL)
+  if (!g_cancellable_is_cancelled (cancellable))
     {
       if (data->actions != NULL)
         indicator_session_actions_dbus_set_proxies (data->actions,
-                                                    ck_manager,
-                                                    dm_seat,
-                                                    ck_seat);
+                                                    login1_manager,
+                                                    login1_seat,
+                                                    display_manager_seat);
 
       if (data->users != NULL)
         indicator_session_users_dbus_set_proxies (data->users,
-                                                  account_manager,
-                                                  dm_seat,
-                                                  ck_seat);
+                                                  login1_manager,
+                                                  login1_seat,
+                                                  display_manager_seat,
+                                                  account_manager);
 
       if (data->guest != NULL)
         indicator_session_guest_dbus_set_proxies (data->guest,
-                                                  account_manager,
-                                                  dm_seat,
-                                                  ck_seat,
-                                                  ck_session);
+                                                  login1_manager,
+                                                  login1_seat,
+                                                  display_manager_seat);
     }
 
   g_free (data);

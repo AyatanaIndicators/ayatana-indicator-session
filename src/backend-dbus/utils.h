@@ -25,19 +25,15 @@
 
 #include "dbus-accounts.h"
 #include "dbus-display-manager.h"
-#include "dbus-user.h"
-#include "dbus-consolekit-seat.h"
-#include "dbus-consolekit-session.h"
-#include "dbus-consolekit-manager.h"
+#include "dbus-login1-manager.h"
+#include "dbus-login1-seat.h"
 
 typedef void (*indicator_session_util_session_proxies_func)(
-                   ConsoleKitManager  * ck_manager,
+                   Login1Manager      * login1_manager,
+                   Login1Seat         * login1_seat,
+                   DisplayManagerSeat * display_manager_seat,
                    Accounts           * account_manager,
-                   DisplayManagerSeat * dm_seat,
-                   ConsoleKitSeat     * current_ck_seat,
-                   ConsoleKitSession  * current_ck_session,
-                   AccountsUser       * active_user,
-                   const GError       * error,
+                   GCancellable       * cancellable,
                    gpointer             user_data);
 
 /**

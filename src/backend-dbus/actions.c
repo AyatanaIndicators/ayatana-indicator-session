@@ -20,7 +20,7 @@
 #include <glib.h>
 
 #include "dbus-end-session-dialog.h"
-#include "dbus-upower.h"
+#include "dbus-login1-manager.h"
 #include "dbus-webcredentials.h"
 #include "gnome-screen-saver.h"
 #include "gnome-session-manager.h"
@@ -39,17 +39,16 @@ struct _IndicatorSessionActionsDbusPriv
   GCancellable * cancellable;
 
   GSettings * lockdown_settings;
-  UPower * upower;
   GnomeScreenSaver * screen_saver;
   GnomeSessionManager * session_manager;
-  ConsoleKitManager * ck_manager;
-  ConsoleKitSeat * ck_seat;
+  Login1Manager * login1_manager;
+  Login1Seat * login1_seat;
   DisplayManagerSeat * dm_seat;
   Webcredentials * webcredentials;
   EndSessionDialog * end_session_dialog;
 
-  gboolean suspend_allowed;
-  gboolean hibernate_allowed;
+  gboolean can_suspend;
+  gboolean can_hibernate;
   gboolean seat_allows_activation;
 };
 
@@ -75,42 +74,38 @@ log_and_clear_error (GError ** err, const char * loc, const char * func)
     }
 }
 
+/***
+****
+***/
+
 static void
-on_can_activate_sessions (GObject * o, GAsyncResult * res, gpointer gself)
+on_seat_notify_multi_session (IndicatorSessionActionsDbus * self)
 {
-  GError * err;
-  gboolean can_activate_sessions;
+  priv_t * p = self->priv;
+  gboolean b;
 
-  err = NULL;
-  can_activate_sessions = FALSE;
-  console_kit_seat_call_can_activate_sessions_finish (CONSOLE_KIT_SEAT(o),
-                                                      &can_activate_sessions,
-                                                      res,
-                                                      &err);
-  if (err == NULL)
+  b = login1_seat_get_can_multi_session (p->login1_seat);
+
+  if (p->seat_allows_activation != b)
     {
-      priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv;
-      p->seat_allows_activation = can_activate_sessions;
-    }
+      p->seat_allows_activation = b;
 
-  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
+      indicator_session_actions_notify_can_switch (INDICATOR_SESSION_ACTIONS(self));
+    }
 }
 
 static void
-set_ck_seat (IndicatorSessionActionsDbus * self, ConsoleKitSeat * seat)
+set_login1_seat (IndicatorSessionActionsDbus * self, Login1Seat * seat)
 {
   priv_t * p = self->priv;
 
-  g_clear_object (&p->ck_seat);
+  g_clear_object (&p->login1_seat);
 
   if (seat != NULL)
     {
-      p->ck_seat = g_object_ref (seat);
+      p->login1_seat = g_object_ref (seat);
 
-      console_kit_seat_call_can_activate_sessions (seat,
-                                                   p->cancellable,
-                                                   on_can_activate_sessions,
-                                                   self);
+      g_signal_connect_swapped (seat, "notify::can-multi-session", G_CALLBACK(on_seat_notify_multi_session), self);
     }
 }
 
@@ -153,75 +148,83 @@ on_screensaver_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpoin
 }
 
 static void
-on_suspend_allowed_ready (GObject * o, GAsyncResult * res, gpointer gself)
+on_can_suspend_ready (GObject * o, GAsyncResult * res, gpointer gself)
 {
+  char * str;
   GError * err;
-  gboolean allowed = FALSE;
 
+  str = NULL;
   err = NULL;
-  upower_call_suspend_allowed_finish (UPOWER(o), &allowed, res, &err);
+  login1_manager_call_can_suspend_finish (LOGIN1_MANAGER(o), &str, res, &err);
   if (err == NULL)
     {
       priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv;
 
-      if (p->suspend_allowed != allowed)
+      const gboolean b = !g_strcmp0 (str, "yes") ||
+                         !g_strcmp0 (str, "challenge");
+
+      if (p->can_suspend != b)
         {
-          p->suspend_allowed = allowed;
+          p->can_suspend = b;
           indicator_session_actions_notify_can_suspend (gself);
         }
+
+      g_free (str);
     }
 
   log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
 }
 
 static void
-on_hibernate_allowed_ready (GObject * o, GAsyncResult * res, gpointer gself)
+on_can_hibernate_ready (GObject * o, GAsyncResult * res, gpointer gself)
 {
+  gchar * str;
   GError * err;
-  gboolean allowed = FALSE;
 
+  str = NULL;
   err = NULL;
-  upower_call_hibernate_allowed_finish (UPOWER(o), &allowed, res, &err);
+  login1_manager_call_can_hibernate_finish (LOGIN1_MANAGER(o), &str, res, &err);
   if (err == NULL)
     {
       priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv;
 
-      if (p->hibernate_allowed != allowed)
+      const gboolean b = !g_strcmp0 (str, "yes") ||
+                         !g_strcmp0 (str, "challenge");
+
+      if (p->can_hibernate != b)
         {
-          p->hibernate_allowed = allowed;
+          p->can_hibernate = b;
           indicator_session_actions_notify_can_hibernate (gself);
         }
+
+      g_free (str);
     }
 
   log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
 }
 
 static void
-on_upower_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gself)
+set_login1_manager (IndicatorSessionActionsDbus * self,
+                    Login1Manager               * login1_manager)
 {
-  GError * err;
-  UPower * upower;
+  priv_t * p = self->priv;
 
-  err = NULL;
-  upower = upower_proxy_new_for_bus_finish (res, &err);
-  if (err == NULL)
+  g_clear_object (&p->login1_manager);
+
+  if (login1_manager != NULL)
     {
-      priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv;
+      p->login1_manager = g_object_ref (login1_manager);
 
-      p->upower = upower;
+      login1_manager_call_can_suspend (p->login1_manager,
+                                       p->cancellable,
+                                       on_can_suspend_ready,
+                                       self);
 
-      g_signal_connect_swapped (upower, "notify::can-suspend",
-                                G_CALLBACK(indicator_session_actions_notify_can_suspend), gself);
-
-      g_signal_connect_swapped (upower, "notify::can-hibernate",
-                                G_CALLBACK(indicator_session_actions_notify_can_hibernate), gself);
-
-      upower_call_suspend_allowed (upower, p->cancellable, on_suspend_allowed_ready, gself);
-
-      upower_call_hibernate_allowed (upower, p->cancellable, on_hibernate_allowed_ready, gself);
+      login1_manager_call_can_hibernate (p->login1_manager,
+                                         p->cancellable,
+                                         on_can_hibernate_ready,
+                                         self);
     }
-
-  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
 }
 
 static void
@@ -311,7 +314,7 @@ my_can_suspend (IndicatorSessionActions * self)
 {
   const priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  return p && p->upower && p->suspend_allowed && upower_get_can_suspend (p->upower);
+  return p && p->can_suspend;
 }
 
 static gboolean
@@ -319,7 +322,7 @@ my_can_hibernate (IndicatorSessionActions * self)
 {
   const priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  return p && p->upower && p->hibernate_allowed && upower_get_can_hibernate (p->upower);
+  return p && p->can_hibernate;
 }
 
 static gboolean
@@ -345,9 +348,9 @@ my_suspend (IndicatorSessionActions * self)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  g_return_if_fail (p->upower != NULL);
+  g_return_if_fail (p->login1_manager != NULL);
 
-  upower_call_suspend (p->upower, p->cancellable, NULL, NULL);
+  login1_manager_call_suspend (p->login1_manager, FALSE, p->cancellable, NULL, NULL);
 }
 
 static void
@@ -355,9 +358,9 @@ my_hibernate (IndicatorSessionActions * self)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  g_return_if_fail (p->upower != NULL);
+  g_return_if_fail (p->login1_manager != NULL);
 
-  upower_call_hibernate (p->upower, p->cancellable, NULL, NULL);
+  login1_manager_call_hibernate (p->login1_manager, FALSE, p->cancellable, NULL, NULL);
 }
 
 /***
@@ -392,23 +395,23 @@ logout_now_quietly (IndicatorSessionActions * self)
 }
 
 static void
-restart_now (IndicatorSessionActions * self)
+reboot_now (IndicatorSessionActions * self)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  g_return_if_fail (p->ck_manager != NULL);
+  g_return_if_fail (p->login1_manager != NULL);
 
-  console_kit_manager_call_restart (p->ck_manager, p->cancellable, NULL, NULL);
+  login1_manager_call_reboot (p->login1_manager, FALSE, p->cancellable,  NULL, NULL);
 }
 
 static void
-shutdown_now (IndicatorSessionActions * self)
+power_off_now (IndicatorSessionActions * self)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  g_return_if_fail (p->ck_manager != NULL);
+  g_return_if_fail (p->login1_manager != NULL);
 
-  console_kit_manager_call_stop (p->ck_manager, p->cancellable, NULL, NULL);
+  login1_manager_call_power_off (p->login1_manager, FALSE, p->cancellable, NULL, NULL);
 }
 
 static void
@@ -447,8 +450,8 @@ show_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
   g_assert (o != NULL);
 
   g_signal_connect_swapped (o, "confirmed-logout", G_CALLBACK(logout_now_quietly), self);
-  g_signal_connect_swapped (o, "confirmed-reboot", G_CALLBACK(restart_now), self);
-  g_signal_connect_swapped (o, "confirmed-shutdown", G_CALLBACK(shutdown_now), self);
+  g_signal_connect_swapped (o, "confirmed-reboot", G_CALLBACK(reboot_now), self);
+  g_signal_connect_swapped (o, "confirmed-shutdown", G_CALLBACK(power_off_now), self);
   g_signal_connect_swapped (o, "canceled", G_CALLBACK(on_end_session_dialog_canceled), self);
   g_signal_connect_swapped (o, "closed", G_CALLBACK(on_end_session_dialog_closed), self);
 
@@ -469,23 +472,23 @@ my_logout (IndicatorSessionActions * self)
 
 
 static void
-my_restart (IndicatorSessionActions * self)
+my_reboot (IndicatorSessionActions * self)
 {
   if (my_can_prompt (self))
     show_end_session_dialog (INDICATOR_SESSION_ACTIONS_DBUS(self), END_SESSION_TYPE_REBOOT);
   else
-    restart_now (self);
+    reboot_now (self);
 }
 
 static void
-my_shutdown (IndicatorSessionActions * self)
+my_power_off (IndicatorSessionActions * self)
 {
   /* NB: TYPE_REBOOT instead of TYPE_SHUTDOWN because
      the latter adds lock & logout options in Unity... */
   if (my_can_prompt (self))
     show_end_session_dialog (INDICATOR_SESSION_ACTIONS_DBUS(self), END_SESSION_TYPE_REBOOT);
   else
-    shutdown_now (self);
+    power_off_now (self);
 }
 
 /***
@@ -581,14 +584,13 @@ my_dispose (GObject * o)
     }
 
   g_clear_object (&p->lockdown_settings);
-  g_clear_object (&p->ck_manager);
-  g_clear_object (&p->upower);
   g_clear_object (&p->screen_saver);
   g_clear_object (&p->session_manager);
   g_clear_object (&p->webcredentials);
   g_clear_object (&p->end_session_dialog);
   set_dm_seat (self, NULL);
-  set_ck_seat (self, NULL);
+  set_login1_manager (self, NULL);
+  set_login1_seat (self, NULL);
 
   G_OBJECT_CLASS (indicator_session_actions_dbus_parent_class)->dispose (o);
 }
@@ -618,8 +620,8 @@ indicator_session_actions_dbus_class_init (IndicatorSessionActionsDbusClass * kl
   actions_class->logout = my_logout;
   actions_class->suspend = my_suspend;
   actions_class->hibernate = my_hibernate;
-  actions_class->restart = my_restart;
-  actions_class->shutdown = my_shutdown;
+  actions_class->reboot = my_reboot;
+  actions_class->power_off = my_power_off;
   actions_class->settings = my_settings;
   actions_class->help = my_help;
   actions_class->about = my_about;
@@ -662,14 +664,6 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
                                         on_screensaver_proxy_ready,
                                         self);
 
-  upower_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
-                            G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
-                            "org.freedesktop.UPower",
-                            "/org/freedesktop/UPower",
-                             p->cancellable,
-                             on_upower_proxy_ready,
-                             self);
-
   gnome_session_manager_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                            G_DBUS_PROXY_FLAGS_NONE,
                                            "org.gnome.SessionManager",
@@ -709,15 +703,13 @@ indicator_session_actions_dbus_new (void)
 
 void
 indicator_session_actions_dbus_set_proxies (IndicatorSessionActionsDbus * self,
-                                            ConsoleKitManager           * ck_manager,
-                                            DisplayManagerSeat          * dm_seat,
-                                            ConsoleKitSeat              * ck_seat)
+                                            Login1Manager               * login1_manager,
+                                            Login1Seat                  * login1_seat,
+                                            DisplayManagerSeat          * dm_seat)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS_DBUS(self));
 
-  self->priv->ck_manager = g_object_ref (ck_manager);
-
+  set_login1_manager (self, login1_manager);
+  set_login1_seat (self, login1_seat);
   set_dm_seat (self, dm_seat);
-
-  set_ck_seat (self, ck_seat);
 }

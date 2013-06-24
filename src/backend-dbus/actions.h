@@ -24,10 +24,8 @@
 #include <glib-object.h>
 
 #include "../actions.h" /* parent class */
-#include "dbus-accounts.h"
-#include "dbus-consolekit-manager.h"
-#include "dbus-consolekit-seat.h"
-#include "dbus-consolekit-session.h"
+#include "dbus-login1-manager.h"
+#include "dbus-login1-seat.h"
 #include "dbus-display-manager.h"
 
 
@@ -63,9 +61,9 @@ GType indicator_session_actions_dbus_get_type (void);
 IndicatorSessionActions * indicator_session_actions_dbus_new (void);
 
 void indicator_session_actions_dbus_set_proxies (IndicatorSessionActionsDbus * self,
-                                                 ConsoleKitManager           * ck_manager,
-                                                 DisplayManagerSeat          * dm_seat,
-                                                 ConsoleKitSeat              * ck_seat);
+                                                 Login1Manager               * login1_manager,
+                                                 Login1Seat                  * login1_seat,
+                                                 DisplayManagerSeat          * dm_seat);
                                                  
 
 G_END_DECLS

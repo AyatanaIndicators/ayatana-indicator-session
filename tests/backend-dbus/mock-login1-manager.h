@@ -37,6 +37,7 @@ class MockLogin1Manager: public MockObject
     virtual ~MockLogin1Manager ();
 
     int add_session (MockLogin1Seat * seat, MockUser * user);
+    void remove_session (MockLogin1Seat * seat, int session_tag);
 
     void add_seat (MockLogin1Seat * seat);
 
@@ -49,6 +50,7 @@ class MockLogin1Manager: public MockObject
   private:
 
     void emit_session_new (MockLogin1Seat * seat, int tag) const;
+    void emit_session_removed (MockLogin1Seat * seat, int tag) const;
 
     GVariant * list_sessions () const;
 

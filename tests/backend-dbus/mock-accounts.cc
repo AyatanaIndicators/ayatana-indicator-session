@@ -107,9 +107,8 @@ MockAccounts :: on_list_cached_users_static (Accounts              * a,
 
   i = 0;
   paths = g_new0 (const char*, users.size() + 1);
-  for (users_t::iterator it(users.begin()),
-                        end(users.end()); it!=end; ++it)
-   paths[i++] = (*it)->path();
+  for (auto it : users)
+    paths[i++] = it->path();
   accounts_complete_list_cached_users (a, invocation, paths);
   g_free (paths);
 

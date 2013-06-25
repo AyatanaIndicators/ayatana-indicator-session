@@ -121,7 +121,6 @@ MockLogin1Manager :: emit_session_new (MockLogin1Seat * seat, int tag) const
 
   seat->get_session_id_and_path_for_tag (tag, id, path);
 
-g_message ("%s %s emitting session-new [%s][%s]", G_STRLOC, G_STRFUNC, id.c_str(), path.c_str());
   login1_manager_emit_session_new (my_skeleton, id.c_str(), path.c_str());
 }
 
@@ -130,9 +129,27 @@ MockLogin1Manager :: add_session (MockLogin1Seat * seat, MockUser * user)
 {
   g_assert (my_seats.count(seat) == 1);
 
-  const int tag = seat->add_session (user);
-  emit_session_new (seat, tag);
-  return tag;
+  const int session_tag = seat->add_session (user);
+  emit_session_new (seat, session_tag);
+  return session_tag;
+}
+
+void
+MockLogin1Manager :: emit_session_removed (MockLogin1Seat * seat, int tag) const
+{
+  std::string id;
+  std::string path;
+
+  seat->get_session_id_and_path_for_tag (tag, id, path);
+
+  login1_manager_emit_session_removed (my_skeleton, id.c_str(), path.c_str());
+}
+
+void
+MockLogin1Manager :: remove_session (MockLogin1Seat * seat, int session_tag)
+{
+  seat->remove_session (session_tag);
+  emit_session_removed (seat, session_tag);
 }
 
 void

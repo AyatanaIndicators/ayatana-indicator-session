@@ -165,28 +165,14 @@ MockLogin1Seat :: remove_session (int session_tag)
 ****
 ***/
 
-MockUser *
-MockLogin1Seat :: active_user ()
-{
-  auto it = my_sessions.find (active_session());
-  return it == my_sessions.end() ? NULL : it->second;
-}
-
-const MockUser *
-MockLogin1Seat :: active_user () const
-{
-  auto it = my_sessions.find (active_session());
-  return it == my_sessions.end() ? NULL : it->second;
-}
-
-int
-MockLogin1Seat :: find_session_for_user (guint uid) const
+std::string
+MockLogin1Seat :: user_state (unsigned int uid) const
 {
   for (auto it : my_sessions)
     if (it.second->uid() == uid)
-      return it.first;
+      return it.first == my_active_session ? "active" : "online";
 
-  return 0;
+  return "offline"; // no matching session
 }
 
 void

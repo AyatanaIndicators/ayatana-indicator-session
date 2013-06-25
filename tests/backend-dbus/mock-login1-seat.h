@@ -46,9 +46,8 @@ class MockLogin1Seat: public MockObject
     void remove_session (int session_tag);
     std::set<int> sessions () const;
     int active_session () const { return my_active_session; }
-    MockUser * active_user ();
-    const MockUser * active_user () const;
-    int find_session_for_user (guint uid) const;
+
+    std::string user_state (unsigned int uid) const;
 
     bool can_activate_sessions () const { return my_can_multi_session; }
     void activate_session (int session_tag);

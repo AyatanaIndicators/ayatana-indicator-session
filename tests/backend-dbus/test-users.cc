@@ -62,31 +62,23 @@ class Users: public GTestMockDBusFixture
 
   protected:
 
-    void compare_user (const IndicatorSessionUser * isu,
-                       MockUser                   * mu,
-                       bool                         is_logged_in,
-                       bool                         is_current_user)
+    void compare_user (const MockUser * mu, const IndicatorSessionUser * isu, const std::string& user_state)
     {
-      ASSERT_TRUE (isu != 0);
-      ASSERT_TRUE (mu != 0);
-
+      ASSERT_EQ (user_state, login1_seat->user_state (mu->uid()));
       ASSERT_EQ (mu->uid(), isu->uid);
       ASSERT_EQ (mu->login_frequency(), isu->login_frequency);
       ASSERT_STREQ (mu->username(), isu->user_name);
       ASSERT_STREQ (mu->realname(), isu->real_name);
-      ASSERT_EQ (is_logged_in, isu->is_logged_in);
-      ASSERT_EQ (is_current_user, isu->is_current_user);
-      // FIXME: test icon file?
+      ASSERT_EQ (mu->uid(), isu->uid);
+      ASSERT_EQ (user_state!="offline", isu->is_logged_in);
+      ASSERT_EQ (user_state=="active", isu->is_current_user);
     }
 
-    void compare_user (const std::string & key,
-                       MockUser          * mu,
-                       bool                is_logged_in,
-                       bool                is_current_user)
+    void compare_user (const MockUser * mu, const std::string& key, const std::string& user_state)
     {
       IndicatorSessionUser * isu;
       isu = indicator_session_users_get_user (users, key.c_str());
-      compare_user (isu, mu, is_logged_in, is_current_user);
+      compare_user (mu, isu, user_state);
       indicator_session_user_free (isu);
     }
 
@@ -159,7 +151,6 @@ TEST_F (Users, HelloWorld)
 TEST_F (Users, InitialUsers)
 {
   GStrv keys = indicator_session_users_get_keys (users);
-  const MockUser * active_user = login1_seat->active_user ();
 
   ASSERT_EQ (12, g_strv_length (keys));
 
@@ -167,10 +158,7 @@ TEST_F (Users, InitialUsers)
     {
       IndicatorSessionUser * isu = indicator_session_users_get_user (users, keys[i]);
       MockUser * mu = accounts->find_by_uid (isu->uid);
-      const bool is_logged_in = login1_seat->find_session_for_user (isu->uid) != 0;
-      const bool is_active = active_user && (active_user->uid() == isu->uid);
-      compare_user (isu, mu, is_logged_in, is_active);
-
+      compare_user (mu, isu, login1_seat->user_state (isu->uid));
       indicator_session_user_free (isu);
     }
 
@@ -189,11 +177,7 @@ TEST_F (Users, UserAdded)
   ASSERT_EQ (0, event_keys.size());
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_ADDED, 1);
   ASSERT_EQ (1, event_keys.size());
-  IndicatorSessionUser * isu = indicator_session_users_get_user (users, event_keys[0].c_str());
-  ASSERT_EQ (mu->uid(), isu->uid);
-  indicator_session_user_free (isu);
-
-  compare_user (event_keys[0], mu, false, false);
+  compare_user (mu, event_keys[0], "offline");
 }
 
 /**
@@ -239,7 +223,6 @@ TEST_F (Users, UserRemoved)
   delete mu;
 }
 
-#if 0
 /**
  * Confirm that 'users' notices when a user's real name changes
  */
@@ -254,8 +237,7 @@ TEST_F (Users, RealnameChanged)
   ASSERT_STREQ (mu->realname(), realname);
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 1);
   ASSERT_EQ (1, event_keys.size());
-  ASSERT_STREQ (mu->path(), event_keys[0].c_str());
-  compare_user (mu->path(), mu, false, false);
+  compare_user (mu, event_keys[0], "offline");
 }
 
 /**
@@ -266,21 +248,18 @@ TEST_F (Users, LogInLogOut)
   // The fist doctor logs in.
   // Confirm that 'users' notices.
   MockUser * mu = accounts->find_by_username ("whartnell");
-  compare_user (mu->path(), mu, false, false);
-  MockConsoleKitSession * session = ck_seat->add_session_by_user (mu);
-  wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 1);
-  ASSERT_STREQ (mu->path(), event_keys[0].c_str());
-  compare_user (mu->path(), mu, true, false);
-
-  // The fist doctor logs out.
-  // Confirm that 'users' notices.
-  ck_seat->remove_session (session);
+  ASSERT_EQ (login1_seat->user_state (mu->uid()), "offline");
+  const int session_tag = login1_manager->add_session (login1_seat, mu);
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 1);
   ASSERT_EQ (1, event_keys.size());
-  ASSERT_STREQ (mu->path(), event_keys[0].c_str());
-  compare_user (event_keys[0], mu, false, false);
+  compare_user (mu, event_keys[0], "online");
 
-  delete session;
+  // The first doctor logs out.
+  // Confirm that 'users' notices.
+  login1_manager->remove_session (login1_seat, session_tag);
+  wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 1);
+  ASSERT_EQ (1, event_keys.size());
+  compare_user (mu, event_keys[0], "offline");
 }
 
 /**
@@ -288,34 +267,36 @@ TEST_F (Users, LogInLogOut)
  */
 TEST_F (Users, ActivateSession)
 {
-  // The fist doctor logs in.
-  // Confirm that 'users' notices.
-  MockUser * mu = accounts->find_by_username ("whartnell");
-  compare_user (mu->path(), mu, false, false);
-  MockConsoleKitSession * session = ck_seat->add_session_by_user (mu);
+  // confirm preconditions: msmith is active, msmith is offline
+  MockUser * const whartnell = accounts->find_by_username ("whartnell");
+  ASSERT_EQ (login1_seat->user_state (whartnell->uid()), "offline");
+  MockUser * const msmith = accounts->find_by_username ("msmith");
+  ASSERT_EQ (login1_seat->user_state (msmith->uid()), "active");
+
+  // whartnell logs in... confirm that 'users' notices
+  login1_manager->add_session (login1_seat, whartnell);
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 1);
-  ASSERT_STREQ (mu->path(), event_keys[0].c_str());
-  compare_user (mu->path(), mu, true, false);
+  ASSERT_EQ (1, event_keys.size());
+  compare_user (whartnell, event_keys[0], "online");
 
-  // activate the first doctor's session.
-  // confirm that 'users' sees he's active and that ck_session isn't.
-  // this should come in the form of two 'user-changed' events
-  ck_seat->activate_session (session);
+  // activate whartnell's session... confirm that 'users' sees:
+  //  1. msmith changes from 'active' to 'online'
+  //  2. whartnell changes from 'online' to 'active'
+  login1_seat->switch_to_user (whartnell->username());
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 2);
   ASSERT_EQ (2, event_keys.size());
-  compare_user (event_keys[0], ck_session->user(), true, false);
-  compare_user (event_keys[1], mu, true, true);
+  compare_user (msmith, event_keys[0], "online");
+  compare_user (whartnell, event_keys[1], "active");
 
-  // switch back to the previous
-  // confirm that 'users' sees it's active and the first doctor's session isn't
-  // this should come in the form of two 'user-changed' events
-  ck_seat->activate_session (ck_session);
+  // reverse the test
+  login1_seat->switch_to_user (msmith->username());
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 2);
   ASSERT_EQ (2, event_keys.size());
-  compare_user (event_keys[0], mu, true, false);
-  compare_user (event_keys[1], ck_session->user(), true, true);
+  compare_user (whartnell, event_keys[0], "online");
+  compare_user (msmith, event_keys[1], "active");
 }
 
+#if 0
 /**
  * Confirm that we can change the active session via users' API.
  * This is nearly the same as ActivateSession but uses users' API

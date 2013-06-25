@@ -93,8 +93,6 @@ set_active_uid (IndicatorSessionUsersDbus * self, guint uid)
 {
   priv_t * p = self->priv;
 
-  g_message ("%s %s setting active uid to %u", G_STRLOC, G_STRFUNC, uid);
-
   if (p->active_uid != uid)
     {
       const guint old_uid = p->active_uid;
@@ -393,8 +391,6 @@ on_login1_manager_session_list_ready (GObject      * o,
       GHashTable * logins = g_hash_table_new (g_direct_hash, g_direct_equal);
       GVariantIter iter;
 
-      g_message ("%s %s %s", G_STRLOC, G_STRFUNC, g_variant_print (sessions, TRUE));
-
       g_variant_iter_init (&iter, sessions);
       while (g_variant_iter_loop (&iter, "(&su&s&s&o)", &session_id,
                                                         &uid,
@@ -406,11 +402,13 @@ on_login1_manager_session_list_ready (GObject      * o,
           if (g_strcmp0 (seat_id, current_seat_id))
             continue;
 
-          if ((uid==999) && !g_strcmp0 (user_name,"ubuntu"))
-            is_live_session = TRUE;
-
           if (!g_strcmp0 (session_id, current_session_id))
-            set_active_uid (self, uid);
+            {
+              set_active_uid (self, uid);
+
+              if ((uid==999) && !g_strcmp0 (user_name,"ubuntu"))
+                is_live_session = TRUE;
+            }
 
           /* only count user accounts and the live session */
           if (uid >= 999)

@@ -328,26 +328,25 @@ TEST_F (Users, ActivateUser)
   compare_user (msmith, event_keys[1], "active");
 }
 
-#if 0
 /**
  * Confirm that adding a Guest doesn't show up in the users list
  */
 TEST_F (Users, UnwantedGuest)
 {
-  GStrv keys;
+  GList * uids;
 
-  keys = indicator_session_users_get_keys (users);
-  const size_t n = g_strv_length (keys);
-  g_strfreev (keys);
+  uids = indicator_session_users_get_uids (users);
+  const size_t n = g_list_length (uids);
+  g_list_free (uids);
 
   MockUser * mu = new MockUser (loop, conn, "guest-jjbEVV", "Guest", 1);
   mu->set_system_account (true);
   accounts->add_user (mu);
   wait_msec (50);
 
-  keys = indicator_session_users_get_keys (users);
-  ASSERT_EQ (n, g_strv_length (keys));
-  g_strfreev (keys);
+  uids = indicator_session_users_get_uids (users);
+  ASSERT_EQ (n, g_list_length (uids));
+  g_list_free (uids);
 }
 
 
@@ -367,9 +366,9 @@ TEST_F (Users, LiveSession)
   MockUser * live_user = new MockUser (loop, conn, "ubuntu", "Ubuntu", 1, 999);
   live_user->set_system_account (true);
   accounts->add_user (live_user);
-  MockConsoleKitSession * session = ck_seat->add_session_by_user (live_user);
+  const int session_tag = login1_manager->add_session (login1_seat, live_user);
   wait_msec (100);
-  ck_seat->activate_session (session);
+  login1_seat->activate_session (session_tag);
   wait_for_signal (users, "notify::" INDICATOR_SESSION_USERS_PROP_IS_LIVE_SESSION);
 
   // confirm the backend thinks it's a live session
@@ -377,4 +376,3 @@ TEST_F (Users, LiveSession)
   g_object_get (users, INDICATOR_SESSION_USERS_PROP_IS_LIVE_SESSION, &b, NULL);
   ASSERT_TRUE (b);
 }
-#endif

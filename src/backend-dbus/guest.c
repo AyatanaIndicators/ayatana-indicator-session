@@ -283,7 +283,6 @@ set_display_manager_seat (IndicatorSessionGuestDbus * self,
                         G_CALLBACK(on_notify_has_guest_account), self);
       on_notify_has_guest_account (dm_seat, NULL, self);
     }
-
 }
 
 /***

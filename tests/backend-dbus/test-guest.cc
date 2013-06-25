@@ -137,7 +137,6 @@ TEST_F (Guest, Login)
   ASSERT_FALSE (indicator_session_guest_is_active (guest));
 }
 
-#if 0
 /**
  * Activate a Guest session, then activate a different session.
  * Confirm that "guest" reflects the changes.
@@ -145,15 +144,16 @@ TEST_F (Guest, Login)
 TEST_F (Guest, Active)
 {
   gboolean b;
+  const int user_session_tag = login1_seat->active_session();
 
   dm_seat->set_guest_allowed (true);
   MockUser * guest_user;
-  MockConsoleKitSession * guest_session;
-  add_mock_guest (guest_user, guest_session);
+  int guest_session_tag;
+  add_mock_guest (guest_user, guest_session_tag);
 
   // Activate the guest session
   // and confirm that guest's is_active changes to true
-  ck_seat->activate_session (guest_session);
+  login1_seat->activate_session (guest_session_tag);
   wait_for_signal (guest, "notify::guest-is-active-session");
   ASSERT_TRUE (indicator_session_guest_is_allowed (guest));
   ASSERT_TRUE (indicator_session_guest_is_logged_in (guest));
@@ -163,7 +163,7 @@ TEST_F (Guest, Active)
 
   // Activate a non-guest session
   // and confirm that guest's is_active changes to false
-  ck_seat->activate_session (ck_session);
+  login1_seat->activate_session (user_session_tag);
   wait_for_signal (guest, "notify::guest-is-active-session");
   ASSERT_TRUE (indicator_session_guest_is_allowed (guest));
   ASSERT_TRUE (indicator_session_guest_is_logged_in (guest));
@@ -179,13 +179,15 @@ TEST_F (Guest, Active)
 TEST_F (Guest, Activate)
 {
   dm_seat->set_guest_allowed (true);
+  wait_for_signal (guest, "notify::guest-is-allowed");
+
   MockUser * guest_user;
-  MockConsoleKitSession * guest_session;
-  add_mock_guest (guest_user, guest_session);
+  int guest_session_tag;
+  add_mock_guest (guest_user, guest_session_tag);
 
   indicator_session_guest_switch_to_guest (guest);
-  wait_for_signal (ck_seat->skeleton(), "active-session-changed");
-  ASSERT_EQ (guest_session, ck_manager->current_session());
+
+  wait_for_signal (login1_seat->skeleton(), "notify::active-session");
+  ASSERT_EQ (guest_session_tag, login1_seat->active_session());
   wait_msec (50);
 }
-#endif

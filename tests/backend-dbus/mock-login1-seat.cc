@@ -43,7 +43,9 @@ namespace
 }
 
 void
-MockLogin1Seat :: get_session_id_and_path_for_tag (int tag, std::string& id, std::string& path)
+MockLogin1Seat :: get_session_id_and_path_for_tag (int           tag,
+                                                   std::string & id,
+                                                   std::string & path)
 {
   if (tag)
     {
@@ -81,7 +83,6 @@ MockLogin1Seat :: update_sessions_property ()
     }
 
   GVariant * v = g_variant_builder_end (&b);
-  g_message ("%s %s setting session property to %s", G_STRLOC, G_STRFUNC, g_variant_print (v, true));
   g_object_set (my_skeleton, "sessions", v, NULL);
 }
 
@@ -93,7 +94,6 @@ MockLogin1Seat :: update_active_session_property ()
   get_session_id_and_path_for_tag (my_active_session, id, path);
 
   GVariant * v = g_variant_new ("(so)", id.c_str(), path.c_str());
-  g_message ("%s %s setting active session property to %s", G_STRLOC, G_STRFUNC, g_variant_print (v, true));
   g_object_set (my_skeleton, "active-session", v, NULL);
 }
 

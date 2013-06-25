@@ -30,21 +30,6 @@ MockWebcredentials :: MockWebcredentials (GMainLoop       * loop,
   MockObject (loop, bus_connection, MY_NAME, MY_PATH),
   my_skeleton (webcredentials_skeleton_new ())
 {
-  //set_can_hibernate (false);
-  //set_can_suspend (true);
-
-#if 0
-  g_signal_connect (my_skeleton, "handle-suspend",
-                    G_CALLBACK(handle_suspend), this);
-  g_signal_connect (my_skeleton, "handle-suspend-allowed",
-                    G_CALLBACK(handle_suspend_allowed), this);
-
-  g_signal_connect (my_skeleton, "handle-hibernate",
-                    G_CALLBACK(handle_hibernate), this);
-  g_signal_connect (my_skeleton, "handle-hibernate-allowed",
-                    G_CALLBACK(handle_hibernate_allowed), this);
-#endif
-
   set_skeleton (G_DBUS_INTERFACE_SKELETON(my_skeleton));
 }
 

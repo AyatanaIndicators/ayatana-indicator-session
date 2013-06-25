@@ -19,28 +19,6 @@
 
 #include "mock-end-session-dialog.h"
 
-#if 0
-gboolean
-MockEndSessionDialog :: handle_lock (GnomeScreenSaver      * ss,
-                                GDBusMethodInvocation * inv,
-                                gpointer                gself)
-{
-  static_cast<MockEndSessionDialog*>(gself)->my_last_action = Lock;
-  gnome_screen_saver_complete_lock (ss, inv);
-  return true;
-}
-
-gboolean
-MockEndSessionDialog :: handle_simulate_user_activity (GnomeScreenSaver      * ss,
-                                                  GDBusMethodInvocation * inv,
-                                                  gpointer                gself)
-{
-  static_cast<MockEndSessionDialog*>(gself)->my_last_action = UserActivity;
-  gnome_screen_saver_complete_simulate_user_activity (ss, inv);
-  return true;
-}
-#endif
-
 gboolean
 MockEndSessionDialog :: handle_open (EndSessionDialog      * object,
                                      GDBusMethodInvocation * invocation,
@@ -73,12 +51,6 @@ MockEndSessionDialog :: MockEndSessionDialog (GMainLoop       * loop,
 {
   g_signal_connect (my_skeleton, "handle-open",
                     G_CALLBACK(handle_open), this);
-#if 0
-  g_signal_connect (my_skeleton, "handle-lock",
-                    G_CALLBACK(handle_lock), this);
-  g_signal_connect (my_skeleton, "handle-simulate-user-activity",
-                    G_CALLBACK(handle_simulate_user_activity), this);
-#endif
 
   set_skeleton (G_DBUS_INTERFACE_SKELETON(my_skeleton));
 }

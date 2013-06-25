@@ -54,14 +54,6 @@ MockUser :: login_frequency () const
   return accounts_user_get_login_frequency (my_skeleton);
 }
 
-#if 0
-bool
-MockUser :: system_account() const
-{
-  return accounts_user_get_system_account (my_skeleton);
-}
-#endif
- 
 void
 MockUser :: set_system_account (gboolean b)
 {

@@ -65,6 +65,7 @@ class GTestMockDBusFixture: public GTestDBusFixture
       dm_seat->set_guest_allowed (false);
       login1_manager = new MockLogin1Manager (loop, conn);
       login1_seat = new MockLogin1Seat (loop, conn, true);
+      g_setenv ("XDG_SEAT", login1_seat->seat_id(), TRUE);
       login1_manager->add_seat (login1_seat);
       accounts = build_accounts_mock ();
       MockUser * user = accounts->find_by_username ("msmith");

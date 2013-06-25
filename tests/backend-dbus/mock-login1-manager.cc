@@ -147,8 +147,48 @@ MockLogin1Manager :: add_seat (MockLogin1Seat * seat)
 }
 
 /***
+****
+***/
+         
+GVariant *
+MockLogin1Manager :: list_sessions () const
+{
+  GVariantBuilder b;
+
+  g_variant_builder_init (&b, G_VARIANT_TYPE("a(susso)"));
+
+  for (auto seat : my_seats)
+    {
+      GVariant * seat_sessions = seat->list_sessions ();
+
+      GVariantIter iter;
+      g_variant_iter_init (&iter, seat_sessions);
+      GVariant * child;
+      while ((child = g_variant_iter_next_value (&iter)))
+        {
+          g_variant_builder_add_value (&b, child);
+          g_variant_unref (child);
+        }
+    }
+
+  GVariant * v = g_variant_builder_end (&b);
+  g_message ("%s %s returning %s", G_STRLOC, G_STRFUNC, g_variant_print (v, true));
+  return v;
+}
+
+/***
 ****  Skeleton Handlers
 ***/
+
+gboolean
+MockLogin1Manager :: handle_list_sessions (Login1Manager       * m,
+                                         GDBusMethodInvocation * inv,
+                                         gpointer                gself)
+{
+  GVariant * sessions = static_cast<MockLogin1Manager*>(gself)->list_sessions();
+  login1_manager_complete_list_sessions (m, inv, sessions);
+  return true;
+}
 
 gboolean
 MockLogin1Manager :: handle_can_suspend (Login1Manager         * m,
@@ -173,7 +213,7 @@ MockLogin1Manager :: handle_can_hibernate (Login1Manager         * m,
 gboolean
 MockLogin1Manager :: handle_reboot (Login1Manager         * m,
                                     GDBusMethodInvocation * inv,
-                                    gboolean                interactive,
+                                    gboolean                interactive G_GNUC_UNUSED,
                                     gpointer                gself)
 {
   static_cast<MockLogin1Manager*>(gself)->my_last_action = "reboot";
@@ -184,7 +224,7 @@ MockLogin1Manager :: handle_reboot (Login1Manager         * m,
 gboolean
 MockLogin1Manager :: handle_power_off (Login1Manager         * m,
                                        GDBusMethodInvocation * inv,
-                                       gboolean                interactive,
+                                       gboolean                interactive G_GNUC_UNUSED,
                                        gpointer                gself)
 {
   static_cast<MockLogin1Manager*>(gself)->my_last_action = "power-off";
@@ -195,7 +235,7 @@ MockLogin1Manager :: handle_power_off (Login1Manager         * m,
 gboolean
 MockLogin1Manager :: handle_suspend (Login1Manager         * m,
                                      GDBusMethodInvocation * inv,
-                                     gboolean                interactive,
+                                     gboolean                interactive G_GNUC_UNUSED,
                                      gpointer                gself)
 {
   static_cast<MockLogin1Manager*>(gself)->my_last_action = "suspend";
@@ -206,7 +246,7 @@ MockLogin1Manager :: handle_suspend (Login1Manager         * m,
 gboolean
 MockLogin1Manager :: handle_hibernate (Login1Manager         * m,
                                        GDBusMethodInvocation * inv,
-                                       gboolean                interactive,
+                                       gboolean                interactive G_GNUC_UNUSED,
                                        gpointer                gself)
 {
   static_cast<MockLogin1Manager*>(gself)->my_last_action = "hibernate";
@@ -253,6 +293,9 @@ MockLogin1Manager :: MockLogin1Manager (GMainLoop       * loop,
                     G_CALLBACK(handle_suspend), this);
   g_signal_connect (my_skeleton, "handle-hibernate",
                     G_CALLBACK(handle_hibernate), this);
+  g_signal_connect (my_skeleton, "handle-list-sessions",
+                    G_CALLBACK(handle_list_sessions), this);
+
 #if 0
   g_signal_connect (my_skeleton, "handle-get-seats",
                     G_CALLBACK(on_get_seats), this);

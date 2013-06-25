@@ -49,10 +49,10 @@ MockLogin1Seat :: get_session_id_and_path_for_tag (int tag, std::string& id, std
     {
       char tmp[80];
 
-      g_snprintf (tmp, sizeof(tmp), "%d", tag);
+      g_snprintf (tmp, sizeof(tmp), "c%d", tag);
       id = tmp;
 
-      g_snprintf (tmp, sizeof(tmp), "/org/freedesktop/login1/session/%d", tag);
+      g_snprintf (tmp, sizeof(tmp), "/org/freedesktop/login1/session/%s", id.c_str());
       path = tmp;
     }
   else
@@ -143,10 +143,10 @@ MockLogin1Seat :: sessions () const
   return ret;
 }
 
-MockLogin1Seat :: session_tag_t
+int
 MockLogin1Seat :: add_session (MockUser * user)
 {
-  const session_tag_t tag = next_session_tag++;
+  const int tag = next_session_tag++;
 
   my_sessions[tag] = user;
   update_sessions_property ();
@@ -155,9 +155,9 @@ MockLogin1Seat :: add_session (MockUser * user)
 }
 
 void
-MockLogin1Seat :: remove_session (session_tag_t tag)
+MockLogin1Seat :: remove_session (int session_tag)
 {
-  my_sessions.erase (tag);
+  my_sessions.erase (session_tag);
   update_sessions_property ();
 }
 
@@ -165,15 +165,43 @@ MockLogin1Seat :: remove_session (session_tag_t tag)
 ****
 ***/
 
-void
-MockLogin1Seat :: activate_session (session_tag_t tag)
+MockUser *
+MockLogin1Seat :: active_user ()
 {
-  g_assert (my_sessions.count(tag) == 1);
+  auto it = my_sessions.find (active_session());
+  return it == my_sessions.end() ? NULL : it->second;
+}
 
-  if (my_active_session != tag)
+const MockUser *
+MockLogin1Seat :: active_user () const
+{
+  auto it = my_sessions.find (active_session());
+  return it == my_sessions.end() ? NULL : it->second;
+}
+
+int
+MockLogin1Seat :: find_session_for_user (guint uid) const
+{
+  for (auto it : my_sessions)
+    if (it.second->uid() == uid)
+      return it.first;
+
+  return 0;
+}
+
+void
+MockLogin1Seat :: activate_session (int session_tag)
+{
+  g_assert (my_sessions.count(session_tag) == 1);
+
+  if (my_active_session != session_tag)
     {
-      my_active_session = tag;
+      std::string id, path;
+      my_active_session = session_tag;
+      get_session_id_and_path_for_tag (session_tag, id, path);
+      g_setenv ("XDG_SESSION_ID", id.c_str(), true);
       update_active_session_property ();
+
     }
 }
 
@@ -216,8 +244,8 @@ MockLogin1Seat :: MockLogin1Seat (GMainLoop       * loop,
                                   bool              can_activate_sessions):
   MockObject (loop, bus_connection, BUS_NAME, next_unique_sid()),
   my_skeleton (login1_seat_skeleton_new ()),
-  my_can_multi_session (can_activate_sessions),
-  my_active_session (0)
+  my_active_session (0),
+  my_can_multi_session (can_activate_sessions)
 
 {
   set_skeleton (G_DBUS_INTERFACE_SKELETON(my_skeleton));

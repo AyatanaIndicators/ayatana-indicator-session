@@ -34,8 +34,6 @@ class MockLogin1Seat: public MockObject
 {
   public:
 
-    typedef int session_tag_t;
-
     MockLogin1Seat (GMainLoop       * loop,
                     GDBusConnection * bus_connection,
                     bool              can_activate_sessions);
@@ -44,13 +42,16 @@ class MockLogin1Seat: public MockObject
 
     const char * seat_id() const { return strrchr(path(),'/')+1; }
 
-    session_tag_t add_session (MockUser * user);
-    void remove_session (session_tag_t session);
+    int add_session (MockUser * user);
+    void remove_session (int session_tag);
     std::set<int> sessions () const;
     int active_session () const { return my_active_session; }
+    MockUser * active_user ();
+    const MockUser * active_user () const;
+    int find_session_for_user (guint uid) const;
 
     bool can_activate_sessions () const { return my_can_multi_session; }
-    void activate_session (session_tag_t session);
+    void activate_session (int session_tag);
     void switch_to_guest ();
     void switch_to_user (const char * username);
 
@@ -66,11 +67,10 @@ class MockLogin1Seat: public MockObject
     void update_active_session_property ();
     void update_can_multi_session_property ();
 
-
   private:
     Login1Seat * my_skeleton;
-    std::map<session_tag_t,MockUser*> my_sessions;
-    session_tag_t my_active_session;
+    std::map<int,MockUser*> my_sessions;
+    int my_active_session;
     bool my_can_multi_session;
 };
 

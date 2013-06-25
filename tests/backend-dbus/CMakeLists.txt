@@ -5,7 +5,7 @@ add_library (gtest STATIC
 set_target_properties (gtest PROPERTIES INCLUDE_DIRECTORIES
                        ${GTEST_INCLUDE_DIR})
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -g ${CC_WARNING_ARGS}")
 
 # build desktopmock
 add_library (desktopmock STATIC

@@ -47,8 +47,12 @@ class MockLogin1Manager: public MockObject
     void clear_last_action () { my_last_action.clear(); }
 
   private:
+
     void emit_session_new (MockLogin1Seat * seat, int tag) const;
 
+    GVariant * list_sessions () const;
+
+    static gboolean handle_list_sessions (Login1Manager *, GDBusMethodInvocation *, gpointer);
     static gboolean handle_can_suspend   (Login1Manager *, GDBusMethodInvocation *, gpointer);
     static gboolean handle_can_hibernate (Login1Manager *, GDBusMethodInvocation *, gpointer);
     static gboolean handle_reboot        (Login1Manager *, GDBusMethodInvocation *, gboolean, gpointer);

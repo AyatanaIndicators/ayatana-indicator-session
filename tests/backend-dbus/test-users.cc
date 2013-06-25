@@ -74,10 +74,18 @@ class Users: public GTestMockDBusFixture
       ASSERT_EQ (user_state=="active", isu->is_current_user);
     }
 
-    void compare_user (const MockUser * mu, const std::string& key, const std::string& user_state)
+    void compare_user (const MockUser * mu, guint uid, const std::string& user_state)
     {
       IndicatorSessionUser * isu;
-      isu = indicator_session_users_get_user (users, key.c_str());
+      isu = indicator_session_users_get_user (users, uid);
+      compare_user (mu, isu, user_state);
+      indicator_session_user_free (isu);
+    }
+
+    void compare_user (guint uid, const std::string& user_state)
+    {
+      IndicatorSessionUser * isu = indicator_session_users_get_user (users, uid);
+      MockUser * mu = accounts->find_by_uid (uid);
       compare_user (mu, isu, user_state);
       indicator_session_user_free (isu);
     }
@@ -99,12 +107,12 @@ class Users: public GTestMockDBusFixture
 
     static void
     wait_for_signals__event (IndicatorSessionUser * u G_GNUC_UNUSED,
-                            const char            * key,
-                            gpointer                gself)
+                             guint                  uid,
+                             gpointer               gself)
     {
       Users * self = static_cast<Users*>(gself);
 
-      self->event_keys.push_back (key);
+      self->event_keys.push_back (uid);
 
       if (self->event_keys.size() == self->expected_event_count)
         g_main_loop_quit (self->loop);
@@ -112,7 +120,7 @@ class Users: public GTestMockDBusFixture
 
   protected:
 
-    std::vector<std::string> event_keys;
+    std::vector<guint> event_keys;
     size_t expected_event_count;
 
     void wait_for_signals (gpointer o, const gchar * name, size_t n)
@@ -150,19 +158,18 @@ TEST_F (Users, HelloWorld)
  */
 TEST_F (Users, InitialUsers)
 {
-  GStrv keys = indicator_session_users_get_keys (users);
+  GList * l;
+  GList * uids = indicator_session_users_get_uids (users);
 
-  ASSERT_EQ (12, g_strv_length (keys));
+  ASSERT_EQ (12, g_list_length (uids));
 
-  for (int i=0; keys && keys[i]; ++i)
+  for (l=uids; l!=NULL; l=l->next)
     {
-      IndicatorSessionUser * isu = indicator_session_users_get_user (users, keys[i]);
-      MockUser * mu = accounts->find_by_uid (isu->uid);
-      compare_user (mu, isu, login1_seat->user_state (isu->uid));
-      indicator_session_user_free (isu);
+      const guint uid = GPOINTER_TO_UINT (l->data);
+      compare_user (uid, login1_seat->user_state (uid));
     }
 
-  g_strfreev (keys);
+  g_list_free (uids);
 }
 
 /**
@@ -188,17 +195,10 @@ TEST_F (Users, UserRemoved)
   MockUser * mu = accounts->find_by_username ("pdavison");
 
   /* confirm that users knows about pdavison */
-  bool found = false;
-  GStrv keys = indicator_session_users_get_keys (users);
-  ASSERT_EQ (12, g_strv_length (keys));
-  for (int i=0; !found && keys && keys[i]; i++)
-    {
-      IndicatorSessionUser * isu = indicator_session_users_get_user (users, keys[i]);
-      found = isu->uid == mu->uid();
-      indicator_session_user_free (isu);
-    }
-  g_strfreev (keys);
-  ASSERT_TRUE (found);
+  IndicatorSessionUser * isu = indicator_session_users_get_user (users, mu->uid());
+  ASSERT_TRUE (isu != NULL);
+  compare_user (mu, isu, "offline");
+  g_clear_pointer (&isu, indicator_session_user_free);
 
   /* on the bus, remove pdavison. */
   accounts->remove_user (mu);
@@ -208,17 +208,14 @@ TEST_F (Users, UserRemoved)
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_REMOVED, 1);
   ASSERT_EQ (1, event_keys.size());
 
-  /* confirm that users doesn't know about pdavison */
-  keys = indicator_session_users_get_keys (users);
-  ASSERT_EQ (11, g_strv_length (keys));
-  for (int i=0; keys && keys[i]; i++)
-    {
-      IndicatorSessionUser * isu = indicator_session_users_get_user (users, keys[i]);
-      ASSERT_NE (event_keys[0], keys[i]);
-      ASSERT_NE (mu->uid(), isu->uid);
-      indicator_session_user_free (isu);
-    }
-  g_strfreev (keys);
+  /* confirm that users won't give us pdavison's info */
+  isu = indicator_session_users_get_user (users, mu->uid());
+  ASSERT_TRUE (isu == NULL);
+
+  /* confirm that users won't give us pdavison's uid */
+  GList * uids = indicator_session_users_get_uids (users);
+  ASSERT_TRUE (g_list_find (uids, GUINT_TO_POINTER(mu->uid())) == NULL);
+  g_list_free (uids);
 
   delete mu;
 }
@@ -296,43 +293,42 @@ TEST_F (Users, ActivateSession)
   compare_user (msmith, event_keys[1], "active");
 }
 
-#if 0
 /**
  * Confirm that we can change the active session via users' API.
  * This is nearly the same as ActivateSession but uses users' API
  */
 TEST_F (Users, ActivateUser)
 {
-  // The fist doctor logs in.
-  // Confirm that 'users' notices.
-  MockUser * mu = accounts->find_by_username ("whartnell");
-  compare_user (mu->path(), mu, false, false);
-  MockConsoleKitSession * session = ck_seat->add_session_by_user (mu);
+  // confirm preconditions: msmith is active, msmith is offline
+  MockUser * const whartnell = accounts->find_by_username ("whartnell");
+  ASSERT_EQ (login1_seat->user_state (whartnell->uid()), "offline");
+  MockUser * const msmith = accounts->find_by_username ("msmith");
+  ASSERT_EQ (login1_seat->user_state (msmith->uid()), "active");
+
+  // whartnell logs in... confirm that 'users' notices
+  login1_manager->add_session (login1_seat, whartnell);
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 1);
-  ASSERT_STREQ (mu->path(), event_keys[0].c_str());
-  compare_user (mu->path(), mu, true, false);
+  ASSERT_EQ (1, event_keys.size());
+  compare_user (whartnell, event_keys[0], "online");
 
-  // activate the first doctor's session.
-  // confirm that 'users' sees he's active and that ck_session isn't.
-  // this should come in the form of two 'user-changed' events
-  indicator_session_users_activate_user (users, mu->path());
-  ck_seat->activate_session (session);
+  // activate whartnell's session... confirm that 'users' sees:
+  //  1. msmith changes from 'active' to 'online'
+  //  2. whartnell changes from 'online' to 'active'
+  indicator_session_users_activate_user (users, whartnell->uid());
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 2);
   ASSERT_EQ (2, event_keys.size());
-  compare_user (event_keys[0], ck_session->user(), true, false);
-  compare_user (event_keys[1], mu, true, true);
+  compare_user (msmith, event_keys[0], "online");
+  compare_user (whartnell, event_keys[1], "active");
 
-  // switch back to the previous
-  // confirm that 'users' sees it's active and the first doctor's session isn't
-  // this should come in the form of two 'user-changed' events
-  indicator_session_users_activate_user (users, ck_session->user()->path());
-  ck_seat->activate_session (ck_session);
+  // reverse the test
+  indicator_session_users_activate_user (users, msmith->uid());
   wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED, 2);
   ASSERT_EQ (2, event_keys.size());
-  compare_user (event_keys[0], mu, true, false);
-  compare_user (event_keys[1], ck_session->user(), true, true);
+  compare_user (whartnell, event_keys[0], "online");
+  compare_user (msmith, event_keys[1], "active");
 }
 
+#if 0
 /**
  * Confirm that adding a Guest doesn't show up in the users list
  */

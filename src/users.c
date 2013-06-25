@@ -75,24 +75,24 @@ indicator_session_users_class_init (IndicatorSessionUsersClass * klass)
                                       G_SIGNAL_RUN_LAST,
                                       G_STRUCT_OFFSET (IndicatorSessionUsersClass, user_added),
                                       NULL, NULL,
-                                      g_cclosure_marshal_VOID__STRING,
-                                      G_TYPE_NONE, 1, G_TYPE_STRING);
+                                      g_cclosure_marshal_VOID__UINT,
+                                      G_TYPE_NONE, 1, G_TYPE_UINT);
 
   signals[USER_REMOVED] = g_signal_new (INDICATOR_SESSION_USERS_SIGNAL_USER_REMOVED,
                                         G_TYPE_FROM_CLASS(klass),
                                         G_SIGNAL_RUN_LAST,
                                         G_STRUCT_OFFSET (IndicatorSessionUsersClass, user_removed),
                                         NULL, NULL,
-                                        g_cclosure_marshal_VOID__STRING,
-                                        G_TYPE_NONE, 1, G_TYPE_STRING);
+                                        g_cclosure_marshal_VOID__UINT,
+                                        G_TYPE_NONE, 1, G_TYPE_UINT);
 
   signals[USER_CHANGED] = g_signal_new (INDICATOR_SESSION_USERS_SIGNAL_USER_CHANGED,
                                         G_TYPE_FROM_CLASS(klass),
                                         G_SIGNAL_RUN_LAST,
                                         G_STRUCT_OFFSET (IndicatorSessionUsersClass, user_changed),
                                         NULL, NULL,
-                                        g_cclosure_marshal_VOID__STRING,
-                                        G_TYPE_NONE, 1, G_TYPE_STRING);
+                                        g_cclosure_marshal_VOID__UINT,
+                                        G_TYPE_NONE, 1, G_TYPE_UINT);
 
 
   properties[PROP_IS_LIVE_SESSION] =
@@ -115,30 +115,30 @@ indicator_session_users_init (IndicatorSessionUsers * self G_GNUC_UNUSED)
 ****  Virtual Functions
 ***/
 
-GStrv
-indicator_session_users_get_keys (IndicatorSessionUsers * self)
+GList *
+indicator_session_users_get_uids (IndicatorSessionUsers * self)
 {
   g_return_val_if_fail (INDICATOR_IS_SESSION_USERS (self), NULL);
 
-  return INDICATOR_SESSION_USERS_GET_CLASS (self)->get_keys (self);
+  return INDICATOR_SESSION_USERS_GET_CLASS (self)->get_uids (self);
 }
 
 IndicatorSessionUser *
 indicator_session_users_get_user (IndicatorSessionUsers * self,
-                                  const char            * key)
+                                  guint                   uid)
 {
   g_return_val_if_fail (INDICATOR_IS_SESSION_USERS (self), NULL);
 
-  return INDICATOR_SESSION_USERS_GET_CLASS (self)->get_user (self, key);
+  return INDICATOR_SESSION_USERS_GET_CLASS (self)->get_user (self, uid);
 }
 
 void
 indicator_session_users_activate_user (IndicatorSessionUsers * self, 
-                                       const char            * key)
+                                       guint                   uid)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_USERS (self));
 
-  INDICATOR_SESSION_USERS_GET_CLASS (self)->activate_user (self, key);
+  INDICATOR_SESSION_USERS_GET_CLASS (self)->activate_user (self, uid);
 }
 
 gboolean
@@ -165,27 +165,27 @@ indicator_session_user_free (IndicatorSessionUser * user)
 ***/
 
 void
-indicator_session_users_added (IndicatorSessionUsers * self, const char * key)
+indicator_session_users_added (IndicatorSessionUsers * self, guint uid)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_USERS (self));
 
-  g_signal_emit (self, signals[USER_ADDED], 0, key);
+  g_signal_emit (self, signals[USER_ADDED], 0, uid);
 }
 
 void
-indicator_session_users_removed (IndicatorSessionUsers * self, const char * key)
+indicator_session_users_removed (IndicatorSessionUsers * self, guint uid)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_USERS (self));
 
-  g_signal_emit (self, signals[USER_REMOVED], 0, key);
+  g_signal_emit (self, signals[USER_REMOVED], 0, uid);
 }
 
 void
-indicator_session_users_changed (IndicatorSessionUsers * self, const char * key)
+indicator_session_users_changed (IndicatorSessionUsers * self, guint uid)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_USERS (self));
 
-  g_signal_emit (self, signals[USER_CHANGED], 0, key);
+  g_signal_emit (self, signals[USER_CHANGED], 0, uid);
 }
 
 void

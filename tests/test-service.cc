@@ -619,23 +619,24 @@ TEST_F (ServiceTest, User)
   const char * const error_key = "has-online-account-error";
   const char * const show_name_key = "show-real-name-on-panel";
 
-  const struct {
+  struct {
+    guint uid;
     guint64 login_frequency;
     const gchar * user_name;
     const gchar * real_name;
   } account_info[] = {
-    { 134, "whartnell",  "First Doctor"    },
-    { 119, "ptroughton", "Second Doctor"   },
-    { 128, "jpertwee",   "Third Doctor"    },
-    { 172, "tbaker",     "Fourth Doctor"   },
-    {  69, "pdavison",   "Fifth Doctor"    },
-    {  31, "cbaker",     "Sixth Doctor"    },
-    {  42, "smccoy",     "Seventh Doctor"  },
-    {   1, "pmcgann",    "Eigth Doctor"    },
-    {  13, "ceccleston", "Ninth Doctor"    },
-    {  47, "dtennant",   "Tenth Doctor"    },
-    {  34, "msmith",     "Eleventh Doctor" },
-    {   1, "rhurndall",  "First Doctor"    }
+    { 101, 134, "whartnell",  "First Doctor"    },
+    { 102, 119, "ptroughton", "Second Doctor"   },
+    { 103, 128, "jpertwee",   "Third Doctor"    },
+    { 104, 172, "tbaker",     "Fourth Doctor"   },
+    { 105,  69, "pdavison",   "Fifth Doctor"    },
+    { 106,  31, "cbaker",     "Sixth Doctor"    },
+    { 107,  42, "smccoy",     "Seventh Doctor"  },
+    { 108,   1, "pmcgann",    "Eigth Doctor"    },
+    { 109,  13, "ceccleston", "Ninth Doctor"    },
+    { 110,  47, "dtennant",   "Tenth Doctor"    },
+    { 111,  34, "msmith",     "Eleventh Doctor" },
+    { 201,   1, "rhurndall",  "First Doctor"    }
   };
 
   // Find the switcher menu model.
@@ -656,11 +657,11 @@ TEST_F (ServiceTest, User)
       IndicatorSessionUser * u = g_new0 (IndicatorSessionUser, 1);
       u->is_current_user = false;
       u->is_logged_in = false;
-      u->uid = 101 + i;
+      u->uid = account_info[i].uid;
       u->login_frequency = account_info[i].login_frequency;
       u->user_name = g_strdup (account_info[i].user_name);
       u->real_name = g_strdup (account_info[i].real_name);
-      indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u->user_name, u);
+      indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
       users[i] = u;
     }
 
@@ -679,8 +680,8 @@ TEST_F (ServiceTest, User)
   g_clear_object (&switch_menu);
 
   // now remove a couple of 'em
-  indicator_session_users_mock_remove_user (INDICATOR_SESSION_USERS_MOCK(mock_users), account_info[3].user_name);
-  indicator_session_users_mock_remove_user (INDICATOR_SESSION_USERS_MOCK(mock_users), account_info[4].user_name);
+  indicator_session_users_mock_remove_user (INDICATOR_SESSION_USERS_MOCK(mock_users), account_info[3].uid);
+  indicator_session_users_mock_remove_user (INDICATOR_SESSION_USERS_MOCK(mock_users), account_info[4].uid);
 
   wait_for_menu_resync ();
 
@@ -697,7 +698,7 @@ TEST_F (ServiceTest, User)
   // now let's have the third one be the current user
   users[2]->is_current_user = true;
   users[2]->is_logged_in = true;
-  indicator_session_users_changed (mock_users, users[2]->user_name);
+  indicator_session_users_changed (mock_users, users[2]->uid);
 
   wait_for_menu_resync ();
 
@@ -749,14 +750,14 @@ TEST_F (ServiceTest, User)
       u->login_frequency = account_info[i].login_frequency;
       u->user_name = g_strdup (account_info[i].user_name);
       u->real_name = g_strdup (account_info[i].real_name);
-      indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u->user_name, u);
+      indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
       users[i] = u;
     }
   users[2]->is_current_user = false;
-  indicator_session_users_changed (mock_users, users[2]->user_name);
+  indicator_session_users_changed (mock_users, users[2]->uid);
   users[10]->is_current_user = true;
   users[10]->is_logged_in = true;
-  indicator_session_users_changed (mock_users, users[10]->user_name);
+  indicator_session_users_changed (mock_users, users[10]->uid);
   wait_for_menu_resync ();
   ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-greeter", &switch_menu, &pos));
   ASSERT_EQ (0, pos);

@@ -58,35 +58,21 @@ my_is_live_session (IndicatorSessionUsers * users G_GNUC_UNUSED)
 }
 
 static void
-my_activate_user (IndicatorSessionUsers * users, const char * key)
+my_activate_user (IndicatorSessionUsers * users, guint uid)
 {
-  g_message ("%s %s users %p key %s FIXME", G_STRLOC, G_STRFUNC, (void*)users, key);
+  g_message ("%s %s users %p uid %u FIXME", G_STRLOC, G_STRFUNC, (void*)users, uid);
 }
 
-static GStrv
-my_get_keys (IndicatorSessionUsers * users)
+static GList *
+my_get_uids (IndicatorSessionUsers * users)
 {
-  int i;
-  priv_t * p;
-  gchar ** keys;
-  GHashTableIter iter;
-  gpointer key;
-
   g_return_val_if_fail (INDICATOR_IS_SESSION_USERS_MOCK(users), NULL);
-  p = INDICATOR_SESSION_USERS_MOCK (users)->priv;
 
-  i = 0;
-  keys = g_new (gchar*, g_hash_table_size(p->users)+1);
-  g_hash_table_iter_init (&iter, p->users);
-  while (g_hash_table_iter_next (&iter, &key, NULL))
-    keys[i++] = g_strdup (key);
-  keys[i] = NULL;
-
-  return keys;
+  return g_hash_table_get_keys (INDICATOR_SESSION_USERS_MOCK(users)->priv->users);
 }
 
 static IndicatorSessionUser *
-my_get_user (IndicatorSessionUsers * self, const gchar * key)
+my_get_user (IndicatorSessionUsers * self, guint uid)
 {
   priv_t * p;
   const IndicatorSessionUser * src;
@@ -95,7 +81,7 @@ my_get_user (IndicatorSessionUsers * self, const gchar * key)
   g_return_val_if_fail (INDICATOR_IS_SESSION_USERS_MOCK(self), NULL);
   p = INDICATOR_SESSION_USERS_MOCK (self)->priv;
 
-  if ((src = g_hash_table_lookup (p->users, key)))
+  if ((src = g_hash_table_lookup (p->users, GUINT_TO_POINTER(uid))))
     {
       ret = g_new0 (IndicatorSessionUser, 1);
       ret->is_current_user = src->is_current_user;
@@ -123,7 +109,7 @@ indicator_session_users_mock_class_init (IndicatorSessionUsersMockClass * klass)
 
   users_class = INDICATOR_SESSION_USERS_CLASS (klass);
   users_class->is_live_session = my_is_live_session;
-  users_class->get_keys = my_get_keys;
+  users_class->get_uids = my_get_uids;
   users_class->get_user = my_get_user;
   users_class->activate_user = my_activate_user;
 
@@ -141,9 +127,9 @@ indicator_session_users_mock_init (IndicatorSessionUsersMock * self)
                                    IndicatorSessionUsersMockPriv);
   self->priv = p;
 
-  p->users = g_hash_table_new_full (g_str_hash,
-                                    g_str_equal,
-                                    g_free,
+  p->users = g_hash_table_new_full (g_direct_hash,
+                                    g_direct_equal,
+                                    NULL,
                                     (GDestroyNotify)indicator_session_user_free);
 
   g_signal_connect_swapped (mock_settings, "changed::is-live-session",
@@ -165,25 +151,25 @@ indicator_session_users_mock_new (void)
 
 void
 indicator_session_users_mock_add_user (IndicatorSessionUsersMock * self,
-                                       const char                * key,
                                        IndicatorSessionUser      * user)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_USERS_MOCK (self));
-  g_return_if_fail (key && *key);
   g_return_if_fail (user != NULL);
+  g_return_if_fail (user->uid > 0);
+  g_return_if_fail (!g_hash_table_contains (self->priv->users, GUINT_TO_POINTER(user->uid)));
 
-  g_hash_table_insert (self->priv->users, g_strdup(key), user);
-  indicator_session_users_added (INDICATOR_SESSION_USERS (self), key);
+  g_hash_table_insert (self->priv->users, GUINT_TO_POINTER(user->uid), user);
+  indicator_session_users_added (INDICATOR_SESSION_USERS (self), user->uid);
 }
 
 void
 indicator_session_users_mock_remove_user (IndicatorSessionUsersMock * self,
-                                          const char                * key)
+                                          guint                       uid)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_USERS_MOCK (self));
-  g_return_if_fail (key && *key);
+  g_return_if_fail (uid > 0);
 
-  g_hash_table_remove (self->priv->users, key);
-  indicator_session_users_removed (INDICATOR_SESSION_USERS (self), key);
+  g_hash_table_remove (self->priv->users, GUINT_TO_POINTER(uid));
+  indicator_session_users_removed (INDICATOR_SESSION_USERS (self), uid);
 }
 

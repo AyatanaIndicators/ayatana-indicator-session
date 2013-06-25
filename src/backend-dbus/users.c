@@ -53,33 +53,22 @@ G_DEFINE_TYPE (IndicatorSessionUsersDbus,
 ****
 ***/
 
-static const gchar *
-get_public_key_for_uid (guint uid)
-{
-  static char buf[16];
-  g_snprintf (buf, sizeof(buf), "%u", uid);
-  return buf;
-}
-
 static void
 emit_user_added (IndicatorSessionUsersDbus * self, guint uid)
 {
-  const gchar * const public_key = get_public_key_for_uid (uid);
-  indicator_session_users_added (INDICATOR_SESSION_USERS(self), public_key);
+  indicator_session_users_added (INDICATOR_SESSION_USERS(self), uid);
 }
 
 static void
 emit_user_changed (IndicatorSessionUsersDbus * self, guint uid)
 {
-  const gchar * const public_key = get_public_key_for_uid (uid);
-  indicator_session_users_changed (INDICATOR_SESSION_USERS(self), public_key);
+  indicator_session_users_changed (INDICATOR_SESSION_USERS(self), uid);
 }
 
 static void
 emit_user_removed (IndicatorSessionUsersDbus * self, guint uid)
 {
-  const gchar * const public_key = get_public_key_for_uid (uid);
-  indicator_session_users_removed (INDICATOR_SESSION_USERS(self), public_key);
+  indicator_session_users_removed (INDICATOR_SESSION_USERS(self), uid);
 }
 
 /***
@@ -124,22 +113,22 @@ static void
 set_logins (IndicatorSessionUsersDbus * self, GHashTable * logins)
 {
   GHashTable * old_logins = self->priv->logins;
-  gpointer key;
+  gpointer uid;
   GHashTableIter iter;
 
   self->priv->logins = logins;
 
   /* fire 'user changed' event for users who logged out */
   g_hash_table_iter_init (&iter, old_logins);
-  while ((g_hash_table_iter_next (&iter, &key, NULL)))
-    if (!g_hash_table_contains (logins, key))
-      emit_user_changed (self, GPOINTER_TO_INT(key));
+  while ((g_hash_table_iter_next (&iter, &uid, NULL)))
+    if (!g_hash_table_contains (logins, uid))
+      emit_user_changed (self, GPOINTER_TO_UINT(uid));
 
   /* fire 'user changed' event for users who logged in */
   g_hash_table_iter_init (&iter, logins);
-  while ((g_hash_table_iter_next (&iter, &key, NULL)))
-    if (!g_hash_table_contains (old_logins, key))
-      emit_user_changed (self, GPOINTER_TO_INT(key));
+  while ((g_hash_table_iter_next (&iter, &uid, NULL)))
+    if (!g_hash_table_contains (old_logins, uid))
+      emit_user_changed (self, GPOINTER_TO_UINT(uid));
 
   g_hash_table_destroy (old_logins);
 }
@@ -203,12 +192,6 @@ get_user_for_uid (IndicatorSessionUsersDbus * self, guint uid)
   priv_t * p = self->priv;
 
   return g_hash_table_lookup (p->uid_to_account, GUINT_TO_POINTER(uid));
-}
-
-static AccountsUser *
-get_user_for_public_key (IndicatorSessionUsersDbus * self, const char * public_key)
-{
-  return get_user_for_uid (self, g_ascii_strtoull (public_key, NULL, 10));
 }
 
 /***
@@ -520,19 +503,19 @@ set_display_manager_seat (IndicatorSessionUsersDbus * self,
 
 /* switch to (or create) a session for the specified user */
 static void
-my_activate_user (IndicatorSessionUsers * users, const char * public_key)
+my_activate_user (IndicatorSessionUsers * users, guint uid)
 {
   IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS(users);
   priv_t * p = self->priv;
   AccountsUser * au;
   const char * username;
 
-  au = get_user_for_public_key (self, public_key);
+  au = get_user_for_uid (self, uid);
   username = au ? accounts_user_get_user_name (au) : NULL;
 
   if (!username)
     {
-      g_warning ("%s %s can't find user for '%s'", G_STRLOC, G_STRFUNC, public_key);
+      g_warning ("%s %s can't find user '%u'", G_STRLOC, G_STRFUNC, uid);
     }
   else
     {
@@ -556,36 +539,31 @@ my_is_live_session (IndicatorSessionUsers * users)
   return INDICATOR_SESSION_USERS_DBUS(users)->priv->is_live;
 }
 
-/* get a list of public keys for the users that we know about */
-static GStrv
-my_get_keys (IndicatorSessionUsers * users)
+/* get a list of our user ids */
+static GList *
+my_get_uids (IndicatorSessionUsers * users)
 {
-  int i;
   priv_t * p;
-  gchar ** keys;
+  GList * uids;
   GHashTableIter iter;
   gpointer uid;
   gpointer user;
-  GHashTable * h;
 
   g_return_val_if_fail (INDICATOR_IS_SESSION_USERS_DBUS(users), NULL);
   p = INDICATOR_SESSION_USERS_DBUS (users)->priv;
 
-  i = 0;
-  h = p->uid_to_account;
-  keys = g_new (gchar*, g_hash_table_size(h)+1);
-  g_hash_table_iter_init (&iter, h);
+  uids = NULL;
+  g_hash_table_iter_init (&iter, p->uid_to_account);
   while (g_hash_table_iter_next (&iter, &uid, &user))
     if (!accounts_user_get_system_account (user))
-      keys[i++] = g_strdup (get_public_key_for_uid ((guint)uid));
-  keys[i] = NULL;
+      uids = g_list_prepend (uids, uid);
 
-  return keys;
+  return uids;
 }
 
 /* build a new struct populated with info on the specified user */
 static IndicatorSessionUser *
-my_get_user (IndicatorSessionUsers * users, const gchar * public_key)
+my_get_user (IndicatorSessionUsers * users, guint uid)
 {
   IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS (users);
   priv_t * p = self->priv;
@@ -593,11 +571,10 @@ my_get_user (IndicatorSessionUsers * users, const gchar * public_key)
   AccountsUser * au;
 
   ret = NULL;
-  au = get_user_for_public_key (self, public_key);
-
+  au = get_user_for_uid (self, uid);
   if (au && !accounts_user_get_system_account(au))
     {
-      const guint uid = accounts_user_get_uid (au);
+      g_assert (uid == accounts_user_get_uid (au));
 
       ret = g_new0 (IndicatorSessionUser, 1);
       ret->uid = uid;
@@ -662,7 +639,7 @@ indicator_session_users_dbus_class_init (IndicatorSessionUsersDbusClass * klass)
 
   users_class = INDICATOR_SESSION_USERS_CLASS (klass);
   users_class->is_live_session = my_is_live_session;
-  users_class->get_keys = my_get_keys;
+  users_class->get_uids = my_get_uids;
   users_class->get_user = my_get_user;
   users_class->activate_user = my_activate_user;
 

@@ -57,11 +57,10 @@ GType indicator_session_users_mock_get_type (void);
 IndicatorSessionUsers * indicator_session_users_mock_new (void);
 
 void indicator_session_users_mock_add_user (IndicatorSessionUsersMock * self,
-                                            const char                * key,
                                             IndicatorSessionUser      * user);
 
 void indicator_session_users_mock_remove_user (IndicatorSessionUsersMock * self,
-                                               const char                * key);
+                                               guint                       uid);
 
 
 

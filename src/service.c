@@ -206,13 +206,13 @@ update_header_action (IndicatorSessionService * self)
 static GMenuModel * create_switch_section (IndicatorSessionService * self);
 
 static void
-add_user (IndicatorSessionService * self, const gchar * key)
+add_user (IndicatorSessionService * self, guint uid)
 {
   IndicatorSessionUser * u;
 
   /* update our user table */
-  u = indicator_session_users_get_user (self->priv->backend_users, key);
-  g_hash_table_insert (self->priv->users, g_strdup(key), u);
+  u = indicator_session_users_get_user (self->priv->backend_users, uid);
+  g_hash_table_insert (self->priv->users, GUINT_TO_POINTER(uid), u);
 
   /* enqueue rebuilds for the affected sections */
   rebuild_switch_section_soon (self);
@@ -222,30 +222,30 @@ add_user (IndicatorSessionService * self, const gchar * key)
 
 static void
 on_user_added (IndicatorSessionUsers * backend_users G_GNUC_UNUSED,
-               const char            * key,
+               guint                   uid,
                gpointer                gself)
 {
-  add_user (INDICATOR_SESSION_SERVICE(gself), key);
+  add_user (INDICATOR_SESSION_SERVICE(gself), uid);
 }
 
 static void
 on_user_changed (IndicatorSessionUsers * backend_users G_GNUC_UNUSED,
-                 const char            * key,
+                 guint                   uid,
                  gpointer                gself)
 {
-  add_user (INDICATOR_SESSION_SERVICE(gself), key);
+  add_user (INDICATOR_SESSION_SERVICE(gself), uid);
 }
 
 static void
 on_user_removed (IndicatorSessionUsers * backend_users G_GNUC_UNUSED,
-                 const char            * key,
+                 guint                   uid,
                  gpointer                gself)
 {
   IndicatorSessionService * self = INDICATOR_SESSION_SERVICE (gself);
   g_return_if_fail (self != NULL);
 
   /* update our user table */
-  g_hash_table_remove (self->priv->users, key);
+  g_hash_table_remove (self->priv->users, GUINT_TO_POINTER(uid));
 
   /* enqueue rebuilds for the affected sections */
   rebuild_switch_section_soon (self);
@@ -334,13 +334,13 @@ create_user_switcher_state (IndicatorSessionService * self)
   GVariantBuilder * b;
   GVariant * val;
   GHashTableIter ht_iter;
-  gpointer ht_key, ht_value;
+  gpointer ht_value;
   const char * current_user;
 
   current_user = "";
   a = g_variant_builder_new (G_VARIANT_TYPE("as"));
   g_hash_table_iter_init (&ht_iter, self->priv->users);
-  while (g_hash_table_iter_next (&ht_iter, &ht_key, &ht_value))
+  while (g_hash_table_iter_next (&ht_iter, NULL, &ht_value))
     {
       const IndicatorSessionUser * u = ht_value;
 
@@ -950,8 +950,8 @@ static void
 /* cppcheck-suppress unusedFunction */
 indicator_session_service_init (IndicatorSessionService * self)
 {
-  int i;
-  GStrv keys;
+  GList * l;
+  GList * uids;
   priv_t * p;
   gpointer gp;
 
@@ -970,14 +970,14 @@ indicator_session_service_init (IndicatorSessionService * self)
                                &p->backend_guest);
 
   /* init our key-to-User table */
-  p->users = g_hash_table_new_full (g_str_hash,
-                                    g_str_equal,
-                                    g_free,
+  p->users = g_hash_table_new_full (g_direct_hash,
+                                    g_direct_equal,
+                                    NULL,
                                     (GDestroyNotify)indicator_session_user_free);
-  keys = indicator_session_users_get_keys (p->backend_users);
-  for (i=0; keys && keys[i]; ++i)
-    add_user (self, keys[i]);
-  g_strfreev (keys);
+  uids = indicator_session_users_get_uids (p->backend_users);
+  for (l=uids; l!=NULL; l=l->next)
+    add_user (self, GPOINTER_TO_UINT(l->data));
+  g_list_free (uids);
 
   init_gactions (self);
 

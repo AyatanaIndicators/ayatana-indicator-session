@@ -72,13 +72,13 @@ struct _IndicatorSessionUsersClass
   /* signals */
 
   void (* user_added)    (IndicatorSessionUsers * self,
-                          const gchar           * key);
+                          guint                   uid);
 
   void (* user_removed)   (IndicatorSessionUsers * self,
-                           const gchar           * key);
+                           guint                   uid);
 
   void (* user_changed)   (IndicatorSessionUsers * self,
-                           const gchar           * key);
+                           guint                   uid);
 
 
   /* pure virtual functions */
@@ -86,13 +86,13 @@ struct _IndicatorSessionUsersClass
   gboolean               (* is_live_session) (IndicatorSessionUsers * self);
 
 
-  GStrv                  (* get_keys)        (IndicatorSessionUsers * self);
+  GList*                 (* get_uids)        (IndicatorSessionUsers * self);
 
   IndicatorSessionUser * (* get_user)        (IndicatorSessionUsers * self,
-                                              const gchar           * key);
+                                              guint                   uid);
 
   void                   ( * activate_user)  (IndicatorSessionUsers * self,
-                                              const gchar           * key);
+                                              guint                   uid);
 };
 
 /***
@@ -103,15 +103,15 @@ GType indicator_session_users_get_type (void);
 
 /* emits the "user-added" signal */
 void indicator_session_users_added   (IndicatorSessionUsers * self,
-                                      const gchar           * key);
+                                      guint                   uid);
 
 /* emits the "user-removed" signal */
 void indicator_session_users_removed (IndicatorSessionUsers * self,
-                                      const gchar           * key);
+                                      guint                   uid);
 
 /* emits the "user-changed" signal */
 void indicator_session_users_changed (IndicatorSessionUsers * self,
-                                      const gchar           * key);
+                                      guint                   uid);
 
 /* notify listeners of a change to the 'is-live-session' property */
 void indicator_session_users_notify_is_live_session (IndicatorSessionUsers * self);
@@ -125,12 +125,12 @@ void indicator_session_users_notify_is_live_session (IndicatorSessionUsers * sel
 gboolean indicator_session_users_is_live_session (IndicatorSessionUsers * users);
 
 /**
- * Get a list of user keys.
+ * Get a list of the users to show in the indicator
  *
- * Return value: (transfer full): a NULL-terminated array of user keys.
- * Free with g_strfreev() when done.
+ * Return value: (transfer container): a GList of guint user ids.
+ * Free with g_slist_free() when done.
  */
-GStrv indicator_session_users_get_keys (IndicatorSessionUsers * users);
+GList * indicator_session_users_get_uids (IndicatorSessionUsers * users);
 
 /**
  * Get information about a particular user.
@@ -141,14 +141,14 @@ GStrv indicator_session_users_get_keys (IndicatorSessionUsers * users);
  */
 IndicatorSessionUser *
 indicator_session_users_get_user (IndicatorSessionUsers * users,
-                                  const gchar           * key);
+                                  guint                   uid);
 
 /* frees a IndicatorSessionUser struct */
 void indicator_session_user_free (IndicatorSessionUser * user);
 
 /* activate to a different session */
 void indicator_session_users_activate_user (IndicatorSessionUsers * self,
-                                            const char            * key);
+                                            guint                   uid);
 
 
 G_END_DECLS

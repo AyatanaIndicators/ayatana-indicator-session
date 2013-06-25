@@ -193,17 +193,6 @@ set_login1_manager (IndicatorSessionGuestDbus * self,
 }
 
 static void
-update_guest_allowed (IndicatorSessionGuestDbus * self)
-{
-  priv_t * p = self->priv;
-
-  gboolean allowed = p->login1_seat
-                  && login1_seat_get_can_multi_session (p->login1_seat);
-
-  set_guest_is_allowed_flag (self, allowed);
-}
-
-static void
 set_login1_seat (IndicatorSessionGuestDbus * self,
                  Login1Seat                * login1_seat)
 {
@@ -222,10 +211,6 @@ set_login1_seat (IndicatorSessionGuestDbus * self,
       g_signal_connect_swapped (login1_seat, "notify::active-session",
                                 G_CALLBACK(update_session_list), self);
       update_session_list (self);
-
-      g_signal_connect_swapped (login1_seat, "notify::can-multi-session",
-                               G_CALLBACK(update_guest_allowed), self);
-      update_guest_allowed (self);
     }
 }
 
@@ -269,13 +254,36 @@ my_switch_to_guest (IndicatorSessionGuest * guest)
 }
 
 static void
+on_notify_has_guest_account (DisplayManagerSeat        * dm_seat,
+                             GParamSpec                * pspec G_GNUC_UNUSED,
+                             IndicatorSessionGuestDbus * self)
+{
+  gboolean guest_exists = display_manager_seat_get_has_guest_account (dm_seat);
+  set_guest_is_allowed_flag (self, guest_exists);
+}
+
+static void
 set_display_manager_seat (IndicatorSessionGuestDbus * self,
                           DisplayManagerSeat        * dm_seat)
 {
-  g_clear_object (&self->priv->dm_seat);
+  priv_t * p = self->priv;
+
+  if (p->dm_seat != NULL)
+    {
+      g_signal_handlers_disconnect_by_data (p->dm_seat, self);
+
+      g_clear_object (&p->dm_seat);
+    }
 
   if (dm_seat != NULL)
-    self->priv->dm_seat = g_object_ref (dm_seat);
+    {
+      p->dm_seat = g_object_ref (dm_seat);
+
+      g_signal_connect (dm_seat, "notify::has-guest-account",
+                        G_CALLBACK(on_notify_has_guest_account), self);
+      on_notify_has_guest_account (dm_seat, NULL, self);
+    }
+
 }
 
 /***

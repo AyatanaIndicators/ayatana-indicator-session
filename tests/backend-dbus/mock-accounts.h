@@ -40,7 +40,6 @@ class MockAccounts: public MockObject
     void remove_user (MockUser * user);
     size_t size() const { return my_users.size(); }
     MockUser * find_by_uid (guint64 uid);
-    MockUser * find_by_path (const char * path);
     MockUser * find_by_username (const char * username);
 
   private:

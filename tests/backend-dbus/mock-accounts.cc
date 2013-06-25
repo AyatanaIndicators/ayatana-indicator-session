@@ -70,18 +70,6 @@ MockAccounts :: find_by_uid (guint64 uid)
 }
 
 MockUser *
-MockAccounts :: find_by_path (const char * path)
-{
-  const path_to_user_t::iterator it (my_path_to_user.find(path));
-
-  if (it != my_path_to_user.end())
-    return it->second;
-
-  g_warn_if_reached ();
-  return 0;
-}
-
-MockUser *
 MockAccounts :: find_by_username (const char * username)
 {
   const username_to_user_t::iterator it (my_username_to_user.find(username));

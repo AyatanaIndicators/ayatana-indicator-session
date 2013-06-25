@@ -32,7 +32,7 @@ class MockWebcredentials: public MockObject
     virtual ~MockWebcredentials ();
 
     bool has_error () const { return webcredentials_get_error_status (my_skeleton); }
-    bool set_error (bool b) const { webcredentials_set_error_status (my_skeleton, b); }
+    void set_error (bool b) const { webcredentials_set_error_status (my_skeleton, b); }
 
   private:
 

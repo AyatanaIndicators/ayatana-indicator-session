@@ -44,10 +44,10 @@ MockEndSessionDialog :: handle_simulate_user_activity (GnomeScreenSaver      * s
 gboolean
 MockEndSessionDialog :: handle_open (EndSessionDialog      * object,
                                      GDBusMethodInvocation * invocation,
-                                     guint                   arg_type,
-                                     guint                   arg_timestamp,
-                                     guint                   arg_seconds_to_stay_open,
-                                     const gchar * const   * inhibitor_paths,
+                                     guint                   arg_type G_GNUC_UNUSED,
+                                     guint                   arg_timestamp G_GNUC_UNUSED,
+                                     guint                   arg_seconds_to_stay_open G_GNUC_UNUSED,
+                                     const gchar * const   * inhibitor_paths G_GNUC_UNUSED,
                                      gpointer                gself)
 {
   static_cast<MockEndSessionDialog*>(gself)->my_isOpen = true;
@@ -68,8 +68,8 @@ namespace
 MockEndSessionDialog :: MockEndSessionDialog (GMainLoop       * loop,
                                               GDBusConnection * bus_connection):
   MockObject (loop, bus_connection, MY_NAME, MY_PATH),
-  my_isOpen (false),
-  my_skeleton (end_session_dialog_skeleton_new ())
+  my_skeleton (end_session_dialog_skeleton_new ()),
+  my_isOpen (false)
 {
   g_signal_connect (my_skeleton, "handle-open",
                     G_CALLBACK(handle_open), this);

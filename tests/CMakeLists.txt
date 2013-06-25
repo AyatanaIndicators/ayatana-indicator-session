@@ -39,7 +39,7 @@ add_library (backendmock STATIC
              backend-mock-guest.h
              backend-mock-users.c
              backend-mock-users.h)
-set_target_properties (backendmock PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS} -std=c++0x -g")
+set_target_properties (backendmock PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS} -g")
 
 # test-service
 add_executable (test-service

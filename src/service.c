@@ -547,7 +547,7 @@ create_session_section (IndicatorSessionService * self)
 
   if (!g_settings_get_boolean (s, "suppress-shutdown-menuitem"))
     {
-      const char * label = ellipsis ? _("Shutdown\342\200\246") : _("Shutdown");
+      const char * label = ellipsis ? _("Shut Down\342\200\246") : _("Shut Down");
       g_menu_append (menu, label, "indicator.power-off");
     }
 

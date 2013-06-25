@@ -68,7 +68,8 @@ class Guest: public GTestMockDBusFixture
     void add_mock_guest (MockUser               *& guest_user,
                          int                     & guest_session_tag)
     {
-      guest_user = new MockUser (loop, conn, "guest-jjbEVV", "Guest", 10);
+      guest_user = new MockUser (loop, conn, "guest-jjbEVV", "Guest", 10, 100);
+      accounts->add_user (guest_user);
       guest_user->set_system_account (true);
       guest_session_tag = login1_manager->add_session (login1_seat, guest_user);
     }
@@ -101,7 +102,6 @@ TEST_F (Guest, Allowed)
   ASSERT_FALSE (indicator_session_guest_is_active (guest));
 }
 
-#if 0
 /**
  * Have a guest user log in & out.
  * Confirm that "guest" reflects the changes.
@@ -115,8 +115,8 @@ TEST_F (Guest, Login)
   // Log a Guest in
   // And confirm that guest's is_login changes to true
   MockUser * guest_user;
-  MockConsoleKitSession * guest_session;
-  add_mock_guest (guest_user, guest_session);
+  int session_tag;
+  add_mock_guest (guest_user, session_tag);
   wait_for_signal (guest, "notify::guest-is-logged-in");
   ASSERT_TRUE (indicator_session_guest_is_allowed (guest));
   ASSERT_TRUE (indicator_session_guest_is_logged_in (guest));
@@ -126,10 +126,9 @@ TEST_F (Guest, Login)
 
   // Log the Guest User out
   // and confirm that guest's is_login changes to false
-  ck_seat->remove_session (guest_session);
+  login1_manager->remove_session (login1_seat, session_tag);
   accounts->remove_user (guest_user);
   delete guest_user;
-  delete guest_session;
   wait_for_signal (guest, "notify::guest-is-logged-in");
   ASSERT_TRUE (indicator_session_guest_is_allowed (guest));
   ASSERT_FALSE (indicator_session_guest_is_logged_in (guest));
@@ -138,6 +137,7 @@ TEST_F (Guest, Login)
   ASSERT_FALSE (indicator_session_guest_is_active (guest));
 }
 
+#if 0
 /**
  * Activate a Guest session, then activate a different session.
  * Confirm that "guest" reflects the changes.

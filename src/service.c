@@ -539,7 +539,9 @@ create_session_section (IndicatorSessionService * self)
   if (indicator_session_actions_can_hibernate (p->backend_actions))
     g_menu_append (menu, _("Hibernate"), "indicator.hibernate");
 
-  if (!g_settings_get_boolean (s, "suppress-restart-menuitem"))
+  /* NB: check 'ellipsis' here to skip this item if prompting is enabled
+     because this shows the same prompt as 'Shut Down' in Unity */
+  if (!ellipsis && !g_settings_get_boolean (s, "suppress-restart-menuitem"))
     {
       const char * label = ellipsis ? _("Restart\342\200\246") : _("Restart");
       g_menu_append (menu, label, "indicator.reboot");

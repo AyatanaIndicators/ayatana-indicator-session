@@ -12,5 +12,5 @@ cmake
  x test schema installation
 
 bugs
- - Suspend button should be hidden when shell is available
+ x Suspend button should be hidden when shell is available
  - J Random User is showing up when we switch sessions

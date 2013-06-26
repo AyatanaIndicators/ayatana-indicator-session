@@ -1,7 +1,7 @@
 code
  x x-canonical-type for user/guest menuitems
  x remove the --replace command-line argument
- - fix deprecated/dead APIs use in backend
+ x fix deprecated/dead APIs use in backend
 
 cmake
  x add cmake rule to install .indicator file
@@ -9,4 +9,8 @@ cmake
  x add cmake rule to install indicator-session-service
  x gsettings schema validation
  x icon installation
- - test schema installation
+ x test schema installation
+
+bugs
+ - Suspend button should be hidden when shell is available
+ - J Random User is showing up when we switch sessions

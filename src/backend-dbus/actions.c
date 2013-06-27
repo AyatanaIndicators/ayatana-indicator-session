@@ -160,8 +160,7 @@ on_can_suspend_ready (GObject * o, GAsyncResult * res, gpointer gself)
     {
       priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv;
 
-      const gboolean b = !g_strcmp0 (str, "yes") ||
-                         !g_strcmp0 (str, "challenge");
+      const gboolean b = !g_strcmp0 (str, "yes");
 
       if (p->can_suspend != b)
         {
@@ -188,8 +187,7 @@ on_can_hibernate_ready (GObject * o, GAsyncResult * res, gpointer gself)
     {
       priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv;
 
-      const gboolean b = !g_strcmp0 (str, "yes") ||
-                         !g_strcmp0 (str, "challenge");
+      const gboolean b = !g_strcmp0 (str, "yes");
 
       if (p->can_hibernate != b)
         {

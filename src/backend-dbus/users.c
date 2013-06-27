@@ -53,22 +53,82 @@ G_DEFINE_TYPE (IndicatorSessionUsersDbus,
 ****
 ***/
 
+/* returns true if the fields indicate this is the 'live cd' user */
+static gboolean
+is_live_user (guint uid, const char * username)
+{
+  return uid==999 && !g_strcmp0 (username, "ubuntu");
+}
+
+/* returns true if this is a user who should be listed in the session indicator */
+static gboolean
+is_public_user (IndicatorSessionUsersDbus * self G_GNUC_UNUSED,
+                AccountsUser              * au)
+{
+  gboolean is_public;
+
+  /* the 'live session' user is the only system account we'll show */
+  if (is_live_user (accounts_user_get_uid(au), accounts_user_get_user_name(au)))
+    is_public = TRUE;
+  else
+    is_public = !accounts_user_get_system_account (au);
+
+  return is_public;
+}
+
+/* get our private org.freedesktop.Accounts.User proxy for the given uid */
+static AccountsUser *
+get_user_for_uid (IndicatorSessionUsersDbus * self, guint uid)
+{
+  priv_t * p = self->priv;
+
+  return g_hash_table_lookup (p->uid_to_account, GUINT_TO_POINTER(uid));
+}
+
+/* returns true if this is a uid that should be listed in the session indicator */
+static gboolean
+is_public_uid (IndicatorSessionUsersDbus * self, guint uid)
+{
+  AccountsUser * au;
+  gboolean is_public;
+
+  if ((au = get_user_for_uid (self, uid)))
+    {
+      is_public = is_public_user (self, au);
+    }
+  else
+    {
+      /* making a guess to serve until the user's proxy object is ready.
+         assuming that 999 is a 'live session' user, <999 is system account */
+      is_public = uid >= 999;
+    }
+
+  return is_public;
+}
+
+/***
+****
+***/
+
 static void
 emit_user_added (IndicatorSessionUsersDbus * self, guint uid)
 {
-  indicator_session_users_added (INDICATOR_SESSION_USERS(self), uid);
+  if (is_public_uid (self, uid))
+    indicator_session_users_added (INDICATOR_SESSION_USERS(self), uid);
 }
 
 static void
 emit_user_changed (IndicatorSessionUsersDbus * self, guint uid)
 {
-  indicator_session_users_changed (INDICATOR_SESSION_USERS(self), uid);
+  if (is_public_uid (self, uid))
+    indicator_session_users_changed (INDICATOR_SESSION_USERS(self), uid);
 }
 
 static void
 emit_user_removed (IndicatorSessionUsersDbus * self, guint uid)
 {
-  indicator_session_users_removed (INDICATOR_SESSION_USERS(self), uid);
+  if (is_public_uid (self, uid))
+    indicator_session_users_removed (INDICATOR_SESSION_USERS(self), uid);
 }
 
 /***
@@ -99,11 +159,8 @@ set_active_uid (IndicatorSessionUsersDbus * self, guint uid)
 
       p->active_uid = uid;
 
-      if (old_uid)
-        emit_user_changed (self, old_uid);
-
-      if (uid)
-        emit_user_changed (self, uid);
+      emit_user_changed (self, old_uid);
+      emit_user_changed (self, uid);
     }
 }
 
@@ -181,18 +238,6 @@ object_add_connection (GObject * o, gulong connection_id)
 }
 
 /***
-****
-***/
-
-static AccountsUser *
-get_user_for_uid (IndicatorSessionUsersDbus * self, guint uid)
-{
-  priv_t * p = self->priv;
-
-  return g_hash_table_lookup (p->uid_to_account, GUINT_TO_POINTER(uid));
-}
-
-/***
 ****  User Account Tracking
 ***/
 
@@ -213,25 +258,24 @@ static void
 track_user (IndicatorSessionUsersDbus * self,
             AccountsUser              * user)
 {
-  priv_t * p = self->priv;
   const guint32 uid = accounts_user_get_uid (user);
   const gpointer uid_key = GUINT_TO_POINTER (uid);
-  gboolean already_had_user;
+  priv_t * p = self->priv;
   gulong id;
+  gboolean already_had_user;
+
+  g_return_if_fail (is_public_user (self, user));
 
   already_had_user = g_hash_table_contains (p->uid_to_account, uid_key);
 
-  id = g_signal_connect (user, "changed", G_CALLBACK(on_user_changed), self);
+  id  = g_signal_connect (user, "changed", G_CALLBACK(on_user_changed), self);
   object_add_connection (G_OBJECT(user), id);
   g_hash_table_insert (p->uid_to_account, uid_key, user);
 
-  if (!accounts_user_get_system_account (user))
-    {
-      if (already_had_user)
-        emit_user_changed (self, uid);
-      else
-        emit_user_added (self, uid);
-    }
+  if (already_had_user)
+    emit_user_changed (self, uid);
+  else
+    emit_user_added (self, uid);
 }
 
 static void
@@ -258,6 +302,8 @@ untrack_user (IndicatorSessionUsersDbus * self,
     }
 }
 
+/* We got a new org.freedesktop.Accounts.User proxy.
+   If it's one we want to remember, pass it to track_user() */
 static void
 on_user_proxy_ready (GObject       * o G_GNUC_UNUSED,
                      GAsyncResult  * res,
@@ -275,9 +321,13 @@ on_user_proxy_ready (GObject       * o G_GNUC_UNUSED,
 
       g_error_free (err);
     }
-  else
+  else if (is_public_user (self, user))
     {
       track_user (self, user);
+    }
+  else
+    {
+      g_object_unref (self);
     }
 }
 
@@ -293,7 +343,7 @@ create_user_proxy_for_path (IndicatorSessionUsersDbus * self,
                                    on_user_proxy_ready, self);
 }
 
-/* create user proxies for everything in Account's user-list */
+/* create proxy objects for everything in Account's user-list */
 static void
 on_user_list_ready (GObject * o, GAsyncResult * res, gpointer gself)
 {
@@ -406,12 +456,11 @@ on_login1_manager_session_list_ready (GObject      * o,
             {
               set_active_uid (self, uid);
 
-              if ((uid==999) && !g_strcmp0 (user_name,"ubuntu"))
+              if (is_live_user (uid, user_name))
                 is_live_session = TRUE;
             }
 
-          /* only count user accounts and the live session */
-          if (uid >= 999)
+          if (is_public_uid (self, uid))
             g_hash_table_add (logins, GINT_TO_POINTER(uid));
         }
 
@@ -541,22 +590,8 @@ my_is_live_session (IndicatorSessionUsers * users)
 static GList *
 my_get_uids (IndicatorSessionUsers * users)
 {
-  priv_t * p;
-  GList * uids;
-  GHashTableIter iter;
-  gpointer uid;
-  gpointer user;
-
-  g_return_val_if_fail (INDICATOR_IS_SESSION_USERS_DBUS(users), NULL);
-  p = INDICATOR_SESSION_USERS_DBUS (users)->priv;
-
-  uids = NULL;
-  g_hash_table_iter_init (&iter, p->uid_to_account);
-  while (g_hash_table_iter_next (&iter, &uid, &user))
-    if (!accounts_user_get_system_account (user))
-      uids = g_list_prepend (uids, uid);
-
-  return uids;
+  IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS (users);
+  return g_hash_table_get_keys (self->priv->uid_to_account);
 }
 
 /* build a new struct populated with info on the specified user */

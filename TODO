@@ -13,4 +13,7 @@ cmake
 
 bugs
  x Suspend button should be hidden when shell is available
- - J Random User is showing up when we switch sessions
+ x showing multiple users as having the active session...
+ x Hibernate button is appearing when it shouldn't
+ x J Random User is showing up when we switch sessions, difficult to reproduce
+ _ when logged in as Guest, i-session can't recognize other users' icons?

@@ -10,7 +10,6 @@ set (GETTEXT_PACKAGE ${CMAKE_PROJECT_NAME})
 option (enable_tests "Build the package's automatic tests." ON)
 option (full_warnings "Full compiler warnings." ON)
 option (enable_lcov "Generate lcov code coverage reports." ON)
-option (LOCAL_INSTALL "Support local installation." OFF)
 
 find_package(PkgConfig REQUIRED)
 include (GNUInstallDirs)

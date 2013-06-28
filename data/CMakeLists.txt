@@ -19,11 +19,7 @@ add_schema (${SCHEMA_FILE})
 ##
 
 # where to install
-if (${LOCAL_INSTALL})
-  set (DBUS_SERVICE_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/dbus-1/services")
-else ()
-  EXEC_PROGRAM (${PKG_CONFIG_EXECUTABLE} ARGS dbus-1 --variable session_bus_services_dir OUTPUT_VARIABLE DBUS_SERVICE_DIR)
-endif ()
+set (DBUS_SERVICE_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/dbus-1/services")
 message (STATUS "${DBUS_SERVICE_DIR} is the DBus Service File install dir")
 
 set (SERVICE_NAME "${CMAKE_PROJECT_NAME}.service")
@@ -59,11 +55,7 @@ install (FILES "${UNITY_INDICATOR_FILE}"
 ##
 
 # where to install
-if (${LOCAL_INSTALL})
-  set (ICON_PREFIX "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/libindicator/icons")
-else ()
-  EXEC_PROGRAM (${PKG_CONFIG_EXECUTABLE} ARGS indicator3-0.4 --variable iconsdir OUTPUT_VARIABLE ICON_PREFIX)
-endif ()
+set (ICON_PREFIX "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/libindicator/icons")
 set (ICON_DIR "${ICON_PREFIX}/hicolor")
 message (STATUS "${ICON_DIR} is the Icon install dir")
 

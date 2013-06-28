@@ -13,6 +13,6 @@ fi
 echo "Using $BUILD_COMMAND to build"
 (
   cd build
-  cmake .. $EXTRA_ARGS -DCMAKE_INSTALL_PREFIX=../../install -DLOCAL_INSTALL=ON -DCMAKE_BUILD_TYPE=Debug
+  cmake .. $EXTRA_ARGS -DCMAKE_INSTALL_PREFIX=../../install -DCMAKE_BUILD_TYPE=Debug
   $BUILD_COMMAND
 )

@@ -311,15 +311,15 @@ static GVariant *
 create_guest_switcher_state (IndicatorSessionService * self)
 {
   GVariant * val;
-  GVariantBuilder * b;
+  GVariantBuilder b;
   IndicatorSessionGuest * const g = self->priv->backend_guest;
 
-  b = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
+  g_variant_builder_init (&b, G_VARIANT_TYPE ("a{sv}"));
   val = g_variant_new_boolean (indicator_session_guest_is_active (g));
-  g_variant_builder_add (b, "{sv}", "is-active", val);
+  g_variant_builder_add (&b, "{sv}", "is-active", val);
   val = g_variant_new_boolean (indicator_session_guest_is_logged_in (g));
-  g_variant_builder_add (b, "{sv}", "is-logged-in", val);
-  return g_variant_builder_end (b);
+  g_variant_builder_add (&b, "{sv}", "is-logged-in", val);
+  return g_variant_builder_end (&b);
 }
 
 /**
@@ -330,15 +330,15 @@ create_guest_switcher_state (IndicatorSessionService * self)
 static GVariant *
 create_user_switcher_state (IndicatorSessionService * self)
 {
-  GVariantBuilder * a;
-  GVariantBuilder * b;
+  GVariantBuilder a;
+  GVariantBuilder b;
   GVariant * val;
   GHashTableIter ht_iter;
   gpointer ht_value;
   const char * current_user;
 
   current_user = "";
-  a = g_variant_builder_new (G_VARIANT_TYPE("as"));
+  g_variant_builder_init (&a, G_VARIANT_TYPE("as"));
   g_hash_table_iter_init (&ht_iter, self->priv->users);
   while (g_hash_table_iter_next (&ht_iter, NULL, &ht_value))
     {
@@ -348,15 +348,15 @@ create_user_switcher_state (IndicatorSessionService * self)
         current_user = u->user_name;
 
       if (u->is_logged_in)
-        g_variant_builder_add (a, "s", u->user_name);
+        g_variant_builder_add (&a, "s", u->user_name);
     }
 
-  b = g_variant_builder_new (G_VARIANT_TYPE("a{sv}"));
+  g_variant_builder_init (&b, G_VARIANT_TYPE("a{sv}"));
   val = g_variant_new_string (current_user);
-  g_variant_builder_add (b, "{sv}", "active-user", val);
-  val = g_variant_builder_end (a);
-  g_variant_builder_add (b, "{sv}", "logged-in-users", val);
-  return g_variant_builder_end (b);
+  g_variant_builder_add (&b, "{sv}", "active-user", val);
+  val = g_variant_builder_end (&a);
+  g_variant_builder_add (&b, "{sv}", "logged-in-users", val);
+  return g_variant_builder_end (&b);
 }
 
 static void

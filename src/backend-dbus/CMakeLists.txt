@@ -3,7 +3,7 @@ set(BACKEND_GENERATED_SOURCES
 
 add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-display-manager
                    org.freedesktop
-                   ${CMAKE_CURRENT_SOURCE_DIR}/org.freedesktop.DisplayManager.Seat)
+                   ${CMAKE_CURRENT_SOURCE_DIR}/org.freedesktop.DisplayManager.Seat.xml)
 
 add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-webcredentials
                    com.canonical.indicators

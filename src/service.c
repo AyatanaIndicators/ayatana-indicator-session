@@ -295,9 +295,9 @@ create_settings_section (IndicatorSessionService * self)
   priv_t * p = self->priv;
 
   menu = g_menu_new ();
-  g_menu_append (menu, _("System Settings\342\200\246"), "indicator.settings");
+  g_menu_append (menu, _("System Settings…"), "indicator.settings");
   if (indicator_session_actions_has_online_account_error (p->backend_actions))
-      g_menu_append (menu, _("Online Accounts\342\200\246"), "indicator.online-accounts");
+      g_menu_append (menu, _("Online Accounts…"), "indicator.online-accounts");
 
   return G_MENU_MODEL (menu);
 }
@@ -443,19 +443,19 @@ create_switch_section (IndicatorSessionService * self)
   else if (indicator_session_guest_is_active (p->backend_guest))
     {
       const char * action = "indicator.switch-to-greeter";
-      item = g_menu_item_new (ellipsis ? _("Switch Account\342\200\246")
+      item = g_menu_item_new (ellipsis ? _("Switch Account…")
                                        : _("Switch Account"), action);
     }
   else if (g_hash_table_size (p->users) == 1)
     {
       const char * action = "indicator.switch-to-greeter";
-      item = g_menu_item_new (ellipsis ? _("Lock\342\200\246")
+      item = g_menu_item_new (ellipsis ? _("Lock…")
                                        : _("Lock"), action);
     }
   else
     {
       const char * action = "indicator.switch-to-greeter";
-      item = g_menu_item_new (ellipsis ? _("Lock/Switch Account\342\200\246")
+      item = g_menu_item_new (ellipsis ? _("Lock/Switch Account…")
                                        : _("Lock/Switch Account"), action);
     }
   str = g_settings_get_string (p->keybinding_settings, "screensaver");
@@ -529,7 +529,7 @@ create_session_section (IndicatorSessionService * self)
 
   if (indicator_session_actions_can_logout (p->backend_actions) && !g_settings_get_boolean (s, "suppress-logout-menuitem"))
     {
-      const char * label = ellipsis ? _("Log Out\342\200\246") : _("Log Out");
+      const char * label = ellipsis ? _("Log Out…") : _("Log Out");
       g_menu_append (menu, label, "indicator.logout");
     }
 
@@ -543,13 +543,13 @@ create_session_section (IndicatorSessionService * self)
      because this shows the same prompt as 'Shut Down' in Unity */
   if (!ellipsis && !g_settings_get_boolean (s, "suppress-restart-menuitem"))
     {
-      const char * label = ellipsis ? _("Restart\342\200\246") : _("Restart");
+      const char * label = ellipsis ? _("Restart…") : _("Restart");
       g_menu_append (menu, label, "indicator.reboot");
     }
 
   if (!g_settings_get_boolean (s, "suppress-shutdown-menuitem"))
     {
-      const char * label = ellipsis ? _("Shut Down\342\200\246") : _("Shut Down");
+      const char * label = ellipsis ? _("Shut Down…") : _("Shut Down");
       g_menu_append (menu, label, "indicator.power-off");
     }
 

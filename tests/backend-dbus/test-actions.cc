@@ -319,12 +319,9 @@ TEST_F (Actions, SwitchToGuest)
 {
   // allow guests
   dm_seat->set_guest_allowed (true);
-  MockUser * guest_user;
-  //int guest_session_tag;
-//  MockConsoleKitSession * guest_ck_session;
 
   // set up a guest
-  guest_user = new MockUser (loop, conn, "guest-zzbEVV", "Guest", 10);
+  MockUser * guest_user = new MockUser (loop, conn, "guest-zzbEVV", "Guest", 10);
   guest_user->set_system_account (true);
   accounts->add_user (guest_user);
   int guest_session_tag = login1_manager->add_session (login1_seat, guest_user);

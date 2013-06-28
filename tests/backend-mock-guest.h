@@ -37,8 +37,7 @@ typedef struct _IndicatorSessionGuestMockPriv    IndicatorSessionGuestMockPriv;
 typedef struct _IndicatorSessionGuestMockClass   IndicatorSessionGuestMockClass;
 
 /**
- * An implementation of IndicatorSessionGuest that gets its user information
- * from org.freedesktop.ConsoleKit and org.freedesktop.Accounts over DBus.
+ * An implementation of IndicatorSessionGuest that lies about everything.
  */
 struct _IndicatorSessionGuestMock
 {

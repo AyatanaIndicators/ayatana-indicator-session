@@ -42,7 +42,7 @@ typedef struct _IndicatorSessionActionsDbusClass   IndicatorSessionActionsDbusCl
 
 /**
  * An implementation of IndicatorSessionActions that gets its user information
- * from org.freedesktop.ConsoleKit and org.freedesktop.Accounts over DBus.
+ * from org.freedesktop.login1 org.freedesktop.DisplayManager over DBus.
  */
 struct _IndicatorSessionActionsDbus
 {

@@ -42,7 +42,7 @@ typedef struct _IndicatorSessionUsersDbusClass   IndicatorSessionUsersDbusClass;
 
 /**
  * An implementation of IndicatorSessionUsers that gets its user information
- * from org.freedesktop.ConsoleKit and org.freedesktop.Accounts over DBus.
+ * from org.freedesktop.login1 and org.freedesktop.Accounts over DBus.
  */
 struct _IndicatorSessionUsersDbus
 {

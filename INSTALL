@@ -29,11 +29,10 @@ Runtime DBus dependencies
  - com.canonical.indicators.webcredentials
  - org.freedesktop.Accounts
  - org.freedesktop.Accounts.User
- - org.freedesktop.ConsoleKit.Manager
- - org.freedesktop.ConsoleKit.Seat
- - org.freedesktop.ConsoleKit.Session
  - org.freedesktop.DisplayManager.Seat
- - org.freedesktop.UPower
+ - org.freedesktop.login1.Manager
+ - org.freedesktop.login1.Seat
+ - org.freedesktop.login1.User
  - org.gnome.ScreenSaver
  - org.gnome.SessionManager
  - org.gnome.SessionManager.EndSessionDialog

@@ -57,7 +57,6 @@ indicator-session-[0-9].[0-9].tar.gz.asc
 src/consolekit-manager-client.h
 src/gen-session-dbus.xml.c
 src/gen-session-dbus.xml.h
-src/upower-client.h
 src/display-manager-client.h
 src/consolekit-session-client.h
 INSTALL
@@ -251,8 +250,6 @@ dbus-consolekit-session.c
 dbus-consolekit-session.h
 dbus-display-manager.c
 dbus-display-manager.h
-dbus-upower.c
-dbus-upower.h
 dbus-user.c
 dbus-user.h
 tests/test-service

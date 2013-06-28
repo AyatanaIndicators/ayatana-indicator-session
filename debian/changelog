@@ -1,3 +1,53 @@
+indicator-session (12.10.5daily13.06.19-0ubuntu1) saucy; urgency=low
+
+  [ Mathieu Trudel-Lapierre ]
+  * Fix linking with pthreads for gtest.
+
+  [ Jeremy Bicha ]
+  * recommend gnome-screensaver for the Lock Screen feature.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 393
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 19 Jun 2013 02:01:25 +0000
+
+indicator-session (12.10.5daily13.05.06.1-0ubuntu1) saucy; urgency=low
+
+  [ Iain Lane ]
+  * Remove upower dependency and depend on systemd-services.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 390
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 06 May 2013 19:23:24 +0000
+
+indicator-session (12.10.5daily13.05.02-0ubuntu1) saucy; urgency=low
+
+  * Automatic snapshot from revision 388
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 02 May 2013 22:59:05 +0000
+
+indicator-session (12.10.5daily13.03.08-0ubuntu1) raring; urgency=low
+
+  [ Marco Trevisan (Treviño) ]
+  * New unity style shutdown dialogues (LP: #882041)
+
+  [ Automatic PS uploader ]
+  * Automatic snapshot from revision 386
+
+ -- Automatic PS uploader <ps-jenkins@lists.canonical.com>  Fri, 08 Mar 2013 02:02:14 +0000
+
+indicator-session (12.10.5daily13.03.06-0ubuntu1) raring; urgency=low
+
+  [ Mathieu Trudel-Lapierre ]
+  * Jenkins build failure on gtest "undefined reference to symbol
+    'pthread_key_delete@@GLIBC_2.2.5'" (LP: #1126362)
+
+  [ Automatic PS uploader ]
+  * Automatic snapshot from revision 384
+
+ -- Automatic PS uploader <ps-jenkins@lists.canonical.com>  Wed, 06 Mar 2013 02:02:00 +0000
+
 indicator-session (12.10.5daily13.01.25-0ubuntu1) raring; urgency=low
 
   [ Mathieu Trudel-Lapierre ]

@@ -326,11 +326,18 @@ my_can_hibernate (IndicatorSessionActions * self)
 static gboolean
 my_can_prompt (IndicatorSessionActions * self)
 {
+  gboolean can_prompt = FALSE;
   const priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  return (p != NULL)
-      && (p->end_session_dialog != NULL)
-      && (g_dbus_proxy_get_name_owner (G_DBUS_PROXY(p->end_session_dialog)) != NULL);
+  if (p && p->end_session_dialog)
+    {
+      GDBusProxy * proxy = G_DBUS_PROXY (p->end_session_dialog);
+      char * name = g_dbus_proxy_get_name_owner (proxy);
+      can_prompt = name != NULL;
+      g_free (name);
+    }
+
+  return can_prompt;
 }
 
 static gboolean

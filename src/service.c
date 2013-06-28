@@ -210,14 +210,16 @@ add_user (IndicatorSessionService * self, guint uid)
 {
   IndicatorSessionUser * u;
 
-  /* update our user table */
-  u = indicator_session_users_get_user (self->priv->backend_users, uid);
-  g_hash_table_insert (self->priv->users, GUINT_TO_POINTER(uid), u);
+  if ((u = indicator_session_users_get_user (self->priv->backend_users, uid)))
+    {
+      /* update our user table */
+      g_hash_table_insert (self->priv->users, GUINT_TO_POINTER(uid), u);
 
-  /* enqueue rebuilds for the affected sections */
-  rebuild_switch_section_soon (self);
-  if (u->is_current_user)
-    rebuild_header_soon (self);
+      /* queue rebuilds for the affected sections */
+      rebuild_switch_section_soon (self);
+      if (u->is_current_user)
+        rebuild_header_soon (self);
+    }
 }
 
 static void

@@ -41,6 +41,8 @@ struct _IndicatorSessionUsersDbusPriv
   gboolean is_live;
 
   GCancellable * cancellable;
+
+  guint update_list_tag;
 };
 
 typedef IndicatorSessionUsersDbusPriv priv_t;
@@ -53,29 +55,6 @@ G_DEFINE_TYPE (IndicatorSessionUsersDbus,
 ****
 ***/
 
-/* returns true if the fields indicate this is the 'live cd' user */
-static gboolean
-is_live_user (guint uid, const char * username)
-{
-  return uid==999 && !g_strcmp0 (username, "ubuntu");
-}
-
-/* returns true if this is a user who should be listed in the session indicator */
-static gboolean
-is_public_user (IndicatorSessionUsersDbus * self G_GNUC_UNUSED,
-                AccountsUser              * au)
-{
-  gboolean is_public;
-
-  /* the 'live session' user is the only system account we'll show */
-  if (is_live_user (accounts_user_get_uid(au), accounts_user_get_user_name(au)))
-    is_public = TRUE;
-  else
-    is_public = !accounts_user_get_system_account (au);
-
-  return is_public;
-}
-
 /* get our private org.freedesktop.Accounts.User proxy for the given uid */
 static AccountsUser *
 get_user_for_uid (IndicatorSessionUsersDbus * self, guint uid)
@@ -85,50 +64,30 @@ get_user_for_uid (IndicatorSessionUsersDbus * self, guint uid)
   return g_hash_table_lookup (p->uid_to_account, GUINT_TO_POINTER(uid));
 }
 
-/* returns true if this is a uid that should be listed in the session indicator */
 static gboolean
-is_public_uid (IndicatorSessionUsersDbus * self, guint uid)
+is_tracked_uid (IndicatorSessionUsersDbus * self, guint uid)
 {
-  AccountsUser * au;
-  gboolean is_public;
-
-  if ((au = get_user_for_uid (self, uid)))
-    {
-      is_public = is_public_user (self, au);
-    }
-  else
-    {
-      /* making a guess to serve until the user's proxy object is ready.
-         assuming that 999 is a 'live session' user, <999 is system account */
-      is_public = uid >= 999;
-    }
-
-  return is_public;
+  return get_user_for_uid (self, uid) != NULL;
 }
 
-/***
-****
-***/
-
 static void
-emit_user_added (IndicatorSessionUsersDbus * self, guint uid)
+emit_user_added (IndicatorSessionUsersDbus * self, guint32 uid)
 {
-  if (is_public_uid (self, uid))
+  if (is_tracked_uid (self, uid))
     indicator_session_users_added (INDICATOR_SESSION_USERS(self), uid);
 }
 
 static void
-emit_user_changed (IndicatorSessionUsersDbus * self, guint uid)
+emit_user_changed (IndicatorSessionUsersDbus * self, guint32 uid)
 {
-  if (is_public_uid (self, uid))
+  if (is_tracked_uid (self, uid))
     indicator_session_users_changed (INDICATOR_SESSION_USERS(self), uid);
 }
 
 static void
-emit_user_removed (IndicatorSessionUsersDbus * self, guint uid)
+emit_user_removed (IndicatorSessionUsersDbus * self, guint32 uid)
 {
-  if (is_public_uid (self, uid))
-    indicator_session_users_removed (INDICATOR_SESSION_USERS(self), uid);
+  indicator_session_users_removed (INDICATOR_SESSION_USERS(self), uid);
 }
 
 /***
@@ -259,18 +218,13 @@ track_user (IndicatorSessionUsersDbus * self,
             AccountsUser              * user)
 {
   const guint32 uid = accounts_user_get_uid (user);
-  const gpointer uid_key = GUINT_TO_POINTER (uid);
   priv_t * p = self->priv;
   gulong id;
-  gboolean already_had_user;
-
-  g_return_if_fail (is_public_user (self, user));
-
-  already_had_user = g_hash_table_contains (p->uid_to_account, uid_key);
+  const gboolean already_had_user = is_tracked_uid (self, uid);
 
   id  = g_signal_connect (user, "changed", G_CALLBACK(on_user_changed), self);
   object_add_connection (G_OBJECT(user), id);
-  g_hash_table_insert (p->uid_to_account, uid_key, user);
+  g_hash_table_insert (p->uid_to_account, GUINT_TO_POINTER (uid), user);
 
   if (already_had_user)
     emit_user_changed (self, uid);
@@ -321,13 +275,13 @@ on_user_proxy_ready (GObject       * o G_GNUC_UNUSED,
 
       g_error_free (err);
     }
-  else if (is_public_user (self, user))
+  else if (!accounts_user_get_system_account (user))
     {
       track_user (self, user);
     }
   else
     {
-      g_object_unref (self);
+      g_object_unref (user);
     }
 }
 
@@ -456,12 +410,11 @@ on_login1_manager_session_list_ready (GObject      * o,
             {
               set_active_uid (self, uid);
 
-              if (is_live_user (uid, user_name))
+              if ((uid==999) && !g_strcmp0 (user_name, "ubuntu"))
                 is_live_session = TRUE;
             }
 
-          if (is_public_uid (self, uid))
-            g_hash_table_add (logins, GINT_TO_POINTER(uid));
+          g_hash_table_add (logins, GINT_TO_POINTER(uid));
         }
 
       set_is_live_session_flag (self, is_live_session);
@@ -485,8 +438,35 @@ update_session_list (IndicatorSessionUsersDbus * self)
     }
 }
 
+static gboolean
+on_update_session_list_timer (gpointer gself)
+{
+  IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS (gself);
+
+  update_session_list (self);
+
+  self->priv->update_list_tag = 0;
+  return G_SOURCE_REMOVE;
+}
+
+/* A dead session can still show up in list-sessions for a few seconds.
+   So just to be safe, queue up a rebuild for a few seconds from now */
 static void
-set_login1_manager (IndicatorSessionUsersDbus * self, Login1Manager * login1_manager)
+update_session_list_twice (IndicatorSessionUsersDbus * self)
+{
+  priv_t * p = self->priv;
+
+  update_session_list (self);
+
+  if (p->update_list_tag == 0)
+    p->update_list_tag = g_timeout_add_seconds (5,
+                                                on_update_session_list_timer,
+                                                self);
+}
+
+static void
+set_login1_manager (IndicatorSessionUsersDbus * self,
+                    Login1Manager             * login1_manager)
 {
   priv_t * p = self->priv;
 
@@ -504,7 +484,11 @@ set_login1_manager (IndicatorSessionUsersDbus * self, Login1Manager * login1_man
       g_signal_connect_swapped (login1_manager, "session-new",
                                 G_CALLBACK(update_session_list), self);
       g_signal_connect_swapped (login1_manager, "session-removed",
+                                G_CALLBACK(update_session_list_twice), self);
+      g_signal_connect_swapped (login1_manager, "user-new",
                                 G_CALLBACK(update_session_list), self);
+      g_signal_connect_swapped (login1_manager, "user-removed",
+                                G_CALLBACK(update_session_list_twice), self);
       update_session_list (self);
     }
 }
@@ -631,6 +615,12 @@ my_dispose (GObject * o)
 {
   IndicatorSessionUsersDbus * self = INDICATOR_SESSION_USERS_DBUS (o);
   priv_t * p = self->priv;
+
+  if (p->update_list_tag != 0)
+    {
+      g_source_remove (p->update_list_tag);
+      p->update_list_tag = 0;
+    }
 
   if (p->cancellable)
     {

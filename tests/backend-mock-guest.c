@@ -34,21 +34,9 @@ G_DEFINE_TYPE (IndicatorSessionGuestMock,
                indicator_session_guest_mock,
                INDICATOR_TYPE_SESSION_GUEST)
 
-/***
-****  Virtual Functions
-***/
-
-static void
-my_dispose (GObject * o)
-{
-  G_OBJECT_CLASS (indicator_session_guest_mock_parent_class)->dispose (o);
-}
-
-static void
-my_finalize (GObject * o)
-{
-  G_OBJECT_CLASS (indicator_session_guest_mock_parent_class)->finalize (o);
-}
+/**
+***  IndicatorSessionGuest virtual functions
+**/
 
 static gboolean
 my_is_allowed (IndicatorSessionGuest * self)
@@ -74,6 +62,22 @@ static void
 my_switch_to_guest (IndicatorSessionGuest * self G_GNUC_UNUSED)
 {
   g_message ("%s %s FIXME", G_STRLOC, G_STRFUNC);
+}
+
+/***
+****  GObject virtual Functions
+***/
+
+static void
+my_dispose (GObject * o)
+{
+  G_OBJECT_CLASS (indicator_session_guest_mock_parent_class)->dispose (o);
+}
+
+static void
+my_finalize (GObject * o)
+{
+  G_OBJECT_CLASS (indicator_session_guest_mock_parent_class)->finalize (o);
 }
 
 /***

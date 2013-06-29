@@ -32,24 +32,8 @@ G_DEFINE_TYPE (IndicatorSessionUsersMock,
                INDICATOR_TYPE_SESSION_USERS)
 
 /***
-****
+****  IndicatorSessionUsers virtual functions
 ***/
-
-static void
-my_dispose (GObject * o)
-{
-  G_OBJECT_CLASS (indicator_session_users_mock_parent_class)->dispose (o);
-}
-
-static void
-my_finalize (GObject * o)
-{
-  priv_t * p = INDICATOR_SESSION_USERS_MOCK (o)->priv;
-
-  g_hash_table_destroy (p->users);
-
-  G_OBJECT_CLASS (indicator_session_users_mock_parent_class)->finalize (o);
-}
 
 static gboolean
 my_is_live_session (IndicatorSessionUsers * users G_GNUC_UNUSED)
@@ -95,6 +79,30 @@ my_get_user (IndicatorSessionUsers * self, guint uid)
 
   return ret;
 }
+
+/***
+****  GObject virtual functions
+***/
+
+static void
+my_dispose (GObject * o)
+{
+  G_OBJECT_CLASS (indicator_session_users_mock_parent_class)->dispose (o);
+}
+
+static void
+my_finalize (GObject * o)
+{
+  priv_t * p = INDICATOR_SESSION_USERS_MOCK (o)->priv;
+
+  g_hash_table_destroy (p->users);
+
+  G_OBJECT_CLASS (indicator_session_users_mock_parent_class)->finalize (o);
+}
+
+/***
+****  GObject boilerplate
+***/
 
 static void
 /* cppcheck-suppress unusedFunction */

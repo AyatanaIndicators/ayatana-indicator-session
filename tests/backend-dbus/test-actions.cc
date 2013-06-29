@@ -46,7 +46,7 @@ class Actions: public GTestMockDBusFixture
       actions = 0;
       backend_get (cancellable, &actions, NULL, NULL);
       g_assert (actions != 0);
-      wait_msec (100);
+      wait_msec (300);
     }
 
     virtual void TearDown ()

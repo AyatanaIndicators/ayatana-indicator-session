@@ -3,6 +3,7 @@ Section: gnome
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: cmake,
+               dbus,
                debhelper (>= 9),
                dh-autoreconf,
                dh-translations,

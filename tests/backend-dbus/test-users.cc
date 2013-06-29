@@ -48,7 +48,10 @@ class Users: public GTestMockDBusFixture
       users = 0;
       backend_get (cancellable, NULL, &users, NULL);
       g_assert (users != 0);
-      wait_msec (100);
+
+      // wait for the users added by GTestMockDBusFixture::SetUp() to show up
+      wait_for_signals (users, INDICATOR_SESSION_USERS_SIGNAL_USER_ADDED, 12);
+      init_event_keys (0);
     }
 
     virtual void TearDown ()

@@ -1,3 +1,9 @@
+indicator-session (12.10.5daily13.06.19-0ubuntu2) saucy; urgency=low
+
+  * Backport a fix for high resources usage issue, thanks Lars (lp: #1195595)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 01 Jul 2013 13:05:15 +0200
+
 indicator-session (12.10.5daily13.06.19-0ubuntu1) saucy; urgency=low
 
   [ Mathieu Trudel-Lapierre ]

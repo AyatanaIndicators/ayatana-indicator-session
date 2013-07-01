@@ -166,8 +166,9 @@ object_unref_and_disconnect (gpointer instance)
       gulong * handler_id = l->data;
       g_signal_handler_disconnect (instance, *handler_id);
       g_free (handler_id);
-      g_object_unref (instance);
     }
+
+  g_object_unref (instance);
 
   g_slist_free (ids);
 }

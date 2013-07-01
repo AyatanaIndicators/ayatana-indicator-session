@@ -151,23 +151,14 @@ set_logins (IndicatorSessionUsersDbus * self, GHashTable * logins)
 ****
 ***/
 
-static GQuark
-get_connection_list_quark (void)
-{
-  static GQuark q = 0;
-
-  if (G_UNLIKELY (q == 0))
-    q = g_quark_from_static_string ("connection-ids");
-
-  return q;
-}
+G_DEFINE_QUARK (connection-ids, connection_list)
 
 static void
 object_unref_and_disconnect (gpointer instance)
 {
-  GSList * l;
+  const GQuark q = connection_list_quark ();
   GSList * ids;
-  const GQuark q = get_connection_list_quark ();
+  GSList * l;
 
   ids = g_object_steal_qdata (G_OBJECT(instance), q);
   for (l=ids; l!=NULL; l=l->next)
@@ -184,7 +175,7 @@ object_unref_and_disconnect (gpointer instance)
 static void
 object_add_connection (GObject * o, gulong connection_id)
 {
-  const GQuark q = get_connection_list_quark ();
+  const GQuark q = connection_list_quark ();
   GSList * ids;
   gulong * ptr;
 

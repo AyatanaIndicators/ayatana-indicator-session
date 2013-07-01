@@ -37,14 +37,15 @@ enum
 struct _IndicatorSessionActionsDbusPriv
 {
   GCancellable * cancellable;
-  GCancellable * login1_manager_cancellable;
 
   GSettings * lockdown_settings;
   GnomeScreenSaver * screen_saver;
   GnomeSessionManager * session_manager;
   Login1Manager * login1_manager;
+  GCancellable * login1_manager_cancellable;
   Login1Seat * login1_seat;
   DisplayManagerSeat * dm_seat;
+  GCancellable * dm_seat_cancellable;
   Webcredentials * webcredentials;
   EndSessionDialog * end_session_dialog;
 
@@ -124,10 +125,18 @@ set_dm_seat (IndicatorSessionActionsDbus * self, DisplayManagerSeat * seat)
 {
   priv_t * p = self->priv;
 
-  g_clear_object (&p->dm_seat);
+  if (p->dm_seat != NULL)
+    {
+      g_cancellable_cancel (p->dm_seat_cancellable);
+      g_clear_object (&p->dm_seat);
+      g_clear_object (&p->dm_seat);
+    }
 
   if (seat != NULL)
-    p->dm_seat = g_object_ref (seat);
+    {
+      p->dm_seat = g_object_ref (seat);
+      p->dm_seat_cancellable = g_cancellable_new ();
+    }
 }
 
 static void
@@ -570,7 +579,8 @@ my_switch_to_greeter (IndicatorSessionActions * self)
 
   g_return_if_fail (p->dm_seat != NULL);
 
-  display_manager_seat_call_switch_to_greeter (p->dm_seat, p->cancellable,
+  display_manager_seat_call_switch_to_greeter (p->dm_seat,
+                                               p->dm_seat_cancellable,
                                                NULL, NULL);
 }
 
@@ -582,7 +592,7 @@ my_switch_to_guest (IndicatorSessionActions * self)
   g_return_if_fail (p->dm_seat != NULL);
 
   display_manager_seat_call_switch_to_guest (p->dm_seat, "",
-                                             p->cancellable,
+                                             p->dm_seat_cancellable,
                                              NULL, NULL);
 }
 
@@ -594,7 +604,7 @@ my_switch_to_username (IndicatorSessionActions * self, const char * username)
   g_return_if_fail (p->dm_seat != NULL);
 
   display_manager_seat_call_switch_to_user (p->dm_seat, username, "",
-                                            p->cancellable,
+                                            p->dm_seat_cancellable,
                                             NULL, NULL);
 }
 

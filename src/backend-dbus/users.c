@@ -215,7 +215,9 @@ track_user (IndicatorSessionUsersDbus * self,
 
   id  = g_signal_connect (user, "changed", G_CALLBACK(on_user_changed), self);
   object_add_connection (G_OBJECT(user), id);
-  g_hash_table_insert (p->uid_to_account, GUINT_TO_POINTER (uid), user);
+  g_hash_table_insert (p->uid_to_account,
+                       GUINT_TO_POINTER (uid),
+                       g_object_ref (user));
 
   if (already_had_user)
     emit_user_changed (self, uid);
@@ -266,12 +268,11 @@ on_user_proxy_ready (GObject       * o G_GNUC_UNUSED,
 
       g_error_free (err);
     }
-  else if (!accounts_user_get_system_account (user))
-    {
-      track_user (self, user);
-    }
   else
     {
+      if (!accounts_user_get_system_account (user))
+        track_user (self, user);
+
       g_object_unref (user);
     }
 }

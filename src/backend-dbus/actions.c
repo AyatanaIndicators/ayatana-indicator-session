@@ -123,17 +123,10 @@ set_dm_seat (IndicatorSessionActionsDbus * self, DisplayManagerSeat * seat)
 {
   priv_t * p = self->priv;
 
-  if (p->dm_seat != NULL)
-    {
-      g_signal_handlers_disconnect_by_data (p->dm_seat, self);
-      g_clear_object (&p->dm_seat);
-    }
+  g_clear_object (&p->dm_seat);
 
   if (seat != NULL)
-    {
-      p->dm_seat = g_object_ref (seat);
-      /*g_signal_connect (seat, "notify::has-actions-account", G_CALLBACK(on_notify_has_actions_account), self);*/
-    }
+    p->dm_seat = g_object_ref (seat);
 }
 
 static void

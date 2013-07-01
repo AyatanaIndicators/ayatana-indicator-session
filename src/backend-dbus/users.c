@@ -28,7 +28,7 @@ struct _IndicatorSessionUsersDbusPriv
   DisplayManagerSeat * dm_seat;
   Accounts * accounts;
 
-  /* hash table of int uids to AccountsUser* */
+  /* hash table of int uids to UserRecord* */
   GHashTable * uid_to_account;
 
   /* a hashset of int uids of users who are logged in */
@@ -55,13 +55,46 @@ G_DEFINE_TYPE (IndicatorSessionUsersDbus,
 ****
 ***/
 
+struct UserRecord
+{
+  AccountsUser * user;
+
+  gulong signal_id;
+};
+
+struct UserRecord *
+user_record_new (AccountsUser * user, gulong signal_id)
+{
+  struct UserRecord * rec;
+  rec = g_new (struct UserRecord, 1);
+  rec->user = g_object_ref (user);
+  rec->signal_id = signal_id;
+  return rec;
+}
+
+static void
+user_record_free (struct UserRecord * rec)
+{
+  g_signal_handler_disconnect (rec->user, rec->signal_id);
+  g_object_unref (G_OBJECT (rec->user));
+  g_free (rec);
+}
+
+/***
+****
+***/
+
 /* get our private org.freedesktop.Accounts.User proxy for the given uid */
 static AccountsUser *
 get_user_for_uid (IndicatorSessionUsersDbus * self, guint uid)
 {
-  priv_t * p = self->priv;
+  struct UserRecord * rec;
 
-  return g_hash_table_lookup (p->uid_to_account, GUINT_TO_POINTER(uid));
+  if ((rec = g_hash_table_lookup (self->priv->uid_to_account,
+                                  GUINT_TO_POINTER(uid))))
+    return rec->user;
+
+  return NULL;
 }
 
 static gboolean
@@ -148,47 +181,6 @@ set_logins (IndicatorSessionUsersDbus * self, GHashTable * logins)
 }
 
 /***
-****
-***/
-
-G_DEFINE_QUARK (connection-ids, connection_list)
-
-static void
-object_unref_and_disconnect (gpointer instance)
-{
-  const GQuark q = connection_list_quark ();
-  GSList * ids;
-  GSList * l;
-
-  ids = g_object_steal_qdata (G_OBJECT(instance), q);
-  for (l=ids; l!=NULL; l=l->next)
-    {
-      gulong * handler_id = l->data;
-      g_signal_handler_disconnect (instance, *handler_id);
-      g_free (handler_id);
-    }
-
-  g_object_unref (instance);
-
-  g_slist_free (ids);
-}
-
-static void
-object_add_connection (GObject * o, gulong connection_id)
-{
-  const GQuark q = connection_list_quark ();
-  GSList * ids;
-  gulong * ptr;
-
-  ptr = g_new (gulong, 1);
-  *ptr = connection_id;
-
-  ids = g_object_steal_qdata (o, q);
-  ids = g_slist_prepend (ids, ptr);
-  g_object_set_qdata (o, q, ids);
-}
-
-/***
 ****  User Account Tracking
 ***/
 
@@ -215,10 +207,9 @@ track_user (IndicatorSessionUsersDbus * self,
   const gboolean already_had_user = is_tracked_uid (self, uid);
 
   id  = g_signal_connect (user, "changed", G_CALLBACK(on_user_changed), self);
-  object_add_connection (G_OBJECT(user), id);
   g_hash_table_insert (p->uid_to_account,
                        GUINT_TO_POINTER (uid),
-                       g_object_ref (user));
+                       user_record_new (user, id));
 
   if (already_had_user)
     emit_user_changed (self, uid);
@@ -236,11 +227,16 @@ untrack_user (IndicatorSessionUsersDbus * self,
   GHashTableIter iter;
   priv_t * p = self->priv;
 
+  /* find the uid matching this object path */
   uid = 0;
   g_hash_table_iter_init (&iter, p->uid_to_account);
   while (!uid && g_hash_table_iter_next (&iter, &key, &val))
-    if (!g_strcmp0 (path, g_dbus_proxy_get_object_path (val)))
-      uid = GPOINTER_TO_UINT (key);
+    {
+      struct UserRecord * rec = val;
+      GDBusProxy * proxy = G_DBUS_PROXY (rec->user);
+      if (!g_strcmp0 (path, g_dbus_proxy_get_object_path (proxy)))
+        uid = GPOINTER_TO_UINT (key);
+    }
 
   if (uid)
     {
@@ -677,7 +673,7 @@ indicator_session_users_dbus_init (IndicatorSessionUsersDbus * self)
   p->uid_to_account = g_hash_table_new_full (g_direct_hash,
                                              g_direct_equal,
                                              NULL,
-                                             object_unref_and_disconnect);
+                                             (GDestroyNotify)user_record_free);
 
   p->logins = g_hash_table_new (g_direct_hash, g_direct_equal);
 }

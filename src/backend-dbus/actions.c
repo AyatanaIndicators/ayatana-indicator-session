@@ -37,6 +37,7 @@ enum
 struct _IndicatorSessionActionsDbusPriv
 {
   GCancellable * cancellable;
+  GCancellable * login1_manager_cancellable;
 
   GSettings * lockdown_settings;
   GnomeScreenSaver * screen_saver;
@@ -205,19 +206,26 @@ set_login1_manager (IndicatorSessionActionsDbus * self,
 {
   priv_t * p = self->priv;
 
-  g_clear_object (&p->login1_manager);
+  if (p->login1_manager != NULL)
+    {
+      g_cancellable_cancel (p->login1_manager_cancellable);
+      g_clear_object (&p->login1_manager_cancellable);
+      g_clear_object (&p->login1_manager);
+    }
 
   if (login1_manager != NULL)
     {
+      p->login1_manager_cancellable = g_cancellable_new ();
+
       p->login1_manager = g_object_ref (login1_manager);
 
       login1_manager_call_can_suspend (p->login1_manager,
-                                       p->cancellable,
+                                       p->login1_manager_cancellable,
                                        on_can_suspend_ready,
                                        self);
 
       login1_manager_call_can_hibernate (p->login1_manager,
-                                         p->cancellable,
+                                         p->login1_manager_cancellable,
                                          on_can_hibernate_ready,
                                          self);
     }
@@ -353,7 +361,11 @@ my_suspend (IndicatorSessionActions * self)
 
   g_return_if_fail (p->login1_manager != NULL);
 
-  login1_manager_call_suspend (p->login1_manager, FALSE, p->cancellable, NULL, NULL);
+  login1_manager_call_suspend (p->login1_manager,
+                               FALSE,
+                               p->login1_manager_cancellable,
+                               NULL,
+                               NULL);
 }
 
 static void
@@ -363,7 +375,11 @@ my_hibernate (IndicatorSessionActions * self)
 
   g_return_if_fail (p->login1_manager != NULL);
 
-  login1_manager_call_hibernate (p->login1_manager, FALSE, p->cancellable, NULL, NULL);
+  login1_manager_call_hibernate (p->login1_manager,
+                                 FALSE,
+                                 p->login1_manager_cancellable,
+                                 NULL,
+                                 NULL);
 }
 
 /***
@@ -404,7 +420,11 @@ reboot_now (IndicatorSessionActions * self)
 
   g_return_if_fail (p->login1_manager != NULL);
 
-  login1_manager_call_reboot (p->login1_manager, FALSE, p->cancellable,  NULL, NULL);
+  login1_manager_call_reboot (p->login1_manager,
+                              FALSE,
+                              p->login1_manager_cancellable,
+                              NULL,
+                              NULL);
 }
 
 static void
@@ -414,7 +434,11 @@ power_off_now (IndicatorSessionActions * self)
 
   g_return_if_fail (p->login1_manager != NULL);
 
-  login1_manager_call_power_off (p->login1_manager, FALSE, p->cancellable, NULL, NULL);
+  login1_manager_call_power_off (p->login1_manager,
+                                 FALSE,
+                                 p->login1_manager_cancellable,
+                                 NULL,
+                                 NULL);
 }
 
 static void

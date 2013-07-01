@@ -55,8 +55,7 @@ install (FILES "${UNITY_INDICATOR_FILE}"
 ##
 
 # where to install
-set (ICON_PREFIX "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/libindicator/icons")
-set (ICON_DIR "${ICON_PREFIX}/hicolor")
+set (ICON_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/icons/hicolor")
 message (STATUS "${ICON_DIR} is the Icon install dir")
 
 install (DIRECTORY icons

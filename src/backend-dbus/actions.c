@@ -99,13 +99,18 @@ set_login1_seat (IndicatorSessionActionsDbus * self, Login1Seat * seat)
 {
   priv_t * p = self->priv;
 
-  g_clear_object (&p->login1_seat);
+  if (p->login1_seat != NULL)
+    {
+      g_signal_handlers_disconnect_by_data (p->login1_seat, self);
+      g_clear_object (&p->login1_seat);
+    }
 
   if (seat != NULL)
     {
       p->login1_seat = g_object_ref (seat);
 
-      g_signal_connect_swapped (seat, "notify::can-multi-session", G_CALLBACK(on_seat_notify_multi_session), self);
+      g_signal_connect_swapped (seat, "notify::can-multi-session",
+                                G_CALLBACK(on_seat_notify_multi_session), self);
     }
 }
 

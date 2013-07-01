@@ -990,6 +990,7 @@ update_user_menuitems (SessionMenuMgr * mgr)
   for (l=mgr->user_menuitems; l!=NULL; l=l->next)
     {
       dbusmenu_menuitem_child_delete (mgr->top_mi, l->data);
+      g_object_unref (l->data);
     }
   g_slist_free (mgr->user_menuitems);
   mgr->user_menuitems = NULL;

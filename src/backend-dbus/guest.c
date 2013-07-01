@@ -119,15 +119,14 @@ on_login1_manager_session_list_ready (GObject      * o,
       guint32 uid = 0;
       const gchar * user_name = NULL;
       const gchar * seat_id = NULL;
-      const gchar * path = NULL;
       GVariantIter iter;
 
       g_variant_iter_init (&iter, sessions);
-      while (g_variant_iter_loop (&iter, "(&su&s&s&o)", &session_id,
+      while (g_variant_iter_loop (&iter, "(&su&s&so)", &session_id,
                                                         &uid,
                                                         &user_name,
                                                         &seat_id,
-                                                        &path))
+                                                        NULL))
         {
           gboolean is_current_session;
           gboolean is_guest;

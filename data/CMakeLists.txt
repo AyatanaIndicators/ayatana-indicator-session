@@ -60,6 +60,11 @@ set (ICON_DIR "${ICON_PREFIX}/hicolor")
 message (STATUS "${ICON_DIR} is the Icon install dir")
 
 install (DIRECTORY icons
+         icons/16x16
+         icons/22x22
+         icons/24x24
+         icons/32x32
+         icons/scalable
          DESTINATION "${ICON_DIR}"
          FILES_MATCHING PATTERN "*.png" PATTERN "*.svg")
 

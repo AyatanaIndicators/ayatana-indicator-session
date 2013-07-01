@@ -21,8 +21,8 @@ add_definitions( -DGETTEXT_PACKAGE="${GETTEXT_PACKAGE}" )
 add_definitions (-DGNOMELOCALEDIR=\"@CMAKE_INSTALL_PREFIX@/share/locale\")
 
 pkg_check_modules (SERVICE REQUIRED
-                   glib-2.0>=2.35.4
-                   gio-unix-2.0>=2.25.11)
+                   glib-2.0>=2.36
+                   gio-unix-2.0>=2.36)
 include_directories (${SERVICE_INCLUDE_DIRS})
 
 set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")

@@ -130,7 +130,7 @@ set_logins (IndicatorSessionUsersDbus * self, GHashTable * logins)
   gpointer uid;
   GHashTableIter iter;
 
-  self->priv->logins = logins;
+  self->priv->logins = g_hash_table_ref (logins);
 
   /* fire 'user changed' event for users who logged out */
   g_hash_table_iter_init (&iter, old_logins);
@@ -420,6 +420,7 @@ on_login1_manager_session_list_ready (GObject      * o,
       set_is_live_session_flag (self, is_live_session);
       set_logins (self, logins);
 
+      g_hash_table_unref (logins);
       g_variant_unref (sessions);
     }
 }

@@ -19,7 +19,7 @@ add_schema (${SCHEMA_FILE})
 ##
 
 # where to install
-set (DBUS_SERVICE_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/dbus-1/services")
+set (DBUS_SERVICE_DIR "${CMAKE_INSTALL_FULL_DATADIR}/dbus-1/services")
 message (STATUS "${DBUS_SERVICE_DIR} is the DBus Service File install dir")
 
 set (SERVICE_NAME "${CMAKE_PROJECT_NAME}.service")
@@ -40,7 +40,7 @@ install (FILES "${SERVICE_FILE}"
 ##
 
 # where to install
-set (UNITY_INDICATOR_DIR "${CMAKE_INSTALL_PREFIX}/share/unity/indicators")
+set (UNITY_INDICATOR_DIR "${CMAKE_INSTALL_FULL_DATAROOTDIR}/unity/indicators")
 message (STATUS "${UNITY_INDICATOR_DIR} is the Unity Indicator install dir")
 
 set (UNITY_INDICATOR_NAME "com.canonical.indicator.session")

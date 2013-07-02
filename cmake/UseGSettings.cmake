@@ -3,7 +3,7 @@
 macro(add_schema SCHEMA_NAME)
 
     set(PKG_CONFIG_EXECUTABLE pkg-config)
-    set(GSETTINGS_DIR "${CMAKE_INSTALL_PREFIX}/share/glib-2.0/schemas")
+    set(GSETTINGS_DIR "${CMAKE_INSTALL_FULL_DATAROOTDIR}/glib-2.0/schemas")
 
     # Run the validator and error if it fails
     execute_process (COMMAND ${PKG_CONFIG_EXECUTABLE} gio-2.0 --variable glib_compile_schemas  OUTPUT_VARIABLE _glib_compile_schemas OUTPUT_STRIP_TRAILING_WHITESPACE)

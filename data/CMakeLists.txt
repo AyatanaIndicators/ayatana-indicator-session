@@ -27,7 +27,7 @@ set (SERVICE_FILE "${CMAKE_CURRENT_BINARY_DIR}/${SERVICE_NAME}")
 set (SERVICE_FILE_IN "${CMAKE_CURRENT_SOURCE_DIR}/${SERVICE_NAME}.in")
 
 # build it
-set (pkglibexecdir "${PROJECT_LIBEXECDIR}")
+set (pkglibexecdir "${CMAKE_INSTALL_FULL_PKGLIBEXECDIR}")
 configure_file ("${SERVICE_FILE_IN}" "${SERVICE_FILE}")
 
 # install it

@@ -30,7 +30,7 @@
 ***/
 
 static void
-on_name_lost (gpointer instance, gpointer loop)
+on_name_lost (gpointer instance G_GNUC_UNUSED, gpointer loop)
 {
   g_warning ("exiting: service couldn't acquire, or lost ownership of, busname");
 

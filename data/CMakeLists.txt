@@ -1,3 +1,5 @@
+include (UseGSettings)
+
 ##
 ##  GSettings schema
 ##

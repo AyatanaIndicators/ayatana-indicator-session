@@ -10,23 +10,29 @@ set (GETTEXT_PACKAGE ${CMAKE_PROJECT_NAME})
 option (enable_tests "Build the package's automatic tests." ON)
 option (enable_lcov "Generate lcov code coverage reports." ON)
 
-find_package(PkgConfig REQUIRED)
+##
+##  GNU standard installation directories
+## 
 include (GNUInstallDirs)
+if (EXISTS "/etc/debian_version") # Workaround for libexecdir on debian
+  set (CMAKE_INSTALL_LIBEXECDIR "${CMAKE_INSTALL_LIBDIR}")
+  set (CMAKE_INSTALL_FULL_LIBEXECDIR "${CMAKE_INSTALL_FULL_LIBDIR}")
+endif ()
+set (CMAKE_INSTALL_PKGLIBEXECDIR "${CMAKE_INSTALL_LIBEXECDIR}/${CMAKE_PROJECT_NAME}")
+set (CMAKE_INSTALL_FULL_PKGLIBEXECDIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}/${CMAKE_PROJECT_NAME}")
+
+
+##
+##  Check for prerequisites
+##
+find_package (PkgConfig REQUIRED)
 include (FindPkgConfig)
-include (GdbusCodegen)
-include (UseGSettings)
-
-add_definitions( -DGETTEXT_PACKAGE="${GETTEXT_PACKAGE}" )
-add_definitions (-DGNOMELOCALEDIR=\"@CMAKE_INSTALL_PREFIX@/share/locale\")
-
 pkg_check_modules (SERVICE REQUIRED
                    glib-2.0>=2.36
                    gio-unix-2.0>=2.36)
 include_directories (${SERVICE_INCLUDE_DIRS})
 
 set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")
-
-
 
 set (ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
 add_custom_target (dist
@@ -43,14 +49,6 @@ add_custom_target (cppcheck COMMAND cppcheck --enable=all -q --error-exitcode=2 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories (${CMAKE_CURRENT_BINARY_DIR}/src)
 
-# Workaround for libexecdir on debian
-if (EXISTS "/etc/debian_version") 
-  set (CMAKE_INSTALL_LIBEXECDIR "${CMAKE_INSTALL_LIBDIR}")
-  set (CMAKE_INSTALL_FULL_LIBEXECDIR "${CMAKE_INSTALL_FULL_LIBDIR}")
-endif ()
-
-set (CMAKE_INSTALL_PKGLIBEXECDIR "${CMAKE_INSTALL_LIBEXECDIR}/${CMAKE_PROJECT_NAME}")
-set (CMAKE_INSTALL_FULL_PKGLIBEXECDIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}/${CMAKE_PROJECT_NAME}")
 
 add_subdirectory (src)
 add_subdirectory (data)

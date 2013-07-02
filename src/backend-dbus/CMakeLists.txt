@@ -1,3 +1,5 @@
+include (GdbusCodegen)
+
 set(BACKEND_GENERATED_SOURCES
 )
 

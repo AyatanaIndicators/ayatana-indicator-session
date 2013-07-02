@@ -93,8 +93,7 @@ static void indicator_session_init       (IndicatorSession *self);
 static void indicator_session_dispose    (GObject *object);
 static void indicator_session_finalize   (GObject *object);
 static GList* indicator_session_get_entries (IndicatorObject* obj);
-static guint indicator_session_get_location (IndicatorObject * io,
-                                             IndicatorObjectEntry * entry);
+static gint indicator_session_get_position (IndicatorObject * io);
 
 G_DEFINE_TYPE (IndicatorSession, indicator_session, INDICATOR_OBJECT_TYPE);
 
@@ -108,7 +107,7 @@ indicator_session_class_init (IndicatorSessionClass *klass)
 
 	IndicatorObjectClass * io_class = INDICATOR_OBJECT_CLASS(klass);
 	io_class->get_entries = indicator_session_get_entries;
-	io_class->get_location = indicator_session_get_location;
+	io_class->get_position = indicator_session_get_position;
 	return;
 }
 
@@ -201,11 +200,10 @@ indicator_session_get_entries (IndicatorObject* obj)
   return g_list_append (NULL, &self->entry);
 }
 
-static guint
-indicator_session_get_location (IndicatorObject * io,
-                                IndicatorObjectEntry * entry)
+static gint
+indicator_session_get_position (IndicatorObject * io)
 {
-  return 0;
+  return 10;
 }
 
 /* callback for the service manager state of being */

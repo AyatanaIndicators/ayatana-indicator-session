@@ -1,3 +1,16 @@
+indicator-session (12.10.5+13.10.20130703.1-0ubuntu1) saucy; urgency=low
+
+  [ Lars Uebernickel ]
+  * session-menu-mgr.c: don't leak user menu items. (LP: #1195595)
+  * I know the new session indicator is coming soon, but I think having
+    this for the next week or so is worthwhile anyway. Not having the
+    session indicator on the trailing edge of the panel is unnerving :).
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 397
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 03 Jul 2013 14:17:07 +0000
+
 indicator-session (12.10.5daily13.06.19-0ubuntu2) saucy; urgency=low
 
   * Backport a fix for high resources usage issue, thanks Lars (lp: #1195595)

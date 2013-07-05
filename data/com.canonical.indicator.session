@@ -7,5 +7,5 @@ Position=10
 ObjectPath=/com/canonical/indicator/session/desktop
 
 [desktop_greeter]
-ObjectPath=/com/canonical/indicator/session/greeter
+ObjectPath=/com/canonical/indicator/session/desktop_greeter
 

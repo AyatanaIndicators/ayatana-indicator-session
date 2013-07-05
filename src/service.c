@@ -531,6 +531,7 @@ create_session_section (IndicatorSessionService * self)
   if (indicator_session_actions_can_logout (p->backend_actions) && !g_settings_get_boolean (s, "suppress-logout-menuitem"))
     {
       const char * label = ellipsis ? _("Log Out…") : _("Log Out");
+      label = "Logggg outttt.....";
       g_menu_append (menu, label, "indicator.logout");
     }
 

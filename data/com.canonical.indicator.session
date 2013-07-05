@@ -6,6 +6,6 @@ Position=10
 [desktop]
 ObjectPath=/com/canonical/indicator/session/desktop
 
-[greeter]
+[desktop_greeter]
 ObjectPath=/com/canonical/indicator/session/greeter
 

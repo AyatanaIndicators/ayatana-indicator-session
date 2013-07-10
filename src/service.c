@@ -519,7 +519,7 @@ create_switch_section (IndicatorSessionService * self)
 }
 
 static GMenuModel *
-create_session_section (IndicatorSessionService * self)
+create_session_section (IndicatorSessionService * self, int profile)
 {
   GMenu * menu;
   const priv_t * const p = self->priv;
@@ -528,10 +528,11 @@ create_session_section (IndicatorSessionService * self)
 
   menu = g_menu_new ();
 
-  if (indicator_session_actions_can_logout (p->backend_actions) && !g_settings_get_boolean (s, "suppress-logout-menuitem"))
+  if ((profile == PROFILE_DESKTOP) &&
+      (indicator_session_actions_can_logout (p->backend_actions)) &&
+      (!g_settings_get_boolean (s, "suppress-logout-menuitem")))
     {
       const char * label = ellipsis ? _("Log Out…") : _("Log Out");
-      label = "Logggg outttt.....";
       g_menu_append (menu, label, "indicator.logout");
     }
 
@@ -576,11 +577,11 @@ create_menu (IndicatorSessionService * self, int profile)
       sections[n++] = create_admin_section ();
       sections[n++] = create_settings_section (self);
       sections[n++] = create_switch_section (self);
-      sections[n++] = create_session_section (self);
+      sections[n++] = create_session_section (self, profile);
     }
   else if (profile == PROFILE_GREETER)
     {
-      sections[n++] = create_session_section (self);
+      sections[n++] = create_session_section (self, profile);
     }
 
   /* add sections to the submenu */
@@ -811,8 +812,8 @@ rebuild_now (IndicatorSessionService * self, int sections)
 
   if (sections & SECTION_SESSION)
     {
-      rebuild_section (desktop->submenu, 3, create_session_section(self));
-      rebuild_section (greeter->submenu, 0, create_session_section(self));
+      rebuild_section (desktop->submenu, 3, create_session_section(self, PROFILE_DESKTOP));
+      rebuild_section (greeter->submenu, 0, create_session_section(self, PROFILE_GREETER));
     }
 }
 

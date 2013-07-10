@@ -126,8 +126,7 @@ indicator_session_util_get_session_proxies (
                      gpointer                                      user_data)
 {
   struct session_proxy_data * data;
-  char * login1_seat_path;
-  const char * dm_seat_path;
+  const char * str;
 
   data = g_new0 (struct session_proxy_data, 1);
   data->callback = func;
@@ -144,15 +143,20 @@ indicator_session_util_get_session_proxies (
                                     on_login1_manager_ready, data);
 
   /* login1 seat */
-  login1_seat_path = g_strconcat ("/org/freedesktop/login1/seat/", g_getenv("XDG_SEAT"), NULL);
-  login1_seat_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+  if ((str = g_getenv ("XDG_SEAT")))
+    {
+      char * path;
+      data->pending++;
+      path = g_strconcat ("/org/freedesktop/login1/seat/", str, NULL);
+      login1_seat_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                                  G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
                                  "org.freedesktop.login1",
-                                 login1_seat_path,
+                                 path,
                                  data->cancellable,
                                  on_login1_seat_ready,
                                  data);
-  g_free (login1_seat_path);
+      g_free (path);
+    }
 
   /* Accounts */
   data->pending++;
@@ -164,14 +168,14 @@ indicator_session_util_get_session_proxies (
                               on_accounts_proxy_ready, data);
 
   /* DisplayManager seat */
-  if ((dm_seat_path = g_getenv ("XDG_SEAT_PATH")))
+  if ((str = g_getenv ("XDG_SEAT_PATH")))
     {
       data->pending++;
       display_manager_seat_proxy_new_for_bus (
                                G_BUS_TYPE_SYSTEM,
                                G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
                                "org.freedesktop.DisplayManager",
-                               dm_seat_path,
+                               str,
                                data->cancellable,
                                on_display_manager_seat_proxy_ready, data);
     }

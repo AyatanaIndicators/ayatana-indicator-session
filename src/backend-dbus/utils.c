@@ -126,13 +126,15 @@ indicator_session_util_get_session_proxies (
                      gpointer                                      user_data)
 {
   struct session_proxy_data * data;
-  char * seat_path;
+  char * login1_seat_path;
+  const char * dm_seat_path;
 
   data = g_new0 (struct session_proxy_data, 1);
   data->callback = func;
   data->user_data = user_data;
   data->cancellable = g_object_ref (cancellable);
 
+  /* login1 */
   data->pending++;
   login1_manager_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                                     G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
@@ -141,15 +143,18 @@ indicator_session_util_get_session_proxies (
                                     data->cancellable,
                                     on_login1_manager_ready, data);
 
-  data->pending++;
-  seat_path = g_strconcat ("/org/freedesktop/login1/seat/", g_getenv("XDG_SEAT"), NULL);
+  /* login1 seat */
+  login1_seat_path = g_strconcat ("/org/freedesktop/login1/seat/", g_getenv("XDG_SEAT"), NULL);
   login1_seat_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                                  G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
                                  "org.freedesktop.login1",
-                                 seat_path,
+                                 login1_seat_path,
                                  data->cancellable,
                                  on_login1_seat_ready,
                                  data);
+  g_free (login1_seat_path);
+
+  /* Accounts */
   data->pending++;
   accounts_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                               G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
@@ -158,14 +163,16 @@ indicator_session_util_get_session_proxies (
                               data->cancellable,
                               on_accounts_proxy_ready, data);
 
-  data->pending++;
-  display_manager_seat_proxy_new_for_bus (
+  /* DisplayManager seat */
+  if ((dm_seat_path = g_getenv ("XDG_SEAT_PATH")))
+    {
+      data->pending++;
+      display_manager_seat_proxy_new_for_bus (
                                G_BUS_TYPE_SYSTEM,
                                G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
                                "org.freedesktop.DisplayManager",
-                               g_getenv ("XDG_SEAT_PATH"),
+                               dm_seat_path,
                                data->cancellable,
                                on_display_manager_seat_proxy_ready, data);
-
-  g_free (seat_path);
+    }
 }

@@ -21,6 +21,10 @@
       <default>true</default>
       <summary>Is logging out allowed?</summary>
     </key>
+    <key type="b" name="can-reboot">
+      <default>true</default>
+      <summary>Is rebooting allowed?</summary>
+    </key>
     <key type="b" name="can-lock">
       <default>true</default>
       <summary>Is locking the session allowed?</summary>

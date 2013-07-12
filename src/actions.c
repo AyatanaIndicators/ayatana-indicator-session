@@ -34,6 +34,7 @@ enum
   PROP_CAN_SUSPEND,
   PROP_CAN_LOCK,
   PROP_CAN_LOGOUT,
+  PROP_CAN_REBOOT,
   PROP_CAN_PROMPT,
   PROP_HAS_ONLINE_ACCOUNT_ERROR,
   PROP_LAST
@@ -71,6 +72,10 @@ my_get_property (GObject     * o,
         g_value_set_boolean (value, indicator_session_actions_can_logout (self));
         break;
 
+      case PROP_CAN_REBOOT:
+        g_value_set_boolean (value, indicator_session_actions_can_reboot (self));
+        break;
+
       case PROP_CAN_PROMPT:
         g_value_set_boolean (value, indicator_session_actions_can_prompt (self));
         break;
@@ -96,6 +101,7 @@ indicator_session_actions_class_init (IndicatorSessionActionsClass * klass)
 
   klass->can_lock = NULL;
   klass->can_logout = NULL;
+  klass->can_reboot = NULL;
   klass->can_switch = NULL;
   klass->can_suspend = NULL;
   klass->can_hibernate = NULL;
@@ -144,6 +150,12 @@ indicator_session_actions_class_init (IndicatorSessionActionsClass * klass)
                           "Whether or not the system services allow the user to logout",
                           TRUE, flags);
 
+  properties[PROP_CAN_REBOOT] =
+    g_param_spec_boolean (INDICATOR_SESSION_ACTIONS_PROP_CAN_REBOOT,
+                          "Can Reboot",
+                          "Whether or not the system services allow the user to reboot",
+                          TRUE, flags);
+
   properties[PROP_CAN_PROMPT] =
     g_param_spec_boolean (INDICATOR_SESSION_ACTIONS_PROP_CAN_PROMPT,
                           "Can Show End Session Dialog",
@@ -183,6 +195,14 @@ indicator_session_actions_can_logout (IndicatorSessionActions * self)
   g_return_val_if_fail (INDICATOR_IS_SESSION_ACTIONS (self), FALSE);
 
   return INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->can_logout (self);
+}
+
+gboolean
+indicator_session_actions_can_reboot (IndicatorSessionActions * self)
+{
+  g_return_val_if_fail (INDICATOR_IS_SESSION_ACTIONS (self), FALSE);
+
+  return INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->can_reboot (self);
 }
 
 gboolean
@@ -350,6 +370,12 @@ void
 indicator_session_actions_notify_can_logout (IndicatorSessionActions * self)
 {
   notify_func (self, PROP_CAN_LOGOUT);
+}
+
+void
+indicator_session_actions_notify_can_reboot (IndicatorSessionActions * self)
+{
+  notify_func (self, PROP_CAN_REBOOT);
 }
 
 void

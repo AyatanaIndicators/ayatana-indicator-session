@@ -38,6 +38,7 @@ typedef struct _IndicatorSessionActionsClass IndicatorSessionActionsClass;
 /* property keys */
 #define INDICATOR_SESSION_ACTIONS_PROP_CAN_LOCK "can-lock"
 #define INDICATOR_SESSION_ACTIONS_PROP_CAN_LOGOUT "can-logout"
+#define INDICATOR_SESSION_ACTIONS_PROP_CAN_REBOOT "can-reboot"
 #define INDICATOR_SESSION_ACTIONS_PROP_CAN_SWITCH "can-switch"
 #define INDICATOR_SESSION_ACTIONS_PROP_CAN_SUSPEND "can-suspend"
 #define INDICATOR_SESSION_ACTIONS_PROP_CAN_HIBERNATE "can-hibernate"
@@ -62,6 +63,7 @@ struct _IndicatorSessionActionsClass
 
   gboolean (*can_lock)                 (IndicatorSessionActions * self);
   gboolean (*can_logout)               (IndicatorSessionActions * self);
+  gboolean (*can_reboot)               (IndicatorSessionActions * self);
   gboolean (*can_switch)               (IndicatorSessionActions * self);
   gboolean (*can_suspend)              (IndicatorSessionActions * self);
   gboolean (*can_hibernate)            (IndicatorSessionActions * self);
@@ -92,6 +94,7 @@ GType indicator_session_actions_get_type (void);
 
 gboolean indicator_session_actions_can_lock                    (IndicatorSessionActions * self);
 gboolean indicator_session_actions_can_logout                  (IndicatorSessionActions * self);
+gboolean indicator_session_actions_can_reboot                  (IndicatorSessionActions * self);
 gboolean indicator_session_actions_can_switch                  (IndicatorSessionActions * self);
 gboolean indicator_session_actions_can_suspend                 (IndicatorSessionActions * self);
 gboolean indicator_session_actions_can_hibernate               (IndicatorSessionActions * self);
@@ -101,6 +104,7 @@ gboolean indicator_session_actions_has_online_account_error    (IndicatorSession
 
 void indicator_session_actions_notify_can_lock                 (IndicatorSessionActions * self);
 void indicator_session_actions_notify_can_logout               (IndicatorSessionActions * self);
+void indicator_session_actions_notify_can_reboot               (IndicatorSessionActions * self);
 void indicator_session_actions_notify_can_switch               (IndicatorSessionActions * self);
 void indicator_session_actions_notify_can_suspend              (IndicatorSessionActions * self);
 void indicator_session_actions_notify_can_hibernate            (IndicatorSessionActions * self);

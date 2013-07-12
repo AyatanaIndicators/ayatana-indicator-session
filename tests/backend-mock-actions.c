@@ -44,6 +44,12 @@ my_can_logout (IndicatorSessionActions * self G_GNUC_UNUSED)
 }
 
 static gboolean
+my_can_reboot (IndicatorSessionActions * self G_GNUC_UNUSED)
+{
+  return g_settings_get_boolean (mock_settings, "can-reboot");
+}
+
+static gboolean
 my_can_switch (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   return g_settings_get_boolean (mock_settings, "can-switch-sessions");
@@ -177,6 +183,7 @@ indicator_session_actions_mock_class_init (IndicatorSessionActionsMockClass * kl
   actions_class = INDICATOR_SESSION_ACTIONS_CLASS (klass);
   actions_class->can_lock = my_can_lock;
   actions_class->can_logout = my_can_logout;
+  actions_class->can_reboot = my_can_reboot;
   actions_class->can_switch = my_can_switch;
   actions_class->can_suspend = my_can_suspend;
   actions_class->can_hibernate = my_can_hibernate;

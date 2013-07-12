@@ -529,8 +529,7 @@ create_session_section (IndicatorSessionService * self, int profile)
   menu = g_menu_new ();
 
   if ((profile == PROFILE_DESKTOP) &&
-      (indicator_session_actions_can_logout (p->backend_actions)) &&
-      (!g_settings_get_boolean (s, "suppress-logout-menuitem")))
+      (indicator_session_actions_can_logout (p->backend_actions)))
     {
       const char * label = ellipsis ? _("Log Out…") : _("Log Out");
       g_menu_append (menu, label, "indicator.logout");
@@ -542,9 +541,7 @@ create_session_section (IndicatorSessionService * self, int profile)
   if (indicator_session_actions_can_hibernate (p->backend_actions))
     g_menu_append (menu, _("Hibernate"), "indicator.hibernate");
 
-  /* NB: check 'ellipsis' here to skip this item if prompting is enabled
-     because this shows the same prompt as 'Shut Down' in Unity */
-  if (!ellipsis && !g_settings_get_boolean (s, "suppress-restart-menuitem"))
+  if (indicator_session_actions_can_reboot (p->backend_actions))
     {
       const char * label = ellipsis ? _("Restart…") : _("Restart");
       g_menu_append (menu, label, "indicator.reboot");
@@ -1020,10 +1017,6 @@ indicator_session_service_init (IndicatorSessionService * self)
   g_signal_connect_swapped (gp, "changed::suppress-logout-restart-shutdown",
                             G_CALLBACK(rebuild_switch_section_soon), self);
   g_signal_connect_swapped (gp, "changed::suppress-logout-restart-shutdown",
-                            G_CALLBACK(rebuild_session_section_soon), self);
-  g_signal_connect_swapped (gp, "changed::suppress-logout-menuitem",
-                            G_CALLBACK(rebuild_session_section_soon), self);
-  g_signal_connect_swapped (gp, "changed::suppress-restart-menuitem",
                             G_CALLBACK(rebuild_session_section_soon), self);
   g_signal_connect_swapped (gp, "changed::suppress-shutdown-menuitem",
                             G_CALLBACK(rebuild_session_section_soon), self);

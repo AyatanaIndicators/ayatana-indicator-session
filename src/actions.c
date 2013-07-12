@@ -250,6 +250,14 @@ indicator_session_actions_has_online_account_error (IndicatorSessionActions * se
 ***/
 
 void
+indicator_session_actions_online_accounts (IndicatorSessionActions * self)
+{
+  g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS (self));
+
+  INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->online_accounts (self);
+}
+
+void
 indicator_session_actions_settings (IndicatorSessionActions * self)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS (self));

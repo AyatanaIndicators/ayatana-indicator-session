@@ -589,6 +589,15 @@ TEST_F (ServiceTest, OnlineAccountError)
   ASSERT_TRUE (find_menu_item_for_action ("indicator.online-accounts", &model, &pos));
   g_clear_object (&model);
 
+  // check that the service has a corresponding action
+  ASSERT_TRUE (g_action_group_has_action (G_ACTION_GROUP(action_group), "online-accounts"));
+  ASSERT_TRUE (g_action_group_get_action_enabled (G_ACTION_GROUP(action_group), "online-accounts"));
+
+  // confirm that activating the action is handled by the service
+  g_action_group_activate_action (G_ACTION_GROUP(action_group), "online-accounts", NULL);
+  wait_for_signal (mock_settings, "changed::last-command");
+  check_last_command_is ("online-accounts");
+
   // check that the header's icon and a11y adjusted to the error state
   check_header ("", "system-devices-panel-alert", "System (Attention Required)");
 

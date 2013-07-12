@@ -623,6 +623,14 @@ on_about_activated (GSimpleAction * a      G_GNUC_UNUSED,
 }
 
 static void
+on_online_accounts_activated (GSimpleAction * a      G_GNUC_UNUSED,
+                              GVariant      * param  G_GNUC_UNUSED,
+                              gpointer        gself)
+{
+  indicator_session_actions_online_accounts (get_backend_actions(gself));
+}
+
+static void
 on_help_activated (GSimpleAction  * a      G_GNUC_UNUSED,
                    GVariant       * param  G_GNUC_UNUSED,
                    gpointer         gself)
@@ -720,16 +728,17 @@ init_gactions (IndicatorSessionService * self)
   priv_t * p = self->priv;
 
   GActionEntry entries[] = {
-    { "about",                  on_about_activated        },
-    { "help",                   on_help_activated         },
-    { "settings",               on_settings_activated     },
-    { "logout",                 on_logout_activated       },
-    { "suspend",                on_suspend_activated      },
-    { "hibernate",              on_hibernate_activated    },
-    { "reboot",                 on_reboot_activated       },
-    { "power-off",              on_power_off_activated    },
-    { "switch-to-screensaver",  on_screensaver_activated  },
-    { "switch-to-greeter",      on_greeter_activated      }
+    { "about",                  on_about_activated           },
+    { "help",                   on_help_activated            },
+    { "hibernate",              on_hibernate_activated       },
+    { "logout",                 on_logout_activated          },
+    { "online-accounts",        on_online_accounts_activated },
+    { "reboot",                 on_reboot_activated          },
+    { "settings",               on_settings_activated        },
+    { "switch-to-screensaver",  on_screensaver_activated     },
+    { "switch-to-greeter",      on_greeter_activated         },
+    { "suspend",                on_suspend_activated         },
+    { "power-off",              on_power_off_activated       }
   };
 
   p->actions = g_simple_action_group_new ();

@@ -78,6 +78,7 @@ struct _IndicatorSessionActionsClass
   void  (*help)                        (IndicatorSessionActions * self);
   void  (*about)                       (IndicatorSessionActions * self);
   void  (*settings)                    (IndicatorSessionActions * self);
+  void  (*online_accounts)             (IndicatorSessionActions * self);
 
   void  (*switch_to_greeter)           (IndicatorSessionActions * self);
   void  (*switch_to_screensaver)       (IndicatorSessionActions * self);
@@ -121,6 +122,7 @@ void indicator_session_actions_power_off                       (IndicatorSession
 void indicator_session_actions_help                            (IndicatorSessionActions * self);
 void indicator_session_actions_about                           (IndicatorSessionActions * self);
 void indicator_session_actions_settings                        (IndicatorSessionActions * self);
+void indicator_session_actions_online_accounts                 (IndicatorSessionActions * self);
 
 void indicator_session_actions_switch_to_screensaver           (IndicatorSessionActions * self);
 void indicator_session_actions_switch_to_greeter               (IndicatorSessionActions * self);

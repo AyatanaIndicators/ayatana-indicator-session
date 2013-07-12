@@ -141,6 +141,12 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
   g_settings_set_string (mock_settings, "last-command", "settings");
 }
 
+static void
+my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
+{
+  g_settings_set_string (mock_settings, "last-command", "online-accounts");
+}
+
 static gboolean
 my_can_prompt (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
@@ -195,6 +201,7 @@ indicator_session_actions_mock_class_init (IndicatorSessionActionsMockClass * kl
   actions_class->reboot = my_reboot;
   actions_class->power_off = my_power_off;
   actions_class->settings = my_settings;
+  actions_class->online_accounts = my_online_accounts;
   actions_class->help = my_help;
   actions_class->about = my_about;
   actions_class->switch_to_screensaver = my_switch_to_screensaver;

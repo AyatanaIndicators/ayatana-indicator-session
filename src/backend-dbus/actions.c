@@ -18,6 +18,7 @@
  */
 
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #include "dbus-end-session-dialog.h"
 #include "dbus-login1-manager.h"
@@ -39,6 +40,7 @@ struct _IndicatorSessionActionsDbusPriv
   GCancellable * cancellable;
 
   GSettings * lockdown_settings;
+  GSettings * indicator_settings;
   GnomeScreenSaver * screen_saver;
   GnomeSessionManager * session_manager;
   Login1Manager * login1_manager;
@@ -48,6 +50,7 @@ struct _IndicatorSessionActionsDbusPriv
   GCancellable * dm_seat_cancellable;
   Webcredentials * webcredentials;
   EndSessionDialog * end_session_dialog;
+  char * zenity;
 
   gboolean can_suspend;
   gboolean can_hibernate;
@@ -74,6 +77,44 @@ log_and_clear_error (GError ** err, const char * loc, const char * func)
 
       g_clear_error (err);
     }
+}
+
+/***
+****
+***/
+
+typedef enum
+{
+  PROMPT_NONE,
+  PROMPT_WITH_ZENITY,
+  PROMPT_WITH_UNITY
+}
+prompt_status_t;
+
+static prompt_status_t
+get_prompt_status (IndicatorSessionActionsDbus * self)
+{
+  prompt_status_t prompt = PROMPT_NONE;
+  const priv_t * p = self->priv;
+
+  if (!g_settings_get_boolean (p->indicator_settings, "suppress-logout-restart-shutdown"))
+    {
+      /* can we use the Unity prompt? */
+      if ((prompt == PROMPT_NONE) && p && p->end_session_dialog)
+        {
+          GDBusProxy * proxy = G_DBUS_PROXY (p->end_session_dialog);
+          char * name = g_dbus_proxy_get_name_owner (proxy);
+          if (name != NULL)
+            prompt = PROMPT_WITH_UNITY;
+          g_free (name);
+        }
+
+      /* can we use zenity? */
+      if ((prompt == PROMPT_NONE) && p && p->zenity)
+        prompt = PROMPT_WITH_ZENITY;
+    }
+
+  return prompt;
 }
 
 /***
@@ -288,6 +329,7 @@ on_end_session_dialog_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res
       INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv->end_session_dialog = end_session_dialog;
 
       indicator_session_actions_notify_can_prompt (INDICATOR_SESSION_ACTIONS(gself));
+      indicator_session_actions_notify_can_reboot (INDICATOR_SESSION_ACTIONS(gself));
     }
 
   log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
@@ -310,7 +352,31 @@ my_can_logout (IndicatorSessionActions * self)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  return !g_settings_get_boolean (p->lockdown_settings, "disable-log-out");
+  if (g_settings_get_boolean (p->indicator_settings, "suppress-logout-menuitem"))
+    return FALSE;
+
+  if (g_settings_get_boolean (p->lockdown_settings, "disable-log-out"))
+    return FALSE;
+
+  return TRUE;
+}
+
+static gboolean
+my_can_reboot (IndicatorSessionActions * actions)
+{
+  IndicatorSessionActionsDbus * self = INDICATOR_SESSION_ACTIONS_DBUS(actions);
+  priv_t * p = self->priv;
+  
+  if (g_settings_get_boolean (p->indicator_settings, "suppress-restart-menuitem"))
+    return FALSE;
+
+  /* Shutdown and Restart are the same dialog prompt in Unity,
+     so disable the redundant 'Restart' menuitem in that mode */
+  if (!g_settings_get_boolean (p->indicator_settings, "suppress-shutdown-menuitem"))
+    if (get_prompt_status(self) == PROMPT_WITH_UNITY)
+      return FALSE;
+
+  return TRUE;
 }
 
 static gboolean
@@ -341,18 +407,7 @@ my_can_hibernate (IndicatorSessionActions * self)
 static gboolean
 my_can_prompt (IndicatorSessionActions * self)
 {
-  gboolean can_prompt = FALSE;
-  const priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
-
-  if (p && p->end_session_dialog)
-    {
-      GDBusProxy * proxy = G_DBUS_PROXY (p->end_session_dialog);
-      char * name = g_dbus_proxy_get_name_owner (proxy);
-      can_prompt = name != NULL;
-      g_free (name);
-    }
-
-  return can_prompt;
+  return get_prompt_status(INDICATOR_SESSION_ACTIONS_DBUS(self)) != PROMPT_NONE;
 }
 
 static gboolean
@@ -396,50 +451,51 @@ my_hibernate (IndicatorSessionActions * self)
 ***/
 
 static void
-logout_now (IndicatorSessionActions * self, gboolean try_to_prompt)
+logout_now (IndicatorSessionActionsDbus * self)
 {
-  priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
-  const int type = try_to_prompt ? 0 : 1;
+  priv_t * p = self->priv;
 
   g_return_if_fail (p->session_manager != NULL);
 
   gnome_session_manager_call_logout (p->session_manager,
-                                     type,
+                                     1, /* don't prompt */
                                      p->cancellable,
                                      NULL,
                                      NULL);
 }
 
 static void
-logout_now_with_prompt (IndicatorSessionActions * self)
+on_reboot_response (GObject      * o,
+                    GAsyncResult * res,
+                    gpointer       unused G_GNUC_UNUSED)
 {
-  logout_now (self, TRUE);
+  GError * err = NULL;
+  login1_manager_call_reboot_finish (LOGIN1_MANAGER(o), res, &err);
+  if (err != NULL)
+    {
+      g_warning ("Unable to reboot: %s", err->message);
+      g_error_free (err);
+    }
 }
 
 static void
-logout_now_quietly (IndicatorSessionActions * self)
+reboot_now (IndicatorSessionActionsDbus * self)
 {
-  logout_now (self, FALSE);
-}
-
-static void
-reboot_now (IndicatorSessionActions * self)
-{
-  priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
+  priv_t * p = self->priv;
 
   g_return_if_fail (p->login1_manager != NULL);
 
   login1_manager_call_reboot (p->login1_manager,
                               FALSE,
                               p->login1_manager_cancellable,
-                              NULL,
+                              on_reboot_response,
                               NULL);
 }
 
 static void
-power_off_now (IndicatorSessionActions * self)
+power_off_now (IndicatorSessionActionsDbus * self)
 {
-  priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
+  priv_t * p = self->priv;
 
   g_return_if_fail (p->login1_manager != NULL);
 
@@ -477,7 +533,7 @@ on_open_end_session_dialog_ready (GObject      * o,
 }
 
 static void
-show_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
+show_unity_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
   gpointer o = p->end_session_dialog;
@@ -485,7 +541,7 @@ show_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
 
   g_assert (o != NULL);
 
-  g_signal_connect_swapped (o, "confirmed-logout", G_CALLBACK(logout_now_quietly), self);
+  g_signal_connect_swapped (o, "confirmed-logout", G_CALLBACK(logout_now), self);
   g_signal_connect_swapped (o, "confirmed-reboot", G_CALLBACK(reboot_now), self);
   g_signal_connect_swapped (o, "confirmed-shutdown", G_CALLBACK(power_off_now), self);
   g_signal_connect_swapped (o, "canceled", G_CALLBACK(on_end_session_dialog_canceled), self);
@@ -497,34 +553,140 @@ show_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
                                 self);
 }
 
-static void
-my_logout (IndicatorSessionActions * self)
+static gboolean
+zenity_question (IndicatorSessionActionsDbus * self,
+                 const char * icon_name,
+                 const char * title,
+                 const char * text,
+                 const char * ok_label,
+                 const char * cancel_label)
 {
-  if (my_can_prompt (self))
-    show_end_session_dialog (INDICATOR_SESSION_ACTIONS_DBUS(self), END_SESSION_TYPE_LOGOUT);
+  char * command_line;
+  int exit_status;
+  gboolean confirmed;
+
+  command_line = g_strdup_printf ("%s"
+                                  " --question"
+                                  " --icon-name=\"%s\""
+                                  " --title=\"%s\""
+                                  " --text=\"%s\""
+                                  " --ok-label=\"%s\""
+                                  " --cancel-label=\"%s\""
+                                  " --no-wrap",
+                                  self->priv->zenity,
+                                  icon_name,
+                                  title,
+                                  text,
+                                  ok_label,
+                                  cancel_label);
+
+  exit_status = -1;
+  if (!g_spawn_command_line_sync (command_line, NULL, NULL, &exit_status, NULL))
+    {
+      /* Treat failure-to-prompt as user confirmation.
+         Otherwise how will the user ever log out? */
+      confirmed = TRUE;
+    }
   else
-    logout_now_with_prompt (self);
+    {
+      confirmed = exit_status == 0;
+    }
+
+  g_free (command_line);
+  return confirmed;
 }
 
-
 static void
-my_reboot (IndicatorSessionActions * self)
+my_logout (IndicatorSessionActions * actions)
 {
-  if (my_can_prompt (self))
-    show_end_session_dialog (INDICATOR_SESSION_ACTIONS_DBUS(self), END_SESSION_TYPE_REBOOT);
-  else
-    reboot_now (self);
+  IndicatorSessionActionsDbus * self = INDICATOR_SESSION_ACTIONS_DBUS (actions);
+
+  switch (get_prompt_status (self))
+    {
+      case PROMPT_WITH_UNITY:
+        show_unity_end_session_dialog (self, END_SESSION_TYPE_LOGOUT);
+        break;
+
+      case PROMPT_NONE:
+        logout_now (self);
+        break;
+
+      case PROMPT_WITH_ZENITY:
+        {
+          const char * primary = _("Are you sure you want to close all programs and log out?");
+          const char * secondary = _("Some software updates won't be applied until the computer next restarts.");
+          char * text = g_strdup_printf ("<big><b>%s</b></big>\n \n%s", primary, secondary);
+
+          gboolean confirmed = zenity_question (self,
+                                                "system-log-out",
+                                                _("Log Out"),
+                                                text,
+                                                _("Log Out"),
+                                                _("Cancel"));
+
+          g_free (text);
+
+          if (confirmed)
+            logout_now (self);
+          break;
+        }
+    }
 }
 
 static void
-my_power_off (IndicatorSessionActions * self)
+my_reboot (IndicatorSessionActions * actions)
 {
-  /* NB: TYPE_REBOOT instead of TYPE_SHUTDOWN because
-     the latter adds lock & logout options in Unity... */
-  if (my_can_prompt (self))
-    show_end_session_dialog (INDICATOR_SESSION_ACTIONS_DBUS(self), END_SESSION_TYPE_REBOOT);
-  else
-    power_off_now (self);
+  IndicatorSessionActionsDbus * self = INDICATOR_SESSION_ACTIONS_DBUS (actions);
+
+  switch (get_prompt_status (self))
+    {
+      case PROMPT_WITH_UNITY:
+        show_unity_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
+        break;
+
+      case PROMPT_NONE:
+        reboot_now (self);
+        break;
+
+      case PROMPT_WITH_ZENITY:
+        if (zenity_question (self,
+              "system-restart",
+              _("Restart"),
+              _("Are you sure you want to close all programs and restart the computer?"),
+              _("Restart"),
+              _("Cancel")))
+          reboot_now (self);
+        break;
+    }
+}
+
+static void
+my_power_off (IndicatorSessionActions * actions)
+{
+  IndicatorSessionActionsDbus * self = INDICATOR_SESSION_ACTIONS_DBUS (actions);
+
+  switch (get_prompt_status (self))
+    {
+      case PROMPT_WITH_UNITY:
+        /* NB: TYPE_REBOOT instead of TYPE_SHUTDOWN because
+           the latter adds lock & logout options in Unity... */
+        show_unity_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
+        break;
+
+      case PROMPT_WITH_ZENITY:
+        if (zenity_question (self,
+              "system-shutdown",
+              _("Shut Down"),
+              _("Are you sure you want to close all programs and shut down the computer?"),
+              _("Shut Down"),
+              _("Cancel")))
+          power_off_now (self);
+        break;
+
+      case PROMPT_NONE:
+        power_off_now (self);
+        break;
+    }
 }
 
 /***
@@ -620,17 +782,48 @@ my_dispose (GObject * o)
       g_clear_object (&p->cancellable);
     }
 
-  g_clear_object (&p->lockdown_settings);
+  if (p->indicator_settings != NULL)
+    {
+      g_signal_handlers_disconnect_by_data (p->indicator_settings, self);
+      g_clear_object (&p->indicator_settings);
+    }
+
+  if (p->lockdown_settings != NULL)
+    {
+      g_signal_handlers_disconnect_by_data (p->lockdown_settings, self);
+      g_clear_object (&p->lockdown_settings);
+    }
+
+  if (p->webcredentials != NULL)
+    {
+      g_signal_handlers_disconnect_by_data (p->webcredentials, self);
+      g_clear_object (&p->webcredentials);
+    }
+
+  if (p->end_session_dialog != NULL)
+    {
+      stop_listening_to_dialog (self);
+      g_clear_object (&p->end_session_dialog);
+    }
+
   g_clear_object (&p->screen_saver);
   g_clear_object (&p->session_manager);
-  g_clear_object (&p->webcredentials);
-  g_clear_object (&p->end_session_dialog);
   set_dm_seat (self, NULL);
   set_login1_manager (self, NULL);
   set_login1_seat (self, NULL);
 
   G_OBJECT_CLASS (indicator_session_actions_dbus_parent_class)->dispose (o);
 }
+
+static void
+my_finalize (GObject * o)
+{
+  IndicatorSessionActionsDbus * self = INDICATOR_SESSION_ACTIONS_DBUS (o);
+  priv_t * p = self->priv;
+
+  g_free (p->zenity);
+}
+
 
 /***
 ****  GObject Boilerplate
@@ -645,10 +838,12 @@ indicator_session_actions_dbus_class_init (IndicatorSessionActionsDbusClass * kl
 
   object_class = G_OBJECT_CLASS (klass);
   object_class->dispose = my_dispose;
+  object_class->finalize = my_finalize;
 
   actions_class = INDICATOR_SESSION_ACTIONS_CLASS (klass);
   actions_class->can_lock = my_can_lock;
   actions_class->can_logout = my_can_logout;
+  actions_class->can_reboot = my_can_reboot;
   actions_class->can_switch = my_can_switch;
   actions_class->can_suspend = my_can_suspend;
   actions_class->can_hibernate = my_can_hibernate;
@@ -684,6 +879,8 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
   p->seat_allows_activation = TRUE;
   self->priv = p;
 
+  p->zenity = g_find_program_in_path ("zenity");
+
   s = g_settings_new ("org.gnome.desktop.lockdown");
   g_signal_connect_swapped (s, "changed::disable-lock-screen",
                             G_CALLBACK(indicator_session_actions_notify_can_lock), self);
@@ -692,6 +889,17 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
   g_signal_connect_swapped (s, "changed::disable-user-switching",
                             G_CALLBACK(indicator_session_actions_notify_can_switch), self);
   p->lockdown_settings = s;
+
+  s = g_settings_new ("com.canonical.indicator.session");
+  g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",
+                            G_CALLBACK(indicator_session_actions_notify_can_prompt), self);
+  g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",
+                            G_CALLBACK(indicator_session_actions_notify_can_reboot), self);
+  g_signal_connect_swapped (s, "changed::suppress-restart-menuitem",
+                            G_CALLBACK(indicator_session_actions_notify_can_reboot), self);
+  g_signal_connect_swapped (s, "changed::suppress-shutdown-menuitem",
+                            G_CALLBACK(indicator_session_actions_notify_can_reboot), self);
+  p->indicator_settings = s;
 
   gnome_screen_saver_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                         G_DBUS_PROXY_FLAGS_NONE,

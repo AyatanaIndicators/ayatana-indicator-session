@@ -26,7 +26,8 @@ Depends: ${shlibs:Depends},
          gnome-settings-daemon,
 Recommends: indicator-applet (>= 0.2) | indicator-renderer,
             gnome-screensaver
-Suggests: lightdm
+Suggests: lightdm,
+          zenity
 Description: indicator showing session management, status and user switching
  This indicator is designed to be placed on the right side of a panel and
  give the user easy control for changing their instant message status.  

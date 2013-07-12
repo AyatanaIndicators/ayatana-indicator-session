@@ -22,6 +22,8 @@
 #include "backend.h"
 #include "backend-dbus/backend-dbus.h"
 
+#define SUPPRESS_KEY "suppress-logout-restart-shutdown"
+
 /***
 ****
 ***/
@@ -36,12 +38,14 @@ class Actions: public GTestMockDBusFixture
 
     GCancellable * cancellable;
     IndicatorSessionActions * actions;
+    GSettings * indicator_settings;
 
     virtual void SetUp ()
     {
       super :: SetUp ();
 
       // init 'actions'
+      indicator_settings = g_settings_new ("com.canonical.indicator.session");
       cancellable = g_cancellable_new ();
       actions = 0;
       backend_get (cancellable, &actions, NULL, NULL);
@@ -52,6 +56,7 @@ class Actions: public GTestMockDBusFixture
     virtual void TearDown ()
     {
       g_cancellable_cancel (cancellable);
+      g_clear_object (&indicator_settings);
       g_clear_object (&cancellable);
       g_clear_object (&actions);
 
@@ -187,6 +192,7 @@ TEST_F (Actions, CanHibernate)
 TEST_F (Actions, Reboot)
 {
   ASSERT_TRUE (login1_manager->last_action().empty());
+  ASSERT_FALSE (g_settings_get_boolean (indicator_settings, SUPPRESS_KEY));
 
   // confirm that user is prompted
   // and that no action is taken when the user cancels the dialog
@@ -207,15 +213,18 @@ TEST_F (Actions, Reboot)
   ASSERT_EQ (login1_manager->last_action(), "reboot");
 
   // confirm that we try to reboot w/o prompting
-  // if the EndSessionDialog isn't available
-  delete end_session_dialog;
-  end_session_dialog = 0;
+  // if prompting is disabled
   login1_manager->clear_last_action ();
+  ASSERT_EQ ("", login1_manager->last_action());
+  g_settings_set_boolean (indicator_settings, SUPPRESS_KEY, TRUE);
+  wait_msec (50);
   ASSERT_TRUE (login1_manager->last_action().empty());
   wait_msec (50);
   indicator_session_actions_reboot (actions);
   wait_msec (50);
-  ASSERT_EQ (login1_manager->last_action(), "reboot");
+  ASSERT_EQ ("reboot", login1_manager->last_action());
+
+  g_settings_reset (indicator_settings, SUPPRESS_KEY);
 }
 
 TEST_F (Actions, PowerOff)
@@ -242,13 +251,16 @@ TEST_F (Actions, PowerOff)
 
   // confirm that we try to shutdown w/o prompting
   // if the EndSessionDialog isn't available
-  delete end_session_dialog;
-  end_session_dialog = 0;
+  // if prompting is disabled
   login1_manager->clear_last_action ();
+  ASSERT_EQ ("", login1_manager->last_action());
+  g_settings_set_boolean (indicator_settings, SUPPRESS_KEY, TRUE);
   wait_msec (50);
   indicator_session_actions_power_off (actions);
   wait_msec (50);
   ASSERT_EQ (login1_manager->last_action(), "power-off");
+
+  g_settings_reset (indicator_settings, SUPPRESS_KEY);
 }
 
 TEST_F (Actions, Logout)
@@ -273,14 +285,17 @@ TEST_F (Actions, Logout)
   wait_msec (100);
   ASSERT_EQ (MockSessionManager::LogoutQuiet, session_manager->last_action ());
 
-  // confirm that we try to call SessionManager::LogoutNormal
-  // if the EndSessionDialog isn't available
-  delete end_session_dialog;
-  end_session_dialog = 0;
+  // confirm that we try to call SessionManager::LogoutQuet
+  // when prompts are disabled
+  login1_manager->clear_last_action ();
+  ASSERT_EQ ("", login1_manager->last_action());
+  g_settings_set_boolean (indicator_settings, SUPPRESS_KEY, TRUE);
   wait_msec (50);
   indicator_session_actions_logout (actions);
   wait_msec (50);
-  ASSERT_EQ (MockSessionManager::LogoutNormal, session_manager->last_action ());
+  ASSERT_EQ (MockSessionManager::LogoutQuiet, session_manager->last_action ());
+
+  g_settings_reset (indicator_settings, SUPPRESS_KEY);
 }
 
 TEST_F (Actions, Suspend)
@@ -389,22 +404,31 @@ TEST_F (Actions, HasOnlineAccountError)
   ASSERT_EQ (b, gb);
 }
 
-TEST_F (Actions, CanPrompt)
+namespace
 {
-  gboolean b;
+  static gboolean toggle_suppress (gpointer settings)
+  {
+    const char * key = SUPPRESS_KEY;
+    gboolean b = g_settings_get_boolean (G_SETTINGS(settings), key);
+    g_settings_set_boolean (G_SETTINGS(settings), key, !b);
+    return G_SOURCE_REMOVE;
+  }
+}
 
-  ASSERT_TRUE (indicator_session_actions_can_prompt (actions));
+TEST_F (Actions, SuppressPrompts)
+{
+  for (int i=0; i<3; ++i)
+    {
+      bool b;
+      gboolean b2;
 
-  delete end_session_dialog;
-  end_session_dialog = 0;
-  wait_msec (50);
-  ASSERT_FALSE (indicator_session_actions_can_prompt (actions));
-  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_PROMPT, &b, NULL);
-  ASSERT_FALSE (b);
+      b = indicator_session_actions_can_prompt (actions);
+      b2 = !g_settings_get_boolean (indicator_settings, SUPPRESS_KEY);
+      ASSERT_EQ (b, b2);
+      
+      g_idle_add (toggle_suppress, indicator_settings);
+      wait_for_signal (actions, "notify::" INDICATOR_SESSION_ACTIONS_PROP_CAN_PROMPT);
+    }
 
-  end_session_dialog = new MockEndSessionDialog (loop, conn);
-  wait_msec (50);
-  ASSERT_TRUE (indicator_session_actions_can_prompt (actions));
-  g_object_get (actions, INDICATOR_SESSION_ACTIONS_PROP_CAN_PROMPT, &b, NULL);
-  ASSERT_TRUE (b);
+  g_settings_reset (indicator_settings, SUPPRESS_KEY);
 }

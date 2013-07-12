@@ -2,21 +2,13 @@ Source: indicator-session
 Section: gnome
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Build-Depends: debhelper (>= 9),
-               dh-autoreconf,
+Build-Depends: cmake,
+               dbus,
+               debhelper (>= 9),
                dh-translations,
                intltool,
-               gnome-common,
                libgtest-dev,
-               libxorg-gtest-dev,
-               libdbustest1-dev,
-               dbus-test-runner,
-               libgtk-3-dev,
-               libglib2.0-dev (>= 2.35.4),
-               gnome-doc-utils,
-               libindicator3-dev (>= 0.3.90),
-               libdbusmenu-glib-dev (>= 0.5.90),
-               libdbusmenu-gtk3-dev (>= 0.5.90),
+               libglib2.0-dev (>= 2.36)
 Standards-Version: 3.9.3
 Homepage: https://launchpad.net/indicator-session
 # If you aren't a member of ~indicator-applet-developers but need to upload
@@ -34,7 +26,8 @@ Depends: ${shlibs:Depends},
          gnome-settings-daemon,
 Recommends: indicator-applet (>= 0.2) | indicator-renderer,
             gnome-screensaver
-Suggests: lightdm
+Suggests: lightdm,
+          zenity
 Description: indicator showing session management, status and user switching
  This indicator is designed to be placed on the right side of a panel and
  give the user easy control for changing their instant message status.  

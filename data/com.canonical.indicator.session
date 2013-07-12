@@ -1,0 +1,11 @@
+[Indicator Service]
+Name=indicator-session
+ObjectPath=/com/canonical/indicator/session
+Position=10
+
+[desktop]
+ObjectPath=/com/canonical/indicator/session/desktop
+
+[desktop_greeter]
+ObjectPath=/com/canonical/indicator/session/desktop_greeter
+

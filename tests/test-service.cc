@@ -88,7 +88,7 @@ class ServiceTest: public GTestDBusFixture
 
     GSList * menu_references;
 
-    bool any_item_changed;
+    gboolean any_item_changed;
 
     static void on_items_changed (GMenuModel  * model      G_GNUC_UNUSED,
                                   gint          position   G_GNUC_UNUSED,
@@ -149,7 +149,7 @@ class ServiceTest: public GTestDBusFixture
       super :: SetUp ();
 
       menu_references = NULL;
-      any_item_changed = NULL;
+      any_item_changed = FALSE;
 
       timer = g_timer_new ();
       mock_settings = g_settings_new ("com.canonical.indicator.session.backendmock");
@@ -231,6 +231,7 @@ class ServiceTest: public GTestDBusFixture
       any_item_changed = false;
       while (!times_up() && !any_item_changed)
         wait_msec (50);
+      g_warn_if_fail (any_item_changed);
       sync_menu ();
     }
 

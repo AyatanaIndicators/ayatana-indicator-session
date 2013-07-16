@@ -1,3 +1,24 @@
+indicator-session (12.10.5+13.10.20130716-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * This is the GMenu, login1 version of indicator-session. This
+    resubmission removes the prerequisite branch because the entire diff
+    is contained in this ng-login1 branch.
+
+  [ Lars Uebernickel ]
+  * This is the GMenu, login1 version of indicator-session. This
+    resubmission removes the prerequisite branch because the entire diff
+    is contained in this ng-login1 branch.
+
+  [ Łukasz 'sil2100' Zemczak ]
+  * Add the python build-dep, as gdbus-codegen needs it to work
+    properly.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 400
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Jul 2013 02:02:05 +0000
+
 indicator-session (12.10.5+13.10.20130703.1-0ubuntu1) saucy; urgency=low
 
   [ Lars Uebernickel ]

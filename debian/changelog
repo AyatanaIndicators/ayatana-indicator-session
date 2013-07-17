@@ -1,3 +1,13 @@
+indicator-session (12.10.5+13.10.20130717-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * Fix a test failure on PPC architectures.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 402
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 17 Jul 2013 02:01:46 +0000
+
 indicator-session (12.10.5+13.10.20130716-0ubuntu1) saucy; urgency=low
 
   [ Charles Kerr ]

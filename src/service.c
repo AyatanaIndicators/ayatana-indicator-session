@@ -450,7 +450,7 @@ create_switch_section (IndicatorSessionService * self)
     }
   else if (g_hash_table_size (p->users) == 1)
     {
-      const char * action = "indicator.switch-to-greeter";
+      const char * action = "indicator.switch-to-screensaver";
       item = g_menu_item_new (_("Lock"), action);
     }
   else

@@ -707,6 +707,7 @@ on_greeter_activated (GSimpleAction * a      G_GNUC_UNUSED,
                       GVariant      * param  G_GNUC_UNUSED,
                       gpointer        gself)
 {
+  indicator_session_actions_switch_to_screensaver (get_backend_actions(gself));
   indicator_session_actions_switch_to_greeter (get_backend_actions(gself));
 }
 

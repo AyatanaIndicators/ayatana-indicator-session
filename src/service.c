@@ -201,7 +201,6 @@ action_state_for_header (IndicatorSessionService * self)
     g_variant_builder_add (&b, "{sv}", "label", g_variant_new_string (label));
   g_variant_builder_add (&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
   state = g_variant_builder_end (&b);
-g_message ("---\n%s\n---\n", g_variant_print(state, TRUE));
 
   /* cleanup */
   g_free (a11y);

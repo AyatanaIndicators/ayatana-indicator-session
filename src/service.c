@@ -143,29 +143,28 @@ rebuild_settings_section_soon (IndicatorSessionService * self)
 ****
 ***/
 
-static void
-update_header_action (IndicatorSessionService * self)
+static GVariant *
+action_state_for_header (IndicatorSessionService * self)
 {
-  gchar * a11y;
+  const priv_t * const p = self->priv;
   gboolean need_attn;
+  GIcon * icon;
   gboolean show_name;
-  GVariant * variant;
   const gchar * real_name;
   const gchar * label;
-  const gchar * iconstr;
-  const priv_t * const p = self->priv;
-
-  g_return_if_fail (p->header_action != NULL);
+  gchar * a11y;
+  GVariantBuilder b;
+  GVariant * state;
 
   if (indicator_session_actions_has_online_account_error (p->backend_actions))
     {
       need_attn = TRUE;
-      iconstr = ICON_ALERT;
+      icon = g_themed_icon_new (ICON_ALERT);
     }
   else
     {
       need_attn = FALSE;
-      iconstr = ICON_DEFAULT;
+      icon = g_themed_icon_new (ICON_DEFAULT);
     }
 
   show_name = g_settings_get_boolean (p->indicator_settings,
@@ -194,9 +193,27 @@ update_header_action (IndicatorSessionService * self)
       a11y = g_strdup (_("System"));
     }
 
-  variant = g_variant_new ("(sssb)", label, iconstr, a11y, TRUE);
-  g_simple_action_set_state (p->header_action, variant);
+  /* build the state */
+  g_variant_builder_init (&b, G_VARIANT_TYPE("a{sv}"));
+  g_variant_builder_add (&b, "{sv}", "accessible-desc", g_variant_new_string (a11y));
+  g_variant_builder_add (&b, "{sv}", "icon", g_icon_serialize (icon));
+  if (label && *label)
+    g_variant_builder_add (&b, "{sv}", "label", g_variant_new_string (label));
+  g_variant_builder_add (&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
+  state = g_variant_builder_end (&b);
+g_message ("---\n%s\n---\n", g_variant_print(state, TRUE));
+
+  /* cleanup */
   g_free (a11y);
+  g_object_unref (G_OBJECT (icon));
+
+  return state;
+}
+
+static void
+update_header_action (IndicatorSessionService * self)
+{
+  g_simple_action_set_state (self->priv->header_action, action_state_for_header (self));
 }
 
 /***
@@ -763,8 +780,7 @@ init_gactions (IndicatorSessionService * self)
   p->user_switcher_action = a;
 
   /* add the header action */
-  v = g_variant_new ("(sssb)", "label", ICON_DEFAULT, "a11y", TRUE);
-  a = g_simple_action_new_stateful ("_header", NULL, v);
+  a = g_simple_action_new_stateful ("_header", NULL, action_state_for_header (self));
   g_simple_action_group_insert (p->actions, G_ACTION(a));
   p->header_action = a;
 

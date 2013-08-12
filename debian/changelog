@@ -1,3 +1,14 @@
+indicator-session (12.10.5+13.10.20130812-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * Ensure that GCov CFLAGS & LIBS are set before cmake traverses into
+    the src/ directory.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 404
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 12 Aug 2013 18:39:36 +0000
+
 indicator-session (12.10.5+13.10.20130717-0ubuntu1) saucy; urgency=low
 
   [ Charles Kerr ]

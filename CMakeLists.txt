@@ -49,18 +49,20 @@ add_custom_target (cppcheck COMMAND cppcheck --enable=all -q --error-exitcode=2 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories (${CMAKE_CURRENT_BINARY_DIR}/src)
 
-
-add_subdirectory (src)
-add_subdirectory (data)
-add_subdirectory (po)
-
+# testing & coverage
 if (${enable_tests})
   set (GTEST_SOURCE_DIR /usr/src/gtest/src)
   set (GTEST_INCLUDE_DIR ${GTEST_SOURCE_DIR}/..)
   set (GTEST_LIBS -lpthread)
   enable_testing ()
   if (${enable_lcov})
-    include(cmake/GCov.cmake)
+    include(GCov)
   endif ()
-  add_subdirectory(tests)
+endif ()
+
+add_subdirectory (src)
+add_subdirectory (data)
+add_subdirectory (po)
+if (${enable_tests})
+  add_subdirectory (tests)
 endif ()

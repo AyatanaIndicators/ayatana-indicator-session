@@ -169,7 +169,7 @@ set_dm_seat (IndicatorSessionActionsDbus * self, DisplayManagerSeat * seat)
   if (p->dm_seat != NULL)
     {
       g_cancellable_cancel (p->dm_seat_cancellable);
-      g_clear_object (&p->dm_seat);
+      g_clear_object (&p->dm_seat_cancellable);
       g_clear_object (&p->dm_seat);
     }
 

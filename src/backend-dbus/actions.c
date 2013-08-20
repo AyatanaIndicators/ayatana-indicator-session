@@ -756,7 +756,6 @@ my_switch_to_greeter (IndicatorSessionActions * self)
 
   g_return_if_fail (p->dm_seat != NULL);
 
-  /* show the greeter */
   display_manager_seat_call_switch_to_greeter (p->dm_seat,
                                                p->dm_seat_cancellable,
                                                NULL, NULL);

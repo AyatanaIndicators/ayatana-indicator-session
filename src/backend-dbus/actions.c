@@ -734,7 +734,7 @@ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 ***/
 
 static void
-my_switch_to_screensaver (IndicatorSessionActions * self)
+lock_current_session (IndicatorSessionActions * self)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
@@ -744,12 +744,19 @@ my_switch_to_screensaver (IndicatorSessionActions * self)
 }
 
 static void
+my_switch_to_screensaver (IndicatorSessionActions * self)
+{
+  lock_current_session (self);
+}
+
+static void
 my_switch_to_greeter (IndicatorSessionActions * self)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
   g_return_if_fail (p->dm_seat != NULL);
 
+  /* show the greeter */
   display_manager_seat_call_switch_to_greeter (p->dm_seat,
                                                p->dm_seat_cancellable,
                                                NULL, NULL);
@@ -761,6 +768,8 @@ my_switch_to_guest (IndicatorSessionActions * self)
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
   g_return_if_fail (p->dm_seat != NULL);
+
+  lock_current_session (self);
 
   display_manager_seat_call_switch_to_guest (p->dm_seat, "",
                                              p->dm_seat_cancellable,

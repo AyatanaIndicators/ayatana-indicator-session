@@ -1,3 +1,22 @@
+indicator-session (12.10.5+13.10.20130821-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * Lock the current session before switching to the guest session. This
+    is done by modifying IndicatorSessionActionsDbus::switch_to_guest()
+    to call org.gnome.ScreenSaver's Lock function before switching to
+    the guest session. (LP: #1205273)
+
+  [ Ritesh Khadgaray ]
+  * Lock the current session before switching to the guest session. This
+    is done by modifying IndicatorSessionActionsDbus::switch_to_guest()
+    to call org.gnome.ScreenSaver's Lock function before switching to
+    the guest session. (LP: #1205273)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 406
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 21 Aug 2013 06:07:34 +0000
+
 indicator-session (12.10.5+13.10.20130812-0ubuntu1) saucy; urgency=low
 
   [ Charles Kerr ]

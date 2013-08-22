@@ -1,3 +1,13 @@
+indicator-session (12.10.5+13.10.20130822-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * remove deprecated GSimpleActionGroup API use.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 408
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 22 Aug 2013 20:30:19 +0000
+
 indicator-session (12.10.5+13.10.20130821-0ubuntu1) saucy; urgency=low
 
   [ Charles Kerr ]

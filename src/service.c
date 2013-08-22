@@ -752,20 +752,20 @@ init_gactions (IndicatorSessionService * self)
   v = create_guest_switcher_state (self);
   a = g_simple_action_new_stateful ("switch-to-guest", NULL, v);
   g_signal_connect (a, "activate", G_CALLBACK(on_guest_activated), self);
-  g_simple_action_group_insert (p->actions, G_ACTION(a));
+  g_action_map_add_action (G_ACTION_MAP (p->actions), G_ACTION(a));
   p->guest_switcher_action = a;
 
   /* add switch-to-user action... parameter is the uesrname */
   v = create_user_switcher_state (self);
   a = g_simple_action_new_stateful ("switch-to-user", G_VARIANT_TYPE_STRING, v);
   g_signal_connect (a, "activate", G_CALLBACK(on_user_activated), self);
-  g_simple_action_group_insert (p->actions, G_ACTION(a));
+  g_action_map_add_action (G_ACTION_MAP (p->actions), G_ACTION(a));
   p->user_switcher_action = a;
 
   /* add the header action */
   v = g_variant_new ("(sssb)", "label", ICON_DEFAULT, "a11y", TRUE);
   a = g_simple_action_new_stateful ("_header", NULL, v);
-  g_simple_action_group_insert (p->actions, G_ACTION(a));
+  g_action_map_add_action (G_ACTION_MAP (p->actions), G_ACTION(a));
   p->header_action = a;
 
   rebuild_now (self, SECTION_HEADER);

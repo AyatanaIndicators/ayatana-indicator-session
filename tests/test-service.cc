@@ -318,28 +318,44 @@ class ServiceTest: public GTestDBusFixture
 
     void check_header (const char * expected_label, const char * expected_icon, const char * expected_a11y)
     {
-       GVariant * variant;
-       const gchar * label = NULL;
-       const gchar * icon = NULL;
-       const gchar * a11y = NULL;
-       gboolean visible;
-
-      variant = g_action_group_get_action_state (G_ACTION_GROUP(action_group), "_header");
-      g_variant_get (variant, "(&s&s&sb)", &label, &icon, &a11y, &visible);
+      GVariant * state = g_action_group_get_action_state (G_ACTION_GROUP(action_group), "_header");
+      ASSERT_TRUE (state != NULL);
+      ASSERT_TRUE (g_variant_is_of_type (state, G_VARIANT_TYPE ("a{sv}")));
 
       if (expected_label != NULL)
-        ASSERT_STREQ (expected_label, label);
-
-      if (expected_icon != NULL)
-        ASSERT_STREQ (expected_icon, icon);
+        {
+          GVariant * v = g_variant_lookup_value (state, "label", G_VARIANT_TYPE_STRING);
+          if (!v) // if no label in the state, expected_label must be an empty string
+            ASSERT_FALSE (*expected_label);
+          else
+            ASSERT_STREQ (expected_label, g_variant_get_string (v, NULL));
+        }
 
       if (expected_a11y != NULL)
-        ASSERT_STREQ (expected_a11y, a11y);
+        {
+          GVariant * v = g_variant_lookup_value (state, "accessible-desc", G_VARIANT_TYPE_STRING);
+          ASSERT_TRUE (v != NULL);
+          ASSERT_STREQ (expected_a11y, g_variant_get_string (v, NULL));
+          g_variant_unref (v);
+        }
+
+      if (expected_icon != NULL)
+        {
+          GVariant * v = g_variant_lookup_value (state, "icon", NULL);
+          GIcon * expected = g_themed_icon_new (expected_icon);
+          GIcon * actual = g_icon_deserialize (v);
+          ASSERT_TRUE (g_icon_equal (expected, actual));
+          g_object_unref (actual);
+          g_object_unref (expected);
+          g_variant_unref (v);
+        }
 
       // the session menu is always visible...
+      gboolean visible = false;
+      g_variant_lookup (state, "visible", "b", &visible);
       ASSERT_TRUE (visible);
 
-      g_variant_unref (variant);
+      g_variant_unref (state);
     }
 
     void check_label (const char * expected_label, GMenuModel * model, int pos)

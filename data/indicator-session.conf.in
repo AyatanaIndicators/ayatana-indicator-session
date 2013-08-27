@@ -1,9 +1,6 @@
 description "Indicator Session Service"
 
-# NOTE: Limiting only to Unity 7 right now as it's only needed
-# on the desktop
-
-start on (indicators-loaded or indicator-services-start) and xsession SESSION=ubuntu
+start on indicators-loaded or indicator-services-start
 stop on desktop-end or indicator-services-end
 
 env G_MESSAGES_DEBUG=all

@@ -1,15 +1,14 @@
 description "Indicator Session Service"
-author "Ted Gould <ted@canonical.com>"
 
-# NOTE: Limiting only to Unity 7 right now as it's still using
-# dbusmenu.  That can be lifted after it is ported to GMenu
+# NOTE: Limiting only to Unity 7 right now as it's only needed
+# on the desktop
 
-start on indicators-loaded and xsession SESSION=ubuntu
-stop on desktop-end
+start on (indicators-loaded or indicator-services-start) and xsession SESSION=ubuntu
+stop on desktop-end or indicator-services-end
 
 env G_MESSAGES_DEBUG=all
 export G_MESSAGES_DEBUG
 
 respawn
 
-exec @libexecdir@/indicator-session-service
+exec @pkglibexecdir@/indicator-session-service

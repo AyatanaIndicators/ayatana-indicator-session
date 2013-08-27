@@ -1,3 +1,117 @@
+indicator-session (12.10.5+13.10.20130823-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * use an a{sv}, rather than the obsoleted (sssb), for the root
+    action's state.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 410
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 23 Aug 2013 22:07:25 +0000
+
+indicator-session (12.10.5+13.10.20130822-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * remove deprecated GSimpleActionGroup API use.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 408
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 22 Aug 2013 20:30:19 +0000
+
+indicator-session (12.10.5+13.10.20130821-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * Lock the current session before switching to the guest session. This
+    is done by modifying IndicatorSessionActionsDbus::switch_to_guest()
+    to call org.gnome.ScreenSaver's Lock function before switching to
+    the guest session. (LP: #1205273)
+
+  [ Ritesh Khadgaray ]
+  * Lock the current session before switching to the guest session. This
+    is done by modifying IndicatorSessionActionsDbus::switch_to_guest()
+    to call org.gnome.ScreenSaver's Lock function before switching to
+    the guest session. (LP: #1205273)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 406
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 21 Aug 2013 06:07:34 +0000
+
+indicator-session (12.10.5+13.10.20130812-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * Ensure that GCov CFLAGS & LIBS are set before cmake traverses into
+    the src/ directory.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 404
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 12 Aug 2013 18:39:36 +0000
+
+indicator-session (12.10.5+13.10.20130717-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * Fix a test failure on PPC architectures.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 402
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 17 Jul 2013 02:01:46 +0000
+
+indicator-session (12.10.5+13.10.20130716-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * This is the GMenu, login1 version of indicator-session. This
+    resubmission removes the prerequisite branch because the entire diff
+    is contained in this ng-login1 branch.
+
+  [ Lars Uebernickel ]
+  * This is the GMenu, login1 version of indicator-session. This
+    resubmission removes the prerequisite branch because the entire diff
+    is contained in this ng-login1 branch.
+
+  [ Łukasz 'sil2100' Zemczak ]
+  * Add the python build-dep, as gdbus-codegen needs it to work
+    properly.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 400
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Jul 2013 02:02:05 +0000
+
+indicator-session (12.10.5+13.10.20130703.1-0ubuntu1) saucy; urgency=low
+
+  [ Lars Uebernickel ]
+  * session-menu-mgr.c: don't leak user menu items. (LP: #1195595)
+  * I know the new session indicator is coming soon, but I think having
+    this for the next week or so is worthwhile anyway. Not having the
+    session indicator on the trailing edge of the panel is unnerving :).
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 397
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 03 Jul 2013 14:17:07 +0000
+
+indicator-session (12.10.5daily13.06.19-0ubuntu2) saucy; urgency=low
+
+  * Backport a fix for high resources usage issue, thanks Lars (lp: #1195595)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 01 Jul 2013 13:05:15 +0200
+
+indicator-session (12.10.5daily13.06.19-0ubuntu1) saucy; urgency=low
+
+  [ Mathieu Trudel-Lapierre ]
+  * Fix linking with pthreads for gtest.
+
+  [ Jeremy Bicha ]
+  * recommend gnome-screensaver for the Lock Screen feature.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 393
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 19 Jun 2013 02:01:25 +0000
+
 indicator-session (12.10.5daily13.05.06.1-0ubuntu1) saucy; urgency=low
 
   [ Iain Lane ]

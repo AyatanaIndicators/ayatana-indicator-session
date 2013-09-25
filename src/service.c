@@ -464,16 +464,15 @@ create_switch_section (IndicatorSessionService * self)
       item = g_menu_item_new (ellipsis ? _("Switch Account…")
                                        : _("Switch Account"), action);
     }
-  else if (g_hash_table_size (p->users) == 1)
-    {
-      const char * action = "indicator.switch-to-greeter";
-      item = g_menu_item_new (_("Lock"), action);
-    }
   else
     {
-      const char * action = "indicator.switch-to-greeter";
-      item = g_menu_item_new (ellipsis ? _("Lock/Switch Account…")
-                                       : _("Lock/Switch Account"), action);
+      const char * action = "indicator.switch-to-screensaver";
+
+      if (g_hash_table_size (p->users) == 1)
+        item = g_menu_item_new (_("Lock"), action);
+      else
+        item = g_menu_item_new (ellipsis ? _("Lock/Switch Account…")
+                                         : _("Lock/Switch Account"), action);
     }
   str = g_settings_get_string (p->keybinding_settings, "screensaver");
   g_menu_item_set_attribute (item, "accel", "s", str);

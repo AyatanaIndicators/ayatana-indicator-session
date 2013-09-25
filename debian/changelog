@@ -1,3 +1,11 @@
+indicator-session (12.10.5+13.10.20130823-0ubuntu2) UNRELEASED; urgency=low
+
+  * src/service.c: don't switch to greeter when locking screen, as that
+    switches away from the user's audio, power preferences, etc.
+    (LP: #1220201)
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Fri, 20 Sep 2013 14:28:32 -0400
+
 indicator-session (12.10.5+13.10.20130823-0ubuntu1) saucy; urgency=low
 
   [ Charles Kerr ]

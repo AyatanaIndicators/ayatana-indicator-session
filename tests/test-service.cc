@@ -504,7 +504,7 @@ TEST_F (ServiceTest, ConfirmationDisabledByBackend)
   bool confirm = confirm_supported && !confirm_disabled;
 
   // confirm that the ellipsis are correct
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-greeter"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-screensaver"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
   if (action_menuitem_exists ("indicator.reboot"))
     ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
@@ -538,7 +538,7 @@ TEST_F (ServiceTest, ConfirmationDisabledByUser)
   bool confirm = confirm_supported && !confirm_disabled;
 
   // confirm that the ellipsis are correct
-  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-greeter"));
+  ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-screensaver"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
   if (action_menuitem_exists ("indicator.reboot"))
     ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
@@ -570,7 +570,7 @@ TEST_F (ServiceTest, DefaultMenuItems)
   ASSERT_TRUE (find_menu_item_for_action ("indicator.about", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.help", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.settings", NULL, NULL));
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-greeter", NULL, NULL));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-guest", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.logout", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.suspend", NULL, NULL));
@@ -681,10 +681,10 @@ TEST_F (ServiceTest, User)
   };
 
   // Find the switcher menu model.
-  // In BackendMock's default setup, it will only two menuitems: greeter & guest
+  // In BackendMock's default setup, it will only have two menuitems: lockswitch & guest
   int pos = 0;
   GMenuModel * switch_menu = 0;
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-greeter", &switch_menu, &pos));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", &switch_menu, &pos));
   ASSERT_EQ (0, pos);
   ASSERT_EQ (2, g_menu_model_get_n_items (switch_menu));
   g_clear_object (&switch_menu);
@@ -709,7 +709,7 @@ TEST_F (ServiceTest, User)
   wait_for_menu_resync ();
 
   // now there should be 7 menuitems: greeter + guest + the five doctors
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-greeter", &switch_menu, &pos));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", &switch_menu, &pos));
   ASSERT_EQ (0, pos);
   ASSERT_EQ (7, g_menu_model_get_n_items (switch_menu));
   // confirm that the doctor names are sorted
@@ -727,7 +727,7 @@ TEST_F (ServiceTest, User)
   wait_for_menu_resync ();
 
   // now there should be 5 menuitems: greeter + guest + the three doctors
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-greeter", &switch_menu, &pos));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", &switch_menu, &pos));
   ASSERT_EQ (0, pos);
   ASSERT_EQ (5, g_menu_model_get_n_items (switch_menu));
   // confirm that the doctor names are sorted
@@ -744,7 +744,7 @@ TEST_F (ServiceTest, User)
   wait_for_menu_resync ();
 
   // now there should be 5 menuitems: greeter + guest + the three doctors
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-greeter", &switch_menu, &pos));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", &switch_menu, &pos));
   ASSERT_EQ (0, pos);
   ASSERT_EQ (5, g_menu_model_get_n_items (switch_menu));
   g_clear_object (&switch_menu);
@@ -770,7 +770,7 @@ TEST_F (ServiceTest, User)
   g_object_get (service, "max-users", &max_users, NULL);
   ASSERT_EQ (2, max_users);
   wait_for_menu_resync ();
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-greeter", &switch_menu, &pos));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", &switch_menu, &pos));
   ASSERT_EQ (0, pos);
   ASSERT_EQ (4, g_menu_model_get_n_items (switch_menu));
   check_label ("First Doctor", switch_menu, 2);
@@ -800,7 +800,7 @@ TEST_F (ServiceTest, User)
   users[10]->is_logged_in = true;
   indicator_session_users_changed (mock_users, users[10]->uid);
   wait_for_menu_resync ();
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-greeter", &switch_menu, &pos));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", &switch_menu, &pos));
   ASSERT_EQ (0, pos);
   ASSERT_EQ (9, g_menu_model_get_n_items (switch_menu));
   check_label ("Eleventh Doctor", switch_menu, 2);

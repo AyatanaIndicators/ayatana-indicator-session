@@ -1,3 +1,14 @@
+indicator-session (12.10.5+13.10.20131004-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * One-liner to set GETTEXT_PACKAGE explicitly because dh_translations
+    can't handle ${CMAKE_PROJECT_NAME}. (LP: #1233679)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 414
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 04 Oct 2013 02:30:50 +0000
+
 indicator-session (12.10.5+13.10.20130930-0ubuntu1) saucy; urgency=low
 
   [ Marc Deslauriers ]

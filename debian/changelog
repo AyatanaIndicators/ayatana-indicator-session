@@ -1,3 +1,10 @@
+indicator-session (12.10.5+13.10.20131004-0ubuntu2) UNRELEASED; urgency=low
+
+  * Define "ubiquity" indicator profile, reusing the greeter object. (LP:
+    #1241539)
+
+ -- Dmitrijs Ledkovs <xnox@ubuntu.com>  Fri, 18 Oct 2013 13:18:38 +0100
+
 indicator-session (12.10.5+13.10.20131004-0ubuntu1) saucy; urgency=low
 
   [ Charles Kerr ]

@@ -1,3 +1,33 @@
+indicator-session (12.10.5+13.10.20131004-0ubuntu2) UNRELEASED; urgency=low
+
+  * Define "ubiquity" indicator profile, reusing the greeter object. (LP:
+    #1241539)
+
+ -- Dmitrijs Ledkovs <xnox@ubuntu.com>  Fri, 18 Oct 2013 13:18:38 +0100
+
+indicator-session (12.10.5+13.10.20131004-0ubuntu1) saucy; urgency=low
+
+  [ Charles Kerr ]
+  * One-liner to set GETTEXT_PACKAGE explicitly because dh_translations
+    can't handle ${CMAKE_PROJECT_NAME}. (LP: #1233679)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 414
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 04 Oct 2013 02:30:50 +0000
+
+indicator-session (12.10.5+13.10.20130930-0ubuntu1) saucy; urgency=low
+
+  [ Marc Deslauriers ]
+  * src/service.c: don't switch to greeter when locking screen, as that
+    switches away from the user's audio, power preferences, etc.
+    (LP: #1220201)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 412
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 30 Sep 2013 06:33:40 +0000
+
 indicator-session (12.10.5+13.10.20130823-0ubuntu1) saucy; urgency=low
 
   [ Charles Kerr ]

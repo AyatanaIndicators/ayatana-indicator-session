@@ -9,3 +9,5 @@ ObjectPath=/com/canonical/indicator/session/desktop
 [desktop_greeter]
 ObjectPath=/com/canonical/indicator/session/desktop_greeter
 
+[ubiquity]
+ObjectPath=/com/canonical/indicator/session/desktop_greeter

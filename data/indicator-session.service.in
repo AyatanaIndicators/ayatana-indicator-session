@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=com.canonical.indicator.session
-Exec=@pkglibexecdir@/indicator-session-service

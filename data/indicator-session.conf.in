@@ -1,0 +1,8 @@
+description "Indicator Session Service"
+
+start on indicators-loaded or indicator-services-start
+stop on desktop-end or indicator-services-end
+
+respawn
+
+exec @pkglibexecdir@/indicator-session-service

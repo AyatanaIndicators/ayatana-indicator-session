@@ -441,6 +441,25 @@ compare_users_by_label (gconstpointer ga, gconstpointer gb)
   return g_strcmp0 (a->user_name, b->user_name);
 }
 
+static GVariant *
+serialize_icon_file (const gchar * filename)
+{
+  GVariant * serialized_icon = NULL;
+
+  if (filename != NULL)
+    {
+      GFile * file = g_file_new_for_path (filename);
+      GIcon * icon = g_file_icon_new (file);
+
+      serialized_icon = g_icon_serialize (icon);
+
+      g_object_unref (icon);
+      g_object_unref (file);
+    }
+
+  return serialized_icon;
+}
+
 static GMenuModel *
 create_switch_section (IndicatorSessionService * self)
 {
@@ -515,26 +534,16 @@ create_switch_section (IndicatorSessionService * self)
   for (i=0; i<users->len; ++i)
     {
       const IndicatorSessionUser * u = g_ptr_array_index (users, i);
+      GVariant * serialized_icon;
+
       item = g_menu_item_new (u->real_name, NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
       g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.user-menu-item");
 
-      if (u->icon_file != NULL)
+      if ((serialized_icon = serialize_icon_file (u->icon_file)))
         {
-          GFile * file;
-          GIcon * icon;
-          GVariant * serialized_icon;
-
-          file = g_file_new_for_path (u->icon_file);
-          icon = g_file_icon_new (file);
-          if ((serialized_icon = g_icon_serialize (icon)))
-            {
-              g_menu_item_set_attribute_value (item, G_MENU_ATTRIBUTE_ICON, serialized_icon);
-              g_variant_unref (serialized_icon);
-            }
-
-          g_clear_object (&icon);
-          g_clear_object (&file);
+          g_menu_item_set_attribute_value (item, G_MENU_ATTRIBUTE_ICON, serialized_icon);
+          g_variant_unref (serialized_icon);
         }
 
       g_menu_append_item (menu, item);

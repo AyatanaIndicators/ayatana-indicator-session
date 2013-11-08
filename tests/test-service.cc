@@ -342,7 +342,7 @@ class ServiceTest: public GTestDBusFixture
       if (expected_icon != NULL)
         {
           GVariant * v = g_variant_lookup_value (state, "icon", NULL);
-          GIcon * expected = g_themed_icon_new (expected_icon);
+          GIcon * expected = g_themed_icon_new_with_default_fallbacks (expected_icon);
           GIcon * actual = g_icon_deserialize (v);
           ASSERT_TRUE (g_icon_equal (expected, actual));
           g_object_unref (actual);

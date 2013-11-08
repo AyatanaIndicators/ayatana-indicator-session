@@ -105,6 +105,10 @@ struct _IndicatorSessionServicePrivate
   int rebuild_flags;
   GDBusConnection * conn;
   GCancellable * cancellable;
+
+  /* serialized icon cache */
+  GVariant * alert_icon_serialized;
+  GVariant * default_icon_serialized;
 };
 
 typedef IndicatorSessionServicePrivate priv_t;
@@ -148,7 +152,6 @@ action_state_for_header (IndicatorSessionService * self)
 {
   const priv_t * const p = self->priv;
   gboolean need_attn;
-  GIcon * icon;
   GVariant * serialized_icon;
   gboolean show_name;
   const gchar * real_name;
@@ -160,12 +163,12 @@ action_state_for_header (IndicatorSessionService * self)
   if (indicator_session_actions_has_online_account_error (p->backend_actions))
     {
       need_attn = TRUE;
-      icon = g_themed_icon_new (ICON_ALERT);
+      serialized_icon = p->alert_icon_serialized;
     }
   else
     {
       need_attn = FALSE;
-      icon = g_themed_icon_new (ICON_DEFAULT);
+      serialized_icon = p->default_icon_serialized;
     }
 
   show_name = g_settings_get_boolean (p->indicator_settings,
@@ -197,13 +200,8 @@ action_state_for_header (IndicatorSessionService * self)
   /* build the state */
   g_variant_builder_init (&b, G_VARIANT_TYPE("a{sv}"));
   g_variant_builder_add (&b, "{sv}", "accessible-desc", g_variant_new_string (a11y));
-
-  if ((serialized_icon = g_icon_serialize (icon)))
-    {
-      g_variant_builder_add (&b, "{sv}", "icon", serialized_icon);
-      g_variant_unref (serialized_icon);
-    }
-
+  if (serialized_icon != NULL)
+    g_variant_builder_add (&b, "{sv}", "icon", serialized_icon);
   if (label && *label)
     g_variant_builder_add (&b, "{sv}", "label", g_variant_new_string (label));
   g_variant_builder_add (&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
@@ -211,7 +209,6 @@ action_state_for_header (IndicatorSessionService * self)
 
   /* cleanup */
   g_free (a11y);
-  g_object_unref (G_OBJECT (icon));
 
   return state;
 }
@@ -996,6 +993,7 @@ indicator_session_service_init (IndicatorSessionService * self)
   GList * uids;
   priv_t * p;
   gpointer gp;
+  GIcon * icon;
 
   /* init our priv pointer */
   p = G_TYPE_INSTANCE_GET_PRIVATE (self,
@@ -1010,6 +1008,16 @@ indicator_session_service_init (IndicatorSessionService * self)
   backend_get (p->cancellable, &p->backend_actions,
                                &p->backend_users,
                                &p->backend_guest);
+
+  /* build the serialized icon cache */
+
+  icon = g_themed_icon_new_with_default_fallbacks (ICON_ALERT);
+  p->alert_icon_serialized = g_icon_serialize (icon);
+  g_object_unref (icon);
+
+  icon = g_themed_icon_new_with_default_fallbacks (ICON_DEFAULT);
+  p->default_icon_serialized = g_icon_serialize (icon);
+  g_object_unref (icon);
 
   /* init our key-to-User table */
   p->users = g_hash_table_new_full (g_direct_hash,
@@ -1167,6 +1175,10 @@ my_dispose (GObject * o)
   g_clear_object (&p->user_switcher_action);
   g_clear_object (&p->guest_switcher_action);
   g_clear_object (&p->conn);
+
+  /* clear the serialized icon cache */
+  g_clear_pointer (&p->alert_icon_serialized, g_variant_unref);
+  g_clear_pointer (&p->default_icon_serialized, g_variant_unref);
 
   G_OBJECT_CLASS (indicator_session_service_parent_class)->dispose (o);
 }

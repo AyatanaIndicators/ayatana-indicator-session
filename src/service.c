@@ -149,6 +149,7 @@ action_state_for_header (IndicatorSessionService * self)
   const priv_t * const p = self->priv;
   gboolean need_attn;
   GIcon * icon;
+  GVariant * serialized_icon;
   gboolean show_name;
   const gchar * real_name;
   const gchar * label;
@@ -196,7 +197,13 @@ action_state_for_header (IndicatorSessionService * self)
   /* build the state */
   g_variant_builder_init (&b, G_VARIANT_TYPE("a{sv}"));
   g_variant_builder_add (&b, "{sv}", "accessible-desc", g_variant_new_string (a11y));
-  g_variant_builder_add (&b, "{sv}", "icon", g_icon_serialize (icon));
+
+  if ((serialized_icon = g_icon_serialize (icon)))
+    {
+      g_variant_builder_add (&b, "{sv}", "icon", serialized_icon);
+      g_variant_unref (serialized_icon);
+    }
+
   if (label && *label)
     g_variant_builder_add (&b, "{sv}", "label", g_variant_new_string (label));
   g_variant_builder_add (&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
@@ -517,9 +524,18 @@ create_switch_section (IndicatorSessionService * self)
 
       if (u->icon_file != NULL)
         {
-          GFile * file = g_file_new_for_path (u->icon_file);
-          GIcon * icon = g_file_icon_new (file);
-          g_menu_item_set_attribute_value (item, G_MENU_ATTRIBUTE_ICON, g_icon_serialize (icon));
+          GFile * file;
+          GIcon * icon;
+          GVariant * serialized_icon;
+
+          file = g_file_new_for_path (u->icon_file);
+          icon = g_file_icon_new (file);
+          if ((serialized_icon = g_icon_serialize (icon)))
+            {
+              g_menu_item_set_attribute_value (item, G_MENU_ATTRIBUTE_ICON, serialized_icon);
+              g_variant_unref (serialized_icon);
+            }
+
           g_clear_object (&icon);
           g_clear_object (&file);
         }

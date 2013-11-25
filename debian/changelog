@@ -1,3 +1,20 @@
+indicator-session (12.10.5+14.04.20131125-0ubuntu1) trusty; urgency=low
+
+  [ Charles Kerr ]
+  * fix a minor memory leak that was caused by treating the variant
+    returned by g_icon_serialize() as floating.
+
+  [ Ted Gould ]
+  * Upstart job for indicator-session. (LP: #1185565)
+
+  [ Lars Uebernickel ]
+  * Work around glib's type initialization deadlock.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 420
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 25 Nov 2013 03:57:00 +0000
+
 indicator-session (12.10.5+14.04.20131029.1-0ubuntu1) trusty; urgency=low
 
   [ Dmitrijs Ledkovs ]

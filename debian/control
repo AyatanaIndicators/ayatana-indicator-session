@@ -26,7 +26,10 @@ Depends: ${shlibs:Depends},
          systemd-services,
          gnome-settings-daemon,
 Recommends: indicator-applet (>= 0.2) | indicator-renderer,
-            gnome-screensaver
+            gnome-screensaver,
+            yelp,
+            gnome-control-center,
+            gnome-control-center-signon
 Suggests: lightdm,
           zenity
 Description: indicator showing session management, status and user switching

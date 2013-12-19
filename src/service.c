@@ -274,6 +274,19 @@ on_user_removed (IndicatorSessionUsers * backend_users G_GNUC_UNUSED,
 }
 
 static const char *
+get_user_label (const IndicatorSessionUser * user)
+{
+  const char * c;
+
+  /* If blank or whitespace, use username instead */
+  for (c = user->real_name; *c != '\0' && g_ascii_isspace (*c); c++);
+  if (*c == '\0')
+    return user->user_name;
+
+  return user->real_name;
+}
+
+static const char *
 get_current_real_name (IndicatorSessionService * self)
 {
   GHashTableIter iter;
@@ -289,7 +302,7 @@ get_current_real_name (IndicatorSessionService * self)
     {
       IndicatorSessionUser * user = value;
       if (user->is_current_user)
-        return user->real_name;
+        return get_user_label (user);
     }
 
   return "";
@@ -435,7 +448,7 @@ compare_users_by_label (gconstpointer ga, gconstpointer gb)
   const IndicatorSessionUser * a = *(const IndicatorSessionUser**)ga;
   const IndicatorSessionUser * b = *(const IndicatorSessionUser**)gb;
 
-  if ((i = g_strcmp0 (a->real_name, b->real_name)))
+  if ((i = g_strcmp0 (get_user_label (a), get_user_label (b))))
     return i;
 
   return g_strcmp0 (a->user_name, b->user_name);
@@ -536,7 +549,7 @@ create_switch_section (IndicatorSessionService * self)
       const IndicatorSessionUser * u = g_ptr_array_index (users, i);
       GVariant * serialized_icon;
 
-      item = g_menu_item_new (u->real_name, NULL);
+      item = g_menu_item_new (get_user_label (u), NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
       g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.user-menu-item");
 

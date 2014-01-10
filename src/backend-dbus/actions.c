@@ -711,22 +711,44 @@ my_help (IndicatorSessionActions * self G_GNUC_UNUSED)
   run_outside_app ("yelp");
 }
 
+static gboolean
+have_unity_control_center (void)
+{
+  gchar *path;
+  gboolean have_ucc;
+
+  path = g_find_program_in_path ("unity-control-center");
+  have_ucc = path != NULL;
+  g_free (path);
+
+  return have_ucc;
+}
+
 static void
 my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  run_outside_app ("gnome-control-center");
+  if (have_unity_control_center ())
+    run_outside_app ("unity-control-center");
+  else
+    run_outside_app ("gnome-control-center");
 }
 
 static void
 my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  run_outside_app ("gnome-control-center credentials");
+  if (have_unity_control_center ())
+    run_outside_app ("unity-control-center credentials");
+  else
+    run_outside_app ("gnome-control-center credentials");
 }
 
 static void
 my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  run_outside_app ("gnome-control-center info");
+  if (have_unity_control_center ())
+    run_outside_app ("unity-control-center info");
+  else
+    run_outside_app ("gnome-control-center info");
 }
 
 /***

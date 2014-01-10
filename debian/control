@@ -28,8 +28,8 @@ Depends: ${shlibs:Depends},
 Recommends: indicator-applet (>= 0.2) | indicator-renderer,
             gnome-screensaver,
             yelp,
-            gnome-control-center,
-            gnome-control-center-signon
+            gnome-control-center | unity-control-center,
+            gnome-control-center-signon | unity-control-center-signon
 Suggests: lightdm,
           zenity
 Description: indicator showing session management, status and user switching

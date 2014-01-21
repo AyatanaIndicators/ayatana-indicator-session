@@ -717,6 +717,9 @@ have_unity_control_center (void)
   gchar *path;
   gboolean have_ucc;
 
+  if (g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") != 0)
+    return FALSE;
+
   path = g_find_program_in_path ("unity-control-center");
   have_ucc = path != NULL;
   g_free (path);

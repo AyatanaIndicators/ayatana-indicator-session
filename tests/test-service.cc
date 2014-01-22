@@ -819,3 +819,33 @@ TEST_F (ServiceTest, User)
   wait_for_signal (mock_settings, "changed::last-command");
   check_last_command_is ("switch-to-user::tbaker");
 }
+
+TEST_F (ServiceTest, UserLabels)
+{
+  int pos = 0;
+  GMenuModel * switch_menu = 0;
+
+  // Check label uses username when real name is blank
+  IndicatorSessionUser * u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 100;
+  u->user_name = g_strdup ("blank");
+  u->real_name = g_strdup ("");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  wait_for_menu_resync ();
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", &switch_menu, &pos));
+  check_label ("blank", switch_menu, 2);
+  g_clear_object (&switch_menu);
+  indicator_session_users_mock_remove_user (INDICATOR_SESSION_USERS_MOCK(mock_users), 100);
+
+  // Check label uses username when real name is all whitespace
+  u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 100;
+  u->user_name = g_strdup ("whitespace");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  wait_for_menu_resync ();
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", &switch_menu, &pos));
+  check_label ("whitespace", switch_menu, 2);
+  g_clear_object (&switch_menu);
+  indicator_session_users_mock_remove_user (INDICATOR_SESSION_USERS_MOCK(mock_users), 100);
+}

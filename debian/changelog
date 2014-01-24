@@ -1,3 +1,22 @@
+indicator-session (12.10.5+14.04.20140124-0ubuntu1) trusty; urgency=low
+
+  [ Robert Ancell ]
+  * Recommend yelp, gnome-control-center and gnome-control-center-signon
+    since we try and launch these applications.
+  * Use username as label if the real name is empty or whitespace. (LP:
+    #872908)
+  * Use unity-control-center if it is available. (LP: #1257505)
+
+  [ Sebastien Bacher ]
+  * clean out the extra-sessions directory, it's a leftover.
+  * drop unused cmake file, it refears to geary and doesn't seem useful
+    there.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 426
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 24 Jan 2014 11:02:01 +0000
+
 indicator-session (12.10.5+14.04.20131125-0ubuntu1) trusty; urgency=low
 
   [ Charles Kerr ]

@@ -58,7 +58,8 @@ enum
   SECTION_ADMIN     = (1<<1),
   SECTION_SETTINGS  = (1<<2),
   SECTION_SWITCH    = (1<<3),
-  SECTION_SESSION   = (1<<4)
+  SECTION_LOGOUT    = (1<<4),
+  SECTION_SESSION   = (1<<5)
 };
 
 enum
@@ -131,6 +132,11 @@ static inline void
 rebuild_switch_section_soon (IndicatorSessionService * self)
 {
   rebuild_soon (self, SECTION_SWITCH);
+}
+static inline void
+rebuild_logout_section_soon (IndicatorSessionService * self)
+{
+  rebuild_soon (self, SECTION_LOGOUT);
 }
 static inline void
 rebuild_session_section_soon (IndicatorSessionService * self)
@@ -569,7 +575,25 @@ create_switch_section (IndicatorSessionService * self)
 }
 
 static GMenuModel *
-create_session_section (IndicatorSessionService * self, int profile)
+create_logout_section (IndicatorSessionService * self)
+{
+  GMenu * menu;
+  const priv_t * const p = self->priv;
+  const gboolean ellipsis = use_ellipsis (self);
+
+  menu = g_menu_new ();
+
+  if (indicator_session_actions_can_logout (p->backend_actions))
+    {
+      const char * label = ellipsis ? _("Log Out…") : _("Log Out");
+      g_menu_append (menu, label, "indicator.logout");
+    }
+
+  return G_MENU_MODEL (menu);
+}
+
+static GMenuModel *
+create_session_section (IndicatorSessionService * self)
 {
   GMenu * menu;
   const priv_t * const p = self->priv;
@@ -577,13 +601,6 @@ create_session_section (IndicatorSessionService * self, int profile)
   const gboolean ellipsis = use_ellipsis (self);
 
   menu = g_menu_new ();
-
-  if ((profile == PROFILE_DESKTOP) &&
-      (indicator_session_actions_can_logout (p->backend_actions)))
-    {
-      const char * label = ellipsis ? _("Log Out…") : _("Log Out");
-      g_menu_append (menu, label, "indicator.logout");
-    }
 
   if (indicator_session_actions_can_suspend (p->backend_actions))
     g_menu_append (menu, _("Suspend"), "indicator.suspend");
@@ -624,11 +641,12 @@ create_menu (IndicatorSessionService * self, int profile)
       sections[n++] = create_admin_section ();
       sections[n++] = create_settings_section (self);
       sections[n++] = create_switch_section (self);
-      sections[n++] = create_session_section (self, profile);
+      sections[n++] = create_logout_section (self);
+      sections[n++] = create_session_section (self);
     }
   else if (profile == PROFILE_GREETER)
     {
-      sections[n++] = create_session_section (self, profile);
+      sections[n++] = create_session_section (self);
     }
 
   /* add sections to the submenu */
@@ -866,10 +884,15 @@ rebuild_now (IndicatorSessionService * self, int sections)
       update_switch_actions (self);
     }
 
+  if (sections & SECTION_LOGOUT)
+    {
+      rebuild_section (desktop->submenu, 3, create_logout_section(self));
+    }
+
   if (sections & SECTION_SESSION)
     {
-      rebuild_section (desktop->submenu, 3, create_session_section(self, PROFILE_DESKTOP));
-      rebuild_section (greeter->submenu, 0, create_session_section(self, PROFILE_GREETER));
+      rebuild_section (desktop->submenu, 4, create_session_section(self));
+      rebuild_section (greeter->submenu, 0, create_session_section(self));
     }
 }
 
@@ -1076,6 +1099,8 @@ indicator_session_service_init (IndicatorSessionService * self)
   g_signal_connect_swapped (gp, "notify",
                             G_CALLBACK(rebuild_switch_section_soon), self);
   g_signal_connect_swapped (gp, "notify",
+                            G_CALLBACK(rebuild_logout_section_soon), self);
+  g_signal_connect_swapped (gp, "notify",
                             G_CALLBACK(rebuild_session_section_soon), self);
   g_signal_connect_swapped (gp, "notify::has-online-account-error",
                             G_CALLBACK(rebuild_header_soon), self);
@@ -1086,6 +1111,8 @@ indicator_session_service_init (IndicatorSessionService * self)
   gp = p->indicator_settings;
   g_signal_connect_swapped (gp, "changed::suppress-logout-restart-shutdown",
                             G_CALLBACK(rebuild_switch_section_soon), self);
+  g_signal_connect_swapped (gp, "changed::suppress-logout-restart-shutdown",
+                            G_CALLBACK(rebuild_logout_section_soon), self);
   g_signal_connect_swapped (gp, "changed::suppress-logout-restart-shutdown",
                             G_CALLBACK(rebuild_session_section_soon), self);
   g_signal_connect_swapped (gp, "changed::suppress-shutdown-menuitem",

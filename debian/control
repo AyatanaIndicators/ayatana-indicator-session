@@ -24,7 +24,7 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          systemd-services,
-         gnome-settings-daemon,
+         gnome-settings-daemon-schemas,
 Recommends: indicator-applet (>= 0.2) | indicator-renderer,
             gnome-screensaver,
             yelp,

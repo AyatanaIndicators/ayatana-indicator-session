@@ -1,3 +1,17 @@
+indicator-session (12.10.5+14.04.20140207-0ubuntu1) trusty; urgency=low
+
+  [ Robert Ancell ]
+  * Move logout into its own section to match design update in
+    https://wiki.ubuntu.com/SystemMenu.
+
+  [ Ted Gould ]
+  * Adding acceptance tests and merge review policies.
+
+  [ CI bot ]
+  * Adding acceptance tests and merge review policies
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 07 Feb 2014 16:37:27 +0000
+
 indicator-session (12.10.5+14.04.20140124-0ubuntu1) trusty; urgency=low
 
   [ Robert Ancell ]

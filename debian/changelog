@@ -1,3 +1,11 @@
+indicator-session (12.10.5+14.04.20140214-0ubuntu1) trusty; urgency=low
+
+  [ Robert Ancell ]
+  * Only depend on gnome-settings-daemon-schemas so can work with unity-
+    settings-daemon only (LP: #1277487)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 14 Feb 2014 15:53:35 +0000
+
 indicator-session (12.10.5+14.04.20140207-0ubuntu1) trusty; urgency=low
 
   [ Robert Ancell ]

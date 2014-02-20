@@ -2,7 +2,7 @@
 Type=Application
 Name=Indicator Session
 Exec=@pkglibexecdir@/indicator-session-service
-NotShowIn=Unity;
+OnlyShowIn=Unity;
 NoDisplay=true
 StartupNotify=false
 Terminal=false

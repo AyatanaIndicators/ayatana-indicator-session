@@ -66,13 +66,15 @@ enum
 {
   PROFILE_DESKTOP,
   PROFILE_GREETER,
+  PROFILE_LOCKSCREEN,
   N_PROFILES
 };
 
 static const char * const menu_names[N_PROFILES] =
 {
   "desktop",
-  "desktop_greeter"
+  "desktop_greeter",
+  "desktop_lockscreen"
 };
 
 struct ProfileMenuInfo
@@ -229,7 +231,7 @@ update_header_action (IndicatorSessionService * self)
 ****  USERS
 ***/
 
-static GMenuModel * create_switch_section (IndicatorSessionService * self);
+static GMenuModel * create_switch_section (IndicatorSessionService * self, int profile);
 
 static void
 add_user (IndicatorSessionService * self, guint uid)
@@ -480,7 +482,7 @@ serialize_icon_file (const gchar * filename)
 }
 
 static GMenuModel *
-create_switch_section (IndicatorSessionService * self)
+create_switch_section (IndicatorSessionService * self, int profile)
 {
   gchar * str;
   GMenu * menu;
@@ -500,7 +502,8 @@ create_switch_section (IndicatorSessionService * self)
       const char * action = "indicator.switch-to-screensaver";
       item = g_menu_item_new (_("Start Screen Saver"), action);
     }
-  else if (indicator_session_guest_is_active (p->backend_guest))
+  else if (profile == PROFILE_LOCKSCREEN ||
+           indicator_session_guest_is_active (p->backend_guest))
     {
       const char * action = "indicator.switch-to-greeter";
       item = g_menu_item_new (ellipsis ? _("Switch Account…")
@@ -516,12 +519,17 @@ create_switch_section (IndicatorSessionService * self)
         item = g_menu_item_new (ellipsis ? _("Lock/Switch Account…")
                                          : _("Lock/Switch Account"), action);
     }
-  str = g_settings_get_string (p->keybinding_settings, "screensaver");
-  g_menu_item_set_attribute (item, "accel", "s", str);
-  g_free (str);
+
+  if (profile != PROFILE_LOCKSCREEN)
+    {
+      str = g_settings_get_string (p->keybinding_settings, "screensaver");
+      g_menu_item_set_attribute (item, "accel", "s", str);
+      g_free (str);
+    }
+
   g_menu_append_item (menu, item);
   g_object_unref (item);
- 
+
   if (indicator_session_guest_is_allowed (p->backend_guest))
     {
       GMenuItem *item;
@@ -554,6 +562,9 @@ create_switch_section (IndicatorSessionService * self)
     {
       const IndicatorSessionUser * u = g_ptr_array_index (users, i);
       GVariant * serialized_icon;
+
+      if (profile == PROFILE_LOCKSCREEN && u->is_current_user)
+        continue;
 
       item = g_menu_item_new (get_user_label (u), NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
@@ -640,12 +651,17 @@ create_menu (IndicatorSessionService * self, int profile)
     {
       sections[n++] = create_admin_section ();
       sections[n++] = create_settings_section (self);
-      sections[n++] = create_switch_section (self);
+      sections[n++] = create_switch_section (self, profile);
       sections[n++] = create_logout_section (self);
       sections[n++] = create_session_section (self);
     }
   else if (profile == PROFILE_GREETER)
     {
+      sections[n++] = create_session_section (self);
+    }
+  else if (profile == PROFILE_LOCKSCREEN)
+    {
+      sections[n++] = create_switch_section (self, profile);
       sections[n++] = create_session_section (self);
     }
 
@@ -862,6 +878,7 @@ rebuild_now (IndicatorSessionService * self, int sections)
   priv_t * p = self->priv;
   struct ProfileMenuInfo * desktop = &p->menus[PROFILE_DESKTOP];
   struct ProfileMenuInfo * greeter = &p->menus[PROFILE_GREETER];
+  struct ProfileMenuInfo * lockscreen = &p->menus[PROFILE_LOCKSCREEN];
 
   if (sections & SECTION_HEADER)
     {
@@ -880,7 +897,8 @@ rebuild_now (IndicatorSessionService * self, int sections)
 
   if (sections & SECTION_SWITCH)
     {
-      rebuild_section (desktop->submenu, 2, create_switch_section(self));
+      rebuild_section (desktop->submenu, 2, create_switch_section(self, PROFILE_DESKTOP));
+      rebuild_section (lockscreen->submenu, 0, create_switch_section(self, PROFILE_LOCKSCREEN));
       update_switch_actions (self);
     }
 
@@ -893,6 +911,7 @@ rebuild_now (IndicatorSessionService * self, int sections)
     {
       rebuild_section (desktop->submenu, 4, create_session_section(self));
       rebuild_section (greeter->submenu, 0, create_session_section(self));
+      rebuild_section (lockscreen->submenu, 1, create_session_section(self));
     }
 }
 

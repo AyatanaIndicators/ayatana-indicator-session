@@ -155,6 +155,14 @@ rebuild_settings_section_soon (IndicatorSessionService * self)
 ****
 ***/
 
+static gboolean
+show_user_list (IndicatorSessionService * self)
+{
+  return g_settings_get_boolean (self->priv->indicator_settings,
+                                 "user-show-menu");
+}
+
+
 static GVariant *
 action_state_for_header (IndicatorSessionService * self)
 {
@@ -264,6 +272,32 @@ on_user_changed (IndicatorSessionUsers * backend_users G_GNUC_UNUSED,
                  gpointer                gself)
 {
   add_user (INDICATOR_SESSION_SERVICE(gself), uid);
+}
+
+static void
+maybe_add_users (IndicatorSessionService * self)
+{
+  if (!show_user_list (self))
+      return;
+
+  GList * uids, * l;
+
+  uids = indicator_session_users_get_uids (self->priv->backend_users);
+  for (l=uids; l!=NULL; l=l->next)
+    add_user (self, GPOINTER_TO_UINT(l->data));
+  g_list_free (uids);
+}
+
+
+static void
+user_show_menu_changed (IndicatorSessionService * self)
+{
+  if (show_user_list (self))
+      maybe_add_users (self);
+  else
+      g_hash_table_remove_all (self->priv->users);
+
+  rebuild_switch_section_soon (self);
 }
 
 static void
@@ -541,7 +575,11 @@ create_switch_section (IndicatorSessionService * self, int profile)
       g_object_unref (item);
     }
 
-  /* build an array of all the users we know of */
+  /* if we need to show the user list, build an array of all the users we know
+   * of, otherwise get out now */
+  if (!show_user_list (self))
+      return G_MENU_MODEL (menu);
+
   users = g_ptr_array_new ();
   g_hash_table_iter_init (&iter, p->users);
   while (g_hash_table_iter_next (&iter, NULL, &guser))
@@ -1053,8 +1091,6 @@ static void
 /* cppcheck-suppress unusedFunction */
 indicator_session_service_init (IndicatorSessionService * self)
 {
-  GList * l;
-  GList * uids;
   priv_t * p;
   gpointer gp;
   GIcon * icon;
@@ -1088,10 +1124,7 @@ indicator_session_service_init (IndicatorSessionService * self)
                                     g_direct_equal,
                                     NULL,
                                     (GDestroyNotify)indicator_session_user_free);
-  uids = indicator_session_users_get_uids (p->backend_users);
-  for (l=uids; l!=NULL; l=l->next)
-    add_user (self, GPOINTER_TO_UINT(l->data));
-  g_list_free (uids);
+  maybe_add_users (self);
 
   init_gactions (self);
 
@@ -1138,6 +1171,8 @@ indicator_session_service_init (IndicatorSessionService * self)
                             G_CALLBACK(rebuild_session_section_soon), self);
   g_signal_connect_swapped (gp, "changed::show-real-name-on-panel",
                             G_CALLBACK(rebuild_header_soon), self);
+  g_signal_connect_swapped (gp, "changed::user-show-menu",
+                            G_CALLBACK(user_show_menu_changed), self);
 
   /* watch for changes to the lock keybinding */
   gp = p->keybinding_settings;

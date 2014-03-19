@@ -815,7 +815,7 @@ TEST_F (ServiceTest, User)
   /* Hide the user list */
   g_settings_set_boolean (indicator_settings, "user-show-menu", FALSE);
   wait_for_menu_resync ();
-  // now there should be 7 menuitems: greeter + guest + the five doctors
+  // now there should be 2 menuitems: greeter + guest
   ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", &switch_menu, &pos));
   ASSERT_EQ (0, pos);
   ASSERT_EQ (2, g_menu_model_get_n_items (switch_menu));

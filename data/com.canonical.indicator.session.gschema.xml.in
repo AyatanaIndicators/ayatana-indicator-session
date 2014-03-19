@@ -28,7 +28,7 @@
     <key type="b" name="user-show-menu">
       <default>true</default>
       <summary>Show the list of users</summary>
-      <description>Allow for the user menu to be hidden by the user.</description>
+      <description>Allow for the user list to be hidden by the user.</description>
     </key>
 
   </schema>

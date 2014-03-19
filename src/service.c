@@ -484,9 +484,9 @@ serialize_icon_file (const gchar * filename)
 static GMenuModel *
 create_switch_section (IndicatorSessionService * self, int profile)
 {
-  gchar * str;
   GMenu * menu;
   GMenuItem * item;
+  gboolean want_accel;
   guint i;
   gpointer guser;
   GHashTableIter iter;
@@ -501,6 +501,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
     {
       const char * action = "indicator.switch-to-screensaver";
       item = g_menu_item_new (_("Start Screen Saver"), action);
+      want_accel = TRUE;
     }
   else if (profile == PROFILE_LOCKSCREEN ||
            indicator_session_guest_is_active (p->backend_guest))
@@ -508,6 +509,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
       const char * action = "indicator.switch-to-greeter";
       item = g_menu_item_new (ellipsis ? _("Switch Account…")
                                        : _("Switch Account"), action);
+      want_accel = FALSE;
     }
   else
     {
@@ -518,11 +520,13 @@ create_switch_section (IndicatorSessionService * self, int profile)
       else
         item = g_menu_item_new (ellipsis ? _("Lock/Switch Account…")
                                          : _("Lock/Switch Account"), action);
+
+      want_accel = TRUE;
     }
 
-  if (profile != PROFILE_LOCKSCREEN)
+  if (want_accel)
     {
-      str = g_settings_get_string (p->keybinding_settings, "screensaver");
+      gchar * str = g_settings_get_string (p->keybinding_settings, "screensaver");
       g_menu_item_set_attribute (item, "accel", "s", str);
       g_free (str);
     }

@@ -1,3 +1,16 @@
+indicator-session (12.10.5+14.04.20140324-0ubuntu1) trusty; urgency=low
+
+  [ Charles Kerr ]
+  * Don't show a red icon in indicator-session when there's an online
+    user account error. (LP: #1206550)
+
+  [ Iain Lane ]
+  * Re-add the feature to hide the user list if
+    com.canonical.indicator.session user-show-menu is false (LP:
+    #1211772)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 24 Mar 2014 10:19:12 +0000
+
 indicator-session (12.10.5+14.04.20140320-0ubuntu1) trusty; urgency=low
 
   [ Charles Kerr ]

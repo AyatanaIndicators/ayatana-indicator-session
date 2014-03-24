@@ -616,7 +616,7 @@ TEST_F (ServiceTest, OnlineAccountError)
   check_last_command_is ("online-accounts");
 
   // check that the header's icon and a11y adjusted to the error state
-  check_header ("", "system-devices-panel-alert", "System (Attention Required)");
+  check_header ("", "system-devices-panel", "System");
 
   // cleanup
   g_settings_reset (mock_settings, error_key);
@@ -756,12 +756,7 @@ TEST_F (ServiceTest, User)
   g_settings_set_boolean (indicator_settings, show_name_key, true);
   wait_for_signal (action_group, "action-state-changed");
   check_header ("Third Doctor", "system-devices-panel", "System, Third Doctor");
-  g_settings_set_boolean (mock_settings, error_key, true);
-  wait_for_signal (action_group, "action-state-changed");
-  check_header ("Third Doctor", "system-devices-panel-alert", "System, Third Doctor (Attention Required)");
-  g_settings_reset (mock_settings, error_key);
   g_settings_reset (indicator_settings, show_name_key);
-  wait_for_menu_resync ();
 
   // try setting the max user count to 2...
   // since troughton has the fewest logins, he should get culled

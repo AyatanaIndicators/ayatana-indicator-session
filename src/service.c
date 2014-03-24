@@ -108,9 +108,6 @@ struct _IndicatorSessionServicePrivate
   int rebuild_flags;
   GDBusConnection * conn;
   GCancellable * cancellable;
-
-  /* serialized icon cache */
-  GVariant * alert_icon_serialized;
   GVariant * default_icon_serialized;
 };
 
@@ -167,8 +164,6 @@ static GVariant *
 action_state_for_header (IndicatorSessionService * self)
 {
   const priv_t * const p = self->priv;
-  gboolean need_attn;
-  GVariant * serialized_icon;
   gboolean show_name;
   const gchar * real_name;
   const gchar * label;
@@ -176,37 +171,16 @@ action_state_for_header (IndicatorSessionService * self)
   GVariantBuilder b;
   GVariant * state;
 
-  if (indicator_session_actions_has_online_account_error (p->backend_actions))
-    {
-      need_attn = TRUE;
-      serialized_icon = p->alert_icon_serialized;
-    }
-  else
-    {
-      need_attn = FALSE;
-      serialized_icon = p->default_icon_serialized;
-    }
-
   show_name = g_settings_get_boolean (p->indicator_settings,
                                       "show-real-name-on-panel");
 
   real_name = get_current_real_name (self);
   label = show_name && real_name ? real_name : "";
 
-  if (*label && need_attn)
-    {
-      /* Translators: the name of the menu ("System"), then the user's name,
-         then a hint that something in this menu requires user attention */
-      a11y = g_strdup_printf (_("System, %s (Attention Required)"), real_name);
-    }
-  else if (*label)
+  if (*label)
     {
       /* Translators: the name of the menu ("System"), then the user's name */
       a11y = g_strdup_printf (_("System, %s"), label);
-    }
-  else if (need_attn)
-    {
-      a11y = g_strdup  (_("System (Attention Required)"));
     }
   else
     {
@@ -216,8 +190,7 @@ action_state_for_header (IndicatorSessionService * self)
   /* build the state */
   g_variant_builder_init (&b, G_VARIANT_TYPE("a{sv}"));
   g_variant_builder_add (&b, "{sv}", "accessible-desc", g_variant_new_string (a11y));
-  if (serialized_icon != NULL)
-    g_variant_builder_add (&b, "{sv}", "icon", serialized_icon);
+  g_variant_builder_add (&b, "{sv}", "icon", p->default_icon_serialized);
   if (label && *label)
     g_variant_builder_add (&b, "{sv}", "label", g_variant_new_string (label));
   g_variant_builder_add (&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
@@ -1113,12 +1086,6 @@ indicator_session_service_init (IndicatorSessionService * self)
                                &p->backend_users,
                                &p->backend_guest);
 
-  /* build the serialized icon cache */
-
-  icon = g_themed_icon_new_with_default_fallbacks (ICON_ALERT);
-  p->alert_icon_serialized = g_icon_serialize (icon);
-  g_object_unref (icon);
-
   icon = g_themed_icon_new_with_default_fallbacks (ICON_DEFAULT);
   p->default_icon_serialized = g_icon_serialize (icon);
   g_object_unref (icon);
@@ -1283,8 +1250,6 @@ my_dispose (GObject * o)
   g_clear_object (&p->guest_switcher_action);
   g_clear_object (&p->conn);
 
-  /* clear the serialized icon cache */
-  g_clear_pointer (&p->alert_icon_serialized, g_variant_unref);
   g_clear_pointer (&p->default_icon_serialized, g_variant_unref);
 
   G_OBJECT_CLASS (indicator_session_service_parent_class)->dispose (o);

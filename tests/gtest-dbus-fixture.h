@@ -54,13 +54,6 @@ class GTestDBusFixture : public ::testing::Test
       g_main_loop_quit (self->loop);
     }
 
-    static gboolean
-    wait_for_signal__timeout (gpointer name)
-    {
-      g_error ("%s: timed out waiting for signal '%s'", G_STRLOC, (char*)name);
-      return G_SOURCE_REMOVE;
-    }
-
   protected:
 
     virtual void SetUp ()
@@ -103,29 +96,45 @@ class GTestDBusFixture : public ::testing::Test
       g_clear_pointer (&loop, g_main_loop_unref);
     }
 
-    /* convenience func to loop while waiting for a GObject's signal */
-    void wait_for_signal (gpointer o, const gchar * signal)
-    {
-      const int timeout_seconds = 5; // arbitrary
+  private:
 
+    static gboolean
+    wait_for_signal__timeout(gpointer name)
+    {
+      g_error("%s: timed out waiting for signal '%s'", G_STRLOC, (char*)name);
+      return G_SOURCE_REMOVE;
+    }
+
+    static gboolean
+    wait_msec__timeout(gpointer loop)
+    {
+      g_main_loop_quit(static_cast<GMainLoop*>(loop));
+      return G_SOURCE_CONTINUE;
+    }
+
+  protected:
+
+    /* convenience func to loop while waiting for a GObject's signal */
+    void wait_for_signal(gpointer o, const gchar * signal, const int timeout_seconds=5)
+    {
       // wait for the signal or for timeout, whichever comes first
-      guint handler_id = g_signal_connect_swapped (o, signal,
-                                                   G_CALLBACK(g_main_loop_quit),
-                                                   loop);
-      gulong timeout_id = g_timeout_add_seconds (timeout_seconds,
-                                                 wait_for_signal__timeout,
-                                                 loop);
-      g_main_loop_run (loop);
-      g_source_remove (timeout_id);
-      g_signal_handler_disconnect (o, handler_id);
+      const auto handler_id = g_signal_connect_swapped(o, signal,
+                                                       G_CALLBACK(g_main_loop_quit),
+                                                       loop);
+      const auto timeout_id = g_timeout_add_seconds(timeout_seconds,
+                                                    wait_for_signal__timeout,
+                                                    loop);
+      g_main_loop_run(loop);
+      g_source_remove(timeout_id);
+      g_signal_handler_disconnect(o, handler_id);
     }
 
     /* convenience func to loop for N msec */
-    void wait_msec (int msec)
+    void wait_msec(int msec=50)
     {
-      guint id = g_timeout_add (msec, (GSourceFunc)g_main_loop_quit, loop);
-      g_main_loop_run (loop);
-      g_source_remove (id);
+      const auto id = g_timeout_add(msec, wait_msec__timeout, loop);
+      g_main_loop_run(loop);
+      g_source_remove(id);
     }
 
     GMainLoop * loop;

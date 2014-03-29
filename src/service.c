@@ -250,15 +250,15 @@ on_user_changed (IndicatorSessionUsers * backend_users G_GNUC_UNUSED,
 static void
 maybe_add_users (IndicatorSessionService * self)
 {
-  if (!show_user_list (self))
-      return;
+  if (show_user_list (self))
+    {
+      GList * uids, * l;
 
-  GList * uids, * l;
-
-  uids = indicator_session_users_get_uids (self->priv->backend_users);
-  for (l=uids; l!=NULL; l=l->next)
-    add_user (self, GPOINTER_TO_UINT(l->data));
-  g_list_free (uids);
+      uids = indicator_session_users_get_uids (self->priv->backend_users);
+      for (l=uids; l!=NULL; l=l->next)
+        add_user (self, GPOINTER_TO_UINT(l->data));
+      g_list_free (uids);
+    }
 }
 
 

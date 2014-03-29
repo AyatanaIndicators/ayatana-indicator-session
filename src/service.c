@@ -576,12 +576,20 @@ create_switch_section (IndicatorSessionService * self, int profile)
   for (i=0; i<users->len; ++i)
     {
       const IndicatorSessionUser * u = g_ptr_array_index (users, i);
+      const char * label;
       GVariant * serialized_icon;
 
       if (profile == PROFILE_LOCKSCREEN && u->is_current_user)
         continue;
 
-      item = g_menu_item_new (get_user_label (u), NULL);
+      /* Sometimes we get a user without a username? bus hiccup.
+         I can't reproduce it, but let's not confuse users with
+         a meaningless menuitem. (see bug #1263228) */
+      label = get_user_label (u);
+      if (!label || !*label)
+        continue;
+
+      item = g_menu_item_new (label, NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
       g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.user-menu-item");
 

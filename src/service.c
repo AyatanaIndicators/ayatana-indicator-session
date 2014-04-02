@@ -21,6 +21,7 @@
 #include <gio/gio.h>
 
 #include "backend.h"
+#include "recoverable-problem.h"
 #include "service.h"
 
 #define BUS_NAME "com.canonical.indicator.session"
@@ -104,6 +105,7 @@ struct _IndicatorSessionServicePrivate
   GSimpleAction * user_switcher_action;
   GSimpleAction * guest_switcher_action;
   GHashTable * users;
+  GHashTable * reported_users;
   guint rebuild_id;
   int rebuild_flags;
   GDBusConnection * conn;
@@ -488,6 +490,49 @@ serialize_icon_file (const gchar * filename)
   return serialized_icon;
 }
 
+static void
+report_unusable_user (IndicatorSessionService * self, const IndicatorSessionUser * u)
+{
+  const priv_t * const p = self->priv;
+  gpointer key;
+
+  g_return_if_fail(u != NULL);
+
+  key = GUINT_TO_POINTER(u->uid);
+
+  if (!g_hash_table_contains (p->reported_users, key))
+  {
+    gchar * uid_str;
+    GPtrArray * additional;
+    const gchar * const error_name = "indicator-session-unknown-user-error";
+
+    /* don't spam apport with duplicates */
+    g_hash_table_add (p->reported_users, key);
+
+    uid_str = g_strdup_printf("%u", u->uid);
+
+    additional = g_ptr_array_new (); /* null-terminated key/value pair strs */
+    g_ptr_array_add (additional, "uid");
+    g_ptr_array_add (additional, uid_str);
+    g_ptr_array_add (additional, "icon_file");
+    g_ptr_array_add (additional, u->icon_file ? u->icon_file : "(null)");
+    g_ptr_array_add (additional, "is_current_user");
+    g_ptr_array_add (additional, u->is_current_user ? "true" : "false");
+    g_ptr_array_add (additional, "is_logged_in");
+    g_ptr_array_add (additional, u->is_logged_in ? "true" : "false");
+    g_ptr_array_add (additional, "real_name");
+    g_ptr_array_add (additional, u->real_name ? u->real_name : "(null)");
+    g_ptr_array_add (additional, "user_name");
+    g_ptr_array_add (additional, u->user_name ? u->user_name : "(null)");
+    g_ptr_array_add (additional, NULL); /* null termination */
+    report_recoverable_problem(error_name, (GPid)0, FALSE, (gchar**)additional->pdata);
+
+    /* cleanup */
+    g_free (uid_str);
+    g_ptr_array_free (additional, TRUE);
+  }
+}
+
 static GMenuModel *
 create_switch_section (IndicatorSessionService * self, int profile)
 {
@@ -587,7 +632,10 @@ create_switch_section (IndicatorSessionService * self, int profile)
          a meaningless menuitem. (see bug #1263228) */
       label = get_user_label (u);
       if (!label || !*label)
+      {
+        report_unusable_user (self, u);
         continue;
+      }
 
       item = g_menu_item_new (label, NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
@@ -1103,6 +1151,9 @@ indicator_session_service_init (IndicatorSessionService * self)
                                     g_direct_equal,
                                     NULL,
                                     (GDestroyNotify)indicator_session_user_free);
+
+  p->reported_users = g_hash_table_new (g_direct_hash, g_direct_equal);
+
   maybe_add_users (self);
 
   init_gactions (self);
@@ -1243,6 +1294,7 @@ my_dispose (GObject * o)
     }
 
   g_clear_pointer (&p->users, g_hash_table_destroy);
+  g_clear_pointer (&p->reported_users, g_hash_table_destroy);
   g_clear_object (&p->backend_users);
   g_clear_object (&p->backend_guest);
   g_clear_object (&p->backend_actions);

@@ -5,6 +5,8 @@ add_library (libindicatorsessionservice STATIC
              actions.h
              guest.c
              guest.h
+             recoverable-problem.c
+             recoverable-problem.h
              service.c
              service.h
              users.c

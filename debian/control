@@ -32,6 +32,7 @@ Recommends: indicator-applet (>= 0.2) | indicator-renderer,
             unity-control-center | gnome-control-center,
             unity-control-center-signon | gnome-control-center-signon
 Suggests: lightdm,
+          apport,
           zenity
 Description: indicator showing session management, status and user switching
  This indicator is designed to be placed on the right side of a panel and

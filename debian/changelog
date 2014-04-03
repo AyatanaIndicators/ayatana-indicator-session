@@ -1,3 +1,11 @@
+indicator-session (12.10.5+14.04.20140403-0ubuntu1) trusty; urgency=low
+
+  [ Charles Kerr ]
+  * Fix the phantom "J Random User" menuitem that shows up under some
+    conditions. (LP: #1256590)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 03 Apr 2014 17:13:30 +0000
+
 indicator-session (12.10.5+14.04.20140324-0ubuntu1) trusty; urgency=low
 
   [ Charles Kerr ]

@@ -777,8 +777,8 @@ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 ****
 ***/
 
-static void
-lock_current_session (IndicatorSessionActions * self, gboolean immediate)
+static gboolean
+have_unity_session (IndicatorSessionActions * self)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
   gchar * name_owner;
@@ -789,18 +789,31 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
 
       if (name_owner)
         {
-          if (immediate)
-            {
-              unity_session_call_prompt_lock (p->unity_session, p->cancellable, NULL, NULL);
-            }
-          else
-            {
-              unity_session_call_lock (p->unity_session, p->cancellable, NULL, NULL);
-            }
-
           g_free (name_owner);
-          return;
+          return TRUE;
         }
+    }
+
+  return FALSE;
+}
+
+static void
+lock_current_session (IndicatorSessionActions * self, gboolean immediate)
+{
+  priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
+
+  if (have_unity_session (self))
+    {
+      if (immediate)
+        {
+          unity_session_call_prompt_lock (p->unity_session, p->cancellable, NULL, NULL);
+        }
+      else
+        {
+          unity_session_call_lock (p->unity_session, p->cancellable, NULL, NULL);
+        }
+
+      return;
     }
 
   g_return_if_fail (p->screen_saver != NULL);

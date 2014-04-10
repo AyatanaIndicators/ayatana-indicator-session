@@ -25,6 +25,7 @@
 #include "mock-display-manager-seat.h"
 #include "mock-end-session-dialog.h"
 #include "mock-screen-saver.h"
+#include "mock-unity-session.h"
 #include "mock-session-manager.h"
 #include "mock-user.h"
 #include "mock-webcredentials.h"
@@ -42,6 +43,7 @@ class GTestMockDBusFixture: public GTestDBusFixture
   protected:
 
     MockScreenSaver * screen_saver;
+    MockUnitySession * unity_session;
     MockSessionManager * session_manager;
     MockDisplayManagerSeat * dm_seat;
     MockAccounts * accounts;
@@ -60,6 +62,7 @@ class GTestMockDBusFixture: public GTestDBusFixture
       end_session_dialog = new MockEndSessionDialog (loop, conn);
       session_manager = new MockSessionManager (loop, conn);
       screen_saver = new MockScreenSaver (loop, conn);
+      unity_session = new MockUnitySession (loop, conn);
       dm_seat = new MockDisplayManagerSeat (loop, conn);
       g_setenv ("XDG_SEAT_PATH", dm_seat->path(), TRUE);
       dm_seat->set_guest_allowed (false);
@@ -83,6 +86,7 @@ class GTestMockDBusFixture: public GTestDBusFixture
       delete login1_manager;
       delete dm_seat;
       delete screen_saver;
+      delete unity_session;
       delete session_manager;
       delete end_session_dialog;
       delete webcredentials;

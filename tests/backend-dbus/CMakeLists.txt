@@ -23,6 +23,8 @@ add_library (desktopmock STATIC
              mock-object.h
              mock-screen-saver.cc
              mock-screen-saver.h
+             mock-unity-session.cc
+             mock-unity-session.h
              mock-session-manager.cc
              mock-session-manager.h
              mock-user.cc

@@ -14,7 +14,7 @@ add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-webcredentials
 add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-accounts
                    org.freedesktop
                    ${CMAKE_CURRENT_SOURCE_DIR}/org.freedesktop.Accounts.xml)
-                   
+
 add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-user
                    org.freedesktop
                    ${CMAKE_CURRENT_SOURCE_DIR}/org.freedesktop.Accounts.User.xml)
@@ -42,6 +42,10 @@ add_gdbus_codegen (BACKEND_GENERATED_SOURCES gnome-session-manager
 add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-end-session-dialog
                    org.gnome.SessionManager
                    ${CMAKE_CURRENT_SOURCE_DIR}/org.gnome.SessionManager.EndSessionDialog.xml)
+
+add_gdbus_codegen (BACKEND_GENERATED_SOURCES unity-session
+                   com.canonical
+                   ${CMAKE_CURRENT_SOURCE_DIR}/com.canonical.Unity.Session.xml)
 
 set (SOURCES actions.c guest.c users.c backend-dbus.c utils.c)
 

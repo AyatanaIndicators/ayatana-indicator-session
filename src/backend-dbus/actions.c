@@ -25,6 +25,7 @@
 #include "dbus-webcredentials.h"
 #include "gnome-screen-saver.h"
 #include "gnome-session-manager.h"
+#include "unity-session.h"
 
 #include "actions.h"
 
@@ -43,6 +44,7 @@ struct _IndicatorSessionActionsDbusPriv
   GSettings * indicator_settings;
   GnomeScreenSaver * screen_saver;
   GnomeSessionManager * session_manager;
+  UnitySession * unity_session;
   Login1Manager * login1_manager;
   GCancellable * login1_manager_cancellable;
   Login1Seat * login1_seat;
@@ -191,6 +193,22 @@ on_screensaver_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpoin
   if (err == NULL)
     {
       INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv->screen_saver = ss;
+    }
+
+  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
+}
+
+static void
+on_unity_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gself)
+{
+  GError * err;
+  UnitySession * us;
+
+  err = NULL;
+  us = unity_session_proxy_new_for_bus_finish (res, &err);
+  if (err == NULL)
+    {
+      INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv->unity_session = us;
     }
 
   log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
@@ -758,20 +776,54 @@ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 ****
 ***/
 
+static gboolean
+have_unity_session (IndicatorSessionActions * self)
+{
+  priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
+  gchar * name_owner;
+
+  if (G_IS_DBUS_PROXY (p->unity_session))
+    {
+      name_owner = g_dbus_proxy_get_name_owner (G_DBUS_PROXY (p->unity_session));
+
+      if (name_owner)
+        {
+          g_free (name_owner);
+          return TRUE;
+        }
+    }
+
+  return FALSE;
+}
+
 static void
-lock_current_session (IndicatorSessionActions * self)
+lock_current_session (IndicatorSessionActions * self, gboolean immediate)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  g_return_if_fail (p->screen_saver != NULL);
+  if (have_unity_session (self))
+    {
+      if (immediate)
+        {
+          unity_session_call_prompt_lock (p->unity_session, p->cancellable, NULL, NULL);
+        }
+      else
+        {
+          unity_session_call_lock (p->unity_session, p->cancellable, NULL, NULL);
+        }
+    }
+  else
+    {
+      g_return_if_fail (p->screen_saver != NULL);
 
-  gnome_screen_saver_call_lock (p->screen_saver, p->cancellable, NULL, NULL);
+      gnome_screen_saver_call_lock (p->screen_saver, p->cancellable, NULL, NULL);
+    }
 }
 
 static void
 my_switch_to_screensaver (IndicatorSessionActions * self)
 {
-  lock_current_session (self);
+  lock_current_session (self, FALSE);
 }
 
 static void
@@ -780,6 +832,8 @@ my_switch_to_greeter (IndicatorSessionActions * self)
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
   g_return_if_fail (p->dm_seat != NULL);
+
+  lock_current_session (self, TRUE);
 
   display_manager_seat_call_switch_to_greeter (p->dm_seat,
                                                p->dm_seat_cancellable,
@@ -793,7 +847,7 @@ my_switch_to_guest (IndicatorSessionActions * self)
 
   g_return_if_fail (p->dm_seat != NULL);
 
-  lock_current_session (self);
+  lock_current_session (self, TRUE);
 
   display_manager_seat_call_switch_to_guest (p->dm_seat, "",
                                              p->dm_seat_cancellable,
@@ -806,6 +860,8 @@ my_switch_to_username (IndicatorSessionActions * self, const char * username)
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
   g_return_if_fail (p->dm_seat != NULL);
+
+  lock_current_session (self, TRUE);
 
   display_manager_seat_call_switch_to_user (p->dm_seat, username, "",
                                             p->dm_seat_cancellable,
@@ -850,6 +906,7 @@ my_dispose (GObject * o)
 
   g_clear_object (&p->screen_saver);
   g_clear_object (&p->session_manager);
+  g_clear_object (&p->unity_session);
   set_dm_seat (self, NULL);
   set_login1_manager (self, NULL);
   set_login1_seat (self, NULL);
@@ -951,6 +1008,14 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
                                         p->cancellable,
                                         on_screensaver_proxy_ready,
                                         self);
+
+  unity_session_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+                                   G_DBUS_PROXY_FLAGS_NONE,
+                                   "com.canonical.Unity",
+                                   "/com/canonical/Unity/Session",
+                                   p->cancellable,
+                                   on_unity_proxy_ready,
+                                   self);
 
   gnome_session_manager_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                            G_DBUS_PROXY_FLAGS_NONE,

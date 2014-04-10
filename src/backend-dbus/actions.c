@@ -209,7 +209,6 @@ on_unity_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gs
   if (err == NULL)
     {
       INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv->unity_session = us;
-
     }
 
   log_and_clear_error (&err, G_STRLOC, G_STRFUNC);

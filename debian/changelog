@@ -1,3 +1,15 @@
+indicator-session (12.10.5+14.04.20140410-0ubuntu1) trusty; urgency=low
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Marco Trevisan (Treviño) ]
+  * DBusActions: use unity session APIs when unity is running Use
+    Immediate lock when switching, and rely to standard lock (with fade)
+    in normal cases. (LP: #1305194)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 10 Apr 2014 17:39:18 +0000
+
 indicator-session (12.10.5+14.04.20140403-0ubuntu1) trusty; urgency=low
 
   [ Charles Kerr ]

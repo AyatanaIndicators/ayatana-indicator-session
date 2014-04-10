@@ -811,13 +811,13 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
         {
           unity_session_call_lock (p->unity_session, p->cancellable, NULL, NULL);
         }
-
-      return;
     }
+  else
+    {
+      g_return_if_fail (p->screen_saver != NULL);
 
-  g_return_if_fail (p->screen_saver != NULL);
-
-  gnome_screen_saver_call_lock (p->screen_saver, p->cancellable, NULL, NULL);
+      gnome_screen_saver_call_lock (p->screen_saver, p->cancellable, NULL, NULL);
+    }
 }
 
 static void

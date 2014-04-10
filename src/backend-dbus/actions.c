@@ -821,6 +821,8 @@ my_switch_to_greeter (IndicatorSessionActions * self)
 
   g_return_if_fail (p->dm_seat != NULL);
 
+  lock_current_session (self, TRUE);
+
   display_manager_seat_call_switch_to_greeter (p->dm_seat,
                                                p->dm_seat_cancellable,
                                                NULL, NULL);
@@ -846,6 +848,8 @@ my_switch_to_username (IndicatorSessionActions * self, const char * username)
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
   g_return_if_fail (p->dm_seat != NULL);
+
+  lock_current_session (self, TRUE);
 
   display_manager_seat_call_switch_to_user (p->dm_seat, username, "",
                                             p->dm_seat_cancellable,

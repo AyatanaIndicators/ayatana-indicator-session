@@ -316,17 +316,19 @@ TEST_F (Actions, Hibernate)
 
 TEST_F (Actions, SwitchToScreensaver)
 {
-  ASSERT_EQ (MockScreenSaver::None, screen_saver->last_action());
+  ASSERT_EQ (MockUnitySession::None, unity_session->last_action());
   indicator_session_actions_switch_to_screensaver (actions);
   wait_msec (50);
-  ASSERT_EQ (MockScreenSaver::Lock, screen_saver->last_action());
+  ASSERT_EQ (MockUnitySession::Lock, unity_session->last_action());
 }
 
 TEST_F (Actions, SwitchToGreeter)
 {
   ASSERT_NE (MockDisplayManagerSeat::GREETER, dm_seat->last_action());
+  ASSERT_EQ (MockUnitySession::None, unity_session->last_action());
   indicator_session_actions_switch_to_greeter (actions);
   wait_msec (50);
+  ASSERT_EQ (MockUnitySession::PromptLock, unity_session->last_action());
   ASSERT_EQ (MockDisplayManagerSeat::GREETER, dm_seat->last_action());
 }
 
@@ -346,6 +348,7 @@ TEST_F (Actions, SwitchToGuest)
   wait_for_signal (login1_seat->skeleton(), "notify::active-session");
   ASSERT_EQ (guest_session_tag, login1_seat->active_session());
   wait_msec (50);
+  ASSERT_EQ (MockUnitySession::PromptLock, unity_session->last_action());
 }
 
 TEST_F (Actions, SwitchToUsername)
@@ -367,6 +370,7 @@ TEST_F (Actions, SwitchToUsername)
   wait_for_signal (login1_seat->skeleton(), "notify::active-session");
   ASSERT_EQ (dr1_session, login1_seat->active_session());
   wait_msec (50);
+  ASSERT_EQ (MockUnitySession::PromptLock, unity_session->last_action());
 
   indicator_session_actions_switch_to_username (actions, dr2_username);
   wait_for_signal (login1_seat->skeleton(), "notify::active-session");

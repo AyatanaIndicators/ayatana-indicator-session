@@ -8,6 +8,9 @@
     <method name="Lock">
     </method>
 
+    <method name="SimulateUserActivity">
+    </method>
+
   </interface>
 
 </node>

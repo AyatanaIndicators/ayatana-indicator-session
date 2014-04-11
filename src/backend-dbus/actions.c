@@ -471,18 +471,103 @@ my_hibernate (IndicatorSessionActions * self)
 ****  End Session Dialog
 ***/
 
+static gboolean
+is_owned_proxy (gpointer proxy)
+{
+  gboolean owned = FALSE;
+
+  if ((proxy != NULL) && G_IS_DBUS_PROXY (proxy))
+    {
+      char * name_owner = g_dbus_proxy_get_name_owner (proxy);
+
+      if (name_owner != NULL)
+        {
+          owned = TRUE;
+          g_free (name_owner);
+        }
+    }
+
+  return owned;
+}
+
+static void
+on_gnome_logout_response (GObject * o,
+                          GAsyncResult * res,
+                          gpointer unused G_GNUC_UNUSED)
+{
+  GError * err = NULL;
+  gnome_session_manager_call_logout_finish (GNOME_SESSION_MANAGER(o), res, &err);
+  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
+}
+
+static gboolean
+logout_now_gnome_session_manager (IndicatorSessionActionsDbus * self)
+{
+  gboolean logout_called = FALSE;
+  priv_t * p = self->priv;
+
+  if (is_owned_proxy (p->session_manager))
+    {
+      g_debug ("%s: calling gnome_session_manager_call_logout()", G_STRFUNC);
+      gnome_session_manager_call_logout (p->session_manager,
+                                         1, /* don't prompt */
+                                         p->cancellable,
+                                         on_gnome_logout_response,
+                                         self);
+      logout_called = TRUE;
+    }
+
+  return logout_called;
+}
+
+static void
+on_unity_logout_response (GObject * o,
+                          GAsyncResult * res,
+                          gpointer gself)
+{
+  GError * error;
+
+  error = NULL;
+  unity_session_call_request_logout_finish (UNITY_SESSION(o), res, &error);
+
+  if (error != NULL)
+    {
+      if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        {
+          g_warning ("%s %s: %s", G_STRLOC, G_STRFUNC, error->message);
+          logout_now_gnome_session_manager(gself);
+        }
+
+      g_clear_error (&error);
+    }
+}
+
+static gboolean
+logout_now_unity (IndicatorSessionActionsDbus * self)
+{
+  priv_t * p = self->priv;
+  gboolean called = FALSE;
+
+  if (is_owned_proxy (p->unity_session))
+    {
+      called = TRUE;
+      g_debug ("calling unity_session_call_request_logout()");
+      unity_session_call_request_logout (p->unity_session,
+                                         p->cancellable,
+                                         on_unity_logout_response,
+                                         self);
+    }
+
+  return called;
+}
+
 static void
 logout_now (IndicatorSessionActionsDbus * self)
 {
-  priv_t * p = self->priv;
-
-  g_return_if_fail (p->session_manager != NULL);
-
-  gnome_session_manager_call_logout (p->session_manager,
-                                     1, /* don't prompt */
-                                     p->cancellable,
-                                     NULL,
-                                     NULL);
+  if (!logout_now_unity(self) && !logout_now_gnome_session_manager(self))
+    {
+      g_critical("%s can't logout: no Unity nor GNOME session proxy", G_STRFUNC);
+    }
 }
 
 static void
@@ -776,32 +861,12 @@ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 ****
 ***/
 
-static gboolean
-have_unity_session (IndicatorSessionActions * self)
-{
-  priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
-  gchar * name_owner;
-
-  if (G_IS_DBUS_PROXY (p->unity_session))
-    {
-      name_owner = g_dbus_proxy_get_name_owner (G_DBUS_PROXY (p->unity_session));
-
-      if (name_owner)
-        {
-          g_free (name_owner);
-          return TRUE;
-        }
-    }
-
-  return FALSE;
-}
-
 static void
 lock_current_session (IndicatorSessionActions * self, gboolean immediate)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  if (have_unity_session (self))
+  if (is_owned_proxy (p->unity_session))
     {
       if (immediate)
         {

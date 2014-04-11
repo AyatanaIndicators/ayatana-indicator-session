@@ -21,7 +21,7 @@
 
 
 gboolean
-MockUnitySession :: handle_lock (UnitySession      * us,
+MockUnitySession :: handle_lock (UnitySession          * us,
                                  GDBusMethodInvocation * inv,
                                  gpointer                gself)
 {
@@ -31,12 +31,22 @@ MockUnitySession :: handle_lock (UnitySession      * us,
 }
 
 gboolean
-MockUnitySession :: handle_prompt_lock (UnitySession      * us,
+MockUnitySession :: handle_prompt_lock (UnitySession          * us,
                                         GDBusMethodInvocation * inv,
                                         gpointer                gself)
 {
   static_cast<MockUnitySession*>(gself)->my_last_action = PromptLock;
   unity_session_complete_prompt_lock (us, inv);
+  return true;
+}
+
+gboolean
+MockUnitySession :: handle_request_logout (UnitySession          * us,
+                                           GDBusMethodInvocation * inv,
+                                           gpointer                gself)
+{
+  static_cast<MockUnitySession*>(gself)->my_last_action = RequestLogout;
+  unity_session_complete_request_logout (us, inv);
   return true;
 }
 
@@ -61,6 +71,8 @@ MockUnitySession :: MockUnitySession (GMainLoop       * loop,
                     G_CALLBACK(handle_lock), this);
   g_signal_connect (my_skeleton, "handle-prompt-lock",
                     G_CALLBACK(handle_prompt_lock), this);
+  g_signal_connect (my_skeleton, "handle-request-logout",
+                    G_CALLBACK(handle_request_logout), this);
 
   set_skeleton (G_DBUS_INTERFACE_SKELETON(my_skeleton));
 }

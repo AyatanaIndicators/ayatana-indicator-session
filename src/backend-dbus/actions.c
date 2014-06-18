@@ -635,7 +635,17 @@ on_open_end_session_dialog_ready (GObject      * o,
 {
   GError * err = NULL;
   end_session_dialog_call_open_finish (END_SESSION_DIALOG(o), res, &err);
-  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
+  if (err != NULL)
+    {
+      if (!g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("%s %s: %s", G_STRFUNC, G_STRLOC, err->message);
+
+      /* Treat errors as user confirmation.
+         Otherwise how will the user ever log out? */
+      logout_now(INDICATOR_SESSION_ACTIONS_DBUS(gself));
+
+      g_clear_error(&err);
+    }
 }
 
 static void

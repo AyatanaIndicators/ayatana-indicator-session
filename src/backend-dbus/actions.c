@@ -669,6 +669,7 @@ zenity_question (IndicatorSessionActionsDbus * self,
 {
   char * command_line;
   int exit_status;
+  GError * error;
   gboolean confirmed;
 
   command_line = g_strdup_printf ("%s"
@@ -686,11 +687,16 @@ zenity_question (IndicatorSessionActionsDbus * self,
                                   ok_label,
                                   cancel_label);
 
+  /* Treat errors as user confirmation.
+     Otherwise how will the user ever log out? */
   exit_status = -1;
-  if (!g_spawn_command_line_sync (command_line, NULL, NULL, &exit_status, NULL))
+  error = NULL;
+  if (!g_spawn_command_line_sync (command_line, NULL, NULL, &exit_status, &error))
     {
-      /* Treat failure-to-prompt as user confirmation.
-         Otherwise how will the user ever log out? */
+      confirmed = TRUE;
+    }
+  else if (!g_spawn_check_exit_status (exit_status, &error))
+    {
       confirmed = TRUE;
     }
   else
@@ -698,6 +704,7 @@ zenity_question (IndicatorSessionActionsDbus * self,
       confirmed = exit_status == 0;
     }
 
+  log_and_clear_error (&error, G_STRLOC, G_STRFUNC);
   g_free (command_line);
   return confirmed;
 }

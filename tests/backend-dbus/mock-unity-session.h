@@ -35,6 +35,7 @@ class MockUnitySession: public MockObject
 
     enum Action { None, Lock, PromptLock, RequestLogout, RequestShutdown, RequestReboot };
     Action last_action () { return my_last_action; }
+    void clear_last_action () { my_last_action = None; }
 
   private:
 
@@ -47,6 +48,9 @@ class MockUnitySession: public MockObject
     static gboolean handle_prompt_lock (UnitySession *,
                                         GDBusMethodInvocation *,
                                         gpointer);
+    static gboolean handle_request_logout (UnitySession *,
+                                           GDBusMethodInvocation *,
+                                           gpointer);
 
 };
 

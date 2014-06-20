@@ -263,9 +263,11 @@ TEST_F (Actions, PowerOff)
   g_settings_reset (indicator_settings, SUPPRESS_KEY);
 }
 
-TEST_F (Actions, Logout)
+TEST_F (Actions, LogoutUnity)
 {
-  ASSERT_EQ (MockSessionManager::None, session_manager->last_action ());
+  MockUnitySession unity_session(loop, conn);
+  ASSERT_EQ (MockUnitySession::None, unity_session.last_action());
+  wait_msec();
 
   // confirm that user is prompted
   // and that no action is taken when the user cancels the dialog
@@ -274,17 +276,55 @@ TEST_F (Actions, Logout)
   ASSERT_TRUE (end_session_dialog->is_open());
   end_session_dialog->cancel();
   wait_msec (50);
-  ASSERT_EQ (MockSessionManager::None, session_manager->last_action ());
+  ASSERT_EQ (MockUnitySession::None, unity_session.last_action());
 
   // confirm that user is prompted
-  // and that no action is taken when the user cancels the dialog
+  // and that logout is called when user confirms the logout dialog
   indicator_session_actions_logout (actions);
   wait_msec (50);
   ASSERT_TRUE (end_session_dialog->is_open ());
   end_session_dialog->confirm_logout ();
   wait_msec (100);
-  ASSERT_EQ (MockSessionManager::LogoutQuiet, session_manager->last_action ());
+  ASSERT_EQ (MockUnitySession::RequestLogout, unity_session.last_action());
 
+  // confirm that we try to call SessionManager::LogoutQuet
+  // when prompts are disabled
+  login1_manager->clear_last_action ();
+  unity_session.clear_last_action ();
+  ASSERT_EQ ("", login1_manager->last_action());
+  ASSERT_EQ (MockUnitySession::None, unity_session.last_action ());
+  g_settings_set_boolean (indicator_settings, SUPPRESS_KEY, TRUE);
+  wait_msec (50);
+  indicator_session_actions_logout (actions);
+  wait_msec (50);
+  ASSERT_EQ (MockUnitySession::RequestLogout, unity_session.last_action ());
+  g_settings_reset (indicator_settings, SUPPRESS_KEY);
+}
+
+TEST_F (Actions, LogoutGnome)
+{
+  MockSessionManager session_manager (loop, conn);
+  ASSERT_EQ (MockSessionManager::None, session_manager.last_action ());
+  wait_msec(50);
+
+  // confirm that user is prompted
+  // and that no action is taken when the user cancels the dialog
+  indicator_session_actions_logout (actions);
+  wait_msec (50);
+  ASSERT_TRUE (end_session_dialog->is_open());
+  end_session_dialog->cancel();
+  wait_msec (50);
+  ASSERT_EQ (MockSessionManager::None, session_manager.last_action ());
+
+  // confirm that user is prompted
+  // and that logout is called when user confirms in the dialog
+  indicator_session_actions_logout (actions);
+  wait_msec (50);
+  ASSERT_TRUE (end_session_dialog->is_open ());
+  end_session_dialog->confirm_logout ();
+  wait_msec (100);
+  ASSERT_EQ (MockSessionManager::LogoutQuiet, session_manager.last_action ());
+ 
   // confirm that we try to call SessionManager::LogoutQuet
   // when prompts are disabled
   login1_manager->clear_last_action ();
@@ -292,8 +332,8 @@ TEST_F (Actions, Logout)
   g_settings_set_boolean (indicator_settings, SUPPRESS_KEY, TRUE);
   wait_msec (50);
   indicator_session_actions_logout (actions);
-  wait_msec (50);
-  ASSERT_EQ (MockSessionManager::LogoutQuiet, session_manager->last_action ());
+   wait_msec (50);
+  ASSERT_EQ (MockSessionManager::LogoutQuiet, session_manager.last_action ());
 
   g_settings_reset (indicator_settings, SUPPRESS_KEY);
 }
@@ -316,24 +356,30 @@ TEST_F (Actions, Hibernate)
 
 TEST_F (Actions, SwitchToScreensaver)
 {
-  ASSERT_EQ (MockUnitySession::None, unity_session->last_action());
+  MockUnitySession unity_session(loop, conn);
+
+  ASSERT_EQ (MockUnitySession::None, unity_session.last_action());
   indicator_session_actions_switch_to_screensaver (actions);
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::Lock, unity_session->last_action());
+  ASSERT_EQ (MockUnitySession::Lock, unity_session.last_action());
 }
 
 TEST_F (Actions, SwitchToGreeter)
 {
+  MockUnitySession unity_session(loop, conn);
+
   ASSERT_NE (MockDisplayManagerSeat::GREETER, dm_seat->last_action());
-  ASSERT_EQ (MockUnitySession::None, unity_session->last_action());
+  ASSERT_EQ (MockUnitySession::None, unity_session.last_action());
   indicator_session_actions_switch_to_greeter (actions);
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::PromptLock, unity_session->last_action());
+  ASSERT_EQ (MockUnitySession::PromptLock, unity_session.last_action());
   ASSERT_EQ (MockDisplayManagerSeat::GREETER, dm_seat->last_action());
 }
 
 TEST_F (Actions, SwitchToGuest)
 {
+  MockUnitySession unity_session(loop, conn);
+
   // allow guests
   dm_seat->set_guest_allowed (true);
 
@@ -348,11 +394,12 @@ TEST_F (Actions, SwitchToGuest)
   wait_for_signal (login1_seat->skeleton(), "notify::active-session");
   ASSERT_EQ (guest_session_tag, login1_seat->active_session());
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::PromptLock, unity_session->last_action());
+  ASSERT_EQ (MockUnitySession::PromptLock, unity_session.last_action());
 }
 
 TEST_F (Actions, SwitchToUsername)
 {
+  MockUnitySession unity_session(loop, conn);
   const char * const dr1_username = "whartnell";
   const char * const dr2_username = "ptroughton";
   MockUser * dr1_user;
@@ -370,7 +417,7 @@ TEST_F (Actions, SwitchToUsername)
   wait_for_signal (login1_seat->skeleton(), "notify::active-session");
   ASSERT_EQ (dr1_session, login1_seat->active_session());
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::PromptLock, unity_session->last_action());
+  ASSERT_EQ (MockUnitySession::PromptLock, unity_session.last_action());
 
   indicator_session_actions_switch_to_username (actions, dr2_username);
   wait_for_signal (login1_seat->skeleton(), "notify::active-session");

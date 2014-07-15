@@ -329,14 +329,95 @@ get_current_real_name (IndicatorSessionService * self)
 ****
 ***/
 
+static GHashTable*
+get_os_release (void)
+{
+  GHashTable * hash;
+  GIOChannel * io;
+
+  hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+  if ((io = g_io_channel_new_file ("/etc/os-release", "r", NULL)))
+    {
+      GString * gstr = g_string_new (NULL);
+
+      for (;;)
+        {
+          char *p, *q;
+          const char *val;
+          GIOStatus status;
+
+          /* read a line */
+          status = g_io_channel_read_line_string (io, gstr, NULL, NULL);
+          if (status == G_IO_STATUS_EOF)
+            break;
+
+          /* ignore blank lines & comments */
+          if (!gstr->len || gstr->str[0]=='#')
+            continue;
+
+          /* split into name=value */
+          p = strchr(gstr->str, '=');
+          if (!p)
+            continue;
+          *p++ = '\0';
+
+          /* remove quotes and newline; un-escape */
+          val = p;
+          q = p;
+          while (*p)
+            {
+              if ((*p == '\'') || (*p == '"') || (*p == '\n'))
+                {
+                  ++p;
+                }
+              else
+                {
+                  if ((*p=='\\') && !*++p)
+                    break;
+                  *q++ = *p++;
+                }
+
+              *q = '\0'; /* zero terminate */
+            }
+        
+          g_hash_table_insert (hash, g_strdup(gstr->str), g_strdup(val)); 
+        }
+
+      g_string_free(gstr, TRUE);
+      g_io_channel_unref(io);
+    }
+
+  return hash;
+}
+
+static const char*
+get_distro_name (void)
+{
+  static char * distro_name = NULL;
+
+  if (distro_name == NULL)
+    {
+      GHashTable * os_release = get_os_release();
+      gpointer value = g_hash_table_lookup(os_release, "NAME");
+      if (value == NULL)
+        value = _("Ubuntu"); /* fallback value */
+      distro_name = g_strdup(value);
+      g_hash_table_destroy(os_release);
+    }
+
+  return distro_name;
+}
+
 static GMenuModel *
 create_admin_section (void)
 {
   GMenu * menu;
-
+  gchar * help_label = g_strjoin(" ", get_distro_name(), _("Help"), NULL);
   menu = g_menu_new ();
   g_menu_append (menu, _("About This Computer"), "indicator.about");
-  g_menu_append (menu, _("Ubuntu Help"), "indicator.help");
+  g_menu_append (menu, help_label, "indicator.help");
+  g_free (help_label);
   return G_MENU_MODEL (menu);
 }
 

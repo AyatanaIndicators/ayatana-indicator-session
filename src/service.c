@@ -339,51 +339,48 @@ get_os_release (void)
 
   if ((io = g_io_channel_new_file ("/etc/os-release", "r", NULL)))
     {
-      GString * gstr = g_string_new (NULL);
+      GString * key = g_string_new (NULL);
 
       for (;;)
         {
-          char *in, *out;
-          const char *val;
           GIOStatus status;
+          char *in;
+          GString * val;
+          gsize i;
 
           /* read a line */
-          status = g_io_channel_read_line_string (io, gstr, NULL, NULL);
+          status = g_io_channel_read_line_string (io, key, NULL, NULL);
           if (status == G_IO_STATUS_EOF)
             break;
 
           /* ignore blank lines & comments */
-          if (!gstr->len || gstr->str[0]=='#')
+          if (!key->len || key->str[0]=='#')
             continue;
 
-          /* split into name=value */
-          in = strchr(gstr->str, '=');
+          /* split into key=value */
+          in = strchr(key->str, '=');
           if (!in)
             continue;
           *in++ = '\0';
 
-          /* remove quotes and newline; un-escape */
-          val = out = in;
-          while (*in)
+          /* remove quotes and newlines; unescape escape sequences */
+          val = g_string_new(in);
+          for (i=0; i<val->len; )
             {
-              if ((*in=='\'') || (*in=='"') || (*in=='\n')) /* skip chars */
-                {
-                  ++in;
-                }
-              else
-                {
-                  if ((*in=='\\') && !*++in) /* handle an escaped char */
-                    break;
+              if (val->str[i]=='\\' && ((i+1)<val->len)) /* unescape */
+                g_string_erase (val, i++, 1);
 
-                  *out++ = *in++;
-                }
+              else if ((val->str[i]=='\'') || (val->str[i]=='"') || (val->str[i]=='\n')) /* skip */
+                g_string_erase (val, i, 1);
+
+              else /* keep */
+                i++;
             }
-          *out = '\0'; /* zero terminate */
-        
-          g_hash_table_insert (hash, g_strdup(gstr->str), g_strdup(val)); 
+       
+          g_hash_table_insert (hash, g_strdup(key->str), g_string_free(val,FALSE));
         }
 
-      g_string_free(gstr, TRUE);
+      g_string_free(key, TRUE);
       g_io_channel_unref(io);
     }
 

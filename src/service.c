@@ -401,7 +401,7 @@ get_distro_name (void)
       GHashTable * os_release = get_os_release();
       gpointer value = g_hash_table_lookup(os_release, "NAME");
       if (value == NULL)
-        value = _("Ubuntu"); /* fallback value */
+        value = "Ubuntu"; /* fallback value */
       distro_name = g_strdup(value);
       g_hash_table_destroy(os_release);
     }

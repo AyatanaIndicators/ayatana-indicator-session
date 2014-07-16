@@ -343,7 +343,7 @@ get_os_release (void)
 
       for (;;)
         {
-          char *p, *q;
+          char *in, *out;
           const char *val;
           GIOStatus status;
 
@@ -357,29 +357,28 @@ get_os_release (void)
             continue;
 
           /* split into name=value */
-          p = strchr(gstr->str, '=');
-          if (!p)
+          in = strchr(gstr->str, '=');
+          if (!in)
             continue;
-          *p++ = '\0';
+          *in++ = '\0';
 
           /* remove quotes and newline; un-escape */
-          val = p;
-          q = p;
-          while (*p)
+          val = out = in;
+          while (*in)
             {
-              if ((*p == '\'') || (*p == '"') || (*p == '\n'))
+              if ((*in=='\'') || (*in=='"') || (*in=='\n')) /* skip chars */
                 {
-                  ++p;
+                  ++in;
                 }
               else
                 {
-                  if ((*p=='\\') && !*++p)
+                  if ((*in=='\\') && !*++in) /* handle an escaped char */
                     break;
-                  *q++ = *p++;
-                }
 
-              *q = '\0'; /* zero terminate */
+                  *out++ = *in++;
+                }
             }
+          *out = '\0'; /* zero terminate */
         
           g_hash_table_insert (hash, g_strdup(gstr->str), g_strdup(val)); 
         }

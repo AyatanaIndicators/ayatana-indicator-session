@@ -367,7 +367,7 @@ get_os_release (void)
           val = g_string_new(in);
           for (i=0; i<val->len; )
             {
-              if (val->str[i]=='\\' && ((i+1)<val->len)) /* unescape */
+              if (val->str[i]=='\\' && ((i+1)<val->len)) /* unescape: skip 1, keep 1 */
                 g_string_erase (val, i++, 1);
 
               else if ((val->str[i]=='\'') || (val->str[i]=='"') || (val->str[i]=='\n')) /* skip */

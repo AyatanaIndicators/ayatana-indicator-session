@@ -332,21 +332,22 @@ get_current_real_name (IndicatorSessionService * self)
 static GHashTable*
 get_os_release (void)
 {
+  static const char * const os_release = "/etc/os-release";
   GHashTable * hash;
   GIOChannel * io;
 
   hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-  if ((io = g_io_channel_new_file ("/etc/os-release", "r", NULL)))
+  if ((io = g_io_channel_new_file (os_release, "r", NULL)))
     {
       GString * key = g_string_new (NULL);
 
       for (;;)
         {
           GIOStatus status;
-          char *in;
-          GString * val;
-          gsize i;
+          char * in;
+          GError * error;
+          gchar * val;
 
           /* read a line */
           status = g_io_channel_read_line_string (io, key, NULL, NULL);
@@ -363,21 +364,19 @@ get_os_release (void)
             continue;
           *in++ = '\0';
 
-          /* remove quotes and newlines; unescape escape sequences */
-          val = g_string_new(in);
-          for (i=0; i<val->len; )
+          /* unmunge the value component */
+          g_strstrip(in); /* eat linefeed */
+          error = NULL;
+          val = g_shell_unquote (in, &error);
+          if (error != NULL)
             {
-              if (val->str[i]=='\\' && ((i+1)<val->len)) /* unescape: skip 1, keep 1 */
-                g_string_erase (val, i++, 1);
-
-              else if ((val->str[i]=='\'') || (val->str[i]=='"') || (val->str[i]=='\n')) /* skip */
-                g_string_erase (val, i, 1);
-
-              else /* keep */
-                i++;
+              g_warning("Unable to unquote \"%s\": %s", in, error->message);
+              val = g_strdup(in);
+              g_clear_error(&error);
             }
-       
-          g_hash_table_insert (hash, g_strdup(key->str), g_string_free(val,FALSE));
+ 
+          g_debug("from \"%s\": key [%s] val [%s]", os_release, key->str, val); 
+          g_hash_table_insert (hash, g_strdup(key->str), val); /* hash owns val now */
         }
 
       g_string_free(key, TRUE);

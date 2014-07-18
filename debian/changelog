@@ -1,3 +1,12 @@
+indicator-session (12.10.5+14.10.20140718-0ubuntu1) utopic; urgency=low
+
+  [ Robert Ancell ]
+  * Hide relevant items from session indicator when
+    org.gnome.desktop.lockdown disable-lock-screen or disable-user-
+    switching are set to match 12.04 LTS behaviour (LP: #1325353)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 18 Jul 2014 21:36:22 +0000
+
 indicator-session (12.10.5+14.10.20140717-0ubuntu1) utopic; urgency=low
 
   [ Charles Kerr ]

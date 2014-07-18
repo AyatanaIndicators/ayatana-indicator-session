@@ -613,7 +613,7 @@ static GMenuModel *
 create_switch_section (IndicatorSessionService * self, int profile)
 {
   GMenu * menu;
-  GMenuItem * item;
+  GMenuItem * item = NULL;
   gboolean want_accel;
   guint i;
   gpointer guser;
@@ -635,32 +635,47 @@ create_switch_section (IndicatorSessionService * self, int profile)
            indicator_session_guest_is_active (p->backend_guest))
     {
       const char * action = "indicator.switch-to-greeter";
-      item = g_menu_item_new (ellipsis ? _("Switch Account…")
-                                       : _("Switch Account"), action);
+      if (indicator_session_actions_can_switch (p->backend_actions))
+        item = g_menu_item_new (ellipsis ? _("Switch Account…")
+                                         : _("Switch Account"), action);
       want_accel = FALSE;
     }
   else
     {
-      const char * action = "indicator.switch-to-screensaver";
+      const char * lock_switch_action = "indicator.switch-to-screensaver";
+      const char * switch_action = "indicator.switch-to-greeter";
 
-      if (g_hash_table_size (p->users) == 1)
-        item = g_menu_item_new (_("Lock"), action);
-      else
-        item = g_menu_item_new (ellipsis ? _("Lock/Switch Account…")
-                                         : _("Lock/Switch Account"), action);
+      if (g_hash_table_size (p->users) > 1 &&
+          indicator_session_actions_can_switch (p->backend_actions))
+        {
+          if (indicator_session_actions_can_lock (p->backend_actions))
+            item = g_menu_item_new (ellipsis ? _("Lock/Switch Account…")
+                                             : _("Lock/Switch Account"), lock_switch_action);
+          else
+            item = g_menu_item_new (ellipsis ? _("Switch Account…")
+                                             : _("Switch Account"), switch_action);
+        }
+      else if (indicator_session_actions_can_lock (p->backend_actions))
+          item = g_menu_item_new (_("Lock"), lock_switch_action);
 
       want_accel = TRUE;
     }
 
-  if (want_accel)
+  if (item)
     {
-      gchar * str = g_settings_get_string (p->keybinding_settings, "screensaver");
-      g_menu_item_set_attribute (item, "accel", "s", str);
-      g_free (str);
+      if (want_accel)
+        {
+          gchar * str = g_settings_get_string (p->keybinding_settings, "screensaver");
+          g_menu_item_set_attribute (item, "accel", "s", str);
+          g_free (str);
+        }
+
+      g_menu_append_item (menu, item);
+      g_object_unref (item);
     }
 
-  g_menu_append_item (menu, item);
-  g_object_unref (item);
+  if (!indicator_session_actions_can_switch (p->backend_actions))
+    return G_MENU_MODEL (menu);
 
   if (indicator_session_guest_is_allowed (p->backend_guest))
     {

@@ -503,6 +503,19 @@ TEST_F (ServiceTest, ConfirmationDisabledByBackend)
   bool confirm_disabled = g_settings_get_boolean (indicator_settings, confirm_disabled_key);
   bool confirm = confirm_supported && !confirm_disabled;
 
+  // Add users so switch options are shown
+  IndicatorSessionUser * u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 100;
+  u->user_name = g_strdup ("thing1");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 101;
+  u->user_name = g_strdup ("thing2");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  wait_for_menu_resync ();
+
   // confirm that the ellipsis are correct
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-screensaver"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
@@ -537,6 +550,19 @@ TEST_F (ServiceTest, ConfirmationDisabledByUser)
   bool confirm_disabled = g_settings_get_boolean (indicator_settings, confirm_disabled_key);
   bool confirm = confirm_supported && !confirm_disabled;
 
+  // Add users so switch options are shown
+  IndicatorSessionUser * u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 100;
+  u->user_name = g_strdup ("thing1");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 101;
+  u->user_name = g_strdup ("thing2");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  wait_for_menu_resync ();
+
   // confirm that the ellipsis are correct
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-screensaver"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
@@ -560,6 +586,105 @@ TEST_F (ServiceTest, ConfirmationDisabledByUser)
 
   // cleanup
   g_settings_reset (indicator_settings, confirm_disabled_key);
+}
+
+TEST_F (ServiceTest, LockdownUserSwitching)
+{
+  const char * const can_switch_key = "can-switch-sessions";
+
+  // Add users so switch options are shown
+  IndicatorSessionUser * u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 100;
+  u->user_name = g_strdup ("thing1");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 101;
+  u->user_name = g_strdup ("thing2");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  wait_for_menu_resync ();
+
+  // Check can enable screensaver lock
+  ASSERT_TRUE (action_menuitem_exists ("indicator.switch-to-screensaver"));
+  ASSERT_FALSE (action_menuitem_exists ("indicator.switch-to-greeter"));
+
+  g_settings_set_boolean (mock_settings, can_switch_key, FALSE);
+  wait_for_menu_resync ();
+
+  // Check can still enable screensaver (though it can't switch)
+  ASSERT_TRUE (action_menuitem_exists ("indicator.switch-to-screensaver"));
+  ASSERT_FALSE (action_menuitem_exists ("indicator.switch-to-greeter"));
+
+  // cleanup
+  g_settings_reset (mock_settings, can_switch_key);
+}
+
+TEST_F (ServiceTest, LockdownLockScreen)
+{
+  const char * const can_lock_key = "can-lock";
+
+  // Add users so switch options are shown
+  IndicatorSessionUser * u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 100;
+  u->user_name = g_strdup ("thing1");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 101;
+  u->user_name = g_strdup ("thing2");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  wait_for_menu_resync ();
+
+  // Check can enable screensaver lock
+  ASSERT_TRUE (action_menuitem_exists ("indicator.switch-to-screensaver"));
+  ASSERT_FALSE (action_menuitem_exists ("indicator.switch-to-greeter"));
+
+  g_settings_set_boolean (mock_settings, can_lock_key, FALSE);
+  wait_for_menu_resync ();
+
+  // Check can't enable screensaver - just go to greeter
+  ASSERT_FALSE (action_menuitem_exists ("indicator.switch-to-screensaver"));
+  ASSERT_TRUE (action_menuitem_exists ("indicator.switch-to-greeter"));
+
+  // cleanup
+  g_settings_reset (mock_settings, can_lock_key);
+}
+
+TEST_F (ServiceTest, LockdownUserSwitchingAndLockScreen)
+{
+  const char * const can_switch_key = "can-switch-sessions";
+  const char * const can_lock_key = "can-lock";
+
+  // Add users so switch options are shown
+  IndicatorSessionUser * u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 100;
+  u->user_name = g_strdup ("thing1");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  u = g_new0 (IndicatorSessionUser, 1);
+  u->uid = 101;
+  u->user_name = g_strdup ("thing2");
+  u->real_name = g_strdup (" ");
+  indicator_session_users_mock_add_user (INDICATOR_SESSION_USERS_MOCK(mock_users), u);
+  wait_for_menu_resync ();
+
+  // Check can enable screensaver lock
+  ASSERT_TRUE (action_menuitem_exists ("indicator.switch-to-screensaver"));
+  ASSERT_FALSE (action_menuitem_exists ("indicator.switch-to-greeter"));
+
+  g_settings_set_boolean (mock_settings, can_switch_key, FALSE);
+  g_settings_set_boolean (mock_settings, can_lock_key, FALSE);
+  wait_for_menu_resync ();
+
+  // Check can't enable screensaver or go to greeter
+  ASSERT_FALSE (action_menuitem_exists ("indicator.switch-to-screensaver"));
+  ASSERT_FALSE (action_menuitem_exists ("indicator.switch-to-greeter"));
+
+  // cleanup
+  g_settings_reset (mock_settings, can_switch_key);
+  g_settings_reset (mock_settings, can_lock_key);
 }
 
 /**

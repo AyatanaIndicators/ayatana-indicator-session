@@ -10,7 +10,7 @@ macro(add_translations_directory NLS_PACKAGE)
         add_custom_command (TARGET i18n COMMAND ${MSGFMT_EXECUTABLE} -o ${MO_OUTPUT} ${PO_INPUT})
 
         install (FILES ${MO_OUTPUT} DESTINATION
-            ${CMAKE_INSTALL_LOCALEDIR}/LC_MESSAGES
+            ${CMAKE_INSTALL_LOCALEDIR}/${PO_INPUT_BASE}/LC_MESSAGES
             RENAME ${NLS_PACKAGE}.mo)
     endforeach (PO_INPUT ${PO_FILES})
 endmacro(add_translations_directory)
@@ -20,22 +20,18 @@ macro(add_translations_catalog NLS_PACKAGE)
     add_custom_target (pot COMMENT “Building translation catalog.”)
     find_program (XGETTEXT_EXECUTABLE xgettext)
 
+    # init this list, which will hold all the sources across all dirs
+    set(SOURCES "")
 
-    set(C_SOURCE "")
-
+    # add each directory's sources to the overall sources list
     foreach(FILES_INPUT ${ARGN})
-        file (GLOB_RECURSE SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/${FILES_INPUT}/*.c)
-        foreach(C_FILE ${SOURCE_FILES})
-            set(C_SOURCE ${C_SOURCE} ${C_FILE})
-        endforeach()
-        file (GLOB_RECURSE SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/${FILES_INPUT}/*.vala)
-        foreach(C_FILE ${SOURCE_FILES})
-            set(C_SOURCE ${C_SOURCE} ${C_FILE})
-        endforeach()
+        set (DIR ${CMAKE_CURRENT_SOURCE_DIR}/${FILES_INPUT})
+        file (GLOB_RECURSE DIR_SOURCES ${DIR}/*.c ${DIR}/*.cc ${DIR}/*.cpp ${DIR}/*.cxx ${DIR}/*.vala)
+	set (SOURCES ${SOURCES} ${DIR_SOURCES})
     endforeach()
 
     add_custom_command (TARGET pot COMMAND
         ${XGETTEXT_EXECUTABLE} -d ${NLS_PACKAGE} -o ${CMAKE_CURRENT_SOURCE_DIR}/${NLS_PACKAGE}.pot
-        ${VALA_SOURCE} ${C_SOURCE} --keyword="_" --keyword="N_" --from-code=UTF-8
+        ${SOURCES} --keyword="_" --keyword="N_" --from-code=UTF-8
         )
 endmacro()

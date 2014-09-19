@@ -705,13 +705,9 @@ zenity_question (IndicatorSessionActionsDbus * self,
     {
       confirmed = TRUE;
     }
-  else if (!g_spawn_check_exit_status (exit_status, &error))
-    {
-      confirmed = TRUE;
-    }
   else
     {
-      confirmed = exit_status == 0;
+      confirmed = g_spawn_check_exit_status (exit_status, &error);
     }
 
   log_and_clear_error (&error, G_STRLOC, G_STRFUNC);

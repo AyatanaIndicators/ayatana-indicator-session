@@ -831,9 +831,25 @@ static gboolean
 have_unity_control_center (void)
 {
   gchar *path;
+  const gchar *xdg_current_desktop;
+  gchar **desktop_names;
   gboolean have_ucc;
+  gboolean is_unity;
+  int i;
 
-  if (g_strcmp0 (g_getenv ("XDG_CURRENT_DESKTOP"), "Unity") != 0)
+  is_unity = FALSE;
+  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+  if (xdg_current_desktop != NULL) {
+    desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+    for (i = 0; desktop_names[i]; ++i) {
+      if (!g_strcmp0 (desktop_names[i], "Unity")) {
+        is_unity = TRUE;
+      }
+    }
+    g_strfreev (desktop_names);
+  }
+
+  if (!is_unity)
     return FALSE;
 
   path = g_find_program_in_path ("unity-control-center");

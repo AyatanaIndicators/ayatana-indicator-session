@@ -295,12 +295,18 @@ get_user_label (const IndicatorSessionUser * user)
 {
   const char * c;
 
-  /* If blank or whitespace, use username instead */
-  for (c = user->real_name; *c != '\0' && g_ascii_isspace (*c); c++);
-  if (*c == '\0')
-    return user->user_name;
+  /* if real_name exists and isn't empty or whitespace, use it */
+  c = user->real_name;
+  if (c != NULL)
+    {
+      while ((*c != '\0') && g_ascii_isspace(*c)) /* walk past whitespace */
+        ++c;
+      if (*c != '\0')
+        return user->real_name;
+    }
 
-  return user->real_name;
+  /* otherwise, use this as a fallback */
+  return user->user_name;
 }
 
 static const char *

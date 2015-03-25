@@ -302,7 +302,7 @@ get_user_label (const IndicatorSessionUser * user)
       while (*c != '\0')
         {
           if (g_unichar_isgraph(g_utf8_get_char(c)))
-            return c;
+            return user->real_name;
 
           c = g_utf8_next_char(c);
         }

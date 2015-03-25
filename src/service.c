@@ -295,14 +295,17 @@ get_user_label (const IndicatorSessionUser * user)
 {
   const char * c;
 
-  /* if real_name exists and isn't empty or whitespace, use it */
+  /* if real_name exists and is printable, use it */
   c = user->real_name;
-  if (c != NULL)
+  if ((c != NULL) && g_utf8_validate(c, -1, NULL))
     {
-      while ((*c != '\0') && g_ascii_isspace(*c)) /* walk past whitespace */
-        ++c;
-      if (*c != '\0')
-        return user->real_name;
+      while (*c != '\0')
+        {
+          if (g_unichar_isgraph(g_utf8_get_char(c)))
+            return c;
+
+          c = g_utf8_next_char(c);
+        }
     }
 
   /* otherwise, use this as a fallback */

@@ -1,3 +1,11 @@
+indicator-session (12.10.5+15.04.20150327-0ubuntu1) vivid; urgency=medium
+
+  [ Charles Kerr ]
+  * Fix a crash in get_user_label() by testing a string pointer for NULL
+    before dereferencing it. (LP: #1290876)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 27 Mar 2015 15:00:16 +0000
+
 indicator-session (12.10.5+15.04.20150228-0ubuntu1) vivid; urgency=medium
 
   [ Dmitry Shachnev ]

@@ -19,6 +19,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <url-dispatcher.h>
 
 #include "dbus-end-session-dialog.h"
 #include "dbus-login1-manager.h"
@@ -862,7 +863,9 @@ have_unity_control_center (void)
 static void
 my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  if (have_unity_control_center ())
+  if (g_getenv ("MIR_SOCKET") != NULL)
+    url_dispatch_send("settings:///system", NULL, NULL);
+  else if (have_unity_control_center ())
     run_outside_app ("unity-control-center");
   else
     run_outside_app ("gnome-control-center");
@@ -871,7 +874,9 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 static void
 my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  if (have_unity_control_center ())
+  if (g_getenv ("MIR_SOCKET") != NULL)
+    url_dispatch_send("settings:///system/online-accounts", NULL, NULL);
+  else if (have_unity_control_center ())
     run_outside_app ("unity-control-center credentials");
   else
     run_outside_app ("gnome-control-center credentials");
@@ -880,7 +885,9 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 static void
 my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  if (have_unity_control_center ())
+  if (g_getenv ("MIR_SOCKET") != NULL)
+    url_dispatch_send("settings:///system/about", NULL, NULL);
+  else if (have_unity_control_center ())
     run_outside_app ("unity-control-center info");
   else
     run_outside_app ("gnome-control-center info");

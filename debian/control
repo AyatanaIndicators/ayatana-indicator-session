@@ -9,6 +9,7 @@ Build-Depends: cmake,
                intltool,
                libglib2.0-dev (>= 2.36),
                libgtest-dev,
+               liburl-dispatcher1-dev,
                python,
 Standards-Version: 3.9.3
 Homepage: https://launchpad.net/indicator-session

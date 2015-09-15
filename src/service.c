@@ -775,7 +775,7 @@ create_logout_section (IndicatorSessionService * self)
 }
 
 static GMenuModel *
-create_session_section (IndicatorSessionService * self)
+create_session_section (IndicatorSessionService * self, int profile)
 {
   GMenu * menu;
   const priv_t * const p = self->priv;
@@ -790,13 +790,15 @@ create_session_section (IndicatorSessionService * self)
   if (indicator_session_actions_can_hibernate (p->backend_actions))
     g_menu_append (menu, _("Hibernate"), "indicator.hibernate");
 
-  if (indicator_session_actions_can_reboot (p->backend_actions))
+  if (profile != PROFILE_LOCKSCREEN && 
+    indicator_session_actions_can_reboot (p->backend_actions))
     {
       const char * label = ellipsis ? _("Restart…") : _("Restart");
       g_menu_append (menu, label, "indicator.reboot");
     }
 
-  if (!g_settings_get_boolean (s, "suppress-shutdown-menuitem"))
+  if (profile != PROFILE_LOCKSCREEN && 
+    !g_settings_get_boolean (s, "suppress-shutdown-menuitem"))
     {
       const char * label = ellipsis ? _("Shut Down…") : _("Shut Down");
       g_menu_append (menu, label, "indicator.power-off");
@@ -824,16 +826,16 @@ create_menu (IndicatorSessionService * self, int profile)
       sections[n++] = create_settings_section (self);
       sections[n++] = create_switch_section (self, profile);
       sections[n++] = create_logout_section (self);
-      sections[n++] = create_session_section (self);
+      sections[n++] = create_session_section (self, profile);
     }
   else if (profile == PROFILE_GREETER)
     {
-      sections[n++] = create_session_section (self);
+      sections[n++] = create_session_section (self, profile);
     }
   else if (profile == PROFILE_LOCKSCREEN)
     {
       sections[n++] = create_switch_section (self, profile);
-      sections[n++] = create_session_section (self);
+      sections[n++] = create_session_section (self, profile);
     }
 
   /* add sections to the submenu */
@@ -1080,9 +1082,9 @@ rebuild_now (IndicatorSessionService * self, int sections)
 
   if (sections & SECTION_SESSION)
     {
-      rebuild_section (desktop->submenu, 4, create_session_section(self));
-      rebuild_section (greeter->submenu, 0, create_session_section(self));
-      rebuild_section (lockscreen->submenu, 1, create_session_section(self));
+      rebuild_section (desktop->submenu, 4, create_session_section(self, PROFILE_DESKTOP));
+      rebuild_section (greeter->submenu, 0, create_session_section(self, PROFILE_GREETER));
+      rebuild_section (lockscreen->submenu, 1, create_session_section(self, PROFILE_LOCKSCREEN));
     }
 }
 

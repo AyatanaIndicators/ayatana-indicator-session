@@ -1,3 +1,14 @@
+indicator-session (12.10.5+15.10.20150915-0ubuntu1) wily; urgency=medium
+
+  [ Andrea Azzarone andrea.azzarone@canonical.com ]
+  * Disable shutdown/reboot in the lockscreen. (LP: #1460626)
+
+  [ Sebastien Bacher ]
+  * under unity8 start system-settings instead unity-control-center (LP:
+    #1489480)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 15 Sep 2015 07:47:28 +0000
+
 indicator-session (12.10.5+15.04.20150327-0ubuntu1) vivid; urgency=medium
 
   [ Charles Kerr ]

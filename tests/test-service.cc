@@ -152,11 +152,11 @@ class ServiceTest: public GTestDBusFixture
       any_item_changed = FALSE;
 
       timer = g_timer_new ();
-      mock_settings = g_settings_new ("com.canonical.indicator.session.backendmock");
+      mock_settings = g_settings_new ("org.ayatana.indicator.session.backendmock");
       mock_actions = indicator_session_actions_mock_new ();
       mock_users = indicator_session_users_mock_new ();
       mock_guest = indicator_session_guest_mock_new ();
-      indicator_settings = g_settings_new ("com.canonical.indicator.session");
+      indicator_settings = g_settings_new ("org.ayatana.indicator.session");
 
       // Start an IndicatorSessionService and wait for it to appear on the bus.
       // This way our calls to g_dbus_*_get() in the next paragraph won't activate
@@ -165,7 +165,7 @@ class ServiceTest: public GTestDBusFixture
 
       // wait for the service to show up on the bus
       const guint watch_id = g_bus_watch_name_on_connection (conn,
-                                                             "com.canonical.indicator.session",
+                                                             "org.ayatana.indicator.session",
                                                              G_BUS_NAME_WATCHER_FLAGS_NONE,
                                                              on_name_appeared, // quits the loop
                                                              NULL, this, NULL);
@@ -177,11 +177,11 @@ class ServiceTest: public GTestDBusFixture
 
       // get the actions & menus that the service exported.
       action_group = g_dbus_action_group_get (conn,
-                                              "com.canonical.indicator.session",
-                                              "/com/canonical/indicator/session");
+                                              "org.ayatana.indicator.session",
+                                              "/org/ayatana/indicator/session");
       menu_model = g_dbus_menu_model_get (conn,
-                                          "com.canonical.indicator.session",
-                                          "/com/canonical/indicator/session/desktop");
+                                          "org.ayatana.indicator.session",
+                                          "/org/ayatana/indicator/session/desktop");
       // the actions are added asynchronously, so wait for the actions
       if (!g_action_group_has_action (G_ACTION_GROUP(action_group), "about"))
         wait_for_signal (action_group, "action-added");

@@ -42,21 +42,18 @@ add_executable (test-actions
                 test-actions.cc)
 add_test (test-actions test-actions)
 set_tests_properties (test-actions PROPERTIES COMPILE_FLAGS "${SERVICE_CFLAGS}")
-target_link_libraries (test-actions desktopmock backenddbus libindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})
+target_link_libraries (test-actions desktopmock backenddbus libayatanaindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})
 
 # test the Guest class
 add_executable (test-guest
                 test-guest.cc)
 add_test (test-guest test-guest)
 set_tests_properties (test-guest PROPERTIES COMPILE_FLAGS "${SERVICE_CFLAGS}")
-target_link_libraries (test-guest desktopmock backenddbus libindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})
+target_link_libraries (test-guest desktopmock backenddbus libayatanaindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})
 
 # test the Users class
 add_executable (test-users
                 test-users.cc)
 add_test (test-users test-users)
 set_tests_properties (test-users PROPERTIES COMPILE_FLAGS "${SERVICE_CFLAGS}")
-target_link_libraries (test-users desktopmock backenddbus libindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})
-
-
-
+target_link_libraries (test-users desktopmock backenddbus libayatanaindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})

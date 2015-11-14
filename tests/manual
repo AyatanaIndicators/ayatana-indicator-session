@@ -1,19 +1,19 @@
 
-Test-case indicator-session/unity7-items-check
+Test-case ayatana-indicator-session/unity7-items-check
 <dl>
 	<dt>Log in to a Unity 7 user session</dt>
 	<dt>Go to the panel and click on the Session indicator</dt>
 		<dd>Ensure there are items in the menu</dd>
 </dl>
 
-Test-case indicator-session/unity7-greeter-items-check
+Test-case ayatana-indicator-session/unity7-greeter-items-check
 <dl>
 	<dt>Start a system and wait for the greeter or logout of the current user session</dt>
 	<dt>Go to the panel and click on the Session indicator</dt>
 		<dd>Ensure there are items in the menu</dd>
 </dl>
 
-Test-case indicator-session/unity8-items-check
+Test-case ayatana-indicator-session/unity8-items-check
 <dl>
 	<dt>Login to a user session running Unity 8</dt>
 	<dt>Pull down the top panel until it sticks open</dt>

@@ -8,8 +8,8 @@ add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-display-manager
                    ${CMAKE_CURRENT_SOURCE_DIR}/org.freedesktop.DisplayManager.Seat.xml)
 
 add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-webcredentials
-                   com.canonical.indicators
-                   ${CMAKE_CURRENT_SOURCE_DIR}/com.canonical.indicators.webcredentials.xml)
+                   org.ayatana.indicators
+                   ${CMAKE_CURRENT_SOURCE_DIR}/org.ayatana.indicators.webcredentials.xml)
 
 add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-accounts
                    org.freedesktop
@@ -58,4 +58,3 @@ set_source_files_properties (${SOURCES}
 include_directories (${CMAKE_CURRENT_BINARY_DIR} ${SERVICE_INCLUDE_DIRS})
 
 add_library (backenddbus STATIC ${SOURCES} ${BACKEND_GENERATED_SOURCES})
-

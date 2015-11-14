@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Indicator Session
-Exec=@pkglibexecdir@/indicator-session-service
+Exec=@pkglibexecdir@/ayatana-indicator-session-service
 OnlyShowIn=Unity;
 NoDisplay=true
 StartupNotify=false

@@ -45,7 +45,7 @@ class Actions: public GTestMockDBusFixture
       super :: SetUp ();
 
       // init 'actions'
-      indicator_settings = g_settings_new ("com.canonical.indicator.session");
+      indicator_settings = g_settings_new ("org.ayatana.indicator.session");
       cancellable = g_cancellable_new ();
       actions = 0;
       backend_get (cancellable, &actions, NULL, NULL);

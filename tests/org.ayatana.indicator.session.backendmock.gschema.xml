@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="gsettings-desktop-schemas">
-  <schema path="/com/canonical/indicator/session/backendmock/" id="com.canonical.indicator.session.backendmock">
+  <schema path="/org/ayatana/indicator/session/backendmock/" id="org.ayatana.indicator.session.backendmock">
     <key type="s" name="last-command">
       <default>''</default>
       <summary>The last command activated</summary>

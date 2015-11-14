@@ -1,11 +1,11 @@
-project (indicator-session C CXX)
+project (ayatana-indicator-session C CXX)
 cmake_minimum_required (VERSION 2.8.9)
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-set (PROJECT_VERSION "13.10.1")
+set (PROJECT_VERSION "0.5.0")
 set (PACKAGE ${CMAKE_PROJECT_NAME})
-set (GETTEXT_PACKAGE indicator-session)
+set (GETTEXT_PACKAGE ayatana-indicator-session)
 
 option (enable_tests "Build the package's automatic tests." ON)
 option (enable_lcov "Generate lcov code coverage reports." ON)
@@ -29,8 +29,7 @@ find_package (PkgConfig REQUIRED)
 include (FindPkgConfig)
 pkg_check_modules (SERVICE REQUIRED
                    glib-2.0>=2.36
-                   gio-unix-2.0>=2.36
-                   url-dispatcher-1>=1)
+                   gio-unix-2.0>=2.36)
 include_directories (${SERVICE_INCLUDE_DIRS})
 
 set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema path="/apps/indicator-session/" id="com.canonical.indicator.session">
+  <schema path="/org/ayatana/indicator/session/" id="org.ayatana.indicator.session">
     <key type="b" name="suppress-logout-restart-shutdown">
       <default>false</default>
       <summary>Suppress the dialog to confirm logout, restart and shutdown action</summary>
@@ -29,7 +29,7 @@
     <key type="b" name="user-show-menu">
       <default>true</default>
       <summary>Show the list of users</summary>
-      <description>Allow for the user menu to be hidden by the user.</description>
+      <description>Allow for the user list to be hidden by the user.</description>
     </key>
 
   </schema>

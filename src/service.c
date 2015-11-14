@@ -24,8 +24,8 @@
 #include "recoverable-problem.h"
 #include "service.h"
 
-#define BUS_NAME "com.canonical.indicator.session"
-#define BUS_PATH "/com/canonical/indicator/session"
+#define BUS_NAME "org.ayatana.indicator.session"
+#define BUS_PATH "/org/ayatana/indicator/session"
 
 #define ICON_DEFAULT "system-devices-panel"
 #define ICON_INFO    "system-devices-panel-information"
@@ -691,7 +691,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
       GMenuItem *item;
 
       item = g_menu_item_new (_("Guest Session"), "indicator.switch-to-guest");
-      g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.guest-menu-item");
+      g_menu_item_set_attribute (item, "x-ayatana-type", "s", "indicator.guest-menu-item");
       g_menu_append_item (menu, item);
 
       g_object_unref (item);
@@ -739,7 +739,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
 
       item = g_menu_item_new (label, NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
-      g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.user-menu-item");
+      g_menu_item_set_attribute (item, "x-ayatana-type", "s", "indicator.user-menu-item");
 
       if ((serialized_icon = serialize_icon_file (u->icon_file)))
         {
@@ -848,7 +848,7 @@ create_menu (IndicatorSessionService * self, int profile)
 
   /* add submenu to the header */
   header = g_menu_item_new (NULL, "indicator._header");
-  g_menu_item_set_attribute (header, "x-canonical-type", "s", "com.canonical.indicator.root");
+  g_menu_item_set_attribute (header, "x-ayatana-type", "s", "org.ayatana.indicator.root");
   g_menu_item_set_submenu (header, G_MENU_MODEL (submenu));
   g_object_unref (submenu);
 
@@ -1234,7 +1234,7 @@ indicator_session_service_init (IndicatorSessionService * self)
   p = G_TYPE_INSTANCE_GET_PRIVATE (self,
                                    INDICATOR_TYPE_SESSION_SERVICE,
                                    IndicatorSessionServicePrivate);
-  p->indicator_settings = g_settings_new ("com.canonical.indicator.session");
+  p->indicator_settings = g_settings_new ("org.ayatana.indicator.session");
   p->keybinding_settings = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
   self->priv = p;
 

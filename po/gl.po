@@ -17,38 +17,38 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 "X-Generator: Launchpad (build 14041)\n"
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:1
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:1
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Fai que o botón de saír da sesión non se mostre no menú de sesión."
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:2
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:2
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Fai que o botón de reiniciar non se mostre no menú de sesión."
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:3
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:3
 msgid ""
 "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Fai que o botón de apagado non se mostre no menú de sesión."
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:4
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:4
 msgid "Remove the Log Out item from the session menu"
 msgstr "Elimina o elemento Saír da sesión do menú de sesión"
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:5
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:5
 msgid "Remove the Restart item from the session menu"
 msgstr "Eliminar o elemento Reiniciar do menú de sesión"
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:6
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:6
 msgid "Remove the shutdown item from the session menu"
 msgstr "Eliminar o elemento Apagar do menú de sesión"
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:7
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:7
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Suprimir a caixa de diálogo para confirmar que se vai saír da sesión, "
 "reiniciar ou apagar"
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:8
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:8
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."

@@ -17,38 +17,38 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 "X-Generator: Launchpad (build 14041)\n"
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:1
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:1
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:2
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:2
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:3
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:3
 msgid ""
 "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:4
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:4
 msgid "Remove the Log Out item from the session menu"
 msgstr "Boga su sèberu Serrare Sessione dae su menù de sessione"
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:5
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:5
 msgid "Remove the Restart item from the session menu"
 msgstr ""
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:6
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:6
 msgid "Remove the shutdown item from the session menu"
 msgstr ""
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:7
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:7
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Boga sa ventana de cunfirmatzione pro sas atziones de acabu de sessione, "
 "recumentzu e  istudada."
 
-#: ../data/com.canonical.indicator.session.gschema.xml.in.h:8
+#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:8
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."

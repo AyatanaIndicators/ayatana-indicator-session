@@ -1,5 +1,5 @@
 <schemalist>
-  <schema id="com.canonical.indicator.session" path="/apps/indicator-session/">
+  <schema id="org.ayatana.indicator.session" path="/org/ayatana/indicator/session/">
     <key name="suppress-logout-restart-shutdown" type="b">
       <default>false</default>
       <_summary>Suppress the dialog to confirm logout, restart and shutdown action</_summary>

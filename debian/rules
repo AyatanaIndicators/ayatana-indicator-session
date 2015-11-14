@@ -3,7 +3,7 @@
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 
 %:
-	dh $@ --with translations
+	dh $@
 
 override_dh_install:
 	find debian/indicator-session/usr/lib -name *.la -delete
@@ -13,6 +13,3 @@ override_dh_install:
 # Hack as it seems it's not possible to easy run that under dbus-test-runner
 override_dh_auto_test:
 	env -u LD_PRELOAD dh_auto_test
-
-override_dh_translations:
-	$(MAKE) -C obj-$(DEB_HOST_GNU_TYPE) pot

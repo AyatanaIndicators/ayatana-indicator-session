@@ -69,7 +69,7 @@ Installation
 ------------
 
 what gets installed
-LC_ALL=C /usr/bin/intltool-merge  -x -u --no-translations com.canonical.indicator.session.gschema.xml.in com.canonical.indicator.session.gschema.xml
+LC_ALL=C /usr/bin/intltool-merge  -x -u --no-translations org.ayatana.indicator.session.gschema.xml.in org.ayatana.indicator.session.gschema.xml
 
 
 

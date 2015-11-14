@@ -1,0 +1,16 @@
+[Indicator Service]
+Name=ayatana-indicator-session
+ObjectPath=/org/ayatana/indicator/session
+Position=10
+
+[desktop]
+ObjectPath=/org/ayatana/indicator/session/desktop
+
+[desktop_greeter]
+ObjectPath=/org/ayatana/indicator/session/desktop_greeter
+
+[desktop_lockscreen]
+ObjectPath=/org/ayatana/indicator/session/desktop_lockscreen
+
+[ubiquity]
+ObjectPath=/org/ayatana/indicator/session/desktop_greeter

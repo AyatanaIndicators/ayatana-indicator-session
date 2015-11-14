@@ -1,3 +1,9 @@
+ayatana-indicator-session (0.4.0-0) UNRELEASED; urgency=medium
+
+  * Fork from Ubuntu's indicator-session project.
+
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Sun, 08 Nov 2015 06:48:54 +0100
+
 indicator-session (12.10.5+15.10.20150915-0ubuntu1) wily; urgency=medium
 
   [ Andrea Azzarone andrea.azzarone@canonical.com ]

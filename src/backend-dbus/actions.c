@@ -19,7 +19,6 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <url-dispatcher.h>
 
 #include "dbus-end-session-dialog.h"
 #include "dbus-login1-manager.h"
@@ -863,9 +862,7 @@ have_unity_control_center (void)
 static void
 my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  if (g_getenv ("MIR_SOCKET") != NULL)
-    url_dispatch_send("settings:///system", NULL, NULL);
-  else if (have_unity_control_center ())
+  if (have_unity_control_center ())
     run_outside_app ("unity-control-center");
   else
     run_outside_app ("gnome-control-center");
@@ -874,9 +871,7 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 static void
 my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  if (g_getenv ("MIR_SOCKET") != NULL)
-    url_dispatch_send("settings:///system/online-accounts", NULL, NULL);
-  else if (have_unity_control_center ())
+  if (have_unity_control_center ())
     run_outside_app ("unity-control-center credentials");
   else
     run_outside_app ("gnome-control-center credentials");
@@ -885,9 +880,7 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 static void
 my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  if (g_getenv ("MIR_SOCKET") != NULL)
-    url_dispatch_send("settings:///system/about", NULL, NULL);
-  else if (have_unity_control_center ())
+  if (have_unity_control_center ())
     run_outside_app ("unity-control-center info");
   else
     run_outside_app ("gnome-control-center info");
@@ -1091,7 +1084,7 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
                             G_CALLBACK(indicator_session_actions_notify_can_switch), self);
   p->lockdown_settings = s;
 
-  s = g_settings_new ("com.canonical.indicator.session");
+  s = g_settings_new ("org.ayatana.indicator.session");
   g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",
                             G_CALLBACK(indicator_session_actions_notify_can_prompt), self);
   g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",
@@ -1128,8 +1121,8 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
 
   webcredentials_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                     G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
-                                    "com.canonical.indicators.webcredentials",
-                                    "/com/canonical/indicators/webcredentials",
+                                    "org.ayatana.indicators.webcredentials",
+                                    "/org/ayatana/indicators/webcredentials",
                                     p->cancellable,
                                     on_webcredentials_proxy_ready,
                                     self);

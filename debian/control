@@ -18,8 +18,8 @@ Package: indicator-session
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         systemd-services,
-         gnome-settings-daemon-schemas,
+         systemd,
+         gnome-settings-daemon,
          gsettings-desktop-schemas,
 Recommends: indicator-applet (>= 0.2) | indicator-renderer,
             gnome-screensaver,

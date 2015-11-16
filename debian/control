@@ -14,15 +14,15 @@ Homepage: https://github.com/ArcticaProject/ayatana-indicator-session
 Vcs-Git: git://cgit.arctica-project.org/ayatana/ayatana-indicator-session.git
 Vcs-Browser: https://cgit.arctica-project.org/ayatana/ayatana-indicator-session.git/
 
-Package: indicator-session
+Package: ayatana-indicator-session
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          systemd,
          gnome-settings-daemon,
          gsettings-desktop-schemas,
-Recommends: indicator-applet (>= 0.2) | indicator-renderer,
-            gnome-screensaver,
+Recommends: indicator-applet (>= 0.2) | mate-indicator-applet | indicator-renderer,
+            gnome-screensaver | mate-screensaver,
             yelp,
             unity-control-center | gnome-control-center,
             unity-control-center-signon | gnome-control-center-signon

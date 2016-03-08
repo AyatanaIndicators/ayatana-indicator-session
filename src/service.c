@@ -105,6 +105,7 @@ struct _IndicatorSessionServicePrivate
   GSimpleAction * header_action;
   GSimpleAction * user_switcher_action;
   GSimpleAction * guest_switcher_action;
+  GSimpleAction * usage_mode_action;
   GHashTable * users;
   GHashTable * reported_users;
   guint rebuild_id;
@@ -1021,6 +1022,7 @@ init_gactions (IndicatorSessionService * self)
   g_action_map_add_action(G_ACTION_MAP(p->actions), G_ACTION(a));
   g_signal_connect_swapped(p->usage_mode_settings, "changed::usage-mode",
                            G_CALLBACK(on_usage_mode_setting_changed), self);
+  p->usage_mode_action = a;
 
   /* add the header action */
   a = g_simple_action_new_stateful ("_header", NULL,
@@ -1435,6 +1437,7 @@ my_dispose (GObject * o)
   g_clear_object (&p->header_action);
   g_clear_object (&p->user_switcher_action);
   g_clear_object (&p->guest_switcher_action);
+  g_clear_object (&p->usage_mode_action);
   g_clear_object (&p->conn);
 
   g_clear_pointer (&p->default_icon_serialized, g_variant_unref);

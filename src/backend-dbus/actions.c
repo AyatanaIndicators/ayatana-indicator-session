@@ -882,6 +882,8 @@ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   if (ayatana_common_utils_have_budgie_program ("yelp"))
     ayatana_common_utils_execute_command ("yelp help:gnome-user-guide");
+  else if (ayatana_common_utils_is_lomiri())
+    ayatana_common_utils_open_url("https://forums.ubports.com");
   else if (ayatana_common_utils_have_gnome_program ("yelp"))
     ayatana_common_utils_execute_command ("yelp help:gnome-user-guide");
   else if (ayatana_common_utils_have_mate_program ("yelp"))

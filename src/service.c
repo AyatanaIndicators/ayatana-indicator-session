@@ -371,9 +371,10 @@ on_usage_mode_setting_changed (gpointer gself)
 }
 
 static GMenuModel *
-create_admin_section (void)
+create_admin_section (IndicatorSessionService * self)
 {
   GMenu * menu;
+  priv_t * p = self->priv;
   gchar * desktop_help_label = g_strdup_printf(_("%s Desktop Help"), get_desktop_name());
   gchar * distro_help_label = g_strdup_printf(_("%s Help…"), get_distro_name());
   menu = g_menu_new ();
@@ -389,7 +390,7 @@ create_admin_section (void)
   g_free (desktop_help_label);
   g_free (distro_help_label);
 
-  if (ayatana_common_utils_is_lomiri())
+  if (p->usage_mode_action && ayatana_common_utils_is_lomiri())
   {
       GMenuItem * menu_item = NULL;
       menu_item = g_menu_item_new(_("Desktop mode"), "indicator.usage-mode");
@@ -799,7 +800,7 @@ create_menu (IndicatorSessionService * self, int profile)
 
   if (profile == PROFILE_DESKTOP)
     {
-      sections[n++] = create_admin_section ();
+      sections[n++] = create_admin_section (self);
       sections[n++] = create_settings_section (self);
       sections[n++] = create_switch_section (self, profile);
       sections[n++] = create_logout_section (self);
@@ -1014,21 +1015,24 @@ init_gactions (IndicatorSessionService * self)
   p->user_switcher_action = a;
 
   /* add usage-mode action */
-  a = g_simple_action_new_stateful("usage-mode",
+  if (p->usage_mode_settings)
+    {
+      a = g_simple_action_new_stateful("usage-mode",
+                                       NULL,
+                                       g_variant_new_boolean(FALSE));
+      g_settings_bind_with_mapping(p->usage_mode_settings, "usage-mode",
+                                   a, "state",
+                                   G_SETTINGS_BIND_DEFAULT,
+                                   usage_mode_to_action_state,
+                                   action_state_to_usage_mode,
                                    NULL,
-                                   g_variant_new_boolean(FALSE));
-  g_settings_bind_with_mapping(p->usage_mode_settings, "usage-mode",
-                               a, "state",
-                               G_SETTINGS_BIND_DEFAULT,
-                               usage_mode_to_action_state,
-                               action_state_to_usage_mode,
-                               NULL,
-                               NULL);
+                                   NULL);
 
-  g_action_map_add_action(G_ACTION_MAP(p->actions), G_ACTION(a));
-  g_signal_connect_swapped(p->usage_mode_settings, "changed::usage-mode",
-                           G_CALLBACK(on_usage_mode_setting_changed), self);
-  p->usage_mode_action = a;
+      g_action_map_add_action(G_ACTION_MAP(p->actions), G_ACTION(a));
+      g_signal_connect_swapped(p->usage_mode_settings, "changed::usage-mode",
+                               G_CALLBACK(on_usage_mode_setting_changed), self);
+      p->usage_mode_action = a;
+    }
 
   /* add the header action */
   a = g_simple_action_new_stateful ("_header", NULL,
@@ -1071,7 +1075,7 @@ rebuild_now (IndicatorSessionService * self, int sections)
 
   if (sections & SECTION_ADMIN)
     {
-      rebuild_section (desktop->submenu, 0, create_admin_section());
+      rebuild_section (desktop->submenu, 0, create_admin_section(self));
     }
 
   if (sections & SECTION_SETTINGS)
@@ -1240,6 +1244,7 @@ indicator_session_service_init (IndicatorSessionService * self)
   priv_t * p;
   gpointer gp;
   GIcon * icon;
+  GSettingsSchema * usage_mode_schema;
 
   /* init our priv pointer */
   p = indicator_session_service_get_instance_private (self);
@@ -1263,7 +1268,16 @@ indicator_session_service_init (IndicatorSessionService * self)
   else if (ayatana_common_utils_is_lomiri())
     {
         p->keybinding_settings = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
-        p->usage_mode_settings = g_settings_new(usage_mode_schema_name);
+
+        /* Only use unity8 schema if it's installed; this avoids a hard dependency
+        on unity8-schemas */
+        usage_mode_schema = g_settings_schema_source_lookup (g_settings_schema_source_get_default (),
+                                                       usage_mode_schema_name, TRUE);
+        if (usage_mode_schema)
+        {
+            p->usage_mode_settings = g_settings_new (usage_mode_schema_name);
+            g_settings_schema_unref (usage_mode_schema);
+        }
     }
 
   self->priv = p;

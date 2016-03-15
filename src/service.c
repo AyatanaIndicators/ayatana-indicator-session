@@ -377,7 +377,13 @@ create_admin_section (void)
   gchar * desktop_help_label = g_strdup_printf(_("%s Desktop Help"), get_desktop_name());
   gchar * distro_help_label = g_strdup_printf(_("%s Help…"), get_distro_name());
   menu = g_menu_new ();
-  g_menu_append (menu, _("About This Device…"), "indicator.about");
+
+  if (ayatana_common_utils_is_lomiri()) {
+      g_menu_append (menu, _("About This Device…"), "indicator.about");
+  } else {
+      g_menu_append (menu, _("About This Computer"), "indicator.about");
+  }
+
   g_menu_append (menu, desktop_help_label, "indicator.desktop_help");
   g_menu_append (menu, distro_help_label, "indicator.distro_help");
   g_free (desktop_help_label);

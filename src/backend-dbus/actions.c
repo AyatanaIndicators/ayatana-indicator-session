@@ -414,6 +414,9 @@ my_can_reboot (IndicatorSessionActions * actions)
   if (g_settings_get_boolean (p->indicator_settings, "suppress-restart-menuitem"))
     return FALSE;
 
+  if (g_settings_get_boolean (p->indicator_settings, "force-restart-menuitem"))
+    return TRUE;
+
   /* Shutdown and Restart are the same dialog prompt in Unity,
      so disable the redundant 'Restart' menuitem in that mode */
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-shutdown-menuitem"))
@@ -1183,6 +1186,8 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
   g_signal_connect_swapped (s, "changed::suppress-restart-menuitem",
                             G_CALLBACK(indicator_session_actions_notify_can_reboot), self);
   g_signal_connect_swapped (s, "changed::suppress-shutdown-menuitem",
+                            G_CALLBACK(indicator_session_actions_notify_can_reboot), self);
+  g_signal_connect_swapped (s, "changed::force-restart-menuitem",
                             G_CALLBACK(indicator_session_actions_notify_can_reboot), self);
   p->indicator_settings = s;
 

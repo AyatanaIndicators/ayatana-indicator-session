@@ -6,8 +6,8 @@ export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 	dh $@
 
 override_dh_install:
-	find debian/indicator-session/usr/lib -name *.la -delete
-	find debian/indicator-session/usr/lib -name *.a -delete
+	find debian/ayatana-indicator-session/usr/lib -name *.la -delete
+	find debian/ayatana-indicator-session/usr/lib -name *.a -delete
 	dh_install --fail-missing
 
 # Hack as it seems it's not possible to easy run that under dbus-test-runner

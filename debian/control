@@ -9,6 +9,7 @@ Build-Depends: cmake,
                libglib2.0-dev (>= 2.36),
                libgtest-dev,
                python,
+               systemd,
 Standards-Version: 3.9.6
 Homepage: https://github.com/ArcticaProject/ayatana-indicator-session
 Vcs-Git: git://cgit.arctica-project.org/ayatana/ayatana-indicator-session.git
@@ -21,6 +22,7 @@ Depends: ${shlibs:Depends},
          systemd,
          gnome-settings-daemon,
          gsettings-desktop-schemas,
+         ayatana-indicator-common,
 Recommends: indicator-applet (>= 0.2) | mate-indicator-applet | indicator-renderer,
             gnome-screensaver | mate-screensaver,
             yelp,

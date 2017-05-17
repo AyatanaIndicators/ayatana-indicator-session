@@ -29,11 +29,12 @@ Recommends: indicator-applet (>= 0.2) | mate-indicator-applet | indicator-render
 Suggests: lightdm,
           apport,
           zenity
-Description: indicator showing session management, status and user switching
- This indicator is designed to be placed on the right side of a panel and
+Description: Ayatana Indicator showing session management, status and user switching
+ This Ayatana Indicator is designed to be placed on the right side of a panel and
  give the user easy control for changing their instant message status.  
  Switching to another user.  Starting a guest session.  Or controlling the
  status of their own session.
  .
  It requires some way to be hosted into a panel.  For the GNOME Panel the
- appropriate package is indicator-applet-session.
+ appropriate package is indicator-applet-session. For the MATE Panel the
+ appropriate package is mate-indicator-applet.

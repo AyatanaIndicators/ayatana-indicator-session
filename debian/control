@@ -24,8 +24,8 @@ Depends: ${shlibs:Depends},
 Recommends: indicator-applet (>= 0.2) | mate-indicator-applet | indicator-renderer,
             gnome-screensaver | mate-screensaver,
             yelp,
-            unity-control-center | gnome-control-center,
-            unity-control-center-signon | gnome-control-center-signon
+            unity-control-center | gnome-control-center | mate-control-center,
+            unity-control-center-signon | gnome-control-center-signon | mate-control-center,
 Suggests: lightdm,
           apport,
           zenity

@@ -1105,8 +1105,8 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
 
   unity_session_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                    G_DBUS_PROXY_FLAGS_NONE,
-                                   "com.canonical.Unity",
-                                   "/com/canonical/Unity/Session",
+                                   "org.ayatana.Desktop",
+                                   "/org/ayatana/Desktop/Session",
                                    p->cancellable,
                                    on_unity_proxy_ready,
                                    self);
@@ -1129,7 +1129,7 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
 
   end_session_dialog_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                         G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
-                                        "com.canonical.Unity",
+                                        "org.ayatana.Desktop",
                                         "/org/gnome/SessionManager/EndSessionDialog",
                                         p->cancellable,
                                         on_end_session_dialog_proxy_ready,

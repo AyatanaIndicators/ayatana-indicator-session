@@ -45,7 +45,7 @@ add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-end-session-dialog
 
 add_gdbus_codegen (BACKEND_GENERATED_SOURCES unity-session
                    com.canonical
-                   ${CMAKE_CURRENT_SOURCE_DIR}/com.canonical.Unity.Session.xml)
+                   ${CMAKE_CURRENT_SOURCE_DIR}/org.ayatana.Desktop.Session.xml)
 
 set (SOURCES actions.c guest.c users.c backend-dbus.c utils.c)
 

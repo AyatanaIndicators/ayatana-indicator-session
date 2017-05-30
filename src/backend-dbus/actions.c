@@ -102,6 +102,49 @@ is_unity ()
   return FALSE;
 }
 
+static gboolean
+is_gnome ()
+{
+  const gchar *xdg_current_desktop;
+  gchar **desktop_names;
+  int i;
+
+  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+  if (xdg_current_desktop != NULL) {
+    desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+    for (i = 0; desktop_names[i]; ++i) {
+      if (!g_strcmp0 (desktop_names[i], "GNOME")) {
+        g_strfreev (desktop_names);
+        return TRUE;
+      }
+    }
+    g_strfreev (desktop_names);
+  }
+  return FALSE;
+}
+
+static gboolean
+is_mate ()
+{
+  const gchar *xdg_current_desktop;
+  gchar **desktop_names;
+  int i;
+
+  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+  if (xdg_current_desktop != NULL) {
+    desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+    for (i = 0; desktop_names[i]; ++i) {
+      if (!g_strcmp0 (desktop_names[i], "MATE")) {
+        g_strfreev (desktop_names);
+        return TRUE;
+      }
+    }
+    g_strfreev (desktop_names);
+  }
+  return FALSE;
+}
+
+
 /***
 ****
 ***/
@@ -736,6 +779,53 @@ zenity_question (IndicatorSessionActionsDbus * self,
   return confirmed;
 }
 
+static gboolean
+zenity_warning (const char * icon_name,
+                const char * title,
+                const char * text)
+{
+  char * command_line;
+  int exit_status;
+  GError * error;
+  gboolean confirmed;
+  char * zenity;
+
+  confirmed = FALSE;
+  zenity = g_find_program_in_path ("zenity");
+
+  if (zenity)
+    {
+      command_line = g_strdup_printf ("%s"
+                                      " --warning"
+                                      " --icon-name=\"%s\""
+                                      " --title=\"%s\""
+                                      " --text=\"%s\""
+                                      " --no-wrap",
+                                      zenity,
+                                      icon_name,
+                                      title,
+                                      text);
+
+      /* Treat errors as user confirmation.
+         Otherwise how will the user ever log out? */
+      exit_status = -1;
+      error = NULL;
+      if (!g_spawn_command_line_sync (command_line, NULL, NULL, &exit_status, &error))
+        {
+          confirmed = TRUE;
+        }
+      else
+        {
+          confirmed = g_spawn_check_exit_status (exit_status, &error);
+        }
+
+      log_and_clear_error (&error, G_STRLOC, G_STRFUNC);
+      g_free (command_line);
+    }
+  g_free (zenity);
+  return confirmed;
+}
+
 static void
 my_logout (IndicatorSessionActions * actions)
 {
@@ -867,13 +957,67 @@ have_unity_control_center (void)
   return have_ucc;
 }
 
+static gboolean
+have_gnome_control_center (void)
+{
+  gchar *path;
+  gboolean have_gcc;
+
+  if (!is_gnome())
+    return FALSE;
+
+  path = g_find_program_in_path ("gnome-control-center");
+  have_gcc = path != NULL;
+  g_free (path);
+
+  return have_gcc;
+}
+
+static gboolean
+have_mate_control_center (void)
+{
+  gchar *path;
+  gboolean have_mcc;
+
+  if (!is_mate())
+    return FALSE;
+
+  path = g_find_program_in_path ("mate-control-center");
+  have_mcc = path != NULL;
+  g_free (path);
+
+  return have_mcc;
+}
+
+static gboolean
+have_mate_about (void)
+{
+  gchar *path;
+  gboolean have_mabout;
+
+  if (!is_mate())
+    return FALSE;
+
+  path = g_find_program_in_path ("mate-about");
+  have_mabout = path != NULL;
+  g_free (path);
+
+  return have_mabout;
+}
+
 static void
 my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   if (have_unity_control_center ())
     run_outside_app ("unity-control-center");
-  else
+  else if (have_gnome_control_center())
     run_outside_app ("gnome-control-center");
+  else if (have_mate_control_center())
+    run_outside_app ("mate-control-center");
+  else
+    zenity_warning ("dialog-warning",
+                    _("Warning"),
+                    _("The Ayatana Session Indicator does not support evoking the system\nsettings application for your desktop environment, yet.\n\nPlease report this to the developers at:\nhttps://github.com/ArcticaProject/ayatana-indicator-session/issues"));
 }
 
 static void
@@ -881,8 +1025,12 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   if (have_unity_control_center ())
     run_outside_app ("unity-control-center credentials");
-  else
+  else if (have_gnome_control_center())
     run_outside_app ("gnome-control-center credentials");
+  else
+    zenity_warning ("dialog-warning",
+                    _("Warning"),
+                    _("The Ayatana Session Indicator does not support password changes\nfor your desktop environment, yet.\n\nPlease report this to the developers at:\nhttps://github.com/ArcticaProject/ayatana-indicator-session/issues"));
 }
 
 static void
@@ -890,8 +1038,14 @@ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   if (have_unity_control_center ())
     run_outside_app ("unity-control-center info");
-  else
+  else if (have_gnome_control_center())
     run_outside_app ("gnome-control-center info");
+  else if (have_mate_about())
+    run_outside_app ("mate-about");
+  else
+    zenity_warning ("dialog-warning",
+                    _("Warning"),
+                    _("The Ayatana Session Indicator does not know yet, how to show\ninformation of the currently running desktop environment.\n\nPlease report this to the developers at:\nhttps://github.com/ArcticaProject/ayatana-indicator-session/issues"));
 }
 
 /***

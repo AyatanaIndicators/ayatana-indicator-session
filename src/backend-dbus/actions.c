@@ -104,7 +104,7 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
 
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-logout-restart-shutdown"))
     {
-      /* can we use the Unity prompt? */
+      /* can we use the Unity/Ayatana prompt? */
       if ((prompt == PROMPT_NONE) && p && p->end_session_dialog)
         {
           GDBusProxy * proxy = G_DBUS_PROXY (p->end_session_dialog);

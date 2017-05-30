@@ -569,7 +569,7 @@ logout_now (IndicatorSessionActionsDbus * self)
 {
   if (!logout_now_desktop(self) && !logout_now_gnome_session_manager(self))
     {
-      g_critical("%s can't logout: no Unity nor GNOME session proxy", G_STRFUNC);
+      g_critical("%s can't logout: no Unity nor GNOME/MATE session proxy", G_STRFUNC);
     }
 }
 

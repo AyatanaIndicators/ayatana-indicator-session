@@ -89,7 +89,7 @@ typedef enum
 {
   PROMPT_NONE,
   PROMPT_WITH_ZENITY,
-  PROMPT_WITH_UNITY
+  PROMPT_WITH_AYATANA
 }
 prompt_status_t;
 
@@ -107,7 +107,7 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
           GDBusProxy * proxy = G_DBUS_PROXY (p->end_session_dialog);
           char * name = g_dbus_proxy_get_name_owner (proxy);
           if (name != NULL)
-            prompt = PROMPT_WITH_UNITY;
+            prompt = PROMPT_WITH_AYATANA;
           g_free (name);
         }
 
@@ -394,7 +394,7 @@ my_can_reboot (IndicatorSessionActions * actions)
   /* Shutdown and Restart are the same dialog prompt in Unity,
      so disable the redundant 'Restart' menuitem in that mode */
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-shutdown-menuitem"))
-    if (get_prompt_status(self) == PROMPT_WITH_UNITY)
+    if (get_prompt_status(self) == PROMPT_WITH_AYATANA)
       return FALSE;
 
   return TRUE;
@@ -722,7 +722,7 @@ my_logout (IndicatorSessionActions * actions)
 
   switch (get_prompt_status (self))
     {
-      case PROMPT_WITH_UNITY:
+      case PROMPT_WITH_AYATANA:
         show_desktop_end_session_dialog (self, END_SESSION_TYPE_LOGOUT);
         break;
 
@@ -759,7 +759,7 @@ my_reboot (IndicatorSessionActions * actions)
 
   switch (get_prompt_status (self))
     {
-      case PROMPT_WITH_UNITY:
+      case PROMPT_WITH_AYATANA:
         show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
         break;
 
@@ -786,7 +786,7 @@ my_power_off (IndicatorSessionActions * actions)
 
   switch (get_prompt_status (self))
     {
-      case PROMPT_WITH_UNITY:
+      case PROMPT_WITH_AYATANA:
         /* NB: TYPE_REBOOT instead of TYPE_SHUTDOWN because
            the latter adds lock & logout options in Unity... */
         show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);

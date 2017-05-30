@@ -20,7 +20,7 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          systemd,
-         gnome-settings-daemon,
+         gnome-settings-daemon | mate-settings-daemon,
          gsettings-desktop-schemas,
          ayatana-indicator-common,
 Recommends: indicator-applet (>= 0.2) | mate-indicator-applet | indicator-renderer,

@@ -24,6 +24,8 @@
 #include "recoverable-problem.h"
 #include "service.h"
 
+#include "utils.h"
+
 #define BUS_NAME "org.ayatana.indicator.session"
 #define BUS_PATH "/org/ayatana/indicator/session"
 
@@ -1235,7 +1237,12 @@ indicator_session_service_init (IndicatorSessionService * self)
                                    INDICATOR_TYPE_SESSION_SERVICE,
                                    IndicatorSessionServicePrivate);
   p->indicator_settings = g_settings_new ("org.ayatana.indicator.session");
-  p->keybinding_settings = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
+  if (is_mate())
+    p->keybinding_settings = g_settings_new ("org.mate.SettingsDaemon.plugins.media-keys");
+
+  else if (is_gnome() || is_unity())
+    p->keybinding_settings = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
+
   self->priv = p;
 
   /* init the backend objects */

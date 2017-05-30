@@ -64,7 +64,6 @@ void indicator_session_actions_dbus_set_proxies (IndicatorSessionActionsDbus * s
                                                  Login1Manager               * login1_manager,
                                                  Login1Seat                  * login1_seat,
                                                  DisplayManagerSeat          * dm_seat);
-                                                 
 
 G_END_DECLS
 

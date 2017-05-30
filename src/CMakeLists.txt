@@ -10,7 +10,9 @@ add_library (libayatanaindicatorsessionservice STATIC
              service.c
              service.h
              users.c
-             users.h)
+             users.h
+             utils.c
+             utils.h)
 include_directories(${SERVICE_INCLUDE_DIRS})
 link_directories(${SERVICE_LIBRARY_DIRS})
 

@@ -39,7 +39,7 @@ MockEndSessionDialog :: handle_open (EndSessionDialog      * object,
 
 namespace
 {
-  const char * const MY_NAME = "com.canonical.Unity";
+  const char * const MY_NAME = "org.ayatana.Desktop";
   const char * const MY_PATH = "/org/gnome/SessionManager/EndSessionDialog";
 }
 

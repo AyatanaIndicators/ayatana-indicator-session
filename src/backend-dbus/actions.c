@@ -25,7 +25,7 @@
 #include "dbus-webcredentials.h"
 #include "gnome-screen-saver.h"
 #include "gnome-session-manager.h"
-#include "unity-session.h"
+#include "desktop-session.h"
 
 #include "actions.h"
 
@@ -44,7 +44,7 @@ struct _IndicatorSessionActionsDbusPriv
   GSettings * indicator_settings;
   GnomeScreenSaver * screen_saver;
   GnomeSessionManager * session_manager;
-  UnitySession * unity_session;
+  DesktopSession * desktop_session;
   Login1Manager * login1_manager;
   GCancellable * login1_manager_cancellable;
   Login1Seat * login1_seat;
@@ -199,16 +199,16 @@ on_screensaver_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpoin
 }
 
 static void
-on_unity_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gself)
+on_desktop_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gself)
 {
   GError * err;
-  UnitySession * us;
+  DesktopSession * us;
 
   err = NULL;
-  us = unity_session_proxy_new_for_bus_finish (res, &err);
+  us = desktop_session_proxy_new_for_bus_finish (res, &err);
   if (err == NULL)
     {
-      INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv->unity_session = us;
+      INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv->desktop_session = us;
     }
 
   log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
@@ -521,14 +521,14 @@ logout_now_gnome_session_manager (IndicatorSessionActionsDbus * self)
 }
 
 static void
-on_unity_logout_response (GObject * o,
+on_desktop_logout_response (GObject * o,
                           GAsyncResult * res,
                           gpointer gself)
 {
   GError * error;
 
   error = NULL;
-  unity_session_call_request_logout_finish (UNITY_SESSION(o), res, &error);
+  desktop_session_call_request_logout_finish (DESKTOP_SESSION(o), res, &error);
 
   if (error != NULL)
     {
@@ -543,18 +543,18 @@ on_unity_logout_response (GObject * o,
 }
 
 static gboolean
-logout_now_unity (IndicatorSessionActionsDbus * self)
+logout_now_desktop (IndicatorSessionActionsDbus * self)
 {
   priv_t * p = self->priv;
   gboolean called = FALSE;
 
-  if (is_owned_proxy (p->unity_session))
+  if (is_owned_proxy (p->desktop_session))
     {
       called = TRUE;
-      g_debug ("calling unity_session_call_request_logout()");
-      unity_session_call_request_logout (p->unity_session,
+      g_debug ("calling desktop_session_call_request_logout()");
+      desktop_session_call_request_logout (p->desktop_session,
                                          p->cancellable,
-                                         on_unity_logout_response,
+                                         on_desktop_logout_response,
                                          self);
     }
 
@@ -564,7 +564,7 @@ logout_now_unity (IndicatorSessionActionsDbus * self)
 static void
 logout_now (IndicatorSessionActionsDbus * self)
 {
-  if (!logout_now_unity(self) && !logout_now_gnome_session_manager(self))
+  if (!logout_now_desktop(self) && !logout_now_gnome_session_manager(self))
     {
       g_critical("%s can't logout: no Unity nor GNOME session proxy", G_STRFUNC);
     }
@@ -649,7 +649,7 @@ on_open_end_session_dialog_ready (GObject      * o,
 }
 
 static void
-show_unity_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
+show_desktop_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
   gpointer o = p->end_session_dialog;
@@ -723,7 +723,7 @@ my_logout (IndicatorSessionActions * actions)
   switch (get_prompt_status (self))
     {
       case PROMPT_WITH_UNITY:
-        show_unity_end_session_dialog (self, END_SESSION_TYPE_LOGOUT);
+        show_desktop_end_session_dialog (self, END_SESSION_TYPE_LOGOUT);
         break;
 
       case PROMPT_NONE:
@@ -760,7 +760,7 @@ my_reboot (IndicatorSessionActions * actions)
   switch (get_prompt_status (self))
     {
       case PROMPT_WITH_UNITY:
-        show_unity_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
+        show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
         break;
 
       case PROMPT_NONE:
@@ -789,7 +789,7 @@ my_power_off (IndicatorSessionActions * actions)
       case PROMPT_WITH_UNITY:
         /* NB: TYPE_REBOOT instead of TYPE_SHUTDOWN because
            the latter adds lock & logout options in Unity... */
-        show_unity_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
+        show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
         break;
 
       case PROMPT_WITH_ZENITY:
@@ -895,15 +895,15 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  if (is_owned_proxy (p->unity_session))
+  if (is_owned_proxy (p->desktop_session))
     {
       if (immediate)
         {
-          unity_session_call_prompt_lock (p->unity_session, p->cancellable, NULL, NULL);
+          desktop_session_call_prompt_lock (p->desktop_session, p->cancellable, NULL, NULL);
         }
       else
         {
-          unity_session_call_lock (p->unity_session, p->cancellable, NULL, NULL);
+          desktop_session_call_lock (p->desktop_session, p->cancellable, NULL, NULL);
         }
     }
   else
@@ -1000,7 +1000,7 @@ my_dispose (GObject * o)
 
   g_clear_object (&p->screen_saver);
   g_clear_object (&p->session_manager);
-  g_clear_object (&p->unity_session);
+  g_clear_object (&p->desktop_session);
   set_dm_seat (self, NULL);
   set_login1_manager (self, NULL);
   set_login1_seat (self, NULL);
@@ -1103,12 +1103,12 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
                                         on_screensaver_proxy_ready,
                                         self);
 
-  unity_session_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+  desktop_session_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                    G_DBUS_PROXY_FLAGS_NONE,
                                    "org.ayatana.Desktop",
                                    "/org/ayatana/Desktop/Session",
                                    p->cancellable,
-                                   on_unity_proxy_ready,
+                                   on_desktop_proxy_ready,
                                    self);
 
   gnome_session_manager_proxy_new_for_bus (G_BUS_TYPE_SESSION,

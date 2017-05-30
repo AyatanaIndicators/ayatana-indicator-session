@@ -21,32 +21,32 @@
 
 
 gboolean
-MockUnitySession :: handle_lock (UnitySession          * us,
+MockUnitySession :: handle_lock (DesktopSession          * us,
                                  GDBusMethodInvocation * inv,
                                  gpointer                gself)
 {
   static_cast<MockUnitySession*>(gself)->my_last_action = Lock;
-  unity_session_complete_lock (us, inv);
+  desktop_session_complete_lock (us, inv);
   return true;
 }
 
 gboolean
-MockUnitySession :: handle_prompt_lock (UnitySession          * us,
+MockUnitySession :: handle_prompt_lock (DesktopSession          * us,
                                         GDBusMethodInvocation * inv,
                                         gpointer                gself)
 {
   static_cast<MockUnitySession*>(gself)->my_last_action = PromptLock;
-  unity_session_complete_prompt_lock (us, inv);
+  desktop_session_complete_prompt_lock (us, inv);
   return true;
 }
 
 gboolean
-MockUnitySession :: handle_request_logout (UnitySession          * us,
+MockUnitySession :: handle_request_logout (DesktopSession          * us,
                                            GDBusMethodInvocation * inv,
                                            gpointer                gself)
 {
   static_cast<MockUnitySession*>(gself)->my_last_action = RequestLogout;
-  unity_session_complete_request_logout (us, inv);
+  desktop_session_complete_request_logout (us, inv);
   return true;
 }
 
@@ -56,15 +56,15 @@ MockUnitySession :: handle_request_logout (UnitySession          * us,
 
 namespace
 {
-  const char * const UNITY_SESSION_NAME = "com.canonical.Unity";
-  const char * const UNITY_SESSION_PATH = "/com/canonical/Unity/Session";
+  const char * const UNITY_SESSION_NAME = "org.ayatana.Desktop";
+  const char * const UNITY_SESSION_PATH = "/org/ayatana/Desktop/Session";
 
 }
 
 MockUnitySession :: MockUnitySession (GMainLoop       * loop,
                                       GDBusConnection * bus_connection):
   MockObject (loop, bus_connection, UNITY_SESSION_NAME, UNITY_SESSION_PATH),
-  my_skeleton (unity_session_skeleton_new ()),
+  my_skeleton (desktop_session_skeleton_new ()),
   my_last_action (None)
 {
   g_signal_connect (my_skeleton, "handle-lock",

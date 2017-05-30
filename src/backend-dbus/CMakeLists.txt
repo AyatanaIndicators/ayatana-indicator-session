@@ -43,8 +43,8 @@ add_gdbus_codegen (BACKEND_GENERATED_SOURCES dbus-end-session-dialog
                    org.gnome.SessionManager
                    ${CMAKE_CURRENT_SOURCE_DIR}/org.gnome.SessionManager.EndSessionDialog.xml)
 
-add_gdbus_codegen (BACKEND_GENERATED_SOURCES unity-session
-                   com.canonical
+add_gdbus_codegen (BACKEND_GENERATED_SOURCES desktop-session
+                   org.ayatana
                    ${CMAKE_CURRENT_SOURCE_DIR}/org.ayatana.Desktop.Session.xml)
 
 set (SOURCES actions.c guest.c users.c backend-dbus.c utils.c)

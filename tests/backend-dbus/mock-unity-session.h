@@ -21,7 +21,7 @@
 #define MOCK_UNITY_SESSION_H
 
 #include "mock-object.h" // parent class
-#include "backend-dbus/unity-session.h" // Unity Session
+#include "backend-dbus/desktop-session.h" // Desktop Session
 
 class MockUnitySession: public MockObject
 {
@@ -39,16 +39,16 @@ class MockUnitySession: public MockObject
 
   private:
 
-    UnitySession * my_skeleton;
+    DesktopSession * my_skeleton;
     Action my_last_action;
 
-    static gboolean handle_lock (UnitySession *,
+    static gboolean handle_lock (DesktopSession *,
                                  GDBusMethodInvocation *,
                                  gpointer);
-    static gboolean handle_prompt_lock (UnitySession *,
+    static gboolean handle_prompt_lock (DesktopSession *,
                                         GDBusMethodInvocation *,
                                         gpointer);
-    static gboolean handle_request_logout (UnitySession *,
+    static gboolean handle_request_logout (DesktopSession *,
                                            GDBusMethodInvocation *,
                                            gpointer);
 

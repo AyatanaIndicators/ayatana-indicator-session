@@ -81,6 +81,27 @@ log_and_clear_error (GError ** err, const char * loc, const char * func)
     }
 }
 
+static gboolean
+is_unity ()
+{
+  const gchar *xdg_current_desktop;
+  gchar **desktop_names;
+  int i;
+
+  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+  if (xdg_current_desktop != NULL) {
+    desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+    for (i = 0; desktop_names[i]; ++i) {
+      if (!g_strcmp0 (desktop_names[i], "Unity")) {
+        g_strfreev (desktop_names);
+        return TRUE;
+      }
+    }
+    g_strfreev (desktop_names);
+  }
+  return FALSE;
+}
+
 /***
 ****
 ***/
@@ -394,7 +415,7 @@ my_can_reboot (IndicatorSessionActions * actions)
   /* Shutdown and Restart are the same dialog prompt in Unity,
      so disable the redundant 'Restart' menuitem in that mode */
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-shutdown-menuitem"))
-    if (get_prompt_status(self) == PROMPT_WITH_AYATANA)
+    if (is_unity())
       return FALSE;
 
   return TRUE;
@@ -789,7 +810,10 @@ my_power_off (IndicatorSessionActions * actions)
       case PROMPT_WITH_AYATANA:
         /* NB: TYPE_REBOOT instead of TYPE_SHUTDOWN because
            the latter adds lock & logout options in Unity... */
-        show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
+        if (is_unity())
+          show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
+        else
+          show_desktop_end_session_dialog (self, END_SESSION_TYPE_SHUTDOWN);
         break;
 
       case PROMPT_WITH_ZENITY:
@@ -831,25 +855,9 @@ static gboolean
 have_unity_control_center (void)
 {
   gchar *path;
-  const gchar *xdg_current_desktop;
-  gchar **desktop_names;
   gboolean have_ucc;
-  gboolean is_unity;
-  int i;
 
-  is_unity = FALSE;
-  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
-  if (xdg_current_desktop != NULL) {
-    desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
-    for (i = 0; desktop_names[i]; ++i) {
-      if (!g_strcmp0 (desktop_names[i], "Unity")) {
-        is_unity = TRUE;
-      }
-    }
-    g_strfreev (desktop_names);
-  }
-
-  if (!is_unity)
+  if (!is_unity())
     return FALSE;
 
   path = g_find_program_in_path ("unity-control-center");

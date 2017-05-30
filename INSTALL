@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2013 Canonical Ltd
+# Copyright (C) 2017, Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -26,7 +27,7 @@ Compile-time build dependencies
 
 Runtime DBus dependencies
 -------------------------
- - com.canonical.indicators.webcredentials
+ - org.ayatana.indicators.webcredentials
  - org.freedesktop.Accounts
  - org.freedesktop.Accounts.User
  - org.freedesktop.DisplayManager.Seat
@@ -40,7 +41,7 @@ Runtime DBus dependencies
 Building the code
 -----------------
 The simplest case is:
- $ cd indicator-session-X.Y.Z
+ $ cd ayatana-indicator-session-X.Y.Z
  $ mkdir build
  $ cd build
  $ cmake ..
@@ -48,7 +49,7 @@ The simplest case is:
 
 Running the tests
 -----------------
- $ cd indicator-session-X.Y.Z
+ $ cd ayatana-indicator-session-X.Y.Z
  $ mkdir build
  $ cd build
  $ cmake ..
@@ -58,7 +59,7 @@ Running the tests
 
 Generating Test Coverage Reports
 --------------------------------
- $ cd indicator-session-X.Y.Z
+ $ cd ayatan-indicator-session-X.Y.Z
  $ mkdir build-coverage
  $ cd build-coverage
  $ cmake -DCMAKE_BUILD_TYPE=coverage ..
@@ -83,4 +84,3 @@ different directory, use
 $ cmake -DCMAKE_INSTALL_PREFIX=/usr/local # Or wherever...
 $ make release
 $ make install
-

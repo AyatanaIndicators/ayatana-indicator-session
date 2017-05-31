@@ -2,8 +2,7 @@
 Type=Application
 Name=Ayatana Indicator Session
 Exec=@pkglibexecdir@/ayatana-indicator-session-service
-OnlyShowIn=Unity;GNOME;MATE;
+OnlyShowIn=Unity;MATE;
 NoDisplay=true
 StartupNotify=false
 Terminal=false
-AutostartCondition=GNOME3 unless-session gnome

@@ -13,3 +13,6 @@ override_dh_install:
 # Hack as it seems it's not possible to easy run that under dbus-test-runner
 override_dh_auto_test:
 	env -u LD_PRELOAD dh_auto_test
+
+get-orig-source:
+	uscan --noconf --force-download --rename --download-current-version --destdir=..

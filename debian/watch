@@ -1,2 +1,3 @@
 version=3
-https://launchpad.net/indicator-session/+download .*/indicator-session-([0-9.]+)\.tar\.gz
+opts=pgpsigurlmangle=s/$/.asc/ \
+http://releases.arctica-project.org/source/ayatana-indicator-session/ayatana-indicator-session-(.+)\.tar\.gz

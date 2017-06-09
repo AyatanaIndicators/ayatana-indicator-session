@@ -92,6 +92,7 @@ typedef enum
 {
   PROMPT_NONE,
   PROMPT_WITH_ZENITY,
+  PROMPT_WITH_GNOME_SESSION_MANAGER,
   PROMPT_WITH_AYATANA
 }
 prompt_status_t;
@@ -111,6 +112,16 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
           char * name = g_dbus_proxy_get_name_owner (proxy);
           if (name != NULL)
             prompt = PROMPT_WITH_AYATANA;
+          g_free (name);
+        }
+
+      /* can we use the GNOME's/MATE's session manager prompt? */
+      if ((prompt == PROMPT_NONE) && p && p->session_manager)
+        {
+          GDBusProxy * proxy = G_DBUS_PROXY (p->session_manager);
+          char * name = g_dbus_proxy_get_name_owner (proxy);
+          if (name != NULL)
+            prompt = PROMPT_WITH_GNOME_SESSION_MANAGER;;
           g_free (name);
         }
 
@@ -774,6 +785,10 @@ my_logout (IndicatorSessionActions * actions)
     {
       case PROMPT_WITH_AYATANA:
         show_desktop_end_session_dialog (self, END_SESSION_TYPE_LOGOUT);
+        break;
+
+      case PROMPT_WITH_GNOME_SESSION_MANAGER:
+        logout_now_gnome_session_manager (self);
         break;
 
       case PROMPT_NONE:

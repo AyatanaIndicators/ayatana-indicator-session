@@ -18,20 +18,18 @@ Vcs-Browser: https://cgit.arctica-project.org/ayatana/ayatana-indicator-session.
 
 Package: ayatana-indicator-session
 Architecture: any
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         systemd,
+Depends: ayatana-indicator-common,
          gnome-settings-daemon | mate-settings-daemon,
          gsettings-desktop-schemas,
-         ayatana-indicator-common,
-Recommends: mate-indicator-applet | xfce4-indicator-plugin | indicator-renderer,
-            gnome-screensaver | mate-screensaver,
-            yelp,
+         systemd,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Recommends: gnome-screensaver | mate-screensaver,
+            mate-indicator-applet | xfce4-indicator-plugin | indicator-renderer,
             unity-control-center | gnome-control-center | mate-control-center,
             unity-control-center-signon | gnome-control-center-signon | mate-control-center,
-Suggests: lightdm,
-          apport,
-          zenity
+            yelp,
+Suggests: apport, lightdm, zenity
 Description: Ayatana Indicator showing session management, status and user switching
  This Ayatana Indicator is designed to be placed on the right side of a
  panel and give the user easy control for changing their instant message

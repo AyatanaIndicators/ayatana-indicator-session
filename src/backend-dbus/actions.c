@@ -92,9 +92,29 @@ typedef enum
 {
   PROMPT_NONE,
   PROMPT_WITH_ZENITY,
-  PROMPT_WITH_AYATANA
+  PROMPT_WITH_AYATANA,
+  PROMPT_WITH_MATE,
 }
 prompt_status_t;
+
+
+static gboolean
+have_mate_program (const gchar *program)
+{
+  const gchar *xdg_current_desktop;
+  g_auto(GStrv) desktop_names = NULL;
+
+  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+  if (xdg_current_desktop != NULL) {
+    desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+    if (g_strv_contains ((const gchar * const *) desktop_names, "MATE")) {
+      g_autofree gchar *path = g_find_program_in_path (program);
+      return path != NULL;
+    }
+  }
+
+  return FALSE;
+}
 
 static prompt_status_t
 get_prompt_status (IndicatorSessionActionsDbus * self)
@@ -104,6 +124,10 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
 
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-logout-restart-shutdown"))
     {
+      /* can we use the MATE prompt? */
+      if ((prompt == PROMPT_NONE) && have_mate_program ("mate-session-save"))
+          prompt = PROMPT_WITH_MATE;
+
       /* can we use the Unity/Ayatana prompt? */
       if ((prompt == PROMPT_NONE) && p && p->end_session_dialog)
         {
@@ -766,6 +790,15 @@ zenity_warning (const char * icon_name,
 }
 
 static void
+run_outside_app (const char * cmd)
+{
+  GError * err = NULL;
+  g_debug ("%s calling \"%s\"", G_STRFUNC, cmd);
+  g_spawn_command_line_async (cmd, &err);
+  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
+}
+
+static void
 my_logout (IndicatorSessionActions * actions)
 {
   IndicatorSessionActionsDbus * self = INDICATOR_SESSION_ACTIONS_DBUS (actions);
@@ -774,6 +807,11 @@ my_logout (IndicatorSessionActions * actions)
     {
       case PROMPT_WITH_AYATANA:
         show_desktop_end_session_dialog (self, END_SESSION_TYPE_LOGOUT);
+        break;
+
+      case PROMPT_WITH_MATE:
+        /* --logout-dialog presents Logout and (if available) Switch User options */
+        run_outside_app ("mate-session-save --logout-dialog");
         break;
 
       case PROMPT_NONE:
@@ -813,6 +851,11 @@ my_reboot (IndicatorSessionActions * actions)
         show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
         break;
 
+      case PROMPT_WITH_MATE:
+        /* --shutdown-dialog presents Restart, Shutdown and (if available) Suspend options */
+        run_outside_app ("mate-session-save --shutdown-dialog");
+        break;
+
       case PROMPT_NONE:
         reboot_now (self);
         break;
@@ -845,6 +888,11 @@ my_power_off (IndicatorSessionActions * actions)
           show_desktop_end_session_dialog (self, END_SESSION_TYPE_SHUTDOWN);
         break;
 
+      case PROMPT_WITH_MATE:
+        /* --shutdown-dialog presents Restart, Shutdown and (if available) Suspend options */
+        run_outside_app ("mate-session-save --shutdown-dialog");
+        break;
+
       case PROMPT_WITH_ZENITY:
         if (zenity_question (self,
               "system-shutdown",
@@ -866,18 +914,12 @@ my_power_off (IndicatorSessionActions * actions)
 ***/
 
 static void
-run_outside_app (const char * cmd)
-{
-  GError * err = NULL;
-  g_debug ("%s calling \"%s\"", G_STRFUNC, cmd);
-  g_spawn_command_line_async (cmd, &err);
-  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
-}
-
-static void
 my_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  run_outside_app ("yelp");
+  if (have_mate_program ("yelp"))
+    run_outside_app ("yelp help:mate-user-guide");
+  else
+    run_outside_app ("yelp");
 }
 
 static gboolean
@@ -912,38 +954,6 @@ have_gnome_control_center (void)
   return have_gcc;
 }
 
-static gboolean
-have_mate_control_center (void)
-{
-  gchar *path;
-  gboolean have_mcc;
-
-  if (!is_mate())
-    return FALSE;
-
-  path = g_find_program_in_path ("mate-control-center");
-  have_mcc = path != NULL;
-  g_free (path);
-
-  return have_mcc;
-}
-
-static gboolean
-have_mate_about (void)
-{
-  gchar *path;
-  gboolean have_mabout;
-
-  if (!is_mate())
-    return FALSE;
-
-  path = g_find_program_in_path ("mate-about");
-  have_mabout = path != NULL;
-  g_free (path);
-
-  return have_mabout;
-}
-
 static void
 my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
@@ -951,7 +961,7 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
     run_outside_app ("unity-control-center");
   else if (have_gnome_control_center())
     run_outside_app ("gnome-control-center");
-  else if (have_mate_control_center())
+  else if (have_mate_program ("mate-control-center"))
     run_outside_app ("mate-control-center");
   else
     zenity_warning ("dialog-warning",
@@ -979,8 +989,8 @@ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
     run_outside_app ("unity-control-center info");
   else if (have_gnome_control_center())
     run_outside_app ("gnome-control-center info");
-  else if (have_mate_about())
-    run_outside_app ("mate-about");
+  else if (have_mate_program ("mate-system-monitor"))
+    run_outside_app ("mate-system-monitor --show-system-tab");
   else
     zenity_warning ("dialog-warning",
                     _("Warning"),
@@ -1006,6 +1016,10 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
         {
           desktop_session_call_lock (p->desktop_session, p->cancellable, NULL, NULL);
         }
+    }
+  else if (have_mate_program ("mate-screensaver-command"))
+    {
+      run_outside_app ("mate-screensaver-command --lock");
     }
   else
     {

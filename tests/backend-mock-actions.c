@@ -124,9 +124,15 @@ my_switch_to_username (IndicatorSessionActions * self G_GNUC_UNUSED,
 }
 
 static void
-my_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  g_settings_set_string (mock_settings, "last-command", "help");
+  g_settings_set_string (mock_settings, "last-command", "desktop_help");
+}
+
+static void
+my_distro_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+{
+  g_settings_set_string (mock_settings, "last-command", "distro_help");
 }
 
 static void
@@ -202,7 +208,8 @@ indicator_session_actions_mock_class_init (IndicatorSessionActionsMockClass * kl
   actions_class->power_off = my_power_off;
   actions_class->settings = my_settings;
   actions_class->online_accounts = my_online_accounts;
-  actions_class->help = my_help;
+  actions_class->desktop_help = my_desktop_help;
+  actions_class->distro_help = my_distro_help;
   actions_class->about = my_about;
   actions_class->switch_to_screensaver = my_switch_to_screensaver;
   actions_class->switch_to_greeter = my_switch_to_greeter;

@@ -282,11 +282,19 @@ indicator_session_actions_power_off (IndicatorSessionActions * self)
 }
 
 void
-indicator_session_actions_help (IndicatorSessionActions * self)
+indicator_session_actions_desktop_help (IndicatorSessionActions * self)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS (self));
 
-  INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->help (self);
+  INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->desktop_help (self);
+}
+
+void
+indicator_session_actions_distro_help (IndicatorSessionActions * self)
+{
+  g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS (self));
+
+  INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->distro_help (self);
 }
 
 void

@@ -18,9 +18,15 @@
 #define __INDICATOR_SESSION_UTILS_H__
 
 #include <glib.h>
+#include <string.h>
 
 gboolean is_unity();
 gboolean is_gnome();
 gboolean is_mate();
+
+const char* get_distro_name();
+const char* get_distro_url();
+const char* get_desktop_name();
+GHashTable*  get_os_release();
 
 #endif /* __INDICATOR_SESSION_UTILS_H__ */

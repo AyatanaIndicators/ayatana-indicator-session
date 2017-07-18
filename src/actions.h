@@ -75,7 +75,8 @@ struct _IndicatorSessionActionsClass
   void  (*logout)                      (IndicatorSessionActions * self);
   void  (*reboot)                      (IndicatorSessionActions * self);
   void  (*power_off)                   (IndicatorSessionActions * self);
-  void  (*help)                        (IndicatorSessionActions * self);
+  void  (*desktop_help)                (IndicatorSessionActions * self);
+  void  (*distro_help)                 (IndicatorSessionActions * self);
   void  (*about)                       (IndicatorSessionActions * self);
   void  (*settings)                    (IndicatorSessionActions * self);
   void  (*online_accounts)             (IndicatorSessionActions * self);
@@ -119,7 +120,8 @@ void indicator_session_actions_logout                          (IndicatorSession
 void indicator_session_actions_reboot                          (IndicatorSessionActions * self);
 void indicator_session_actions_power_off                       (IndicatorSessionActions * self);
 
-void indicator_session_actions_help                            (IndicatorSessionActions * self);
+void indicator_session_actions_desktop_help                    (IndicatorSessionActions * self);
+void indicator_session_actions_distro_help                     (IndicatorSessionActions * self);
 void indicator_session_actions_about                           (IndicatorSessionActions * self);
 void indicator_session_actions_settings                        (IndicatorSessionActions * self);
 void indicator_session_actions_online_accounts                 (IndicatorSessionActions * self);

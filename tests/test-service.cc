@@ -383,9 +383,14 @@ TEST_F (ServiceTest, About)
   test_simple_action ("about");
 }
 
-TEST_F (ServiceTest, Help)
+TEST_F (ServiceTest, DesktopHelp)
 {
-  test_simple_action ("help");
+  test_simple_action ("desktop_help");
+}
+
+TEST_F (ServiceTest, DistroHelp)
+{
+  test_simple_action ("distro_help");
 }
 
 TEST_F (ServiceTest, Hibernate)
@@ -693,7 +698,8 @@ TEST_F (ServiceTest, LockdownUserSwitchingAndLockScreen)
 TEST_F (ServiceTest, DefaultMenuItems)
 {
   ASSERT_TRUE (find_menu_item_for_action ("indicator.about", NULL, NULL));
-  ASSERT_TRUE (find_menu_item_for_action ("indicator.help", NULL, NULL));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.desktop_help", NULL, NULL));
+  ASSERT_TRUE (find_menu_item_for_action ("indicator.distro_help", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.settings", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-screensaver", NULL, NULL));
   ASSERT_TRUE (find_menu_item_for_action ("indicator.switch-to-guest", NULL, NULL));

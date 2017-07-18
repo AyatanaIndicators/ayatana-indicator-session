@@ -914,13 +914,20 @@ my_power_off (IndicatorSessionActions * actions)
 ***/
 
 static void
-my_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   if (have_mate_program ("yelp"))
     run_outside_app ("yelp help:mate-user-guide");
   else
     run_outside_app ("yelp");
 }
+
+static void
+my_distro_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+{
+  run_outside_app(g_strdup_printf("x-www-browser '%s'", get_distro_url()));
+}
+
 
 static gboolean
 have_unity_control_center (void)
@@ -1164,7 +1171,8 @@ indicator_session_actions_dbus_class_init (IndicatorSessionActionsDbusClass * kl
   actions_class->power_off = my_power_off;
   actions_class->settings = my_settings;
   actions_class->online_accounts = my_online_accounts;
-  actions_class->help = my_help;
+  actions_class->desktop_help = my_desktop_help;
+  actions_class->distro_help = my_distro_help;
   actions_class->about = my_about;
   actions_class->switch_to_screensaver = my_switch_to_screensaver;
   actions_class->switch_to_greeter = my_switch_to_greeter;

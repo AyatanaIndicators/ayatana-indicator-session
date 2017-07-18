@@ -336,94 +336,18 @@ get_current_real_name (IndicatorSessionService * self)
   return "";
 }
 
-/***
-****
-***/
-
-static GHashTable*
-get_os_release (void)
-{
-  static const char * const os_release = "/etc/os-release";
-  GHashTable * hash;
-  GIOChannel * io;
-
-  hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-
-  if ((io = g_io_channel_new_file (os_release, "r", NULL)))
-    {
-      GString * key = g_string_new (NULL);
-
-      for (;;)
-        {
-          GIOStatus status;
-          char * in;
-          GError * error;
-          gchar * val;
-
-          /* read a line */
-          status = g_io_channel_read_line_string (io, key, NULL, NULL);
-          if (status == G_IO_STATUS_EOF)
-            break;
-
-          /* ignore blank lines & comments */
-          if (!key->len || key->str[0]=='#')
-            continue;
-
-          /* split into key=value */
-          in = strchr(key->str, '=');
-          if (!in)
-            continue;
-          *in++ = '\0';
-
-          /* unmunge the value component */
-          g_strstrip(in); /* eat linefeed */
-          error = NULL;
-          val = g_shell_unquote (in, &error);
-          if (error != NULL)
-            {
-              g_warning("Unable to unquote \"%s\": %s", in, error->message);
-              val = g_strdup(in);
-              g_clear_error(&error);
-            }
- 
-          g_debug("from \"%s\": key [%s] val [%s]", os_release, key->str, val); 
-          g_hash_table_insert (hash, g_strdup(key->str), val); /* hash owns val now */
-        }
-
-      g_string_free(key, TRUE);
-      g_io_channel_unref(io);
-    }
-
-  return hash;
-}
-
-static const char*
-get_distro_name (void)
-{
-  static char * distro_name = NULL;
-
-  if (distro_name == NULL)
-    {
-      GHashTable * os_release = get_os_release();
-      gpointer value = g_hash_table_lookup(os_release, "NAME");
-      if (value == NULL)
-        value = "Ubuntu"; /* fallback value */
-      distro_name = g_strdup(value);
-      g_hash_table_destroy(os_release);
-    }
-
-  return distro_name;
-}
-
 static GMenuModel *
 create_admin_section (void)
 {
   GMenu * menu;
-  gchar * help_label = g_strdup_printf(_("%s Help"), get_distro_name());
+  gchar * desktop_help_label = g_strdup_printf(_("%s Desktop Help"), get_desktop_name());
+  gchar * distro_help_label = g_strdup_printf(_("%s Help"), get_distro_name());
   menu = g_menu_new ();
   g_menu_append (menu, _("About This Computer"), "indicator.about");
-  g_menu_append (menu, help_label, "indicator.help");
-  g_free (help_label);
+  g_menu_append (menu, desktop_help_label, "indicator.desktop_help");
+  g_menu_append (menu, distro_help_label, "indicator.distro_help");
+  g_free (desktop_help_label);
+  g_free (distro_help_label);
   return G_MENU_MODEL (menu);
 }
 
@@ -890,11 +814,18 @@ on_online_accounts_activated (GSimpleAction * a      G_GNUC_UNUSED,
 }
 
 static void
-on_help_activated (GSimpleAction  * a      G_GNUC_UNUSED,
-                   GVariant       * param  G_GNUC_UNUSED,
-                   gpointer         gself)
+on_desktop_help_activated (GSimpleAction  * a      G_GNUC_UNUSED,
+                           GVariant       * param  G_GNUC_UNUSED,
+                           gpointer         gself)
 {
-  indicator_session_actions_help (get_backend_actions(gself));
+  indicator_session_actions_desktop_help (get_backend_actions(gself));
+}
+static void
+on_distro_help_activated (GSimpleAction  * a      G_GNUC_UNUSED,
+                          GVariant       * param  G_GNUC_UNUSED,
+                          gpointer         gself)
+{
+  indicator_session_actions_distro_help (get_backend_actions(gself));
 }
 
 static void
@@ -988,7 +919,8 @@ init_gactions (IndicatorSessionService * self)
 
   GActionEntry entries[] = {
     { "about",                  on_about_activated           },
-    { "help",                   on_help_activated            },
+    { "desktop_help",           on_desktop_help_activated    },
+    { "distro_help",            on_distro_help_activated     },
     { "hibernate",              on_hibernate_activated       },
     { "logout",                 on_logout_activated          },
     { "online-accounts",        on_online_accounts_activated },

@@ -922,10 +922,47 @@ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
     run_outside_app ("yelp");
 }
 
+static char *
+find_browser ()
+{
+  static char * browser_path = NULL;
+  char* tmp_browser_path;
+  gchar **browser_names;
+
+  int i;
+
+  if (browser_path == NULL)
+  {
+
+    browser_names = g_strsplit ("x-www-browser,google-chrome,firefox,chromium", ",", 0);
+
+    for (i = 0; browser_names[i]; ++i) {
+
+      tmp_browser_path = g_find_program_in_path (browser_names[i]);
+
+      if (tmp_browser_path) {
+        browser_path = g_strdup (tmp_browser_path);
+        g_free (tmp_browser_path);
+        g_strfreev (browser_names);
+        break;
+      }
+    }
+  }
+
+  return browser_path;
+
+}
+
 static void
 my_distro_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  run_outside_app(g_strdup_printf("x-www-browser '%s'", get_distro_url()));
+  static char * browser = NULL;
+
+  if (browser == NULL)
+    browser = find_browser();
+
+  if (browser != NULL)
+    run_outside_app(g_strdup_printf("%s '%s'", browser, get_distro_url()));
 }
 
 

@@ -101,16 +101,11 @@ prompt_status_t;
 static gboolean
 have_mate_program (const gchar *program)
 {
-  const gchar *xdg_current_desktop;
   g_auto(GStrv) desktop_names = NULL;
 
-  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
-  if (xdg_current_desktop != NULL) {
-    desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
-    if (g_strv_contains ((const gchar * const *) desktop_names, "MATE")) {
-      g_autofree gchar *path = g_find_program_in_path (program);
-      return path != NULL;
-    }
+  if (is_mate()) {
+    g_autofree gchar *path = g_find_program_in_path (program);
+    return path != NULL;
   }
 
   return FALSE;

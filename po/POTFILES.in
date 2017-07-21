@@ -1,0 +1,13 @@
+data/org.ayatana.indicator.session.gschema.xml.in
+src/actions.c
+src/guest.c
+src/main.c
+src/recoverable-problem.c
+src/service.c
+src/users.c
+src/utils.c
+src/backend-dbus/guest.c
+src/backend-dbus/actions.c
+src/backend-dbus/backend-dbus.c
+src/backend-dbus/utils.c
+src/backend-dbus/users.c

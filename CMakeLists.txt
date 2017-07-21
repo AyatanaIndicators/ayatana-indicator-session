@@ -5,7 +5,7 @@ list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 set (PROJECT_VERSION "0.4.0")
 set (PACKAGE ${CMAKE_PROJECT_NAME})
-set (GETTEXT_PACKAGE ayatana-indicator-session)
+set (GETTEXT_PACKAGE "ayatana-indicator-session")
 
 option (enable_tests "Build the package's automatic tests." ON)
 option (enable_lcov "Generate lcov code coverage reports." ON)

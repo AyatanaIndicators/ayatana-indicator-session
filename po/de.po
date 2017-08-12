@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-07-21 15:41+0200\n"
-"PO-Revision-Date: 2011-09-20 15:10+0000\n"
-"Last-Translator: Hendrik Knackstedt <Unknown>\n"
-"Language-Team: German\n"
-"Language: \n"
+"PO-Revision-Date: 2017-08-12 15:44+0000\n"
+"Last-Translator: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/ayatana-indicators"
+"/session-applet/de/>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.16\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in.h:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -60,11 +62,11 @@ msgstr "Unterdrückt den Eintrag zum Herunterfahren im Sitzungsmenü."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "System, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "System"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -73,16 +75,16 @@ msgstr "Gast"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s Desktop Hilfe"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s Hilfe"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Über diesen Computer"
 
 #: ../src/service.c:361
 msgid "System Settings…"
@@ -94,31 +96,27 @@ msgstr "Online-Konten …"
 
 #: ../src/service.c:566
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Bildschirmschoner starten"
 
 #: ../src/service.c:574 ../src/service.c:590
-#, fuzzy
 msgid "Switch Account…"
 msgstr "Benutzerkonto wechseln …"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account"
-msgstr "Benutzerkonto wechseln …"
+msgstr "Benutzerkonto wechseln"
 
 #: ../src/service.c:587
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Benutzerkonto wechseln …"
+msgstr "Benutzerkonto sperren/wechseln…"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Benutzerkonto wechseln …"
+msgstr "Benutzerkonto sperren/wechseln"
 
 #: ../src/service.c:594
 msgid "Lock"
-msgstr ""
+msgstr "Sperren"
 
 #: ../src/service.c:619
 msgid "Guest Session"
@@ -148,7 +146,7 @@ msgstr "Neustarten …"
 #: ../src/service.c:722 ../src/backend-dbus/actions.c:861
 #: ../src/backend-dbus/actions.c:863
 msgid "Restart"
-msgstr "Neustarten"
+msgstr "Neustart"
 
 #: ../src/service.c:729
 msgid "Shut Down…"
@@ -160,18 +158,16 @@ msgid "Shut Down"
 msgstr "Herunterfahren"
 
 #: ../src/backend-dbus/actions.c:818
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr ""
 "Sind Sie sicher, dass Sie alle Programme schließen und sich vom Rechner "
 "abmelden wollen?"
 
 #: ../src/backend-dbus/actions.c:819
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"Einige Softwareaktualisierungen werden erst beim nächsten Neustart des "
+"Einige Software-Aktualisierungen werden erst beim nächsten Neustart des "
 "Systems angewendet."
 
 #: ../src/backend-dbus/actions.c:827 ../src/backend-dbus/actions.c:864
@@ -194,7 +190,7 @@ msgstr ""
 #: ../src/backend-dbus/actions.c:1007 ../src/backend-dbus/actions.c:1020
 #: ../src/backend-dbus/actions.c:1035
 msgid "Warning"
-msgstr ""
+msgstr "Warnung"
 
 #: ../src/backend-dbus/actions.c:1008
 msgid ""
@@ -204,6 +200,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Leider unterstützt Ayatana Session Indicator noch nicht das Aufrufen der "
+"Systemeinstellungen für diese Arbeitsoberfläche. \n"
+"\n"
+"Bitte einen Bericht an die Entwickler schicken unter der Adresse:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1021
 msgid ""
@@ -213,6 +214,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Leider unterstützt Ayatana Session Indicator noch nicht das Aufrufen des "
+"Kennwort Ändern Dialogs für diese Arbeitsoberfläche. \n"
+"\n"
+"Bitte einen Bericht an die Entwickler schicken unter der Adresse:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1036
 msgid ""
@@ -222,6 +228,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Leider weiß Ayatana Session Indicator noch nicht, wie man unter dieser "
+"Arbeitsoberfläche Informationen über das System anzeigt. \n"
+"\n"
+"Bitte einen Bericht an die Entwickler schicken unter der Adresse:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Klassische Gastsitzung"

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-07-21 15:42+0200\n"
-"PO-Revision-Date: 2017-10-12 09:45+0000\n"
+"PO-Revision-Date: 2017-10-12 13:47+0000\n"
 "Last-Translator: Matteo F. Vescovi <mfvescovi+github@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/ayatana-"
 "indicators/session-applet/it/>\n"
@@ -37,13 +37,13 @@ msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in.h:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "Rimuove la voce \"Termina sessione\" dal menù"
+msgstr "Rimuove la voce \"Termina sessione\" dal menù della sessione"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in.h:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 "Fa in modo che il pulsante per terminare la sessione non sia mostrato nel "
-"menù sessione."
+"menù della sessione."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in.h:5
 msgid "Remove the Restart item from the session menu"
@@ -52,7 +52,8 @@ msgstr "Rimuove la voce \"Riavvia\" dal menù della sessione"
 #: ../data/org.ayatana.indicator.session.gschema.xml.in.h:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
-"Fa in modo che il pulsante di riavvio non sia mostrato nel menù sessione."
+"Fa in modo che il pulsante di riavvio non sia mostrato nel menù della "
+"sessione."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in.h:7
 msgid "Remove the shutdown item from the session menu"
@@ -61,7 +62,8 @@ msgstr "Rimuove la voce \"Arresta\" dal menù della sessione"
 #: ../data/org.ayatana.indicator.session.gschema.xml.in.h:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
-"Fa in modo che il pulsante di arresto non sia mostrato nel menù sessione."
+"Fa in modo che il pulsante di arresto non sia mostrato nel menù della "
+"sessione."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
@@ -213,7 +215,7 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"L'indicatore di sessione Ayatan non supporta ancora il cambio\n"
+"L'indicatore di sessione Ayatana non supporta ancora il cambio\n"
 "della password per questo ambiente grafico.\n"
 "\n"
 "Si prega di farlo presente agli sviluppatori all'indirizzo:\n"
@@ -228,7 +230,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 "L'indicatore di sessione Ayatana non sa ancora come visualizzare\n"
-"le informazioni dell'ambiente grafico attuamente in esecuzione.\n"
+"le informazioni relative all'ambiente grafico attuamente in esecuzione.\n"
 "\n"
 "Si prega di farlo presente agli sviluppatori all'indirizzo:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"

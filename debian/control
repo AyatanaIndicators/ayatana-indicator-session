@@ -21,7 +21,7 @@ Architecture: any
 Depends: ayatana-indicator-common,
          gnome-settings-daemon | mate-settings-daemon,
          gsettings-desktop-schemas,
-         systemd,
+         systemd [linux-any],
          ${misc:Depends},
          ${shlibs:Depends},
 Recommends: gnome-screensaver | mate-screensaver,
@@ -29,7 +29,9 @@ Recommends: gnome-screensaver | mate-screensaver,
             unity-control-center | gnome-control-center | mate-control-center,
             unity-control-center-signon | gnome-control-center-signon | mate-control-center,
             yelp,
-Suggests: apport, lightdm, zenity
+Suggests: apport,
+          lightdm,
+          zenity,
 Description: Ayatana Indicator showing session management, status and user switching
  This Ayatana Indicator is designed to be placed on the right side of a
  panel and give the user easy control for changing their instant message

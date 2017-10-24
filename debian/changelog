@@ -1,8 +1,15 @@
-ayatana-indicator-session (0.4.0-0) UNRELEASED; urgency=medium
+ayatana-indicator-session (0.4.1-0) unstable; urgency=medium
+
+  * Upstream-provided Debian package for ayatana-indicator-session.
+    See upstream ChangeLog for recent changes.
+
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 24 Oct 2017 21:36:02 +0200
+
+ayatana-indicator-session (0.4.0-0) unstable; urgency=medium
 
   * Fork from Ubuntu's indicator-session project.
 
- -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Sun, 08 Nov 2015 06:48:54 +0100
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 24 Oct 2017 21:35:44 +0200
 
 indicator-session (12.10.5+15.10.20150915-0ubuntu1) wily; urgency=medium
 

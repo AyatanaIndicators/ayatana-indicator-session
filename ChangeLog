@@ -1,11 +1,193 @@
-2017-05-30 16:10:13 +0200 Mike Gabriel (a94df51)
+2017-10-24 21:36:51 +0200 Mike Gabriel (d8d3cfe)
 
-	* release 0.4.0 (HEAD -> release-builds, master)
+	* release 0.4.1 (HEAD -> master)
+
+2017-10-24 21:35:07 +0200 Mike Gabriel (c2dd910)
+
+	* debian/control: Sync in changes from latest Debian package Git.
+
+2017-10-24 21:34:46 +0200 Mike Gabriel (93712e3)
+
+	* debian/copyright: Update copyright attributions.
+
+2017-10-24 21:12:34 +0200 Mike Gabriel (6e7e781)
+
+	* update-po*.sh: Add license header.
+
+2017-10-24 18:23:08 +0200 Mike Gabriel (e326a53)
+
+	* debian/control: Bump Standards-Version: to 4.1.1. No changes
+          needed. (origin/master)
+
+2017-10-24 18:22:25 +0200 Mike Gabriel (b634c7f)
+
+	* debian/control: Set section to x11 (for now).
+
+2017-10-24 18:22:01 +0200 Mike Gabriel (796e762)
+
+	* debian/{control,copyright,watch}: Update to new upstream URLs.
+
+2017-10-12 07:41:14 +0200 Mike Gabriel (9b43c33)
+
+	* update-po.sh: Add support for creating new LINGUAS.
+
+2017-10-07 21:09:48 +0200 Weblate (2cddae1)
+
+	* Merge remote-tracking branch 'origin/master'
+
+2017-10-07 21:06:51 +0200 Mike Gabriel (73e2211)
+
+	* debian/control: Modify B-D for systemd: only available/required on
+          [linux-any].
+
+2017-10-07 21:05:57 +0200 Mike Gabriel (4bdb13d)
+
+	* systemd unit file: Only build+install if systemd is available at
+          build-time.
+
+2017-09-27 22:14:02 +0000 Anders Jonsson (1438528)
+
+	* Translated using Weblate (Swedish)
+
+2017-09-11 12:26:42 +0000 Cûndûllah el-Kurdî (0f29188)
+
+	* Translated using Weblate (Kurdish)
+
+2017-09-09 10:59:15 +0000 KouKypa (f463b26)
+
+	* Translated using Weblate (Italian)
+
+2017-08-18 12:55:14 +0000 Viktar Vauchkevich (0a46658)
+
+	* Translated using Weblate (Belarusian)
+
+2017-08-16 16:48:51 +0000 Viktar Vauchkevich (5e43f70)
+
+	* Translated using Weblate (Belarusian)
+
+2017-08-12 15:47:21 +0000 Mike Gabriel (68565e3)
+
+	* Translated using Weblate (German)
+
+2017-08-12 15:43:41 +0000 Mike Gabriel (bce0af5)
+
+	* Translated using Weblate (German)
+
+2017-07-21 15:43:37 +0200 Mike Gabriel (0f8a96c)
+
+	* po/: Update all translation files.
+
+2017-07-21 15:43:23 +0200 Mike Gabriel (d8f96ae)
+
+	* po/: Add LINGUAS and POFILES.in.
+
+2017-07-21 15:42:50 +0200 Mike Gabriel (5d1d6dd)
+
+	* update-po.sh: Add mini script to update po/*.po files.
+
+2017-07-21 15:36:50 +0200 Mike Gabriel (aa57a3b)
+
+	* po/ayatana-indicator-session.pot: Create file.
+
+2017-07-21 15:31:43 +0200 Mike Gabriel (abb906c)
+
+	* src/backend-dbus/actions.c: Use is_mate() from src/utils.c to check
+          if we are running inside a MATE desktop session.
+
+2017-07-21 15:29:07 +0200 Mike Gabriel (7515bc1)
+
+	* my_distro_help(): Be less Debian-centric and detect other browser,
+          if x-www-browser does not exist.
+
+2017-07-21 15:06:19 +0200 Mike Gabriel (38c5522)
+
+	* CMakeLists.txt: Add quotes around GETTEXT_PACKAGE value.
+
+2017-07-21 15:06:01 +0200 Mike Gabriel (b67170e)
+
+	* update-pot.sh: Adapt to being used with CMake.
+
+2017-07-21 15:00:48 +0200 Mike Gabriel (d614cbf)
+
+	* data/ayatana-indicator-session.upstart.desktop.in: Fix Name= field.
+
+2017-07-18 05:35:40 +0200 Mike Gabriel (e246fe0)
+
+	* Provide to 'Help' menu items. One for Distro Help, one for Desktop
+          Help.
+
+2017-07-17 21:45:38 +0200 Mike Gabriel (11ee7a5)
+
+	* debian/control: Bump Standards-Version: to 4.0.0. No changes
+          needed.
+
+2017-07-17 21:40:57 +0200 Martin Wimpress (35cfd3c)
+
+	* Add full MATE session support.
+
+2017-07-17 21:32:34 +0200 Mike Gabriel (5e3436e)
+
+	* Revert "DBus actions: Add support for logging out via GNOME/MATE
+          session manager."
+
+2017-07-17 21:31:04 +0200 Mike Gabriel (9cf348f)
+
+	* debian/control: Process with 'wrap-and-sort -t'.
+
+2017-06-09 09:53:13 +0200 Mike Gabriel (9389883)
+
+	* DBus actions: Add support for logging out via GNOME/MATE session
+          manager.
+
+2017-06-07 23:47:38 +0200 Mike Gabriel (8ba52ca)
+
+	* debian/control: Update R, drop indicator-applet, add
+          xfce4-indicator-plugin as an alternative.
+
+2017-06-07 23:31:22 +0200 Mike Gabriel (576ce8b)
+
+	* debian/control: Pull-over LONG_DESCRIPTION from official Debian
+          package.
+
+2017-06-07 23:25:28 +0200 Mike Gabriel (895b14a)
+
+	* debian/{rules,control}: Enable all hardening flags.
+
+2017-06-07 23:24:29 +0200 Mike Gabriel (79c6140)
+
+	* debian/{upstream/,patches/}: Sync in from official Debian package.
+
+2017-06-07 23:24:02 +0200 Mike Gabriel (409936f)
+
+	* debian/copyright: Add auto-generated copyright.in file.
+
+2017-06-07 23:21:05 +0200 Mike Gabriel (a6bf446)
+
+	* debian/copyright: Sync in from official Debian package.
+
+2017-05-31 15:02:20 +0200 Mike Gabriel (edfe517)
+
+	* data/ayatana-indicator-session.desktop.in
+
+2017-05-31 14:16:26 +0200 Mike Gabriel (a167448)
+
+	* debian/rules: Add get-orig-source rule.
+
+2017-05-31 14:15:50 +0200 Mike Gabriel (b786ce3)
+
+	* debian/tests/control: Fix package version in tests' control file.
+
+2017-05-31 14:15:09 +0200 Mike Gabriel (bc09f7d)
+
+	* debian/watch: Fix upstream URL in watch file.
+
+2017-05-30 16:10:13 +0200 Mike Gabriel (ca62fbf)
+
+	* release 0.4.0 (tag: 0.4.0, origin/release-builds, release-builds)
 
 2017-05-30 15:20:45 +0200 Mike Gabriel (9c5a959)
 
 	* backend-dbus/actions.c: Mention MATE session proxy in error msg.
-          (origin/master)
 
 2017-05-30 15:20:24 +0200 Mike Gabriel (50d2da3)
 
@@ -105,9 +287,8 @@
 
 2015-09-15 07:47:28 +0000 CI Train Bot (c5211a8)
 
-	* Releasing 12.10.5+15.10.20150915-0ubuntu1 (tag:
-          12.10.5+15.10.20150915-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+15.10.20150915-0ubuntu1,
+	* Releasing 12.10.5+15.10.20150915-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+15.10.20150915-0ubuntu1,
           refs/bzr/origin/heads/master)
 
 2015-09-15 07:47:26 +0000 Sebastien Bacher (a1fd0d8)
@@ -130,9 +311,8 @@
 
 2015-03-27 15:00:16 +0000 CI Train Bot (ffe4d92)
 
-	* Releasing 12.10.5+15.04.20150327-0ubuntu1 (tag:
-          12.10.5+15.04.20150327-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+15.04.20150327-0ubuntu1)
+	* Releasing 12.10.5+15.04.20150327-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+15.04.20150327-0ubuntu1)
 
 2015-03-27 15:00:13 +0000 Charles Kerr (16b6769)
 
@@ -155,9 +335,8 @@
 
 2015-02-28 18:10:57 +0000 CI Train Bot (4776cce)
 
-	* Releasing 12.10.5+15.04.20150228-0ubuntu1 (tag:
-          12.10.5+15.04.20150228-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+15.04.20150228-0ubuntu1)
+	* Releasing 12.10.5+15.04.20150228-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+15.04.20150228-0ubuntu1)
 
 2015-02-28 18:10:53 +0000 Dmitry Shachnev (e3c5a5b)
 
@@ -170,9 +349,8 @@
 
 2014-11-03 20:57:55 +0000 CI bot (5f72c7a)
 
-	* Releasing 12.10.5+15.04.20141103-0ubuntu1 (tag:
-          12.10.5+15.04.20141103-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+15.04.20141103-0ubuntu1)
+	* Releasing 12.10.5+15.04.20141103-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+15.04.20141103-0ubuntu1)
 
 2014-11-03 20:57:47 +0000 Sebastien Bacher (7c03425)
 
@@ -185,9 +363,8 @@
 
 2014-10-09 13:27:50 +0000 CI bot (f084494)
 
-	* Releasing 12.10.5+14.10.20141009-0ubuntu1 (tag:
-          12.10.5+14.10.20141009-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.10.20141009-0ubuntu1)
+	* Releasing 12.10.5+14.10.20141009-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.10.20141009-0ubuntu1)
 
 2014-10-09 13:27:36 +0000 Martin Pitt (ebd9cae)
 
@@ -208,9 +385,8 @@
 
 2014-09-19 13:48:47 +0000 CI bot (65ce193)
 
-	* Releasing 12.10.5+14.10.20140919-0ubuntu1 (tag:
-          12.10.5+14.10.20140919-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.10.20140919-0ubuntu1)
+	* Releasing 12.10.5+14.10.20140919-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.10.20140919-0ubuntu1)
 
 2014-09-19 13:48:34 +0000 Dmitry Shachnev (aee40ea)
 
@@ -223,9 +399,8 @@
 
 2014-08-14 14:53:29 +0000 CI bot (c9570c9)
 
-	* Releasing 12.10.5+14.10.20140814-0ubuntu1 (tag:
-          12.10.5+14.10.20140814-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.10.20140814-0ubuntu1)
+	* Releasing 12.10.5+14.10.20140814-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.10.20140814-0ubuntu1)
 
 2014-08-14 14:53:19 +0000 Charles Kerr (cea1977)
 
@@ -238,9 +413,8 @@
 
 2014-07-18 21:36:22 +0000 CI bot (7205a28)
 
-	* Releasing 12.10.5+14.10.20140718-0ubuntu1 (tag:
-          12.10.5+14.10.20140718-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.10.20140718-0ubuntu1)
+	* Releasing 12.10.5+14.10.20140718-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.10.20140718-0ubuntu1)
 
 2014-07-18 21:36:13 +0000 Robert Ancell (97a8297)
 
@@ -252,9 +426,8 @@
 
 2014-07-17 08:33:50 +0000 CI bot (373e7a8)
 
-	* Releasing 12.10.5+14.10.20140717-0ubuntu1 (tag:
-          12.10.5+14.10.20140717-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.10.20140717-0ubuntu1)
+	* Releasing 12.10.5+14.10.20140717-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.10.20140717-0ubuntu1)
 
 2014-07-17 08:33:36 +0000 Charles Kerr (5a43af8)
 
@@ -298,9 +471,8 @@
 
 2014-06-20 15:27:43 +0000 CI bot (63f2cd2)
 
-	* Releasing 12.10.5+14.10.20140620-0ubuntu1 (tag:
-          12.10.5+14.10.20140620-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.10.20140620-0ubuntu1)
+	* Releasing 12.10.5+14.10.20140620-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.10.20140620-0ubuntu1)
 
 2014-06-20 15:27:33 +0000 Charles Kerr (44bcea9)
 
@@ -331,9 +503,8 @@
 
 2014-04-10 17:39:19 +0000 CI bot (c2e6f8b)
 
-	* Releasing 12.10.5+14.04.20140410-0ubuntu1 (tag:
-          12.10.5+14.04.20140410-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.04.20140410-0ubuntu1)
+	* Releasing 12.10.5+14.04.20140410-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.04.20140410-0ubuntu1)
 
 2014-04-10 17:39:10 +0000 Marco Trevisan (Treviño) (36fe650)
 
@@ -374,9 +545,8 @@
 
 2014-04-03 17:13:30 +0000 CI bot (74352b3)
 
-	* Releasing 12.10.5+14.04.20140403-0ubuntu1 (tag:
-          12.10.5+14.04.20140403-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.04.20140403-0ubuntu1)
+	* Releasing 12.10.5+14.04.20140403-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.04.20140403-0ubuntu1)
 
 2014-04-03 17:13:23 +0000 Charles Kerr (5c547e6)
 
@@ -403,9 +573,8 @@
 
 2014-03-24 10:19:12 +0000 CI bot (d4ba429)
 
-	* Releasing 12.10.5+14.04.20140324-0ubuntu1 (tag:
-          12.10.5+14.04.20140324-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.04.20140324-0ubuntu1)
+	* Releasing 12.10.5+14.04.20140324-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.04.20140324-0ubuntu1)
 
 2014-03-24 10:19:00 +0000 Charles Kerr (0638860)
 
@@ -420,9 +589,8 @@
 
 2014-03-20 19:18:01 +0000 CI bot (e99aa91)
 
-	* Releasing 12.10.5+14.04.20140320-0ubuntu1 (tag:
-          12.10.5+14.04.20140320-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.04.20140320-0ubuntu1)
+	* Releasing 12.10.5+14.04.20140320-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.04.20140320-0ubuntu1)
 
 2014-03-20 19:17:46 +0000 Ted Gould (a93745a)
 
@@ -467,9 +635,8 @@
 
 2014-03-11 19:21:29 +0000 CI bot (574547d)
 
-	* Releasing 12.10.5+14.04.20140311.1-0ubuntu1 (tag:
-          12.10.5+14.04.20140311.1-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.04.20140311.1-0ubuntu1)
+	* Releasing 12.10.5+14.04.20140311.1-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.04.20140311.1-0ubuntu1)
 
 2014-03-11 19:21:20 +0000 Marco Trevisan (Treviño) (efa3cd6)
 
@@ -503,9 +670,8 @@
 
 2014-02-14 15:53:35 +0000 CI bot (75840bf)
 
-	* Releasing 12.10.5+14.04.20140214-0ubuntu1 (tag:
-          12.10.5+14.04.20140214-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.04.20140214-0ubuntu1)
+	* Releasing 12.10.5+14.04.20140214-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.04.20140214-0ubuntu1)
 
 2014-02-14 15:53:27 +0000 Robert Ancell (66ad7b4)
 
@@ -519,9 +685,8 @@
 
 2014-02-07 16:37:27 +0000 CI bot (ee60781)
 
-	* Releasing 12.10.5+14.04.20140207-0ubuntu1 (tag:
-          12.10.5+14.04.20140207-0ubuntu1,
-          refs/bzr/origin/tags/12.10.5+14.04.20140207-0ubuntu1)
+	* Releasing 12.10.5+14.04.20140207-0ubuntu1
+          (refs/bzr/origin/tags/12.10.5+14.04.20140207-0ubuntu1)
 
 2014-02-07 16:37:16 +0000 CI bot (083b132)
 
@@ -1949,7 +2114,7 @@
 
 2012-10-03 11:44:05 -0500 Charles Kerr (2b173ee)
 
-	* 12.10.4 (tag: 12.10.4, refs/bzr/origin/tags/12.10.4)
+	* 12.10.4 (refs/bzr/origin/tags/12.10.4)
 
 2012-10-01 17:39:38 +0000 Ted Gould (8aec4a8)
 
@@ -2009,7 +2174,7 @@
 
 2012-09-19 11:34:58 -0500 Charles Kerr (9c40cb7)
 
-	* 12.10.3 (tag: 12.10.3, refs/bzr/origin/tags/12.10.3)
+	* 12.10.3 (refs/bzr/origin/tags/12.10.3)
 
 2012-09-19 05:57:50 +0000 Charles Kerr (bf63480)
 
@@ -2121,8 +2286,7 @@
 2012-08-31 11:59:27 -0500 Charles Kerr (a97388a)
 
 	* add gtest-dbus-helper.h to test_service_SOURCES s.t. it gets
-          bundled in the tarball (tag: 12.10.2,
-          refs/bzr/origin/tags/12.10.2)
+          bundled in the tarball (refs/bzr/origin/tags/12.10.2)
 
 2012-08-31 11:53:36 -0500 Charles Kerr (83e5043)
 
@@ -2215,7 +2379,7 @@
 
 2012-08-22 01:31:53 -0500 Charles Kerr (84e5c6a)
 
-	* 12.10.1 (tag: 12.10.1, refs/bzr/origin/tags/12.10.1)
+	* 12.10.1 (refs/bzr/origin/tags/12.10.1)
 
 2012-08-22 01:28:40 -0500 Charles Kerr (6468eba)
 
@@ -2273,8 +2437,7 @@
 
 2012-07-11 09:59:14 -0500 Charles Kerr (5b3945b)
 
-	* bumping version to 12.10.0 (tag: 12.10.0,
-          refs/bzr/origin/tags/12.10.0)
+	* bumping version to 12.10.0 (refs/bzr/origin/tags/12.10.0)
 
 2012-07-11 09:51:42 -0500 Charles Kerr (be26226)
 

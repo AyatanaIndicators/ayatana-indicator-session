@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Ayatana Indicator Session
 Upstream-Contact: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
-Source: https://github.com/ArcticaProject/ayatana-indicator-session
+Source: https://github.com/AyatanaIndicators/ayatana-indicator-session
 
 Files: src/actions.c
  src/actions.h

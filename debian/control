@@ -12,9 +12,9 @@ Build-Depends: cmake,
                python,
                systemd [linux-any],
 Standards-Version: 4.0.0
-Homepage: https://github.com/ArcticaProject/ayatana-indicator-session
-Vcs-Git: git://cgit.arctica-project.org/ayatana/ayatana-indicator-session.git
-Vcs-Browser: https://cgit.arctica-project.org/ayatana/ayatana-indicator-session.git/
+Homepage: https://github.com/AyatanaIndicators/ayatana-indicator-session
+Vcs-Git: https://github.com/AyatanaIndicators/ayatana-indicator-session
+Vcs-Browser: https://github.com/AyatanaIndicators/ayatana-indicator-session
 
 Package: ayatana-indicator-session
 Architecture: any

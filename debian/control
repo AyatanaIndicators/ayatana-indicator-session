@@ -1,5 +1,5 @@
 Source: ayatana-indicator-session
-Section: gnome
+Section: x11
 Priority: optional
 Maintainer: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 Build-Depends: cmake,

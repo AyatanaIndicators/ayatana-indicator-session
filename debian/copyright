@@ -86,6 +86,8 @@ Files: CMakeLists.txt
  data/org.ayatana.indicator.session
  data/org.ayatana.indicator.session.gschema.xml.in
  po/CMakeLists.txt
+ po/LINGUAS
+ po/POTFILES.in
  src/CMakeLists.txt
  src/backend-dbus/CMakeLists.txt
  src/backend-dbus/org.ayatana.Desktop.Session.xml
@@ -108,7 +110,6 @@ Files: CMakeLists.txt
  tests/org.gnome.desktop.lockdown.gschema.xml
  tests/org.gnome.settings-daemon.plugins.media-keys.gschema.xml
  trim-lcov.py
- update-pot.sh
 Copyright: 2012, Canonical Ltd.
   2013, Canonical Ltd.
   2014, Canonical Ltd.
@@ -116,6 +117,11 @@ License: GPL-3
 Comment:
  Assuming copyright holdership and licensing from other code files
  in this project.
+
+Files: update-pot.sh
+ update-po.sh
+Copyright: 2017, Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+License: GPL-3
 
 Files: data/icons/16x16/actions/system-log-out.png
  data/icons/16x16/actions/system-restart.png
@@ -183,34 +189,62 @@ License: GPL-3
 Comment:
  Applying same license as found in the code files.
 
-Files: po/ar.po
+Files: po/ayatana-indicator-session.pot
+ po/ar.po
+ po/bem.po
  po/bg.po
+ po/ce.po
+ po/ckb.po
+ po/co.po
  po/cs.po
  po/da.po
  po/de.po
  po/es.po
  po/fi.po
+ po/fil.po
+ po/fo.po
  po/fr.po
+ po/fr_CA.po
+ po/frp.po
+ po/ga.po
  po/he.po
  po/hi.po
  po/hr.po
+ po/ht.po
  po/hu.po
+ po/ia.po
  po/it.po
  po/ja.po
+ po/kl.po
  po/ko.po
+ po/kw.po
+ po/la.po
+ po/lo.po
+ po/mhr.po
+ po/mi.po
  po/nb.po
  po/nl.po
  po/pl.po
+ po/ps.po
  po/pt.po
  po/pt_BR.po
  po/ro.po
  po/ru.po
+ po/sa.po
+ po/se.po
+ po/shn.po
  po/sk.po
  po/sl.po
  po/sr.po
  po/sv.po
+ po/sw.po
+ po/szl.po
+ po/tg.po
  po/th.po
+ po/ti.po
  po/tr.po
+ po/uz.po
+ po/wae.po
  po/zh_CN.po
  po/zh_TW.po
 Copyright: 2010, THE PACKAGE'S COPYRIGHT HOLDER

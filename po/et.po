@@ -7,16 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-29 12:38+0100\n"
-"PO-Revision-Date: 2011-09-16 04:04+0000\n"
-"Last-Translator: tabbernuk <boamaod@gmail.com>\n"
-"Language-Team: Estonian <et@li.org>\n"
+"POT-Creation-Date: 2017-07-21 15:41+0200\n"
+"PO-Revision-Date: 2017-11-05 10:19+0000\n"
+"Last-Translator: Kristjan Räts <kristjanrats@gmail.com>\n"
+"Language-Team: Estonian <https://hosted.weblate.org/projects/ayatana-"
+"indicators/session-applet/et/>\n"
 "Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.18-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -59,11 +61,11 @@ msgstr "Teeb nii, et väljalülitamise nuppu sessioonimenüüs ei näidata."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Süsteem, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Süsteem"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -72,52 +74,48 @@ msgstr "Külaline"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s töölaua abi"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s abi"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Selle arvuti teave"
 
 #: ../src/service.c:361
 msgid "System Settings…"
-msgstr "Süsteemi seadistamine..."
+msgstr "Süsteemi seadistamine…"
 
 #: ../src/service.c:363
 msgid "Online Accounts…"
-msgstr "Netikontod..."
+msgstr "Võrgukontod…"
 
 #: ../src/service.c:566
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Käivita ekraanisäästja"
 
 #: ../src/service.c:574 ../src/service.c:590
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Lülitu kasutajale..."
+msgstr "Vaheta kontot…"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account"
-msgstr "Lülitu kasutajale..."
+msgstr "Konto vahetus"
 
 #: ../src/service.c:587
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Lülitu kasutajale..."
+msgstr "Lukusta/vaheta konto…"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Lülitu kasutajale..."
+msgstr "Konto lukustamine/vahetus"
 
 #: ../src/service.c:594
 msgid "Lock"
-msgstr ""
+msgstr "Lukusta"
 
 #: ../src/service.c:619
 msgid "Guest Session"
@@ -125,7 +123,7 @@ msgstr "Külalissessioon"
 
 #: ../src/service.c:696
 msgid "Log Out…"
-msgstr "Logi välja..."
+msgstr "Logi välja…"
 
 #: ../src/service.c:696 ../src/backend-dbus/actions.c:824
 #: ../src/backend-dbus/actions.c:826
@@ -142,7 +140,7 @@ msgstr "Talveuni"
 
 #: ../src/service.c:722
 msgid "Restart…"
-msgstr "Taaskäivita..."
+msgstr "Taaskäivita…"
 
 #: ../src/service.c:722 ../src/backend-dbus/actions.c:861
 #: ../src/backend-dbus/actions.c:863
@@ -151,7 +149,7 @@ msgstr "Taaskäivita"
 
 #: ../src/service.c:729
 msgid "Shut Down…"
-msgstr "Lülita välja..."
+msgstr "Lülita välja…"
 
 #: ../src/service.c:729 ../src/backend-dbus/actions.c:894
 #: ../src/backend-dbus/actions.c:896
@@ -159,16 +157,14 @@ msgid "Shut Down"
 msgstr "Lülita välja"
 
 #: ../src/backend-dbus/actions.c:818
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr ""
 "Kas oled kindel, et tahad kõik programmid sulgeda ja arvutist välja logida?"
 
 #: ../src/backend-dbus/actions.c:819
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
-msgstr "Mõned tarkvarauuendused ei rakendu enne arvuti taaskäivitust."
+msgstr "Mõned tarkvarauuendused rakenduvad pärast arvuti taaskäivitamist."
 
 #: ../src/backend-dbus/actions.c:827 ../src/backend-dbus/actions.c:864
 #: ../src/backend-dbus/actions.c:897
@@ -188,7 +184,7 @@ msgstr ""
 #: ../src/backend-dbus/actions.c:1007 ../src/backend-dbus/actions.c:1020
 #: ../src/backend-dbus/actions.c:1035
 msgid "Warning"
-msgstr ""
+msgstr "Hoiatus"
 
 #: ../src/backend-dbus/actions.c:1008
 msgid ""
@@ -198,6 +194,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana Session Indicator ei toeta hetkel süsteemi sätete \n"
+"rakendamist su töölaua keskkonnale.\n"
+"\n"
+"Palun raporteeri sellest arendajatele aadressil:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1021
 msgid ""
@@ -207,6 +208,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana Session Indicator ei toeta parooli vahetamist sinu töölaua "
+"keskkonnas.\n"
+"\n"
+"Palun raporteeri selles arendajatele aadressil:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1036
 msgid ""
@@ -216,6 +222,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana Session Indicator ei tea hetkel, kuidas kuvada hetkel\n"
+"töötava töölaua keskkonna informatsiooni.\n"
+"\n"
+"Palun raporteeri sellest arendajatel aadressil:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Klassikaline külalissessioon"

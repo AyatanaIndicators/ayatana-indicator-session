@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-21 15:41+0200\n"
+"POT-Creation-Date: 2017-11-29 12:38+0100\n"
 "PO-Revision-Date: 2011-09-16 07:33+0000\n"
 "Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
 "Language-Team: Bulgarian\n"
@@ -18,13 +18,13 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 "X-Generator: Launchpad (build 14041)\n"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:1
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Да не се показва диалог за потвърждение при излизане, рестартиране и "
 "изключване"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:2
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
@@ -32,27 +32,27 @@ msgstr ""
 "Дали да се показва или не диалог за потвърждение при излизане, рестартиране "
 "и изключване"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:3
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
 msgstr "Премахване реда за излизане от системата"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:4
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Прави бутонът за излизане да не се показва в менюто."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:5
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu"
 msgstr "Премахване реда за рестартиране от менюто"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:6
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Прави бутонът за рестартиране да не се показва в менюто."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:7
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu"
 msgstr "Премахване реда за изключване от менюто"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:8
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Прави бутонът за изключване да не се показва в менюто."
 

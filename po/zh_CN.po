@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-21 15:42+0200\n"
+"POT-Creation-Date: 2017-11-29 12:39+0100\n"
 "PO-Revision-Date: 2011-09-15 13:13+0000\n"
 "Last-Translator: Xhacker Liu <liu.dongyuan@gmail.com>\n"
 "Language-Team: Chinese (simplified)\n"
@@ -18,37 +18,37 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 "X-Generator: Launchpad (build 14041)\n"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:1
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr "禁止确认注销、重新启动和关机操作的对话框出现"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:2
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr "是否显示确认注销、重新启动和关机操作的对话框。"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:3
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
 msgstr "移除会话菜单中的注销项"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:4
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "用它来隐藏会话菜单中的注销按钮。"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:5
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu"
 msgstr "移除会话菜单中的重启项"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:6
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "用它来隐藏会话菜单中的重启按钮。"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:7
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu"
 msgstr "移除会话菜单中的关机项"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:8
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "用它来隐藏会话菜单中的关机按钮。"
 

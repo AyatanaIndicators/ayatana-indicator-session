@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-21 15:42+0200\n"
+"POT-Creation-Date: 2017-11-29 12:38+0100\n"
 "PO-Revision-Date: 2017-09-12 13:48+0000\n"
 "Last-Translator: Cûndûllah el-Kurdî <mckucukaslan47@gmail.com>\n"
 "Language-Team: Kurdish <https://hosted.weblate.org/projects/ayatana-"
@@ -20,11 +20,11 @@ msgstr ""
 "X-Generator: Weblate 2.17-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:1
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr "Diyaloga ji bo erêkirina derketin, nûdestpêkirin û girtinê nîşan nede"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:2
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
@@ -32,28 +32,28 @@ msgstr ""
 "Ji bo tevgerên derketin, nûdestpêkirin û girtinê diyaloxa erêkirinê nîşnbide "
 "yan na."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:3
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 #, fuzzy
 msgid "Remove the Log Out item from the session menu"
 msgstr "Bişkoka \"Derkeve\" ji nav Menûya Danişînê derxe"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:4
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:5
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu"
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:6
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:7
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu"
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:8
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
 

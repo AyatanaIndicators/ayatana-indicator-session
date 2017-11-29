@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-21 15:41+0200\n"
+"POT-Creation-Date: 2017-11-29 12:38+0100\n"
 "PO-Revision-Date: 2011-09-25 12:06+0000\n"
 "Last-Translator: Zenat Rahnuma <Unknown>\n"
 "Language-Team: Bengali <ankur-bd-l10n@googlegroups.com>\n"
@@ -20,38 +20,38 @@ msgstr ""
 "X-Generator: Launchpad (build 14041)\n"
 "X-Language: bn_BD\n"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:1
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr "লগ আউট, পুনরায় আরম্ভ এবং বন্ধ করার সময় নিশ্চিতকরণ ডায়ালগ রোধ"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:2
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
 "লগ আউট, পুনরায় আরম্ভ এবং বন্ধ করার সময় নিশ্চিতকরণ ডায়ালগ প্রদর্শন করা হবে কিনা।"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:3
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
 msgstr "সেশন মেনু থেকে লগ আউট আইটেম অপসারণ"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:4
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "এটি এমন ভাবে তৈরি করুন যাতে সেশন মেনুতে লগ আউট বোতাম প্রদর্শন না করে।"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:5
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu"
 msgstr "সেশন মেনু হতে রিস্টার্ট আইকন অপসারণ কর"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:6
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "এটি এমনভাবে তৈরি করুন যাতে সেশন মেনুতে পুনরায় শুরু বোতাম প্রদর্শন না করে।"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:7
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu"
 msgstr "সেশন মেনু হতে শাটডাউন আইকন অপসারণ কর"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:8
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "এটি এমন ভাবে তৈরি করুন যাতে সেশন মেনুতে শাট ডাউন বোতাম প্রদর্শন না করে।"
 

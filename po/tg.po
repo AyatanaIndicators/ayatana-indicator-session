@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-21 15:42+0200\n"
+"POT-Creation-Date: 2017-11-29 12:39+0100\n"
 "PO-Revision-Date: 2017-07-21 15:41+0200\n"
 "Last-Translator: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>\n"
 "Language-Team: Tajik\n"
@@ -16,37 +16,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:1
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:2
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:3
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:4
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:5
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu"
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:6
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:7
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu"
 msgstr ""
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in.h:8
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
 

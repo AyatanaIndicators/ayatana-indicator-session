@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 # Copyright (C) 2017 by Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 #
 # This package is free software; you can redistribute it and/or modify

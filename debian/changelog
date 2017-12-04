@@ -1,3 +1,9 @@
+ayatana-indicator-session (0.4.1.99-0) UNRELEASED; urgency=medium
+
+  * Continue development...
+
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Mon, 04 Dec 2017 10:07:22 +0100
+
 ayatana-indicator-session (0.4.1-0) unstable; urgency=medium
 
   * Upstream-provided Debian package for ayatana-indicator-session.

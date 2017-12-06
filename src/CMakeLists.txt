@@ -20,7 +20,7 @@ set (SERVICE_EXEC "ayatana-indicator-session-service")
 set_property (SOURCE main.c
               APPEND PROPERTY COMPILE_DEFINITIONS
               GETTEXT_PACKAGE="${GETTEXT_PACKAGE}"
-              GNOMELOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}")
+              LOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}")
 add_executable (${SERVICE_EXEC} main.c)
 target_link_libraries (${SERVICE_EXEC} libayatanaindicatorsessionservice backenddbus ${SERVICE_LIBRARIES} ${GCOV_LIBS})
 install (TARGETS ${SERVICE_EXEC} RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_PKGLIBEXECDIR})

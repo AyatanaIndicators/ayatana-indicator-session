@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-29 13:17+0100\n"
-"PO-Revision-Date: 2011-09-19 14:25+0000\n"
-"Last-Translator: Kjetil Birkeland Moe <kjetil@skifremme.com>\n"
-"Language-Team: Norwegian Bokmal\n"
-"Language: \n"
+"PO-Revision-Date: 2017-12-08 04:48+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/ayatana-"
+"indicators/session-applet/nb/>\n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.18-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -60,11 +62,11 @@ msgstr "Skjul avsluttingsknappen i øktmenyen."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Systemet, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "System"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -73,16 +75,16 @@ msgstr "Gjest"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s Skrivebordshjelp"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s Hjelp"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Om denne datamaskinen"
 
 #: ../src/service.c:361
 msgid "System Settings…"
@@ -94,7 +96,7 @@ msgstr "Nettkontoer..."
 
 #: ../src/service.c:566
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Start skjermsparer"
 
 #: ../src/service.c:574 ../src/service.c:590
 #, fuzzy
@@ -118,7 +120,7 @@ msgstr "Bytt brukerkonto…"
 
 #: ../src/service.c:594
 msgid "Lock"
-msgstr ""
+msgstr "Lås"
 
 #: ../src/service.c:619
 msgid "Guest Session"
@@ -186,7 +188,7 @@ msgstr "Ønsker du å lukke alle programmer og slå av datamaskinen?"
 #: ../src/backend-dbus/actions.c:1007 ../src/backend-dbus/actions.c:1020
 #: ../src/backend-dbus/actions.c:1035
 msgid "Warning"
-msgstr ""
+msgstr "Advarsel"
 
 #: ../src/backend-dbus/actions.c:1008
 msgid ""
@@ -196,6 +198,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana økt-indikatoeren støtter ikke påkalling av\n"
+"innstillingsprogrammet for ditt skrivebordsmiljø enda.\n"
+"\n"
+"Rapporter dette til utviklerne på:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1021
 msgid ""
@@ -205,6 +212,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana økt-indikatoeren støtter ikke passordsendringer\n"
+"for ditt skrivebordsmiljø enda.\n"
+"\n"
+"Rapporter dette til utviklerne på:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1036
 msgid ""
@@ -214,6 +226,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana økt-indikatoeren har ikke støtte for å vise\n"
+"hva ditt skrivebordsmiljø er enda.\n"
+"\n"
+"Rapporter dette til utviklerne på:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Klassisk gjesteøkt"

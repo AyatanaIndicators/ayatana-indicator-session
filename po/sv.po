@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-29 13:17+0100\n"
-"PO-Revision-Date: 2017-12-31 15:46+0000\n"
+"PO-Revision-Date: 2018-01-01 11:57+0000\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/ayatana-"
 "indicators/session-applet/sv/>\n"
@@ -74,7 +74,7 @@ msgstr "Gäst"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr "%s Skrivbordshjälp"
+msgstr "%s-skrivbordshjälp"
 
 #: ../src/service.c:344
 #, c-format

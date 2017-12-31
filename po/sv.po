@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-29 13:17+0100\n"
-"PO-Revision-Date: 2017-09-28 22:49+0000\n"
-"Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
+"PO-Revision-Date: 2017-12-31 15:46+0000\n"
+"Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/ayatana-"
 "indicators/session-applet/sv/>\n"
 "Language: sv\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.17-dev\n"
+"X-Generator: Weblate 2.19-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -74,12 +74,12 @@ msgstr "Gäst"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s Skrivbordshjälp"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s-hjälp"
 
 #: ../src/service.c:346
 msgid "About This Computer"
@@ -193,6 +193,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana sessionsindikator har inte stöd för att väcka system-\n"
+"inställningsprogrammet för din skrivbordsmiljö än.\n"
+"\n"
+"Rapportera detat till utvecklarna via:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1021
 msgid ""
@@ -202,6 +207,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana sessionsindikator har inte stöd för lösenordsändring\n"
+"för din skrivbordsmiljö än.\n"
+"\n"
+"Rapportera detta till utvecklarna via:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1036
 msgid ""
@@ -211,6 +221,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana sessionsindikator vet ännu inte hur information ska\n"
+"visas för den aktuella skrivbordsmiljön.\n"
+"\n"
+"Rapportera detta till utvecklarna via:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Klassisk gästsession"

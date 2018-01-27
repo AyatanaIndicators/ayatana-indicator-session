@@ -8,15 +8,18 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-29 13:17+0100\n"
-"PO-Revision-Date: 2011-09-15 09:58+0000\n"
-"Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
-"Language-Team: Arabic\n"
-"Language: \n"
+"PO-Revision-Date: 2018-01-28 09:34+0000\n"
+"Last-Translator: Mutaz Tayyeb AbuSaad <wahshy1414@gmail.com>\n"
+"Language-Team: Arabic <https://hosted.weblate.org/projects/ayatana-indicators"
+"/session-applet/ar/>\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Weblate 2.19-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -34,7 +37,7 @@ msgstr "أزل عنصر الخروج من قائمة الجلسة"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr ""
+msgstr "أخفي زر تسجيل الخروج من قائمة الجلسة."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu"
@@ -42,7 +45,7 @@ msgstr "أزل عنصر إعادة التشغيل من قائمة الجلسة"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr ""
+msgstr "أحفي زر إعادة التشغيل من قائمة الجلسة."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu"
@@ -50,39 +53,41 @@ msgstr "أزل عنصر الإطفاء من قائمة الجلسة"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr ""
+msgstr "أحفي زر إيقاف التشغيل من قائمة الجلسة."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
 msgstr ""
+"System:\n"
+"Mutaz AbuSaad"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "النظام"
 
 #: ../src/service.c:325
 msgid "Guest"
-msgstr ""
+msgstr "زائر"
 
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s المساعدة في سطح المكتب"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s المساعدة"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "بيانات هذا الجهاز"
 
 #: ../src/service.c:361
 msgid "System Settings…"
-msgstr ""
+msgstr "إعدادات النظام…"
 
 #: ../src/service.c:363
 msgid "Online Accounts…"

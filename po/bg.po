@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-29 13:17+0100\n"
-"PO-Revision-Date: 2018-02-20 12:54+0000\n"
+"PO-Revision-Date: 2018-02-21 13:34+0000\n"
 "Last-Translator: Veselin Georgiev <vvgeorgievv@gmail.com>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/ayatana-"
 "indicators/session-applet/bg/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.19.1\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -31,8 +31,8 @@ msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"Дали да се показва или не диалог за потвърждение при излизане, рестартиране "
-"и изключване"
+"Да се показва ли диалог за потвърждение при излизане, рестартиране и "
+"изключване."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
@@ -88,11 +88,11 @@ msgstr "Относно Този Компютър"
 
 #: ../src/service.c:361
 msgid "System Settings…"
-msgstr "Системни настройки..."
+msgstr "Системни Настройки…"
 
 #: ../src/service.c:363
 msgid "Online Accounts…"
-msgstr "Онлайн регистрации..."
+msgstr "Активни Потребители…"
 
 #: ../src/service.c:566
 msgid "Start Screen Saver"
@@ -124,7 +124,7 @@ msgstr "Гост"
 
 #: ../src/service.c:696
 msgid "Log Out…"
-msgstr "Излизане"
+msgstr "Изход…"
 
 #: ../src/service.c:696 ../src/backend-dbus/actions.c:824
 #: ../src/backend-dbus/actions.c:826
@@ -141,7 +141,7 @@ msgstr "Дълбоко заспиване"
 
 #: ../src/service.c:722
 msgid "Restart…"
-msgstr "Рестартиране..."
+msgstr "Рестарт…"
 
 #: ../src/service.c:722 ../src/backend-dbus/actions.c:861
 #: ../src/backend-dbus/actions.c:863
@@ -150,7 +150,7 @@ msgstr "Рестартиране"
 
 #: ../src/service.c:729
 msgid "Shut Down…"
-msgstr "Изключване..."
+msgstr "Изключване…"
 
 #: ../src/service.c:729 ../src/backend-dbus/actions.c:894
 #: ../src/backend-dbus/actions.c:896
@@ -170,7 +170,7 @@ msgstr ""
 #: ../src/backend-dbus/actions.c:827 ../src/backend-dbus/actions.c:864
 #: ../src/backend-dbus/actions.c:897
 msgid "Cancel"
-msgstr "Отказване"
+msgstr "Отказ"
 
 #: ../src/backend-dbus/actions.c:862
 msgid "Are you sure you want to close all programs and restart the computer?"

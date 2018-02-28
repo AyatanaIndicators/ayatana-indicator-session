@@ -1,6 +1,133 @@
-2017-10-24 21:36:51 +0200 Mike Gabriel (d8d3cfe)
+2018-02-28 21:42:37 +0100 Mike Gabriel (7a7911c)
 
-	* release 0.4.1 (HEAD -> master)
+	* release 0.4.2 (HEAD -> master)
+
+2018-02-28 02:09:20 +0000 Мира Странная (106fd09)
+
+	* Translated using Weblate (Russian) (origin/master)
+
+2018-02-28 02:08:44 +0000 Мира Странная (80999e3)
+
+	* Translated using Weblate (Armenian)
+
+2018-02-20 12:58:08 +0000 Veselin Georgiev (0898d41)
+
+	* Translated using Weblate (Bulgarian)
+
+2018-02-20 12:54:59 +0000 Veselin Georgiev (8439964)
+
+	* Translated using Weblate (Bulgarian)
+
+2018-02-04 15:05:01 +0000 Michal Čihař (92c8f8b)
+
+	* Translated using Weblate (Arabic)
+
+2018-01-27 09:03:44 +0000 Mutaz Tayyeb AbuSaad (69181da)
+
+	* Translated using Weblate (Arabic)
+
+2018-01-01 12:03:13 +0000 Anders Jonsson (eb964e5)
+
+	* Translated using Weblate (Swedish)
+
+2018-01-04 09:50:27 +0000 Yaron Shahrabani (7849a28)
+
+	* Translated using Weblate (Hebrew)
+
+2017-12-31 15:46:21 +0000 Sebastian Rasmussen (65d6225)
+
+	* Translated using Weblate (Swedish)
+
+2017-12-31 15:45:27 +0000 Sebastian Rasmussen (59373fd)
+
+	* Translated using Weblate (Swedish)
+
+2017-12-07 04:16:21 +0000 Allan Nordhøy (efbd70c)
+
+	* Translated using Weblate (Norwegian Bokmål)
+
+2017-12-06 23:35:40 +0100 Mike Gabriel (8937347)
+
+	* data/ayatana-indicator-session.desktop.in: Add XFCE to OnlyShowIn=
+          key.
+
+2017-12-06 11:55:47 +0100 Mike Gabriel (7a4c5c6)
+
+	* Rename GNOMELOCALEDIR -> LOCALEDIR.
+
+2017-12-05 10:30:15 +0100 Mike Gabriel (86bf6f7)
+
+	* debian/postinst: Drop file. The libglib2.0-bin package has trigger
+          for schema compilation these days (and this for ages,
+          actually).
+
+2017-12-04 10:08:42 +0100 Mike Gabriel (2ff8ca3)
+
+	* debian/changelog: Bump upstream to a development version.
+
+2017-12-02 23:41:06 +0100 Mike Gabriel (9a828b4)
+
+	* debian/control: Fix D (glib2.0-bin -> libglib2.0-bin).
+
+2017-12-02 20:56:24 +0100 Mike Gabriel (f4af8fc)
+
+	* debian/{control,postinst}: Recompile GSettings schemas at post
+          installation.
+
+2017-11-29 13:19:18 +0100 Mike Gabriel (6fc4774)
+
+	* po/*.pot: Update translation files once more.
+
+2017-11-29 13:17:46 +0100 Mike Gabriel (fac8cf4)
+
+	* po/: Update translation files once more.
+
+2017-11-29 13:14:07 +0100 Mike Gabriel (8df2d9c)
+
+	* update-po.sh: Preserve .pot file when updating *.po files.
+
+2017-11-07 08:03:10 +0000 Emmanuella Rumanti (b611b31)
+
+	* Translated using Weblate (Indonesian)
+
+2017-11-05 10:18:00 +0000 Kristjan Räts (e1ed8b9)
+
+	* Translated using Weblate (Estonian)
+
+2017-11-29 12:39:22 +0100 Mike Gabriel (2be3e5c)
+
+	* po/*.po: Update with now correct file names for .xml files.
+
+2017-11-29 12:38:45 +0100 Mike Gabriel (2cd60cc)
+
+	* update-po.sh: Fix filenames of .ini(.in) and .xml(.in) files in po
+          files.
+
+2017-11-29 12:25:38 +0100 Mike Gabriel (fcb6a09)
+
+	* update-pot.sh: Drop enable-debug shell command.
+
+2017-11-29 12:22:21 +0100 Mike Gabriel (92a3333)
+
+	* po/ayatana-indicator-session.pot: Update with now correct file
+          names for .xml files.
+
+2017-11-29 12:21:52 +0100 Mike Gabriel (a9eb3ba)
+
+	* update-pot.sh: Fix filenames of .ini(.in) and .xml(.in) files in po
+          template file.
+
+2017-10-12 09:48:36 +0000 Matteo F. Vescovi (907759e)
+
+	* Translated using Weblate (Italian)
+
+2017-10-12 09:44:49 +0000 Matteo F. Vescovi (b5b3d4b)
+
+	* Translated using Weblate (Italian)
+
+2017-10-24 21:36:51 +0200 Mike Gabriel (0d436e3)
+
+	* release 0.4.1 (tag: 0.4.1, origin/release-builds, release-builds)
 
 2017-10-24 21:35:07 +0200 Mike Gabriel (c2dd910)
 
@@ -17,7 +144,7 @@
 2017-10-24 18:23:08 +0200 Mike Gabriel (e326a53)
 
 	* debian/control: Bump Standards-Version: to 4.1.1. No changes
-          needed. (origin/master)
+          needed.
 
 2017-10-24 18:22:25 +0200 Mike Gabriel (b634c7f)
 
@@ -183,7 +310,7 @@
 
 2017-05-30 16:10:13 +0200 Mike Gabriel (ca62fbf)
 
-	* release 0.4.0 (tag: 0.4.0, origin/release-builds, release-builds)
+	* release 0.4.0 (tag: 0.4.0)
 
 2017-05-30 15:20:45 +0200 Mike Gabriel (9c5a959)
 

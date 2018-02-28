@@ -1,0 +1,14 @@
+Overview of changes in ayatana-indicator-session 0.4.2
+
+    - Plenty translation updates. Thanks to translators
+      on hosted.weblate.org.
+
+Overview of changes in ayatana-indicator-session 0.4.1
+
+    - Add MATE session support.
+    - Support building without systemd.
+    - Set up Weblate based translation tools
+
+Overview of changes in ayatana-indicator-session 0.4.0
+
+    - Fork from Ubuntu's Power Indicator.

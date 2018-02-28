@@ -8,15 +8,18 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-29 13:17+0100\n"
-"PO-Revision-Date: 2011-09-17 14:38+0000\n"
-"Last-Translator: Eugene Marshal <Unknown>\n"
-"Language-Team: Russian\n"
-"Language: \n"
+"PO-Revision-Date: 2018-02-28 10:23+0000\n"
+"Last-Translator: Мира Странная <miraityan2004@gmail.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/ayatana-"
+"indicators/session-applet/ru/>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -59,11 +62,11 @@ msgstr "Позволяет скрыть кнопку выключения ком
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Система, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Система"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -77,47 +80,43 @@ msgstr ""
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s Помощь"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Об этом компьютере"
 
 #: ../src/service.c:361
 msgid "System Settings…"
-msgstr "Параметры системы..."
+msgstr "Параметры системы…"
 
 #: ../src/service.c:363
 msgid "Online Accounts…"
-msgstr "Сетевые учётные записи..."
+msgstr "Сетевые учётные записи…"
 
 #: ../src/service.c:566
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Запустить скринсейвер"
 
 #: ../src/service.c:574 ../src/service.c:590
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Переключить пользователя..."
+msgstr "Переключить пользователя…"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account"
-msgstr "Переключить пользователя..."
+msgstr "Переключить пользователя"
 
 #: ../src/service.c:587
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Переключить пользователя..."
+msgstr "Заблокировать/Переключить пользователя…"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Переключить пользователя..."
+msgstr "Заблокировать/Переключить пользователя"
 
 #: ../src/service.c:594
 msgid "Lock"
-msgstr ""
+msgstr "Заблокировать"
 
 #: ../src/service.c:619
 msgid "Guest Session"
@@ -125,7 +124,7 @@ msgstr "Гостевой сеанс"
 
 #: ../src/service.c:696
 msgid "Log Out…"
-msgstr "Завершить сеанс..."
+msgstr "Завершить сеанс…"
 
 #: ../src/service.c:696 ../src/backend-dbus/actions.c:824
 #: ../src/backend-dbus/actions.c:826
@@ -142,7 +141,7 @@ msgstr "Спящий режим"
 
 #: ../src/service.c:722
 msgid "Restart…"
-msgstr "Перезагрузить..."
+msgstr "Перезагрузить…"
 
 #: ../src/service.c:722 ../src/backend-dbus/actions.c:861
 #: ../src/backend-dbus/actions.c:863
@@ -151,7 +150,7 @@ msgstr "Перезагрузить"
 
 #: ../src/service.c:729
 msgid "Shut Down…"
-msgstr "Выключить..."
+msgstr "Выключить…"
 
 #: ../src/service.c:729 ../src/backend-dbus/actions.c:894
 #: ../src/backend-dbus/actions.c:896
@@ -159,17 +158,14 @@ msgid "Shut Down"
 msgstr "Выключить"
 
 #: ../src/backend-dbus/actions.c:818
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr ""
 "Вы действительно хотите закрыть все приложения и завершить текущий сеанс?"
 
 #: ../src/backend-dbus/actions.c:819
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
-msgstr ""
-"Некоторые обновления будут установлены только после перезагрузки компьютера."
+msgstr "Некоторые обновления не будут применены до перезагрузки компьютера."
 
 #: ../src/backend-dbus/actions.c:827 ../src/backend-dbus/actions.c:864
 #: ../src/backend-dbus/actions.c:897
@@ -188,7 +184,7 @@ msgstr "Вы действительно хотите закрыть все пр�
 #: ../src/backend-dbus/actions.c:1007 ../src/backend-dbus/actions.c:1020
 #: ../src/backend-dbus/actions.c:1035
 msgid "Warning"
-msgstr ""
+msgstr "Предупреждение"
 
 #: ../src/backend-dbus/actions.c:1008
 msgid ""
@@ -198,6 +194,12 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Индикатор сессий Ayatana пока не поддерживает пробуждение\n"
+"приложения системных настроек для вашей среды рабочего\n"
+"стола.\n"
+"\n"
+"Пожалуйста, сообщите об этом разработчикам на:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1021
 msgid ""
@@ -207,6 +209,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Индикатор сессий Ayatana пока не поддерживает изменение пароля\n"
+"для вашей среды рабочего стола.\n"
+"\n"
+"Пожалуйста, сообщите об этом разработчикам на:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1036
 msgid ""
@@ -216,6 +223,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Индикатор сессий Ayatana пока не знает, как показать\n"
+"информацию о запущенной среде рабочего стола.\n"
+"\n"
+"Пожалуйста, сообщите об этом разработчикам на:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Классический гостевой сеанс"

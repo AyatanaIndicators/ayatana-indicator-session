@@ -8,29 +8,33 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-29 13:17+0100\n"
-"PO-Revision-Date: 2011-09-18 09:24+0000\n"
-"Last-Translator: Aurimas Fišeras <Unknown>\n"
-"Language-Team: Lithuanian <lt@li.org>\n"
+"PO-Revision-Date: 2018-03-01 21:05+0000\n"
+"Last-Translator: Moo <hazap@hotmail.com>\n"
+"Language-Team: Lithuanian <https://hosted.weblate.org/projects/ayatana-"
+"indicators/session-applet/lt/>\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && (n % 100 < 11 || n % 100 > "
+"19)) ? 0 : ((n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 11 || n % 100 > 19)) ? "
+"1 : 2);\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
-"Nerodyti dialogo lango atsijungimo, paleidimo iš naujo ir išjungimo "
-"veiksmams patvirtinti"
+"Nerodyti dialogo lango, skirto patvirtinti atsijungimo, paleidimo iš naujo "
+"ir išjungimo veiksmus"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"Rodyti ar nerodyti patvirtinimo dialogo langą atsijungimo, paleidimo iš "
-"naujo ir išjungimo veiksmams."
+"Rodyti ar nerodyti patvirtinimo dialogo langą, skirtą atsijungimo, paleidimo "
+"iš naujo ir išjungimo veiksmams."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
@@ -38,33 +42,34 @@ msgstr "Pašalinti atsijungimo punktą iš seanso meniu"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr "Padaro, kad atsijungimo mygtukas nebūtų rodomas seanso meniu."
+msgstr "Padaro taip, kad atsijungimo mygtukas nebūtų rodomas seanso meniu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu"
-msgstr "Pašalinti paleidimo iš naujo įrašą iš seanso meniu"
+msgstr "Pašalinti paleidimo iš naujo punktą iš seanso meniu"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr "Padaro, kad paleidimo iš naujo mygtukas nebūtų rodomas seanso meniu."
+msgstr ""
+"Padaro taip, kad paleidimo iš naujo mygtukas nebūtų rodomas seanso meniu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu"
-msgstr "Pašalinti išjungimo įrašą iš seanso meniu"
+msgstr "Pašalinti išjungimo punktą iš seanso meniu"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr "Padaro, kad išjungimo mygtukas nebūtų rodomas seanso meniu."
+msgstr "Padaro taip, kad išjungimo mygtukas nebūtų rodomas seanso meniu."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Sistema, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -73,52 +78,48 @@ msgstr "Svečias"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s darbalaukio žinynas"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s žinynas"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Apie šį kompiuterį"
 
 #: ../src/service.c:361
 msgid "System Settings…"
-msgstr "Sistemos nustatymai..."
+msgstr "Sistemos nustatymai…"
 
 #: ../src/service.c:363
 msgid "Online Accounts…"
-msgstr "Interneto paskyros..."
+msgstr "Internetinės paskyros…"
 
 #: ../src/service.c:566
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Paleisti ekrano užsklandą"
 
 #: ../src/service.c:574 ../src/service.c:590
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Perjungti naudotoją..."
+msgstr "Perjungti paskyrą…"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account"
-msgstr "Perjungti naudotoją..."
+msgstr "Perjungti paskyrą"
 
 #: ../src/service.c:587
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Perjungti naudotoją..."
+msgstr "Užrakinti/Perjungti paskyrą…"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Perjungti naudotoją..."
+msgstr "Užrakinti/Perjungti paskyrą"
 
 #: ../src/service.c:594
 msgid "Lock"
-msgstr ""
+msgstr "Užrakinti"
 
 #: ../src/service.c:619
 msgid "Guest Session"
@@ -126,7 +127,7 @@ msgstr "Svečio seansas"
 
 #: ../src/service.c:696
 msgid "Log Out…"
-msgstr "Atsijungti..."
+msgstr "Atsijungti…"
 
 #: ../src/service.c:696 ../src/backend-dbus/actions.c:824
 #: ../src/backend-dbus/actions.c:826
@@ -135,15 +136,15 @@ msgstr "Atsijungti"
 
 #: ../src/service.c:714
 msgid "Suspend"
-msgstr "Sustabdyti"
+msgstr "Pristabdyti"
 
 #: ../src/service.c:717
 msgid "Hibernate"
-msgstr "Hibernuoti"
+msgstr "Užmigdyti"
 
 #: ../src/service.c:722
 msgid "Restart…"
-msgstr "Paleisti iš naujo..."
+msgstr "Paleisti iš naujo…"
 
 #: ../src/service.c:722 ../src/backend-dbus/actions.c:861
 #: ../src/backend-dbus/actions.c:863
@@ -152,7 +153,7 @@ msgstr "Paleisti iš naujo"
 
 #: ../src/service.c:729
 msgid "Shut Down…"
-msgstr "Išjungti..."
+msgstr "Išjungti…"
 
 #: ../src/service.c:729 ../src/backend-dbus/actions.c:894
 #: ../src/backend-dbus/actions.c:896
@@ -160,16 +161,14 @@ msgid "Shut Down"
 msgstr "Išjungti"
 
 #: ../src/backend-dbus/actions.c:818
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr "Ar tikrai norite užverti visas programas ir atsijungti?"
 
 #: ../src/backend-dbus/actions.c:819
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"Kai kurie programų atnaujinimai nebus pritaikyti kol kompiuteris nebus "
+"Kai kurie programų atnaujinimai nebus pritaikyti tol, kol kompiuteris nebus "
 "paleistas iš naujo."
 
 #: ../src/backend-dbus/actions.c:827 ../src/backend-dbus/actions.c:864
@@ -189,7 +188,7 @@ msgstr "Ar tikrai norite užverti visas programas ir išjungti kompiuterį?"
 #: ../src/backend-dbus/actions.c:1007 ../src/backend-dbus/actions.c:1020
 #: ../src/backend-dbus/actions.c:1035
 msgid "Warning"
-msgstr ""
+msgstr "Įspėjimas"
 
 #: ../src/backend-dbus/actions.c:1008
 msgid ""
@@ -199,6 +198,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana seanso indikatorius kol kas nepalaiko jūsų darbalaukio aplinkos\n"
+"sistemos nustatymų programos iškvietimo.\n"
+"\n"
+"Prašome pranešti apie tai kūrėjams, adresu:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1021
 msgid ""
@@ -208,6 +212,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana seanso indikatorius kol kas nepalaiko slaptažodžio keitimo\n"
+"jūsų darbalaukio aplinkai.\n"
+"\n"
+"Prašome pranešti apie tai kūrėjams, adresu:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1036
 msgid ""
@@ -217,6 +226,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana seanso indikatorius kol kas nežino kaip rodyti \n"
+"šiuo metu paleistos darbalaukio aplinkos informaciją.\n"
+"\n"
+"Prašome pranešti apie tai kūrėjams, adresu:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Klasikinis svečio seansas"

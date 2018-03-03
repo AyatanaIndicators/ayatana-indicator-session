@@ -8,15 +8,18 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-29 13:17+0100\n"
-"PO-Revision-Date: 2011-09-09 13:54+0000\n"
-"Last-Translator: Andriy Korchak <kharts@ukr.net>\n"
-"Language-Team: Ukrainian <uk@li.org>\n"
+"PO-Revision-Date: 2018-03-04 23:42+0000\n"
+"Last-Translator: Максим Якимчук <xpinovo@gmail.com>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/ayatana-"
+"indicators/session-applet/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -82,7 +85,7 @@ msgstr ""
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Про цей комп'ютер"
 
 #: ../src/service.c:361
 msgid "System Settings…"
@@ -103,7 +106,7 @@ msgstr "Облікові записи..."
 
 #: ../src/service.c:575 ../src/service.c:591
 msgid "Switch Account"
-msgstr ""
+msgstr "Вибрати інший обліковий запис"
 
 #: ../src/service.c:587
 msgid "Lock/Switch Account…"
@@ -184,7 +187,7 @@ msgstr "Ви дійсно бажаєте закрити всі програми 
 #: ../src/backend-dbus/actions.c:1007 ../src/backend-dbus/actions.c:1020
 #: ../src/backend-dbus/actions.c:1035
 msgid "Warning"
-msgstr ""
+msgstr "Попередження"
 
 #: ../src/backend-dbus/actions.c:1008
 msgid ""

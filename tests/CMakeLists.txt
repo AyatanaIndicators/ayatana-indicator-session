@@ -41,13 +41,16 @@ add_library (backendmock STATIC
              backend-mock-users.h)
 set_target_properties (backendmock PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS} -g")
 
+add_custom_target(
+            gschemas-compiled ALL DEPENDS gschemas.compiled
+)
+
 # test-service
 add_executable (test-service
-                test-service.cc
-                gschemas.compiled)
+                test-service.cc)
 set_target_properties (test-service PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS} -std=c++0x -g")
 add_test (test-service test-service)
-add_dependencies (test-service libayatanaindicatorsessionservice backendmock)
+add_dependencies (test-service libayatanaindicatorsessionservice backendmock gschemas-compiled)
 target_link_libraries (test-service libayatanaindicatorsessionservice backendmock gtest ${SERVICE_LIBRARIES} ${GTEST_LIBS})
 
 add_subdirectory (backend-dbus)

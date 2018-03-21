@@ -525,7 +525,9 @@ TEST_F (ServiceTest, ConfirmationDisabledByBackend)
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-screensaver"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
   if (action_menuitem_exists ("indicator.reboot"))
+  {
     ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
+  }
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.power-off"));
 
   // now toggle the can-prompt flag
@@ -539,7 +541,9 @@ TEST_F (ServiceTest, ConfirmationDisabledByBackend)
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-greeter"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
   if (action_menuitem_exists ("indicator.reboot"))
+  {
     ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
+  }
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.power-off"));
 
   // cleanup
@@ -572,7 +576,9 @@ TEST_F (ServiceTest, ConfirmationDisabledByUser)
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-screensaver"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
   if (action_menuitem_exists ("indicator.reboot"))
+  {
     ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
+  }
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.power-off"));
 
   // now toggle the can-prompt flag
@@ -586,7 +592,9 @@ TEST_F (ServiceTest, ConfirmationDisabledByUser)
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.switch-to-greeter"));
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.logout"));
   if (action_menuitem_exists ("indicator.reboot"))
+  {
     ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.reboot"));
+  }
   ASSERT_EQ (confirm, action_menuitem_label_is_ellipsized ("indicator.power-off"));
 
   // cleanup

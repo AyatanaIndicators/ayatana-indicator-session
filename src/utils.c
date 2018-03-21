@@ -46,7 +46,7 @@ is_gnome ()
 gboolean
 is_unity ()
 {
-  return is_xdg_current_desktop(DESKTOP_UNITY7);
+  return is_xdg_current_desktop(DESKTOP_UNITY);
 }
 
 gboolean

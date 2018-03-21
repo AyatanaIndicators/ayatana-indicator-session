@@ -20,6 +20,15 @@
 #include <glib.h>
 #include <string.h>
 
+
+/* XDG_CURRENT_DESKTOP environment variable values
+ * as set by well-known desktop environments
+ */
+#define DESKTOP_UNITY  "Unity"
+#define DESKTOP_MATE   "MATE"
+#define DESKTOP_GNOME  "GNOME"
+#define DESKTOP_XFCE   "XFCE"
+
 gboolean is_unity();
 gboolean is_gnome();
 gboolean is_mate();

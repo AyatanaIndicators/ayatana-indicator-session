@@ -100,6 +100,19 @@ prompt_status_t;
 
 
 static gboolean
+have_gnome_program (const gchar *program)
+{
+  g_auto(GStrv) desktop_names = NULL;
+
+  if (is_gnome()) {
+    g_autofree gchar *path = g_find_program_in_path (program);
+    return path != NULL;
+  }
+
+  return FALSE;
+}
+
+static gboolean
 have_mate_program (const gchar *program)
 {
   g_auto(GStrv) desktop_names = NULL;
@@ -974,7 +987,9 @@ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   static char * browser = NULL;
 
-  if (have_mate_program ("yelp"))
+  if (have_gnome_program ("yelp"))
+    run_outside_app ("yelp help:gnome-user-guide");
+  else if (have_mate_program ("yelp"))
     run_outside_app ("yelp help:mate-user-guide");
   else if (is_xfce())
     {
@@ -984,7 +999,9 @@ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
         run_outside_app(g_strdup_printf("%s '%s'", browser, "https://docs.xfce.org/"));
     }
   else
-    run_outside_app ("yelp");
+    zenity_warning ("dialog-warning",
+                    _("Warning"),
+                    _("The Ayatana Session Indicator does not know yet, how to show\nthe currently running desktop's user guide or help center.\n\nPlease report this to the developers at:\nhttps://github.com/ArcticaProject/ayatana-indicator-session/issues"));
 }
 
 static void

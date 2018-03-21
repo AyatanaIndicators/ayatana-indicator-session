@@ -997,6 +997,10 @@ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
         browser = find_browser();
       if (browser != NULL)
         run_outside_app(g_strdup_printf("%s '%s'", browser, "https://docs.xfce.org/"));
+      else
+        zenity_warning ("dialog-warning",
+                        _("Warning"),
+                        _("The XFCE desktop's user guide needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
     }
   else
     zenity_warning ("dialog-warning",
@@ -1014,6 +1018,10 @@ my_distro_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 
   if (browser != NULL)
     run_outside_app(g_strdup_printf("%s '%s'", browser, get_distro_url()));
+  else
+    zenity_warning ("dialog-warning",
+                    _("Warning"),
+                    g_strdup_printf(_("Displaying information on %s  requires\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."), get_distro_name()));
 }
 
 

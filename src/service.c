@@ -1070,7 +1070,7 @@ on_bus_acquired (GDBusConnection * connection,
 
   g_debug ("bus acquired: %s", name);
 
-  p->conn = g_object_ref (G_OBJECT (connection));
+  p->conn = (GDBusConnection*)g_object_ref (G_OBJECT (connection));
 
   /* export the actions */
   if ((id = g_dbus_connection_export_action_group (connection,

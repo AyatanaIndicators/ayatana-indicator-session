@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-29 13:17+0100\n"
+"POT-Creation-Date: 2018-03-21 15:21+0100\n"
 "PO-Revision-Date: 2011-09-16 07:55+0000\n"
 "Last-Translator: Roy Chan <roy.chan@linux.org.hk>\n"
 "Language-Team: Chinese (traditional)\n"
@@ -124,8 +124,8 @@ msgstr "訪客作業階段"
 msgid "Log Out…"
 msgstr "登出..."
 
-#: ../src/service.c:696 ../src/backend-dbus/actions.c:824
-#: ../src/backend-dbus/actions.c:826
+#: ../src/service.c:696 ../src/backend-dbus/actions.c:859
+#: ../src/backend-dbus/actions.c:861
 msgid "Log Out"
 msgstr "登出"
 
@@ -141,8 +141,8 @@ msgstr "休眠"
 msgid "Restart…"
 msgstr "重新啟動..."
 
-#: ../src/service.c:722 ../src/backend-dbus/actions.c:861
-#: ../src/backend-dbus/actions.c:863
+#: ../src/service.c:722 ../src/backend-dbus/actions.c:900
+#: ../src/backend-dbus/actions.c:902
 msgid "Restart"
 msgstr "重新啟動"
 
@@ -150,41 +150,70 @@ msgstr "重新啟動"
 msgid "Shut Down…"
 msgstr "關機..."
 
-#: ../src/service.c:729 ../src/backend-dbus/actions.c:894
-#: ../src/backend-dbus/actions.c:896
+#: ../src/service.c:729 ../src/backend-dbus/actions.c:937
+#: ../src/backend-dbus/actions.c:939
 msgid "Shut Down"
 msgstr "關機"
 
-#: ../src/backend-dbus/actions.c:818
+#: ../src/backend-dbus/actions.c:853
 #, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr "您是否真的想關閉所有程式並從電腦登出？"
 
-#: ../src/backend-dbus/actions.c:819
+#: ../src/backend-dbus/actions.c:854
 #, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr "有些軟體在電腦下次重新啟動前未能套用更新。"
 
-#: ../src/backend-dbus/actions.c:827 ../src/backend-dbus/actions.c:864
-#: ../src/backend-dbus/actions.c:897
+#: ../src/backend-dbus/actions.c:862 ../src/backend-dbus/actions.c:903
+#: ../src/backend-dbus/actions.c:940
 msgid "Cancel"
 msgstr "取消"
 
-#: ../src/backend-dbus/actions.c:862
+#: ../src/backend-dbus/actions.c:901
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr "您是否真的想關閉所有程式並重新啟動電腦？"
 
-#: ../src/backend-dbus/actions.c:895
+#: ../src/backend-dbus/actions.c:938
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr "您是否真的想關閉所有程式並關掉電腦？"
 
-#: ../src/backend-dbus/actions.c:1007 ../src/backend-dbus/actions.c:1020
-#: ../src/backend-dbus/actions.c:1035
+#: ../src/backend-dbus/actions.c:1002 ../src/backend-dbus/actions.c:1007
+#: ../src/backend-dbus/actions.c:1023 ../src/backend-dbus/actions.c:1073
+#: ../src/backend-dbus/actions.c:1086 ../src/backend-dbus/actions.c:1103
 msgid "Warning"
 msgstr ""
 
+#: ../src/backend-dbus/actions.c:1003
+msgid ""
+"The XFCE desktop's user guide needs to be accessed with\n"
+"a web browser.\n"
+"\n"
+"The Ayatana Session Indicator could not find any web\n"
+"browser on your computer."
+msgstr ""
+
 #: ../src/backend-dbus/actions.c:1008
+msgid ""
+"The Ayatana Session Indicator does not know yet, how to show\n"
+"the currently running desktop's user guide or help center.\n"
+"\n"
+"Please report this to the developers at:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
+msgstr ""
+
+#: ../src/backend-dbus/actions.c:1024
+#, c-format
+msgid ""
+"Displaying information on %s  requires\n"
+"a web browser.\n"
+"\n"
+"The Ayatana Session Indicator could not find any web\n"
+"browser on your computer."
+msgstr ""
+
+#: ../src/backend-dbus/actions.c:1074
 msgid ""
 "The Ayatana Session Indicator does not support evoking the system\n"
 "settings application for your desktop environment, yet.\n"
@@ -193,7 +222,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1021
+#: ../src/backend-dbus/actions.c:1087
 msgid ""
 "The Ayatana Session Indicator does not support password changes\n"
 "for your desktop environment, yet.\n"
@@ -202,7 +231,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1036
+#: ../src/backend-dbus/actions.c:1104
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "information of the currently running desktop environment.\n"

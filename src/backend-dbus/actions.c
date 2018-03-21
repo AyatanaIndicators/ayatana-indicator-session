@@ -94,6 +94,7 @@ typedef enum
   PROMPT_WITH_ZENITY,
   PROMPT_WITH_AYATANA,
   PROMPT_WITH_MATE,
+  PROMPT_WITH_XFCE,
 }
 prompt_status_t;
 
@@ -104,6 +105,19 @@ have_mate_program (const gchar *program)
   g_auto(GStrv) desktop_names = NULL;
 
   if (is_mate()) {
+    g_autofree gchar *path = g_find_program_in_path (program);
+    return path != NULL;
+  }
+
+  return FALSE;
+}
+
+static gboolean
+have_xfce_program (const gchar *program)
+{
+  g_auto(GStrv) desktop_names = NULL;
+
+  if (is_xfce()) {
     g_autofree gchar *path = g_find_program_in_path (program);
     return path != NULL;
   }
@@ -122,6 +136,10 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
       /* can we use the MATE prompt? */
       if ((prompt == PROMPT_NONE) && have_mate_program ("mate-session-save"))
           prompt = PROMPT_WITH_MATE;
+
+      /* can we use the XFCE prompt? */
+      if ((prompt == PROMPT_NONE) && have_xfce_program ("xfce4-session-logout"))
+          prompt = PROMPT_WITH_XFCE;
 
       /* can we use the Unity/Ayatana prompt? */
       if ((prompt == PROMPT_NONE) && p && p->end_session_dialog)
@@ -809,6 +827,10 @@ my_logout (IndicatorSessionActions * actions)
         run_outside_app ("mate-session-save --logout-dialog");
         break;
 
+      case PROMPT_WITH_XFCE:
+        run_outside_app ("xfce4-session-logout");
+        break;
+
       case PROMPT_NONE:
         logout_now (self);
         break;
@@ -851,6 +873,10 @@ my_reboot (IndicatorSessionActions * actions)
         run_outside_app ("mate-session-save --shutdown-dialog");
         break;
 
+      case PROMPT_WITH_XFCE:
+        run_outside_app ("xfce4-session-logout");
+        break;
+
       case PROMPT_NONE:
         reboot_now (self);
         break;
@@ -888,6 +914,10 @@ my_power_off (IndicatorSessionActions * actions)
         run_outside_app ("mate-session-save --shutdown-dialog");
         break;
 
+      case PROMPT_WITH_XFCE:
+        run_outside_app ("xfce4-session-logout");
+        break;
+
       case PROMPT_WITH_ZENITY:
         if (zenity_question (self,
               "system-shutdown",
@@ -907,15 +937,6 @@ my_power_off (IndicatorSessionActions * actions)
 /***
 ****
 ***/
-
-static void
-my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
-{
-  if (have_mate_program ("yelp"))
-    run_outside_app ("yelp help:mate-user-guide");
-  else
-    run_outside_app ("yelp");
-}
 
 static char *
 find_browser ()
@@ -946,6 +967,24 @@ find_browser ()
 
   return browser_path;
 
+}
+
+static void
+my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+{
+  static char * browser = NULL;
+
+  if (have_mate_program ("yelp"))
+    run_outside_app ("yelp help:mate-user-guide");
+  else if (is_xfce())
+    {
+      if (browser == NULL)
+        browser = find_browser();
+      if (browser != NULL)
+        run_outside_app(g_strdup_printf("%s '%s'", browser, "https://docs.xfce.org/"));
+    }
+  else
+    run_outside_app ("yelp");
 }
 
 static void
@@ -1002,6 +1041,8 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
     run_outside_app ("gnome-control-center");
   else if (have_mate_program ("mate-control-center"))
     run_outside_app ("mate-control-center");
+  else if (have_xfce_program ("xfce4-settings-manager"))
+    run_outside_app ("xfce4-settings-manager");
   else
     zenity_warning ("dialog-warning",
                     _("Warning"),
@@ -1030,6 +1071,8 @@ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
     run_outside_app ("gnome-control-center info");
   else if (have_mate_program ("mate-system-monitor"))
     run_outside_app ("mate-system-monitor --show-system-tab");
+  else if (have_xfce_program ("xfce4-about"))
+    run_outside_app ("xfce4-about");
   else
     zenity_warning ("dialog-warning",
                     _("Warning"),
@@ -1059,6 +1102,10 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
   else if (have_mate_program ("mate-screensaver-command"))
     {
       run_outside_app ("mate-screensaver-command --lock");
+    }
+  else if (have_xfce_program ("xflock4"))
+    {
+      run_outside_app ("xflock4");
     }
   else
     {

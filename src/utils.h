@@ -23,6 +23,7 @@
 gboolean is_unity();
 gboolean is_gnome();
 gboolean is_mate();
+gboolean is_xfce();
 
 const char* get_distro_name();
 const char* get_distro_url();

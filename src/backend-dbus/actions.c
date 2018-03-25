@@ -20,6 +20,10 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
+#ifdef HAS_URLDISPATCHER
+# include <url-dispatcher.h>
+#endif
+
 #include "dbus-end-session-dialog.h"
 #include "dbus-login1-manager.h"
 #include "dbus-webcredentials.h"
@@ -1060,6 +1064,11 @@ have_gnome_control_center (void)
 static void
 my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
+#ifdef HAS_URLDISPATCHER
+  if (g_getenv ("MIR_SOCKET") != NULL)
+    url_dispatch_send("settings:///system", NULL, NULL);
+  else
+#endif
   if (have_unity_control_center ())
     run_outside_app ("unity-control-center");
   else if (have_gnome_control_center())
@@ -1077,6 +1086,11 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 static void
 my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
+#ifdef HAS_URLDISPATCHER
+  if (g_getenv ("MIR_SOCKET") != NULL)
+    url_dispatch_send("settings:///system/online-accounts", NULL, NULL);
+  else
+#endif
   if (have_unity_control_center ())
     run_outside_app ("unity-control-center credentials");
   else if (have_gnome_control_center())
@@ -1090,6 +1104,11 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 static void
 my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
+#ifdef HAS_URLDISPATCHER
+  if (g_getenv ("MIR_SOCKET") != NULL)
+    url_dispatch_send("settings:///system/about", NULL, NULL);
+  else
+#endif
   if (have_unity_control_center ())
     run_outside_app ("unity-control-center info");
   else if (have_gnome_control_center())

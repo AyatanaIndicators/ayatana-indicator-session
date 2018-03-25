@@ -32,6 +32,13 @@ pkg_check_modules (SERVICE REQUIRED
                    gio-unix-2.0>=2.36)
 include_directories (${SERVICE_INCLUDE_DIRS})
 
+set(URL_DISPATCHER_1_REQUIRED_VERSION 1)
+pkg_check_modules(
+  URLDISPATCHER
+  url-dispatcher-1>=${URL_DISPATCHER_1_REQUIRED_VERSION}
+)
+include_directories(${URLDISPATCHER_INCLUDE_DIRS})
+
 set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")
 
 set (ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})

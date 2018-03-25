@@ -348,6 +348,7 @@ create_admin_section (void)
   g_menu_append (menu, distro_help_label, "indicator.distro_help");
   g_free (desktop_help_label);
   g_free (distro_help_label);
+  g_menu_append (menu, _("Report a Bug…"), "indicator.bug");
   return G_MENU_MODEL (menu);
 }
 
@@ -829,6 +830,14 @@ on_distro_help_activated (GSimpleAction  * a      G_GNUC_UNUSED,
 }
 
 static void
+on_bug_activated (GSimpleAction  * a      G_GNUC_UNUSED,
+                   GVariant       * param  G_GNUC_UNUSED,
+                   gpointer         gself)
+{
+  indicator_session_actions_bug (get_backend_actions(gself));
+}
+
+static void
 on_settings_activated (GSimpleAction * a      G_GNUC_UNUSED,
                        GVariant      * param  G_GNUC_UNUSED,
                        gpointer        gself)
@@ -921,6 +930,7 @@ init_gactions (IndicatorSessionService * self)
     { "about",                  on_about_activated           },
     { "desktop_help",           on_desktop_help_activated    },
     { "distro_help",            on_distro_help_activated     },
+    { "bug",                    on_bug_activated             },
     { "hibernate",              on_hibernate_activated       },
     { "logout",                 on_logout_activated          },
     { "online-accounts",        on_online_accounts_activated },

@@ -36,6 +36,7 @@ gboolean is_xfce();
 
 const char* get_distro_name();
 const char* get_distro_url();
+const char* get_distro_bts_url();
 const char* get_desktop_name();
 GHashTable*  get_os_release();
 

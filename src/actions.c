@@ -298,6 +298,14 @@ indicator_session_actions_distro_help (IndicatorSessionActions * self)
 }
 
 void
+indicator_session_actions_bug (IndicatorSessionActions * self)
+{
+  g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS (self));
+
+  INDICATOR_SESSION_ACTIONS_GET_CLASS (self)->bug (self);
+}
+
+void
 indicator_session_actions_about (IndicatorSessionActions * self)
 {
   g_return_if_fail (INDICATOR_IS_SESSION_ACTIONS (self));

@@ -155,6 +155,24 @@ get_distro_url (void)
 }
 
 const char*
+get_distro_bts_url (void)
+{
+  static char * distro_bts_url = NULL;
+
+  if (distro_bts_url == NULL)
+    {
+      GHashTable * os_release = get_os_release();
+      gpointer value = g_hash_table_lookup(os_release, "BUG_REPORT_URL");
+      if (value == NULL)
+        value = "https://github.com/AyatanaIndicators/ayatana-indicator-session/issues"; /* fallback value */
+      distro_bts_url = g_strdup(value);
+      g_hash_table_destroy(os_release);
+    }
+
+  return distro_bts_url;
+}
+
+const char*
 get_desktop_name (void)
 {
   static char * desktop_name = NULL;

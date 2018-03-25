@@ -35,6 +35,11 @@
 
 #include "../utils.h"
 
+/* some prototypes... */
+static char *   find_browser ();
+static void     run_outside_app (const char * cmd);
+static gboolean zenity_warning (const char * icon_name, const char * title, const char * text);
+
 enum
 {
   END_SESSION_TYPE_LOGOUT = 0,
@@ -772,6 +777,33 @@ zenity_question (IndicatorSessionActionsDbus * self,
   return confirmed;
 }
 
+static void
+my_bug (IndicatorSessionActions * self G_GNUC_UNUSED)
+{
+  const  char * bts_url = get_distro_bts_url();
+  static char * browser = NULL;
+
+#ifdef HAS_URLDISPATCHER
+  if (g_getenv ("MIR_SOCKET") != NULL)
+    url_dispatch_send(bts_url, NULL, NULL);
+  else
+#endif
+    {
+
+      if (browser == NULL)
+        browser = find_browser();
+
+      if (browser != NULL)
+        run_outside_app(g_strdup_printf("%s '%s'", browser, bts_url));
+
+      else
+        zenity_warning ("dialog-warning",
+                        _("Warning"),
+                        _("The operating system's bug tracker needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
+
+    }
+}
+
 static gboolean
 zenity_warning (const char * icon_name,
                 const char * title,
@@ -1296,6 +1328,7 @@ indicator_session_actions_dbus_class_init (IndicatorSessionActionsDbusClass * kl
   actions_class->online_accounts = my_online_accounts;
   actions_class->desktop_help = my_desktop_help;
   actions_class->distro_help = my_distro_help;
+  actions_class->bug = my_bug;
   actions_class->about = my_about;
   actions_class->switch_to_screensaver = my_switch_to_screensaver;
   actions_class->switch_to_greeter = my_switch_to_greeter;

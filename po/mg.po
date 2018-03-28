@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-21 15:21+0100\n"
+"POT-Creation-Date: 2018-03-28 11:48+0200\n"
 "PO-Revision-Date: 2011-07-23 12:14+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Malagasy <mg@li.org>\n"
@@ -80,106 +80,120 @@ msgstr ""
 msgid "About This Computer"
 msgstr ""
 
-#: ../src/service.c:361
+#: ../src/service.c:351
+msgid "Report a Bug…"
+msgstr ""
+
+#: ../src/service.c:362
 msgid "System Settings…"
 msgstr ""
 
-#: ../src/service.c:363
+#: ../src/service.c:364
 msgid "Online Accounts…"
 msgstr ""
 
-#: ../src/service.c:566
+#: ../src/service.c:567
 msgid "Start Screen Saver"
 msgstr ""
 
-#: ../src/service.c:574 ../src/service.c:590
+#: ../src/service.c:575 ../src/service.c:591
 msgid "Switch Account…"
 msgstr ""
 
-#: ../src/service.c:575 ../src/service.c:591
+#: ../src/service.c:576 ../src/service.c:592
 msgid "Switch Account"
 msgstr ""
 
-#: ../src/service.c:587
+#: ../src/service.c:588
 msgid "Lock/Switch Account…"
 msgstr ""
 
-#: ../src/service.c:588
+#: ../src/service.c:589
 msgid "Lock/Switch Account"
 msgstr ""
 
-#: ../src/service.c:594
+#: ../src/service.c:595
 msgid "Lock"
 msgstr ""
 
-#: ../src/service.c:619
+#: ../src/service.c:620
 msgid "Guest Session"
 msgstr ""
 
-#: ../src/service.c:696
+#: ../src/service.c:697
 msgid "Log Out…"
 msgstr ""
 
-#: ../src/service.c:696 ../src/backend-dbus/actions.c:859
-#: ../src/backend-dbus/actions.c:861
+#: ../src/service.c:697 ../src/backend-dbus/actions.c:895
+#: ../src/backend-dbus/actions.c:897
 msgid "Log Out"
 msgstr ""
 
-#: ../src/service.c:714
+#: ../src/service.c:715
 msgid "Suspend"
 msgstr ""
 
-#: ../src/service.c:717
+#: ../src/service.c:718
 msgid "Hibernate"
 msgstr ""
 
-#: ../src/service.c:722
+#: ../src/service.c:723
 msgid "Restart…"
 msgstr ""
 
-#: ../src/service.c:722 ../src/backend-dbus/actions.c:900
-#: ../src/backend-dbus/actions.c:902
+#: ../src/service.c:723 ../src/backend-dbus/actions.c:936
+#: ../src/backend-dbus/actions.c:938
 msgid "Restart"
 msgstr ""
 
-#: ../src/service.c:729
+#: ../src/service.c:730
 msgid "Shut Down…"
 msgstr ""
 
-#: ../src/service.c:729 ../src/backend-dbus/actions.c:937
-#: ../src/backend-dbus/actions.c:939
+#: ../src/service.c:730 ../src/backend-dbus/actions.c:973
+#: ../src/backend-dbus/actions.c:975
 msgid "Shut Down"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:853
+#: ../src/backend-dbus/actions.c:801 ../src/backend-dbus/actions.c:1038
+#: ../src/backend-dbus/actions.c:1043 ../src/backend-dbus/actions.c:1059
+#: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
+#: ../src/backend-dbus/actions.c:1154
+msgid "Warning"
+msgstr ""
+
+#: ../src/backend-dbus/actions.c:802
+msgid ""
+"The operating system's bug tracker needs to be accessed with\n"
+"a web browser.\n"
+"\n"
+"The Ayatana Session Indicator could not find any web\n"
+"browser on your computer."
+msgstr ""
+
+#: ../src/backend-dbus/actions.c:889
 msgid "Are you sure you want to close all programs and log out?"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:854
+#: ../src/backend-dbus/actions.c:890
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:862 ../src/backend-dbus/actions.c:903
-#: ../src/backend-dbus/actions.c:940
+#: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
+#: ../src/backend-dbus/actions.c:976
 msgid "Cancel"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:901
+#: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:938
+#: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1002 ../src/backend-dbus/actions.c:1007
-#: ../src/backend-dbus/actions.c:1023 ../src/backend-dbus/actions.c:1073
-#: ../src/backend-dbus/actions.c:1086 ../src/backend-dbus/actions.c:1103
-msgid "Warning"
-msgstr ""
-
-#: ../src/backend-dbus/actions.c:1003
+#: ../src/backend-dbus/actions.c:1039
 msgid ""
 "The XFCE desktop's user guide needs to be accessed with\n"
 "a web browser.\n"
@@ -188,7 +202,7 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1008
+#: ../src/backend-dbus/actions.c:1044
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -197,7 +211,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1024
+#: ../src/backend-dbus/actions.c:1060
 #, c-format
 msgid ""
 "Displaying information on %s  requires\n"
@@ -207,7 +221,7 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1074
+#: ../src/backend-dbus/actions.c:1115
 msgid ""
 "The Ayatana Session Indicator does not support evoking the system\n"
 "settings application for your desktop environment, yet.\n"
@@ -216,7 +230,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1087
+#: ../src/backend-dbus/actions.c:1133
 msgid ""
 "The Ayatana Session Indicator does not support password changes\n"
 "for your desktop environment, yet.\n"
@@ -225,7 +239,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1104
+#: ../src/backend-dbus/actions.c:1155
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "information of the currently running desktop environment.\n"

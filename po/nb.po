@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-03-31 10:47+0000\n"
+"PO-Revision-Date: 2018-03-31 10:50+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/nb/>\n"
@@ -96,7 +96,7 @@ msgstr "Systeminnstillinger …"
 
 #: ../src/service.c:364
 msgid "Online Accounts…"
-msgstr "Nettkontoer..."
+msgstr "Nettkontoer…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
@@ -132,7 +132,7 @@ msgstr "Gjesteøkt"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "Logg av..."
+msgstr "Logg av…"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
@@ -246,7 +246,7 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
-"Vising av informasjon på %s  krever\n"
+"Vising av informasjon på %s krever\n"
 "en nettleser.\n"
 "\n"
 "Ayatana-øktindikatoren fant ingen nettleser\n"

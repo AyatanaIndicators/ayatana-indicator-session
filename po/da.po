@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2011-09-26 20:43+0000\n"
-"Last-Translator: Anders Feder <Unknown>\n"
-"Language-Team: Danish\n"
-"Language: \n"
+"PO-Revision-Date: 2018-04-01 14:36+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Danish <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/da/>\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -94,7 +96,7 @@ msgstr "Systemindstillinger…"
 
 #: ../src/service.c:364
 msgid "Online Accounts…"
-msgstr "Onlinekonti..."
+msgstr "Onlinekonti…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
@@ -128,7 +130,7 @@ msgstr "Gæstesession"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "Log af..."
+msgstr "Log af…"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
@@ -145,7 +147,7 @@ msgstr "Dvale"
 
 #: ../src/service.c:723
 msgid "Restart…"
-msgstr "Genstart..."
+msgstr "Genstart…"
 
 #: ../src/service.c:723 ../src/backend-dbus/actions.c:936
 #: ../src/backend-dbus/actions.c:938
@@ -154,7 +156,7 @@ msgstr "Genstart"
 
 #: ../src/service.c:730
 msgid "Shut Down…"
-msgstr "Luk ned..."
+msgstr "Luk ned…"
 
 #: ../src/service.c:730 ../src/backend-dbus/actions.c:973
 #: ../src/backend-dbus/actions.c:975

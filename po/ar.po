@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-02-05 15:34+0000\n"
-"Last-Translator: Michal Čihař <michal@cihar.com>\n"
-"Language-Team: Arabic <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/ar/>\n"
+"PO-Revision-Date: 2018-04-01 14:34+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Arabic <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/ar/>\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -125,7 +125,7 @@ msgstr "جلسة ضيف"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "اخرج..."
+msgstr "اخرج…"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
@@ -142,7 +142,7 @@ msgstr "أسبِت"
 
 #: ../src/service.c:723
 msgid "Restart…"
-msgstr "أعد التشغيل..."
+msgstr "أعد التشغيل…"
 
 #: ../src/service.c:723 ../src/backend-dbus/actions.c:936
 #: ../src/backend-dbus/actions.c:938
@@ -151,7 +151,7 @@ msgstr "أعِد التشغيل"
 
 #: ../src/service.c:730
 msgid "Shut Down…"
-msgstr "أطفئ..."
+msgstr "أطفئ…"
 
 #: ../src/service.c:730 ../src/backend-dbus/actions.c:973
 #: ../src/backend-dbus/actions.c:975

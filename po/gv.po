@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-09-15 08:37+0000\n"
-"PO-Revision-Date: 2018-03-31 11:01+0000\n"
+"PO-Revision-Date: 2018-04-01 11:39+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Manx <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/gv/>\n"
@@ -98,8 +98,9 @@ msgid "Restart…"
 msgstr "Cur er reesht…"
 
 #: ../src/settings-helper.c:90 ../src/device-menu-mgr.c:721
+#, fuzzy
 msgid "Shut Down…"
-msgstr "cur magh…"
+msgstr "Cur magh…"
 
 #. LOGOUT_DIALOG_LOGOUT,
 #: ../src/dialog.c:35

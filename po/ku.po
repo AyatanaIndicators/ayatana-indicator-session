@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2017-09-12 13:48+0000\n"
-"Last-Translator: Cûndûllah el-Kurdî <mckucukaslan47@gmail.com>\n"
-"Language-Team: Kurdish <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/ku/>\n"
+"PO-Revision-Date: 2018-04-01 14:39+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Kurdish <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/ku/>\n"
 "Language: ku\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.17-dev\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -127,7 +127,7 @@ msgstr "Danişîna Mêvanî"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "Derketin..."
+msgstr "Derketin…"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
@@ -144,7 +144,7 @@ msgstr "Xewa kûr"
 
 #: ../src/service.c:723
 msgid "Restart…"
-msgstr "Nûdestpêkirin..."
+msgstr "Nûdestpêkirin…"
 
 #: ../src/service.c:723 ../src/backend-dbus/actions.c:936
 #: ../src/backend-dbus/actions.c:938
@@ -153,7 +153,7 @@ msgstr "Nûdestpêkirin"
 
 #: ../src/service.c:730
 msgid "Shut Down…"
-msgstr "Girtin..."
+msgstr "Girtin…"
 
 #: ../src/service.c:730 ../src/backend-dbus/actions.c:973
 #: ../src/backend-dbus/actions.c:975

@@ -8,15 +8,18 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2011-09-15 14:28+0000\n"
-"Last-Translator: Andrej Znidarsic <andrej.znidarsic@gmail.com>\n"
-"Language-Team: Slovenian\n"
-"Language: \n"
+"PO-Revision-Date: 2018-04-01 14:42+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Slovenian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/sl/>\n"
+"Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
+"n%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -90,11 +93,11 @@ msgstr ""
 
 #: ../src/service.c:362
 msgid "System Settings…"
-msgstr "Sistemske nastavitve ..."
+msgstr "Sistemske nastavitve…"
 
 #: ../src/service.c:364
 msgid "Online Accounts…"
-msgstr "Spletni računi ..."
+msgstr "Spletni računi …"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
@@ -130,7 +133,7 @@ msgstr "Seja gosta"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "Odjava ..."
+msgstr "Odjava …"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
@@ -147,7 +150,7 @@ msgstr "V mirovanje"
 
 #: ../src/service.c:723
 msgid "Restart…"
-msgstr "Ponovni zagon ..."
+msgstr "Ponovni zagon …"
 
 #: ../src/service.c:723 ../src/backend-dbus/actions.c:936
 #: ../src/backend-dbus/actions.c:938
@@ -156,7 +159,7 @@ msgstr "Ponovni zagon"
 
 #: ../src/service.c:730
 msgid "Shut Down…"
-msgstr "Izklop ..."
+msgstr "Izklop …"
 
 #: ../src/service.c:730 ../src/backend-dbus/actions.c:973
 #: ../src/backend-dbus/actions.c:975

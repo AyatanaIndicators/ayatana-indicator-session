@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2011-09-21 20:23+0000\n"
-"Last-Translator: Joan Duran <jodufi@gmail.com>\n"
-"Language-Team: Catalan <ca@li.org>\n"
+"PO-Revision-Date: 2018-04-01 11:35+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -144,7 +146,7 @@ msgstr "Hiberna"
 
 #: ../src/service.c:723
 msgid "Restart…"
-msgstr "Reinicia..."
+msgstr "Reinicia…"
 
 #: ../src/service.c:723 ../src/backend-dbus/actions.c:936
 #: ../src/backend-dbus/actions.c:938

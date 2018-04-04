@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-04-04 04:30+0000\n"
+"PO-Revision-Date: 2018-04-05 04:35+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/cs/>\n"
@@ -183,13 +183,12 @@ msgstr "Opravdu chcete ukončit všechny programy a odhlásit se?"
 #: ../src/backend-dbus/actions.c:890
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
-msgstr ""
-"Některé aktualizace softwaru nebudou uplatněny do dalšího restartu počítače."
+msgstr "Některé aktualizace softwaru budou uplatněny až po restartu počítače."
 
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
 #: ../src/backend-dbus/actions.c:976
 msgid "Cancel"
-msgstr "Zrušit"
+msgstr "Storno"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"

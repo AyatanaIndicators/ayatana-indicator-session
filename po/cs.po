@@ -79,15 +79,15 @@ msgstr "Nápověda k desktopu"
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr "Nápověda"
+msgstr "Nápověda k %s"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "O tomto počítači"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Nahlásit chybu…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -99,12 +99,11 @@ msgstr "Online účty…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Spustit šetřič obrazovky"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Přepnout uživatele..."
+msgstr "Přepnout uživatele…"
 
 #: ../src/service.c:576 ../src/service.c:592
 #, fuzzy

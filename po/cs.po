@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-04-04 04:28+0000\n"
+"PO-Revision-Date: 2018-04-04 04:30+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/cs/>\n"
@@ -106,23 +106,20 @@ msgid "Switch Account…"
 msgstr "Přepnout uživatele…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "Přepnout uživatele..."
+msgstr "Přepnout uživatele"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Přepnout uživatele..."
+msgstr "Uzamknout/přepnout uživatele…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Přepnout uživatele..."
+msgstr "Uzamknout/přepnout uživatele"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Uzamknout sezení"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -168,7 +165,7 @@ msgstr "Vypnout"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Varování"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -180,12 +177,10 @@ msgid ""
 msgstr ""
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr "Opravdu chcete ukončit všechny programy a odhlásit se?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""

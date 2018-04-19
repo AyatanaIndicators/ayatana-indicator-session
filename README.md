@@ -1,4 +1,4 @@
-# Ayatana System Indicator -- Session
+# Ayatana System Indicator &mdash; Session
 
 The -session Ayatana System Indicator is the the session menu indicator
 for Unity7 and MATE (optionally for others). Its behavior and features

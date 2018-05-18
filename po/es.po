@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2011-09-15 11:16+0000\n"
-"Last-Translator: Fitoschido <fitoschido@gmail.com>\n"
-"Language-Team: Spanish\n"
-"Language: \n"
+"PO-Revision-Date: 2018-05-19 20:41+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/es/>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.0-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -59,11 +61,11 @@ msgstr "Hace que el botón de apagar no aparezca en el menú de sesión."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Sistema, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -72,20 +74,20 @@ msgstr "Invitado"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "Ayuda de escritorio de %s"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "Ayuda de %s"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Acerca del equipo"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Informar de un problema…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -97,31 +99,27 @@ msgstr "Cuentas en línea…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Iniciar el salvapantallas"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Cambiar cuenta de usuario..."
+msgstr "Cambiar de cuenta…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "Cambiar cuenta de usuario..."
+msgstr "Cambiar de cuenta"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Cambiar cuenta de usuario..."
+msgstr "Bloquear/cambiar de cuenta…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Cambiar cuenta de usuario..."
+msgstr "Bloquear/cambiar de cuenta"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Bloquear"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -167,7 +165,7 @@ msgstr "Apagar"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Alerta"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -177,16 +175,17 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Para abrir el sitio de seguimiento de problemas del sistema operativo,\n"
+"es necesario contar con un navegador web.\n"
+"\n"
+"El menú de sesiones Ayatana no pudo encontrar ningún\n"
+"navegador web en el equipo."
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr ""
-"¿Está seguro de que quiere cerrar todos los programas y finalizar su sesión "
-"en el equipo?"
+msgstr "¿Confirma que quiere cerrar todos los programas y salir de la cuenta?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
@@ -200,13 +199,11 @@ msgstr "Cancelar"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr ""
-"¿Está seguro de que quiere cerrar todos los programas y reiniciar el equipo?"
+msgstr "¿Confirma que quiere cerrar todos los programas y reiniciar el equipo?"
 
 #: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr ""
-"¿Está seguro de que quiere cerrar todos los programas y apagar el equipo?"
+msgstr "¿Confirma que quiere cerrar todos los programas y apagar el equipo?"
 
 #: ../src/backend-dbus/actions.c:1039
 msgid ""
@@ -216,6 +213,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Para acceder a la guía de usuario del escritorio XFCE, es necesario\n"
+"contar con un navegador web.\n"
+"\n"
+"El menú de sesiones Ayatana no pudo encontrar ningún\n"
+"navegador web en el equipo."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -225,6 +227,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"El menú de sesiones Ayatana no sabe aún cómo mostrar\n"
+"la guía de usuario o el centro de ayuda del entorno en ejecución.\n"
+"\n"
+"Informe de este problema a los desarrolladores:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -235,6 +242,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Es necesario contar con un navegador web para mostrar\n"
+"información sobre %s.\n"
+"\n"
+"El menú de sesiones Ayatana no pudo encontrar ningún\n"
+"navegador web en el equipo."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -244,6 +256,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"El menú de sesiones de Ayatana aún no admite el programa\n"
+"de configuración de este entorno de escritorio.\n"
+"\n"
+"Informe de este problema a los desarrolladores:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""

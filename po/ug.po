@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:49+0200\n"
-"PO-Revision-Date: 2018-04-01 14:43+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2018-06-09 03:44+0000\n"
+"Last-Translator: ۋولقان <nureliosman@gmail.com>\n"
 "Language-Team: Uyghur <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/ug/>\n"
 "Language: ug\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.0\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -67,25 +67,25 @@ msgstr ""
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "سىستېما"
 
 #: ../src/service.c:325
 msgid "Guest"
 msgstr "مېھمان"
 
 #: ../src/service.c:343
-#, c-format
+#, c-format, fuzzy
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s ئۈستەل ياردەم"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s ياردەم"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "بۇ كومپيۇتېر ھەققىدە"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
@@ -104,24 +104,20 @@ msgid "Start Screen Saver"
 msgstr ""
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "ئىشلەتكۈچى ھېساباتىنى ئالماشتۇرۇش…"
+msgstr "ھېساباتىنى ئالماشتۇرۇش…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "ئىشلەتكۈچى ھېساباتىنى ئالماشتۇرۇش…"
+msgstr "ھېساباتىنى ئالماشتۇرۇش"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "ئىشلەتكۈچى ھېساباتىنى ئالماشتۇرۇش…"
+msgstr "ھېساباتىنى قۇلۇپلاش\\ئالماشتۇرۇش…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "ئىشلەتكۈچى ھېساباتىنى ئالماشتۇرۇش…"
+msgstr "ھېساباتىنى قۇلۇپلاش\\ئالماشتۇرۇش"
 
 #: ../src/service.c:595
 msgid "Lock"
@@ -171,7 +167,7 @@ msgstr "تاقا"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "ئاگاھلاندۇرۇش"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -183,20 +179,18 @@ msgid ""
 msgstr ""
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "ھەممە پروگراممىنى يېپىپ كومپيۇتېرنى تىزىمدىن چىقىرامسىز؟"
+msgstr "ھەممە پروگراممىنى ئېتىۋېتىپ تىزىمدىن چىقىشنى جەزىملەشتۈرەمسىز؟"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
-msgstr "قايتا قوزغاتمىغۇچە بىر قىسىم يېڭىلانمىلار ئىشلىمەيدۇ"
+msgstr "قايتا قوزغاتمىغۇچە بىر قىسىم يېڭىلانمىلار ئىشلىمەيدۇ."
 
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
 #: ../src/backend-dbus/actions.c:976
 msgid "Cancel"
-msgstr "ۋاز كەچ"
+msgstr "ۋازكەچ"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"

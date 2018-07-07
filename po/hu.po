@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2011-09-15 16:33+0000\n"
-"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
-"Language-Team: Hungarian\n"
-"Language: \n"
+"PO-Revision-Date: 2018-07-08 17:38+0000\n"
+"Last-Translator: Doma Gergő <domag02@gmail.com>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/hu/>\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.1-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -29,8 +31,8 @@ msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"Megjelenjen párbeszédpanel a kijelentkezés, újraindítás és leállítás "
-"megerősítésére?"
+"Megjelenik-e vagy sem a párbeszédpanel a kijelentkezés, újraindítás és "
+"leállítás műveletek megerősítésére."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
@@ -60,11 +62,11 @@ msgstr "A leállítás gomb elrejtése a munkamenet-menüben."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Rendszer, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Rendszer"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -73,20 +75,20 @@ msgstr "Vendég"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s Asztali Súgó"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s Súgó"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Erről a számítógépről"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Hiba jelentése…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -98,31 +100,27 @@ msgstr "Online fiókok…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Képernyővédő elindítása"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
 msgstr "Felhasználóváltás…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "Felhasználóváltás…"
+msgstr "Felhasználóváltás"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Felhasználóváltás…"
+msgstr "Lezárás/Felhasználóváltás…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Felhasználóváltás…"
+msgstr "Lezárás/Felhasználóváltás"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Lezárás"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -168,7 +166,7 @@ msgstr "Leállítás"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Figyelmeztetés"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -178,14 +176,17 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Az operációs rendszer hibabejelentőjét egy webböngészővel\n"
+"kell elérni.\n"
+"\n"
+"Az Ayatana Session Indicator nem talált egyetlen\n"
+"webböngészőt sem a számítógépen."
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "Biztos, hogy bezárja az összes programot, és kilép a számítógépről?"
+msgstr "Biztos, hogy bezárja az összes programot, és kijelentkezik?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""

@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-04-01 14:41+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2018-07-30 01:41+0000\n"
+"Last-Translator: chrismeurer <christianmeurer@outlook.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.1.1\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -84,33 +84,31 @@ msgstr ""
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Sobre Este Computador"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Reportar um erro…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
-msgstr "Configurações do sistema…"
+msgstr "Configurações do Sistema…"
 
 #: ../src/service.c:364
 msgid "Online Accounts…"
-msgstr "Contas on-line…"
+msgstr "Contas Online…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Iniciar Protetor de Tela"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Alternar conta de usuário..."
+msgstr "Alterar Conta…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "Alternar conta de usuário..."
+msgstr "Alterar Conta"
 
 #: ../src/service.c:588
 #, fuzzy

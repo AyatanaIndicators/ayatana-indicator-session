@@ -1,3 +1,10 @@
+Overview of changes in ayatana-indicator-session 0.4.3
+
+    - Translation updates (awesome thanks!!!).
+    - Add XFCE support.
+    - src/service.c: Type-cast assignment from g_object_ref() to avoid
+      incompatible pointer type compiler warning.
+
 Overview of changes in ayatana-indicator-session 0.4.2
 
     - Plenty translation updates. Thanks to translators

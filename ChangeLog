@@ -1,10 +1,464 @@
-2018-02-28 21:42:37 +0100 Mike Gabriel (7a7911c)
+2018-08-21 17:28:08 +0200 Mike Gabriel (ccc827b)
 
-	* release 0.4.2 (HEAD -> master)
+	* release 0.4.3 (HEAD -> master, tag: 0.4.3)
+
+2018-07-29 01:31:49 +0000 chrismeurer (19e273b)
+
+	* Translated using Weblate (Portuguese (Brazil))
+
+2018-07-07 16:26:51 +0000 Doma Gergő (7f02bed)
+
+	* Translated using Weblate (Hungarian)
+
+2018-06-17 10:49:48 +0000 advocatux (7f2cf5c)
+
+	* Translated using Weblate (Spanish)
+
+2018-06-17 10:42:16 +0000 advocatux (599e4ba)
+
+	* Translated using Weblate (Spanish)
+
+2018-06-08 03:24:48 +0000 ۋولقان (01f41c9)
+
+	* Translated using Weblate (Uyghur)
+
+2018-05-18 19:49:02 +0000 Adolfo Jayme Barrientos (b135fbf)
+
+	* Translated using Weblate (Spanish)
+
+2018-04-24 17:44:11 +0000 Kristjan Räts (534cef0)
+
+	* Translated using Weblate (Estonian)
+
+2018-04-17 20:52:40 +0000 Dariusz Król (13c85e7)
+
+	* Translated using Weblate (Polish)
+
+2018-04-04 04:30:13 +0000 Pavel Borecki (072c25e)
+
+	* Translated using Weblate (Czech)
+
+2018-04-04 04:29:01 +0000 Pavel Borecki (e024ce4)
+
+	* Translated using Weblate (Czech)
+
+2018-04-04 04:28:11 +0000 Pavel Borecki (a9ff6a8)
+
+	* Translated using Weblate (Czech)
+
+2018-04-04 04:27:36 +0000 Pavel Borecki (10c093f)
+
+	* Translated using Weblate (Czech)
+
+2018-03-31 14:06:13 +0000 Allan Nordhøy (8557d1f)
+
+	* Translated using Weblate (Vietnamese)
+
+2018-03-31 14:25:22 +0000 Allan Nordhøy (910b343)
+
+	* Translated using Weblate (Valencian)
+
+2018-03-31 14:15:38 +0000 Allan Nordhøy (ae97460)
+
+	* Translated using Weblate (Uyghur)
+
+2018-03-31 14:26:40 +0000 Allan Nordhøy (8125664)
+
+	* Translated using Weblate (Ukrainian)
+
+2018-03-31 11:16:17 +0000 Allan Nordhøy (027dd0a)
+
+	* Translated using Weblate (Thai)
+
+2018-03-31 14:06:49 +0000 Allan Nordhøy (de146f1)
+
+	* Translated using Weblate (Telugu)
+
+2018-03-31 14:15:27 +0000 Allan Nordhøy (7c725d0)
+
+	* Translated using Weblate (Slovenian)
+
+2018-03-31 14:15:22 +0000 Allan Nordhøy (4442aab)
+
+	* Translated using Weblate (Slovak)
+
+2018-03-31 14:27:06 +0000 Allan Nordhøy (213533d)
+
+	* Translated using Weblate (Serbian)
+
+2018-03-31 14:25:46 +0000 Allan Nordhøy (9e1d4bc)
+
+	* Translated using Weblate (Romanian)
+
+2018-03-31 14:12:24 +0000 Allan Nordhøy (226603a)
+
+	* Translated using Weblate (Portuguese (Brazil))
+
+2018-03-31 14:07:16 +0000 Allan Nordhøy (ab1001f)
+
+	* Translated using Weblate (Polish)
+
+2018-03-31 14:27:55 +0000 Allan Nordhøy (40cafe9)
+
+	* Translated using Weblate (Occitan)
+
+2018-03-31 14:00:44 +0000 Allan Nordhøy (3ada8f8)
+
+	* Translated using Weblate (Marathi)
+
+2018-03-31 14:22:12 +0000 Allan Nordhøy (10c8ad7)
+
+	* Translated using Weblate (Malayalam)
+
+2018-03-31 14:11:20 +0000 Allan Nordhøy (3d01887)
+
+	* Translated using Weblate (Malay)
+
+2018-03-31 14:17:53 +0000 Allan Nordhøy (1b0df82)
+
+	* Translated using Weblate (Kurdish)
+
+2018-03-31 11:03:48 +0000 Allan Nordhøy (3073aeb)
+
+	* Translated using Weblate (Korean)
+
+2018-03-31 14:25:28 +0000 Allan Nordhøy (a7d2dd6)
+
+	* Translated using Weblate (Kazakh)
+
+2018-03-31 14:26:54 +0000 Allan Nordhøy (5e47dd1)
+
+	* Translated using Weblate (Kannada)
+
+2018-03-31 14:14:48 +0000 Allan Nordhøy (15569e0)
+
+	* Translated using Weblate (Japanese)
+
+2018-03-31 14:11:48 +0000 Allan Nordhøy (1dca7a2)
+
+	* Translated using Weblate (Icelandic)
+
+2018-03-31 14:09:56 +0000 Allan Nordhøy (aa32ca6)
+
+	* Translated using Weblate (Hindi)
+
+2018-03-31 14:25:52 +0000 Allan Nordhøy (7ef925b)
+
+	* Translated using Weblate (Georgian)
+
+2018-03-31 14:15:06 +0000 Allan Nordhøy (df67cdc)
+
+	* Translated using Weblate (Friulian)
+
+2018-03-31 14:10:09 +0000 Allan Nordhøy (2c76b6b)
+
+	* Translated using Weblate (Frisian)
+
+2018-03-31 14:12:43 +0000 Allan Nordhøy (2c54e63)
+
+	* Translated using Weblate (French)
+
+2018-03-31 14:09:38 +0000 Allan Nordhøy (8fa2cfb)
+
+	* Translated using Weblate (Finnish)
+
+2018-03-31 14:29:54 +0000 Allan Nordhøy (a706286)
+
+	* Translated using Weblate (Dhivehi)
+
+2018-03-31 14:16:08 +0000 Allan Nordhøy (53a6d48)
+
+	* Translated using Weblate (Danish)
+
+2018-03-31 14:11:05 +0000 Allan Nordhøy (48db96d)
+
+	* Translated using Weblate (Croatian)
+
+2018-03-31 14:09:07 +0000 Allan Nordhøy (d6f0232)
+
+	* Translated using Weblate (Chinese (Traditional))
+
+2018-03-31 14:14:56 +0000 Allan Nordhøy (9b21797)
+
+	* Translated using Weblate (Chinese (Hong Kong))
+
+2018-03-31 14:24:08 +0000 Allan Nordhøy (1d341e7)
+
+	* Translated using Weblate (Central Khmer)
+
+2018-03-31 14:19:03 +0000 Allan Nordhøy (31d783a)
+
+	* Translated using Weblate (Burmese)
+
+2018-03-31 14:09:26 +0000 Allan Nordhøy (17f5d16)
+
+	* Translated using Weblate (Breton)
+
+2018-03-31 14:00:07 +0000 Allan Nordhøy (ad67ba6)
+
+	* Translated using Weblate (Bosnian)
+
+2018-03-31 14:00:49 +0000 Allan Nordhøy (1f13326)
+
+	* Translated using Weblate (Bengali)
+
+2018-03-31 14:08:43 +0000 Allan Nordhøy (72e6743)
+
+	* Translated using Weblate (Asturian)
+
+2018-03-31 14:15:54 +0000 Allan Nordhøy (16e4fa7)
+
+	* Translated using Weblate (Armenian)
+
+2018-03-31 14:23:52 +0000 Allan Nordhøy (89ba779)
+
+	* Translated using Weblate (Arabic)
+
+2018-03-31 14:15:13 +0000 Allan Nordhøy (9c13e58)
+
+	* Translated using Weblate (Albanian)
+
+2018-03-31 11:03:31 +0000 Allan Nordhøy (5e081cf)
+
+	* Translated using Weblate (Welsh)
+
+2018-03-31 11:02:25 +0000 Allan Nordhøy (0cc8eaa)
+
+	* Translated using Weblate (Turkish)
+
+2018-03-31 11:02:50 +0000 Allan Nordhøy (e4ac212)
+
+	* Translated using Weblate (Tatar)
+
+2018-03-31 11:02:37 +0000 Allan Nordhøy (dea2a1c)
+
+	* Translated using Weblate (Punjabi)
+
+2018-03-31 11:02:57 +0000 Allan Nordhøy (1bdcb58)
+
+	* Translated using Weblate (Portuguese)
+
+2018-03-31 10:50:54 +0000 Allan Nordhøy (6661b40)
+
+	* Translated using Weblate (Norwegian Bokmål)
+
+2018-03-31 11:01:25 +0000 Allan Nordhøy (a67688d)
+
+	* Translated using Weblate (Manx)
+
+2018-03-31 11:03:04 +0000 Allan Nordhøy (2998d82)
+
+	* Translated using Weblate (Luxembourgish)
+
+2018-03-31 11:02:31 +0000 Allan Nordhøy (300fcc4)
+
+	* Translated using Weblate (Latvian)
+
+2018-03-31 11:02:45 +0000 Allan Nordhøy (45c2194)
+
+	* Translated using Weblate (Kashubian)
+
+2018-03-31 11:03:39 +0000 Allan Nordhøy (dc6fe26)
+
+	* Translated using Weblate (Italian)
+
+2018-03-31 11:00:58 +0000 Allan Nordhøy (9ed48fd)
+
+	* Translated using Weblate (Greek)
+
+2018-03-31 11:03:12 +0000 Allan Nordhøy (8fd6824)
+
+	* Translated using Weblate (Galician)
+
+2018-03-31 11:03:24 +0000 Allan Nordhøy (a4c5431)
+
+	* Translated using Weblate (Gaelic)
+
+2018-03-31 11:00:51 +0000 Allan Nordhøy (5791fcd)
+
+	* Translated using Weblate (Esperanto)
+
+2018-03-31 11:02:03 +0000 Allan Nordhøy (0140492)
+
+	* Translated using Weblate (Czech)
+
+2018-03-31 11:01:49 +0000 Allan Nordhøy (0a03758)
+
+	* Translated using Weblate (Chinese (Simplified))
+
+2018-03-31 11:02:12 +0000 Allan Nordhøy (47056a8)
+
+	* Translated using Weblate (Catalan)
+
+2018-03-31 11:03:18 +0000 Allan Nordhøy (dabc374)
+
+	* Translated using Weblate (Basque)
+
+2018-03-31 11:02:18 +0000 Allan Nordhøy (460cf4d)
+
+	* Translated using Weblate (Azerbaijani)
+
+2018-03-31 11:01:56 +0000 Allan Nordhøy (b7e044a)
+
+	* Translated using Weblate (Amharic)
+
+2018-03-31 10:59:54 +0000 Allan Nordhøy (971a28b)
+
+	* Translated using Weblate (Manx)
+
+2018-03-31 10:47:08 +0000 Allan Nordhøy (af8216a)
+
+	* Translated using Weblate (Norwegian Bokmål)
+
+2018-03-31 10:38:56 +0000 Allan Nordhøy (6d714a2)
+
+	* Translated using Weblate (Norwegian Bokmål)
+
+2018-03-30 20:19:59 +0000 Anders Jonsson (98d6c65)
+
+	* Translated using Weblate (Swedish)
+
+2018-03-30 18:46:43 +0000 Moo (154f04e)
+
+	* Translated using Weblate (Lithuanian)
+
+2018-03-29 17:06:12 +0000 Anders Jonsson (56c7912)
+
+	* Translated using Weblate (Swedish)
+
+2018-03-29 20:04:02 +0000 Viktar Vauchkevich (95dede3)
+
+	* Translated using Weblate (Belarusian)
+
+2018-04-19 23:06:31 +0200 Mike Gabriel (b511918)
+
+	* README.md: use mdash rather than '--'.
+
+2018-04-19 23:05:23 +0200 Mike Gabriel (a40abfb)
+
+	* README -> README.md (+ retain README as symlink)
+
+2018-04-19 23:03:45 +0200 Mike Gabriel (3aa833d)
+
+	* README: Convert to markdown.
+
+2018-04-19 23:01:36 +0200 Mike Gabriel (6d884c4)
+
+	* Update README.
+
+2018-03-28 09:52:44 +0000 Mike Gabriel (c2abd3f)
+
+	* Translated using Weblate (German)
+
+2018-03-28 09:50:20 +0000 Mike Gabriel (af0aee6)
+
+	* Translated using Weblate (German)
+
+2018-03-28 11:49:15 +0200 Mike Gabriel (1a3e9c3)
+
+	* po: update translation files.
+
+2018-03-25 16:00:55 +0000 Moo (9706a9d)
+
+	* Translated using Weblate (Lithuanian)
+
+2018-03-28 11:45:34 +0200 Mike Gabriel (5e72e5d)
+
+	* debian/control: Add laternative settings daemon for XFCE to
+          Depends: field (although not used on XFCE4). This avoids
+          non-XFCE4 packages being pulled in on installation of the
+          -session indicator when used on XFCE desktops.
+
+2018-03-28 11:36:09 +0200 Mike Gabriel (ff5ce1f)
+
+	* debian/control: Recommend having a WWW browser available, on XFCE4
+          it is used for accessing the desktop manual, so listing it
+          as an alternative to yelp.
+
+2018-03-28 11:34:01 +0200 Mike Gabriel (9e9bb17)
+
+	* debian/control: Don't pull-in non-XFCE4 stuff for people that have
+          XFCE4 already installed and want to use Ayatana Indicators
+          on top of that.
+
+2018-03-25 23:49:56 +0200 Mike Gabriel (7719250)
+
+	* Add 'Report a bug...' item to the session menu.
+
+2018-03-25 22:59:59 +0200 Mike Gabriel (c00d3d1)
+
+	* Reintroduce optional url-dispatcher support.
+
+2018-03-21 14:27:42 +0000 Mike Gabriel (80a129d)
+
+	* Translated using Weblate (German)
+
+2018-03-21 15:21:53 +0100 Mike Gabriel (e7a081e)
+
+	* po: update translation template
+
+2018-03-12 20:41:08 +0000 Максим Якимчук (b74aa30)
+
+	* Translated using Weblate (Ukrainian)
+
+2018-03-03 22:42:45 +0000 Максим Якимчук (2cf0239)
+
+	* Translated using Weblate (Ukrainian)
+
+2018-03-01 21:05:40 +0000 Moo (094d85d)
+
+	* Translated using Weblate (Lithuanian)
+
+2018-03-21 10:08:07 +0000 Mike Gabriel (18ee0ce)
+
+	* src/backend-dbus/actions.c: Show warnings if no web browser is
+          installed (for distro help and XFCE desktop help).
+
+2018-03-21 10:00:03 +0000 Mike Gabriel (c393931)
+
+	* rebase code duplication
+
+2018-03-21 09:49:31 +0000 Mike Gabriel (46ddf4f)
+
+	* my_desktop_help(): Don't always fallback to empty yelp call, rather
+          show a warning that we don't know how to access the
+          currently running desktop's user guide or help center.
+
+2018-03-21 09:35:59 +0000 Mike Gabriel (5a695ec)
+
+	* src/utils.(c|h): Reduce code duplications in desktop env detection
+          code.
+
+2018-03-21 10:03:52 +0100 Mike Gabriel (1ace3ae)
+
+	* tests/test-service.c: Explicitly use curly braces for one-liner if
+          statements.
+
+2018-03-21 08:54:22 +0000 Mike Gabriel (ba9a397)
+
+	* src/service.c: Type-cast assignment from g_object_ref() to avoid
+          incompatible pointer type compiler warning.
+
+2018-03-21 09:27:45 +0100 Mike Gabriel (6a0b2ef)
+
+	* Add XFCE Support.
+
+2018-03-12 15:53:17 +0100 Mike Gabriel (eb297fb)
+
+	* tests/CMakeLists.txt: Handle custom command indirectly via custom
+          target.
+
+2018-02-28 22:18:22 +0100 Mike Gabriel (733ca45)
+
+	* NEWS: Fix c+p flaw.
+
+2018-02-28 21:42:37 +0100 Mike Gabriel (ef1dd75)
+
+	* release 0.4.2 (tag: 0.4.2)
 
 2018-02-28 02:09:20 +0000 Мира Странная (106fd09)
 
-	* Translated using Weblate (Russian) (origin/master)
+	* Translated using Weblate (Russian)
 
 2018-02-28 02:08:44 +0000 Мира Странная (80999e3)
 
@@ -127,7 +581,7 @@
 
 2017-10-24 21:36:51 +0200 Mike Gabriel (0d436e3)
 
-	* release 0.4.1 (tag: 0.4.1, origin/release-builds, release-builds)
+	* release 0.4.1 (tag: 0.4.1)
 
 2017-10-24 21:35:07 +0200 Mike Gabriel (c2dd910)
 
@@ -415,8 +869,6 @@
 2015-09-15 07:47:28 +0000 CI Train Bot (c5211a8)
 
 	* Releasing 12.10.5+15.10.20150915-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+15.10.20150915-0ubuntu1,
-          refs/bzr/origin/heads/master)
 
 2015-09-15 07:47:26 +0000 Sebastien Bacher (a1fd0d8)
 
@@ -439,7 +891,6 @@
 2015-03-27 15:00:16 +0000 CI Train Bot (ffe4d92)
 
 	* Releasing 12.10.5+15.04.20150327-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+15.04.20150327-0ubuntu1)
 
 2015-03-27 15:00:13 +0000 Charles Kerr (16b6769)
 
@@ -463,7 +914,6 @@
 2015-02-28 18:10:57 +0000 CI Train Bot (4776cce)
 
 	* Releasing 12.10.5+15.04.20150228-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+15.04.20150228-0ubuntu1)
 
 2015-02-28 18:10:53 +0000 Dmitry Shachnev (e3c5a5b)
 
@@ -477,7 +927,6 @@
 2014-11-03 20:57:55 +0000 CI bot (5f72c7a)
 
 	* Releasing 12.10.5+15.04.20141103-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+15.04.20141103-0ubuntu1)
 
 2014-11-03 20:57:47 +0000 Sebastien Bacher (7c03425)
 
@@ -491,7 +940,6 @@
 2014-10-09 13:27:50 +0000 CI bot (f084494)
 
 	* Releasing 12.10.5+14.10.20141009-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.10.20141009-0ubuntu1)
 
 2014-10-09 13:27:36 +0000 Martin Pitt (ebd9cae)
 
@@ -513,7 +961,6 @@
 2014-09-19 13:48:47 +0000 CI bot (65ce193)
 
 	* Releasing 12.10.5+14.10.20140919-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.10.20140919-0ubuntu1)
 
 2014-09-19 13:48:34 +0000 Dmitry Shachnev (aee40ea)
 
@@ -527,7 +974,6 @@
 2014-08-14 14:53:29 +0000 CI bot (c9570c9)
 
 	* Releasing 12.10.5+14.10.20140814-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.10.20140814-0ubuntu1)
 
 2014-08-14 14:53:19 +0000 Charles Kerr (cea1977)
 
@@ -541,7 +987,6 @@
 2014-07-18 21:36:22 +0000 CI bot (7205a28)
 
 	* Releasing 12.10.5+14.10.20140718-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.10.20140718-0ubuntu1)
 
 2014-07-18 21:36:13 +0000 Robert Ancell (97a8297)
 
@@ -554,7 +999,6 @@
 2014-07-17 08:33:50 +0000 CI bot (373e7a8)
 
 	* Releasing 12.10.5+14.10.20140717-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.10.20140717-0ubuntu1)
 
 2014-07-17 08:33:36 +0000 Charles Kerr (5a43af8)
 
@@ -599,7 +1043,6 @@
 2014-06-20 15:27:43 +0000 CI bot (63f2cd2)
 
 	* Releasing 12.10.5+14.10.20140620-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.10.20140620-0ubuntu1)
 
 2014-06-20 15:27:33 +0000 Charles Kerr (44bcea9)
 
@@ -631,7 +1074,6 @@
 2014-04-10 17:39:19 +0000 CI bot (c2e6f8b)
 
 	* Releasing 12.10.5+14.04.20140410-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.04.20140410-0ubuntu1)
 
 2014-04-10 17:39:10 +0000 Marco Trevisan (Treviño) (36fe650)
 
@@ -673,7 +1115,6 @@
 2014-04-03 17:13:30 +0000 CI bot (74352b3)
 
 	* Releasing 12.10.5+14.04.20140403-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.04.20140403-0ubuntu1)
 
 2014-04-03 17:13:23 +0000 Charles Kerr (5c547e6)
 
@@ -701,7 +1142,6 @@
 2014-03-24 10:19:12 +0000 CI bot (d4ba429)
 
 	* Releasing 12.10.5+14.04.20140324-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.04.20140324-0ubuntu1)
 
 2014-03-24 10:19:00 +0000 Charles Kerr (0638860)
 
@@ -717,7 +1157,6 @@
 2014-03-20 19:18:01 +0000 CI bot (e99aa91)
 
 	* Releasing 12.10.5+14.04.20140320-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.04.20140320-0ubuntu1)
 
 2014-03-20 19:17:46 +0000 Ted Gould (a93745a)
 
@@ -763,7 +1202,6 @@
 2014-03-11 19:21:29 +0000 CI bot (574547d)
 
 	* Releasing 12.10.5+14.04.20140311.1-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.04.20140311.1-0ubuntu1)
 
 2014-03-11 19:21:20 +0000 Marco Trevisan (Treviño) (efa3cd6)
 
@@ -798,7 +1236,6 @@
 2014-02-14 15:53:35 +0000 CI bot (75840bf)
 
 	* Releasing 12.10.5+14.04.20140214-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.04.20140214-0ubuntu1)
 
 2014-02-14 15:53:27 +0000 Robert Ancell (66ad7b4)
 
@@ -813,7 +1250,6 @@
 2014-02-07 16:37:27 +0000 CI bot (ee60781)
 
 	* Releasing 12.10.5+14.04.20140207-0ubuntu1
-          (refs/bzr/origin/tags/12.10.5+14.04.20140207-0ubuntu1)
 
 2014-02-07 16:37:16 +0000 CI bot (083b132)
 
@@ -2241,7 +2677,7 @@
 
 2012-10-03 11:44:05 -0500 Charles Kerr (2b173ee)
 
-	* 12.10.4 (refs/bzr/origin/tags/12.10.4)
+	* 12.10.4
 
 2012-10-01 17:39:38 +0000 Ted Gould (8aec4a8)
 
@@ -2301,7 +2737,7 @@
 
 2012-09-19 11:34:58 -0500 Charles Kerr (9c40cb7)
 
-	* 12.10.3 (refs/bzr/origin/tags/12.10.3)
+	* 12.10.3
 
 2012-09-19 05:57:50 +0000 Charles Kerr (bf63480)
 
@@ -2413,7 +2849,7 @@
 2012-08-31 11:59:27 -0500 Charles Kerr (a97388a)
 
 	* add gtest-dbus-helper.h to test_service_SOURCES s.t. it gets
-          bundled in the tarball (refs/bzr/origin/tags/12.10.2)
+          bundled in the tarball
 
 2012-08-31 11:53:36 -0500 Charles Kerr (83e5043)
 
@@ -2506,7 +2942,7 @@
 
 2012-08-22 01:31:53 -0500 Charles Kerr (84e5c6a)
 
-	* 12.10.1 (refs/bzr/origin/tags/12.10.1)
+	* 12.10.1
 
 2012-08-22 01:28:40 -0500 Charles Kerr (6468eba)
 
@@ -2564,7 +3000,7 @@
 
 2012-07-11 09:59:14 -0500 Charles Kerr (5b3945b)
 
-	* bumping version to 12.10.0 (refs/bzr/origin/tags/12.10.0)
+	* bumping version to 12.10.0
 
 2012-07-11 09:51:42 -0500 Charles Kerr (be26226)
 
@@ -3070,7 +3506,7 @@
 
 2012-04-05 12:41:43 -0500 Charles Kerr (1ddba0e)
 
-	* 0.3.96 (tag: 0.3.96, refs/bzr/origin/tags/0.3.96)
+	* 0.3.96 (tag: 0.3.96)
 
 2012-04-04 13:57:08 -0500 Charles Kerr (0c35e8d)
 
@@ -3132,7 +3568,7 @@
 
 2012-03-21 11:58:29 -0500 Charles Kerr (80f2937)
 
-	* 0.3.95 (tag: 0.3.95, refs/bzr/origin/tags/0.3.95)
+	* 0.3.95 (tag: 0.3.95)
 
 2012-03-19 14:46:55 -0500 Charles Kerr (909ef6f)
 
@@ -3174,7 +3610,7 @@
 
 2012-03-14 10:33:28 -0500 Charles Kerr (bc34f04)
 
-	* 0.3.94 (tag: 0.3.94, refs/bzr/origin/tags/0.3.94)
+	* 0.3.94 (tag: 0.3.94)
 
 2012-03-12 14:23:54 +0000 Conor Curran (480cb8c)
 
@@ -3210,7 +3646,7 @@
 
 2012-03-09 15:22:31 -0600 Ted Gould (0034324)
 
-	* 0.3.93 (tag: 0.3.93, refs/bzr/origin/tags/0.3.93)
+	* 0.3.93 (tag: 0.3.93)
 
 2012-03-09 13:39:48 +0100 Sebastien Bacher (ed3bab3)
 
@@ -3315,7 +3751,7 @@
 
 2012-02-23 08:49:04 -0600 Ted Gould (2afbdf3)
 
-	* 0.3.92 (tag: 0.3.92, refs/bzr/origin/tags/0.3.92)
+	* 0.3.92 (tag: 0.3.92)
 
 2012-02-23 08:42:27 -0600 Ted Gould (8125b67)
 
@@ -3377,7 +3813,7 @@
 
 2012-02-14 17:40:55 +0000 Conor Curran (13d6c2b)
 
-	* merge roberts lock fix (tag: 0.3.91, refs/bzr/origin/tags/0.3.91)
+	* merge roberts lock fix (tag: 0.3.91)
 
 2012-02-14 18:38:10 +0100 Sebastien Bacher (28da49f)
 
@@ -3514,7 +3950,7 @@
 
 2012-02-07 16:46:27 -0600 Ted Gould (6975e8a)
 
-	* 0.3.90 (tag: 0.3.90, refs/bzr/origin/tags/0.3.90)
+	* 0.3.90 (tag: 0.3.90)
 
 2012-02-07 16:45:50 -0600 Ted Gould (361c2e6)
 
@@ -3614,8 +4050,7 @@
 
 2011-10-28 11:27:45 -0400 Conor Curran (f2b3d48)
 
-	* bump version for release (tag: 0.3.7.1,
-          refs/bzr/origin/tags/0.3.7.1)
+	* bump version for release (tag: 0.3.7.1)
 
 2011-10-28 11:21:31 -0400 Conor Curran (fc50b0c)
 
@@ -3669,7 +4104,7 @@
 
 2011-10-13 12:49:46 -0500 Ted Gould (9ddd604)
 
-	* 0.3.7 (tag: 0.3.7, refs/bzr/origin/tags/0.3.7)
+	* 0.3.7 (tag: 0.3.7)
 
 2011-10-12 15:32:41 -0500 Ted Gould (38140e8)
 
@@ -3752,7 +4187,7 @@
 
 2011-09-27 16:43:26 -0500 Ted Gould (749c8c0)
 
-	* 0.3.6 (tag: 0.3.6, refs/bzr/origin/tags/0.3.6)
+	* 0.3.6 (tag: 0.3.6)
 
 2011-09-27 16:33:45 -0500 Ted Gould (58faea4)
 
@@ -3843,7 +4278,7 @@
 
 2011-09-14 17:50:23 +0100 Conor Curran (1ea8cf9)
 
-	* fixes for apt handling (tag: 0.3.5.1, refs/bzr/origin/tags/0.3.5.1)
+	* fixes for apt handling (tag: 0.3.5.1)
 
 2011-09-14 17:48:48 +0100 Conor Curran (656e954)
 
@@ -3879,7 +4314,7 @@
 2011-09-08 19:09:38 +0100 Conor Curran (52799b8)
 
 	* various switches for the strings on the panel and on the switch
-          item (tag: 0.3.5.0, refs/bzr/origin/tags/0.3.5.0)
+          item (tag: 0.3.5.0)
 
 2011-09-08 18:40:07 +0100 Conor Curran (9aa0ffa)
 
@@ -3956,8 +4391,7 @@
 
 2011-09-06 18:24:09 +0100 Conor Curran (433512c)
 
-	* bump version for release (tag: 0.3.4.3,
-          refs/bzr/origin/tags/0.3.4.3)
+	* bump version for release (tag: 0.3.4.3)
 
 2011-09-06 18:19:12 +0100 Conor Curran (8eb3b24)
 
@@ -4019,8 +4453,7 @@
 
 2011-09-02 16:03:09 +0100 Conor Curran (ed66b08)
 
-	* apt menuitem should now finally be working properly (tag: 0.3.4.2,
-          refs/bzr/origin/tags/0.3.4.2)
+	* apt menuitem should now finally be working properly (tag: 0.3.4.2)
 
 2011-09-02 12:11:13 +0100 Conor Curran (a335b8e)
 
@@ -4069,7 +4502,7 @@
 
 2011-09-01 18:30:56 +0100 Conor Curran (ea01f77)
 
-	* ready for 0.3.4.1 (tag: 0.3.4.1, refs/bzr/origin/tags/0.3.4.1)
+	* ready for 0.3.4.1 (tag: 0.3.4.1)
 
 2011-09-01 18:23:35 +0100 Conor Curran (383e284)
 
@@ -4137,7 +4570,7 @@
 
 2011-08-30 17:33:07 +0100 Conor Curran (039c5e4)
 
-	* merge the guest fixes (tag: 0.3.4, refs/bzr/origin/tags/0.3.4)
+	* merge the guest fixes (tag: 0.3.4)
 
 2011-08-30 17:17:19 +0100 Conor Curran (a26d2f0)
 
@@ -4155,7 +4588,7 @@
 
 2011-08-30 09:52:28 +0100 Conor Curran (4bc40ec)
 
-	* bump for release (tag: 0.3.3.3, refs/bzr/origin/tags/0.3.3.3)
+	* bump for release (tag: 0.3.3.3)
 
 2011-08-30 09:49:19 +0100 Conor Curran (1987bc1)
 
@@ -4200,8 +4633,7 @@
 
 2011-08-25 18:58:59 +0100 Conor Curran (ae28c6c)
 
-	* fixes for the min users and label on panel for guest (tag: 0.3.3.1,
-          refs/bzr/origin/tags/0.3.3.1)
+	* fixes for the min users and label on panel for guest (tag: 0.3.3.1)
 
 2011-08-25 18:52:42 +0100 Conor Curran (9631736)
 
@@ -4239,8 +4671,7 @@
 
 2011-08-25 11:11:50 +0100 Conor Curran (29d61ee)
 
-	* updated po files and bumped for beta release (tag: 0.3.3,
-          refs/bzr/origin/tags/0.3.3)
+	* updated po files and bumped for beta release (tag: 0.3.3)
 
 2011-08-25 11:04:58 +0100 Conor Curran (f0031eb)
 
@@ -4393,7 +4824,7 @@
 
 2011-08-22 13:24:05 +0100 Conor Curran (5e4789f)
 
-	* bumped for release (tag: 0.3.2, refs/bzr/origin/tags/0.3.2)
+	* bumped for release (tag: 0.3.2)
 
 2011-08-21 16:43:49 -0400 Jeremy Bicha (5012f28)
 
@@ -4799,7 +5230,7 @@
 
 2011-07-22 18:15:55 +0100 Conor Curran (df0f292)
 
-	* moving to 0.3.0 (tag: 0.3.0, refs/bzr/origin/tags/0.3.0)
+	* moving to 0.3.0 (tag: 0.3.0)
 
 2011-07-22 18:12:20 +0100 Conor Curran (2139279)
 
@@ -4807,8 +5238,7 @@
 
 2011-07-22 18:07:00 +0100 Conor Curran (92208b4)
 
-	* bumped version in configure ac in prep for release (tag: 0.2.94,
-          refs/bzr/origin/tags/0.2.94)
+	* bumped version in configure ac in prep for release (tag: 0.2.94)
 
 2011-07-22 18:00:09 +0100 Conor Curran (7ad1a28)
 
@@ -4951,7 +5381,7 @@
 
 2011-07-14 17:40:43 +0100 Conor Curran (84fb2fd)
 
-	* bumped release version (tag: 0.2.93, refs/bzr/origin/tags/0.2.93)
+	* bumped release version (tag: 0.2.93)
 
 2011-07-14 17:38:15 +0100 Conor Curran (358b898)
 
@@ -5061,7 +5491,7 @@
 
 2011-07-07 11:23:40 -0500 Ted Gould (331ab6a)
 
-	* 0.2.92 (tag: 0.2.92, refs/bzr/origin/tags/0.2.92)
+	* 0.2.92 (tag: 0.2.92)
 
 2011-07-07 11:23:24 -0500 Ted Gould (d5e865a)
 
@@ -5087,7 +5517,7 @@
 
 2011-07-07 11:10:28 -0500 Ted Gould (0de4e5e)
 
-	* 0.2.91 (tag: 0.2.91, refs/bzr/origin/tags/0.2.91)
+	* 0.2.91 (tag: 0.2.91)
 
 2011-07-07 10:53:49 -0500 Ted Gould (c2f17c8)
 
@@ -5188,7 +5618,7 @@
 
 2011-06-21 10:26:40 -0500 Ted Gould (e94209b)
 
-	* 0.2.90 (tag: 0.2.90, refs/bzr/origin/tags/0.2.90)
+	* 0.2.90 (tag: 0.2.90)
 
 2011-06-12 14:42:53 +0200 Gabor Kelemen (5f2c8d9)
 
@@ -5253,7 +5683,7 @@
 
 2011-04-14 15:57:46 -0500 Ted Gould (f133202)
 
-	* 0.2.17 (tag: 0.2.17, refs/bzr/origin/tags/0.2.17)
+	* 0.2.17 (tag: 0.2.17)
 
 2011-04-14 11:17:53 -0500 Ted Gould (e3dd4ae)
 
@@ -5286,7 +5716,7 @@
 
 2011-04-07 12:40:44 -0500 Ted Gould (bb5c9ee)
 
-	* 0.2.16 (tag: 0.2.16, refs/bzr/origin/tags/0.2.16)
+	* 0.2.16 (tag: 0.2.16)
 
 2011-04-05 16:41:29 -0500 Ted Gould (52be839)
 
@@ -5334,7 +5764,7 @@
 
 2011-03-10 16:02:01 -0600 Ted Gould (7db402b)
 
-	* 0.2.15 (tag: 0.2.15, refs/bzr/origin/tags/0.2.15)
+	* 0.2.15 (tag: 0.2.15)
 
 2011-03-10 16:01:05 -0600 Ted Gould (746fdd2)
 
@@ -5406,7 +5836,7 @@
 
 2011-02-17 13:21:35 -0600 Ted Gould (f4cdae1)
 
-	* 0.2.14 (tag: 0.2.14, refs/bzr/origin/tags/0.2.14)
+	* 0.2.14 (tag: 0.2.14)
 
 2011-02-17 13:21:19 -0600 Ted Gould (110a126)
 
@@ -5447,7 +5877,7 @@
 
 2011-02-11 10:35:42 -0600 Ted Gould (a5e8b16)
 
-	* 0.2.13 (tag: 0.2.13, refs/bzr/origin/tags/0.2.13)
+	* 0.2.13 (tag: 0.2.13)
 
 2011-02-08 21:03:21 -0600 Ted Gould (9498ffa)
 
@@ -5480,7 +5910,7 @@
 
 2011-01-28 11:14:53 -0600 Ted Gould (5c4584e)
 
-	* 0.2.12 (tag: 0.2.12, refs/bzr/origin/tags/0.2.12)
+	* 0.2.12 (tag: 0.2.12)
 
 2011-01-28 11:14:45 -0600 Ted Gould (25bde6b)
 
@@ -5517,7 +5947,7 @@
 
 2011-01-14 13:18:34 -0600 Ken VanDine (b611f77)
 
-	* version bump, 0.2.11 (tag: 0.2.11, refs/bzr/origin/tags/0.2.11)
+	* version bump, 0.2.11 (tag: 0.2.11)
 
 2011-01-13 21:07:18 -0600 Ken VanDine (60da979)
 
@@ -5610,7 +6040,7 @@
 
 2010-08-12 11:32:35 -0500 Ted Gould (3b5cc00)
 
-	* 0.2.10 (tag: 0.2.10, refs/bzr/origin/tags/0.2.10)
+	* 0.2.10 (tag: 0.2.10)
 
 2010-08-12 09:17:03 -0500 Ted Gould (1199419)
 
@@ -5701,7 +6131,7 @@
 
 2010-04-09 10:58:45 -0500 Ted Gould (1ed276d)
 
-	* 0.2.8 (tag: 0.2.8, refs/bzr/origin/tags/0.2.8)
+	* 0.2.8 (tag: 0.2.8)
 
 2010-04-07 13:48:03 -0500 Ted Gould (8adaef5)
 
@@ -5819,9 +6249,7 @@
 
 2010-03-25 09:34:34 -0500 Ted Gould (791f0b4)
 
-	* 0.2.7 (tag: upstream-0.2.7, tag: 0.2.7,
-          refs/bzr/origin/tags/upstream-0.2.7,
-          refs/bzr/origin/tags/0.2.7)
+	* 0.2.7 (tag: upstream-0.2.7, tag: 0.2.7)
 
 2010-03-25 09:28:26 -0500 Ted Gould (e0253f4)
 
@@ -5933,7 +6361,7 @@
 
 2010-03-18 14:16:19 -0500 Ted Gould (f1095e5)
 
-	* 0.2.6 (tag: 0.2.6, refs/bzr/origin/tags/0.2.6)
+	* 0.2.6 (tag: 0.2.6)
 
 2010-03-18 14:01:25 -0500 Ted Gould (1c7fe73)
 
@@ -6497,7 +6925,7 @@
 
 2010-03-04 12:16:23 -0600 Ted Gould (2b85f39)
 
-	* 0.2.5 (tag: 0.2.5, refs/bzr/origin/tags/0.2.5)
+	* 0.2.5 (tag: 0.2.5)
 
 2010-03-04 08:52:35 -0600 Ted Gould (2eba4c7)
 
@@ -6728,7 +7156,7 @@
 
 2010-02-25 11:54:38 -0600 Ted Gould (ab02e29)
 
-	* 0.2.4 (tag: 0.2.4, refs/bzr/origin/tags/0.2.4)
+	* 0.2.4 (tag: 0.2.4)
 
 2010-02-25 11:51:19 -0600 Ted Gould (5be29b7)
 
@@ -6813,7 +7241,7 @@
 
 2010-02-18 09:39:50 -0600 Ted Gould (e07cdb8)
 
-	* 0.2.3 (tag: 0.2.3, refs/bzr/origin/tags/0.2.3)
+	* 0.2.3 (tag: 0.2.3)
 
 2010-02-18 09:39:20 -0600 Ted Gould (db48c78)
 
@@ -6964,7 +7392,7 @@
 
 2010-02-11 10:47:17 -0600 Ted Gould (4a6f782)
 
-	* 0.2.2 (tag: 0.2.2, refs/bzr/origin/tags/0.2.2)
+	* 0.2.2 (tag: 0.2.2)
 
 2010-02-09 21:34:07 -0600 Ted Gould (afd66c8)
 
@@ -7073,7 +7501,7 @@
 
 2010-02-04 17:16:00 -0800 Ted Gould (4b6ca8a)
 
-	* 0.2.1 (tag: 0.2.1, refs/bzr/origin/tags/0.2.1)
+	* 0.2.1 (tag: 0.2.1)
 
 2010-02-04 16:59:30 -0800 Ted Gould (0d157eb)
 
@@ -7121,7 +7549,7 @@
 
 2010-01-08 09:31:06 -0600 Ted Gould (4b4b9d7)
 
-	* 0.2.0 (tag: 0.2.0, refs/bzr/origin/tags/0.2.0)
+	* 0.2.0 (tag: 0.2.0)
 
 2010-01-05 23:39:08 -0600 Ted Gould (2259a6b)
 
@@ -7533,7 +7961,7 @@
 
 2009-10-08 10:58:20 -0400 Ted Gould (8bee878)
 
-	* 0.1.7 (tag: 0.1.7, refs/bzr/origin/tags/0.1.7)
+	* 0.1.7 (tag: 0.1.7)
 
 2009-10-08 10:54:56 -0400 Ted Gould (69960ed)
 
@@ -7790,7 +8218,7 @@
 
 2009-10-01 15:17:43 -0500 Ted Gould (75bf969)
 
-	* 0.1.6 (tag: 0.1.6, refs/bzr/origin/tags/0.1.6)
+	* 0.1.6 (tag: 0.1.6)
 
 2009-09-30 13:00:10 -0500 Cody Russell (8df2690)
 
@@ -7922,7 +8350,7 @@
 
 2009-09-24 17:02:32 -0500 Ted Gould (50004fc)
 
-	* Increasing to 0.1.5 (tag: 0.1.5, refs/bzr/origin/tags/0.1.5)
+	* Increasing to 0.1.5 (tag: 0.1.5)
 
 2009-09-24 17:02:11 -0500 Ted Gould (337c0de)
 
@@ -8261,7 +8689,7 @@
 
 2009-09-17 11:00:41 -0500 Ted Gould (f1adf67)
 
-	* Making a 0.1.4 (tag: 0.1.4, refs/bzr/origin/tags/0.1.4)
+	* Making a 0.1.4 (tag: 0.1.4)
 
 2009-09-17 10:52:23 -0500 Ted Gould (04e548e)
 
@@ -8378,7 +8806,7 @@
 
 2009-09-10 17:10:37 -0500 Ted Gould (82395ac)
 
-	* Making a 0.1.3 (tag: 0.1.3, refs/bzr/origin/tags/0.1.3)
+	* Making a 0.1.3 (tag: 0.1.3)
 
 2009-09-10 17:05:42 -0500 Ted Gould (1da23a1)
 
@@ -8498,7 +8926,7 @@
 
 2009-09-08 10:45:57 -0500 Ted Gould (3211a5e)
 
-	* Turning into 0.1.2 (tag: 0.1.2, refs/bzr/origin/tags/0.1.2)
+	* Turning into 0.1.2 (tag: 0.1.2)
 
 2009-09-08 10:19:00 -0500 Ted Gould (300caf9)
 
@@ -8555,7 +8983,7 @@
 2009-09-03 15:07:49 -0500 Ted Gould (94fcffe)
 
 	* Bumping up number to 0.1.1 and fixing a couple depends. (tag:
-          0.1.1, refs/bzr/origin/tags/0.1.1)
+          0.1.1)
 
 2009-09-03 15:06:41 -0500 Ted Gould (05c10a1)
 
@@ -8668,7 +9096,7 @@
 2009-08-27 13:39:28 -0500 Ted Gould (41f1b32)
 
 	* Merging in a branch to use the new dbusmenu API and make it more
-          stable overall. (tag: 0.1, refs/bzr/origin/tags/0.1)
+          stable overall. (tag: 0.1)
 
 2009-08-27 13:37:15 -0500 Ted Gould (8756b43)
 
@@ -8969,8 +9397,7 @@
 
 2009-08-11 17:23:54 +0200 Alexander Sack (a55731f)
 
-	* releasing version 0.1-0ubuntu1 (tag: 0.1-0ubuntu1,
-          refs/bzr/origin/tags/0.1-0ubuntu1)
+	* releasing version 0.1-0ubuntu1 (tag: 0.1-0ubuntu1)
 
 2009-08-11 11:16:37 -0400 Ken VanDine (d463551)
 

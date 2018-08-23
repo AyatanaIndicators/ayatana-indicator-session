@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-04-18 21:39+0000\n"
-"Last-Translator: Dariusz Król <rexioweb@gmail.com>\n"
+"PO-Revision-Date: 2018-08-24 17:42+0000\n"
+"Last-Translator: WaldiS <admin@sto.ugu.pl>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/pl/>\n"
 "Language: pl\n"
@@ -18,14 +18,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.2-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
-"Pomija wyświetlanie okna dialogowego, wymagającego potwierdzenia czynności "
-"wylogowania użytkownika, ponownego uruchomienia i wyłączenia komputera."
+"Wyłącz okno dialogowe, aby potwierdzić wylogowanie, ponowne uruchomienie i "
+"zamknięcie"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
@@ -69,7 +69,7 @@ msgstr ""
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "System, %s"
 
 #: ../src/service.c:191
 msgid "System"
@@ -95,7 +95,7 @@ msgstr "O tym Komputerze"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Zgłoś błąd…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -107,31 +107,27 @@ msgstr "Konta sieciowe…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Uruchom wygaszacz ekranu"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Przełącz konto użytkownika..."
+msgstr "Przełącz konto użytkownika…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "Przełącz konto użytkownika..."
+msgstr "Przełącz konto użytkownika"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Przełącz konto użytkownika..."
+msgstr "Zablokuj/Przełącz konto użytkownika…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Przełącz konto użytkownika..."
+msgstr "Zablokuj/Przełącz konto użytkownika"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Blokada"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -177,7 +173,7 @@ msgstr "Wyłącz komputer"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Ostrzeżenie"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -189,10 +185,8 @@ msgid ""
 msgstr ""
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr ""
-"Zakończyć działanie wszystkich programów i wylogować bieżącego użytkownika?"
+msgstr "Czy na pewno chcesz zamknąć wszystkie programy i wylogować się?"
 
 #: ../src/backend-dbus/actions.c:890
 #, fuzzy

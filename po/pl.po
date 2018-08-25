@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-08-24 17:42+0000\n"
+"PO-Revision-Date: 2018-08-26 16:42+0000\n"
 "Last-Translator: WaldiS <admin@sto.ugu.pl>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/pl/>\n"
@@ -189,7 +189,6 @@ msgid "Are you sure you want to close all programs and log out?"
 msgstr "Czy na pewno chcesz zamknąć wszystkie programy i wylogować się?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""

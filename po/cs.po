@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-04-05 04:35+0000\n"
+"PO-Revision-Date: 2018-09-28 05:23+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/cs/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.2-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -61,7 +61,7 @@ msgstr "Nezobrazí tlačítko vypnutí v nabídce sezení."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr "Systém,"
+msgstr "Systém, %s"
 
 #: ../src/service.c:191
 msgid "System"
@@ -74,7 +74,7 @@ msgstr "Host"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr "Nápověda k desktopu"
+msgstr "%s Nápověda k desktopu"
 
 #: ../src/service.c:344
 #, c-format
@@ -175,6 +175,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Pro přístup k systém pro správu hlášení chyb pro operační systém\n"
+"je třeba webového prohlížeče.\n"
+"\n"
+"Ayatana indikátor sezení na počítači nenalezl žádný\n"
+"webový prohlížeč."
 
 #: ../src/backend-dbus/actions.c:889
 msgid "Are you sure you want to close all programs and log out?"
@@ -206,6 +211,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Pro přístup k uživatelské příručce prostředí XFCE\n"
+"je třeba webového prohlížeče.\n"
+"\n"
+"Ayatana indikátor sezení na počítači nenalezl žádný\n"
+"webový prohlížeč."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -215,6 +225,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana indikátoru sezení není známo, jak zobrazit uživatelskou\n"
+"příručku nebo centrum nápovědy nyní spuštěného prostředí.\n"
+"\n"
+"Prosíme nahlaste to vývojářům na:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -225,6 +240,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Pro zobrazení informací o %s je třeba webového\n"
+"prohlížeče.\n"
+"\n"
+"Ayatana indikátor sezení na počítači nenalezl žádný\n"
+"webový prohlížeč."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -234,6 +254,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana indikátor sezení zatím nepodporuje vyvolání aplikace pro\n"
+"nastavení systému ve vašem desktopovém prostředí.\n"
+"\n"
+"Prosíme nahlaste to vývojářům na:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -243,6 +268,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana indikátor sezení zatím nepodporuje změnu hesla ve vašem\n"
+"desktopovém prostředí.\n"
+"\n"
+"Prosíme nahlaste to vývojářům na:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -252,6 +282,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana indikátor sezení zatím neví, jak zobrazit informace o právě\n"
+"spuštěném desktopovém prostředí.\n"
+"\n"
+"Prosíme nahlaste to vývojářům na:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Klasické sezení hosta"

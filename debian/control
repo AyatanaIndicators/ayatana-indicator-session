@@ -35,6 +35,8 @@ Recommends: gnome-screensaver | mate-screensaver | xfce4-session,,
 Suggests: apport,
           lightdm,
           zenity,
+Breaks: indicator-session,
+Replaces: indicator-session,
 Description: Ayatana Indicator showing session management, status and user switching
  This Ayatana Indicator is designed to be placed on the right side of a
  panel and give the user easy control for changing their instant message

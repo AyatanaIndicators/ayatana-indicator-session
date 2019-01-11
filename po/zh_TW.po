@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:49+0200\n"
-"PO-Revision-Date: 2018-04-01 14:35+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2019-01-12 12:06+0000\n"
+"Last-Translator: Louies <louies0623@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -58,11 +58,11 @@ msgstr "讓關機按鈕不顯示在工作階段選單內。"
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "系統，%s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "系統"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -71,20 +71,20 @@ msgstr "訪客"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s 桌面説明"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s 説明"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "關於這台電腦"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "報告錯誤…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -96,31 +96,27 @@ msgstr "線上帳號…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "\"開始\" 螢幕保護裝置程式"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "切換使用者帳號..."
+msgstr "切換使用者帳號…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "切換使用者帳號..."
+msgstr "切換使用者帳號"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "切換使用者帳號..."
+msgstr "鎖定/切換使用者帳號…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "切換使用者帳號..."
+msgstr "鎖定/切換使用者帳號"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "鎖定"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -166,7 +162,7 @@ msgstr "關機"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -176,14 +172,17 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"作業系統的錯誤追蹤器需要權限\n"
+"一個網路瀏覽器。\n"
+"\n"
+"Ayatana Session 指示器找不到任何網路\n"
+"瀏覽器。"
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr "您是否真的想關閉所有程式並從電腦登出？"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr "有些軟體在電腦下次重新啟動前未能套用更新。"
@@ -209,6 +208,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"需要通過\n"
+"一個網路瀏覽器。\n"
+"\n"
+"Ayatana Session 會話指示器找不到任何網路\n"
+"瀏覽器。"
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -218,6 +222,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana Session 指示器還不知道，如何顯示\n"
+"當前正在運行的桌面的使用者指南或説明中心。\n"
+"\n"
+"請在以下位置向開發人員報告:\n"
+"HTTPs://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -228,6 +237,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"顯示有關 %s 要求的資訊\n"
+"一個網路瀏覽器。\n"
+"\n"
+"Ayatana Session 會話指示器找不到任何網路\n"
+"瀏覽器。"
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -237,6 +251,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana Session 會話指示器不支持喚起系統\n"
+"然而，您的桌面環境的設置應用程式。\n"
+"\n"
+"請在以下位置向開發人員報告:\n"
+"HTTPs://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -246,6 +265,12 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana Session 會話指示器不支持密碼更改\n"
+"對於您的桌面環境。\n"
+"\n"
+"\n"
+"請在以下位置向開發人員報告:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -255,6 +280,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana會話指示器還不知道，如何展示\n"
+"當前運行的桌面環境的信息。\n"
+"\n"
+"請在以下位置向開發人員報告:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "經典訪客作業階段"

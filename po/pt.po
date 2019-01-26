@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-11-19 21:07+0000\n"
+"PO-Revision-Date: 2019-01-27 09:04+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/pt/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -75,12 +75,12 @@ msgstr "Convidado"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s Ajuda do Desktop"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s Ajuda"
 
 #: ../src/service.c:346
 msgid "About This Computer"
@@ -100,7 +100,7 @@ msgstr "Contas Online…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr "Iniciar Protetor de Tela"
+msgstr "Iniciar Protetor de Ecrã"
 
 #: ../src/service.c:575 ../src/service.c:591
 msgid "Switch Account…"
@@ -112,15 +112,15 @@ msgstr "Alterar Conta"
 
 #: ../src/service.c:588
 msgid "Lock/Switch Account…"
-msgstr "Alternar conta de usuário..."
+msgstr "Alternar conta de usuário…"
 
 #: ../src/service.c:589
 msgid "Lock/Switch Account"
-msgstr "Alternar conta de usuário..."
+msgstr "Alternar conta de usuário"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Bloqueio"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -166,7 +166,7 @@ msgstr "Encerrar"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Aviso"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -176,6 +176,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"O rastreador de bugs do sistema operacional precisa ser acessado com\n"
+"um navegador web.\n"
+"\n"
+"O Indicador de Sessão Ayatana não conseguiu encontrar nenhum navegador web\n"
+"no seu computador."
 
 #: ../src/backend-dbus/actions.c:889
 msgid "Are you sure you want to close all programs and log out?"
@@ -209,6 +214,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"O guia do usuário do desktop XFCE precisa ser acessado com\n"
+"um navegador web.\n"
+"\n"
+"O Indicador de Sessão Ayatana não conseguiu encontrar nenhum navegador web\n"
+"no seu computador."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -218,6 +228,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"O Indicador de Sessão Ayatana ainda não sabe como mostrar\n"
+"o guia do usuário ou o centro de ajuda do desktop atualmente execucutado.\n"
+"\n"
+"Por favor, relate isto aos desenvolvedores em:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -228,6 +243,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"A exibição de informações sobre %s requer\n"
+"um navegador web.\n"
+"\n"
+"O Indicador de Sessão Ayatana não conseguiu encontrar nenhum navegador web\n"
+"no seu computador."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -237,6 +257,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"O Indicador de Sessão Ayatana não suporta a evocação do sistema\n"
+"para o seu ambiente de trabalho.\n"
+"\n"
+"Por favor, relate isto aos desenvolvedores em:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -246,6 +271,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"O Indicador de Sessão Ayatana ainda não suporta mudanças de palavra-passe\n"
+"para o seu ambiente de trabalho.\n"
+"\n"
+"Por favor, relate isto aos desenvolvedores em:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -255,6 +285,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"O Indicador de Sessão Ayatana ainda não sabe, como mostrar\n"
+"informações do ambiente de trabalho atualmente executado.\n"
+"\n"
+"Por favor, relate isto aos desenvolvedores em:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Lock Screen"
 #~ msgstr "Bloquear Ecrã"

@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2018-04-01 11:37+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2019-05-19 14:48+0000\n"
+"Last-Translator: THANOS SIOURDAKIS <siourdakisthanos@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/el/>\n"
 "Language: el\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.7-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -62,65 +62,65 @@ msgstr ""
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Σύστημα, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Σύστημα"
 
 #: ../src/service.c:325
 msgid "Guest"
-msgstr ""
+msgstr "Επισκέκπτης"
 
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s Βοήθεια Επιφάνειας Εργασίας"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s Βοήθεια"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Σχετικά Με Αυτόν Τον Υπολογιστή"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Αναφέρετε ένα σφάλμα…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
-msgstr ""
+msgstr "Ρυθμίσεις Συστήματος…"
 
 #: ../src/service.c:364
 msgid "Online Accounts…"
-msgstr ""
+msgstr "Συνδεδεμένοι Λογαριασμοί…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Εκκίνηση Προστασίας Οθόνης"
 
 #: ../src/service.c:575 ../src/service.c:591
 msgid "Switch Account…"
-msgstr ""
+msgstr "Αλλαγή Λογαριασμού…"
 
 #: ../src/service.c:576 ../src/service.c:592
 msgid "Switch Account"
-msgstr ""
+msgstr "Αλλαγή Λογαριασμού"
 
 #: ../src/service.c:588
 msgid "Lock/Switch Account…"
-msgstr ""
+msgstr "Κλείδωμα/Αλλαγή Λογαριασμού…"
 
 #: ../src/service.c:589
 msgid "Lock/Switch Account"
-msgstr ""
+msgstr "Κλείδωμα/Αλλαγή Λογαριασμού"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Κλείδωμα"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -166,7 +166,7 @@ msgstr "Τερματισμός"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Προειδοποίηση"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -176,20 +176,23 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Ο ανιχνευτής σφαλμάτων του λειτουργικού συστήματος πρέπει να προσβαθεί με\n"
+"ένα πρόγραμμα περιήγησης ιστού.\n"
+"\n"
+"Ο δείκτης συνεδρίας Ayatana δεν μπόρεσε να βρει κανένα πρόγραμμα\n"
+"περιήγησης ιστού στον υπολογιστή σας."
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr ""
 "Είστε βέβαιοι ότι θέλετε να κλείσετε όλα τα προγράμματα και να αποσυνδεθείτε "
 "από τον υπολογιστή;"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"Ορισμένες ενημερώσεις λογισμικού δεν θα εφαρμοστούν μέχρι να γίνει "
+"Ορισμένες ενημερώσεις λογισμικού δεν θα εφαρμοστούν μέχρι την επόμενη "
 "επανεκκίνηση του υπολογιστή."
 
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
@@ -217,6 +220,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Ο οδηγός χρήστη της επιφάνειας εργασίας XFCE πρέπει να είναι προσβάσιμος με\n"
+"ένα πρόγραμμα περιήγησης ιστού.\n"
+"\n"
+"Ο δείκτης συνεδρίας Ayatana δεν μπόρεσε να βρει κανένα πρόγραμμα\n"
+"περιήγησης ιστού στον υπολογιστή σας."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -226,6 +234,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ο δείκτης συνεδρίας Ayatana δεν γνωρίζει ακόμα, πώς να δείξει\n"
+"τον οδηγό χρήστη ή το κέντρο βοήθειας της τρέχουσας επιφάνειας εργασίας.\n"
+"\n"
+"Παρακαλώ αναφέρετε το στους προγραμματιστές στο:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -236,6 +249,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Η εμφάνιση πληροφοριών στο%s απαιτεί\n"
+"ένα πρόγραμμα περιήγησης ιστού.\n"
+"\n"
+"Ο δείκτης συνεδρίας Ayatana δεν μπόρεσε να βρει κανένα πρόγραμμα\n"
+"περιήγησης ιστού στον υπολογιστή σας."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -254,6 +272,12 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Η ένδειξη περιόδου λειτουργίας Ayatana δεν υποστηρίζει αλλαγές κωδικού "
+"πρόσβασης\n"
+"για το περιβάλλον της επιφάνειας εργασίας σας, ακόμα.\n"
+"\n"
+"Παρακαλώ αναφέρετε το στους προγραμματιστές στο:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -263,6 +287,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ο δείκτης συνεδρίας Ayatana δεν γνωρίζει ακόμα, πώς να δείξει\n"
+"πληροφορίες για το τρέχον περιβάλλον επιφάνειας εργασίας.\n"
+"\n"
+"Παρακαλώ αναφέρετε το στους προγραμματιστές:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Lock Screen"
 #~ msgstr "Κλείδωμα οθόνης"

@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:48+0200\n"
-"PO-Revision-Date: 2011-09-17 19:40+0000\n"
-"Last-Translator: rob <linuxned@gmail.com>\n"
-"Language-Team: Dutch\n"
-"Language: \n"
+"PO-Revision-Date: 2019-06-29 15:01+0000\n"
+"Last-Translator: Patrick Heijmann <wh33ly@gmail.com>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/ayatana-indicators/"
+"session-applet/nl/>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.7.1\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
-"X-Generator: Launchpad (build 14041)\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
@@ -80,15 +82,15 @@ msgstr ""
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s Help"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Over deze computer"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Rapporteer een bug…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -100,12 +102,12 @@ msgstr "Online accounts…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Screensaver starten"
 
 #: ../src/service.c:575 ../src/service.c:591
 #, fuzzy
 msgid "Switch Account…"
-msgstr "Gebruiker wisselen…"
+msgstr "Account overschakelen…"
 
 #: ../src/service.c:576 ../src/service.c:592
 #, fuzzy
@@ -113,9 +115,8 @@ msgid "Switch Account"
 msgstr "Gebruiker wisselen…"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Gebruiker wisselen…"
+msgstr "Account vergrendelen/wisselen…"
 
 #: ../src/service.c:589
 #, fuzzy
@@ -124,7 +125,7 @@ msgstr "Gebruiker wisselen…"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Vergrendel"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -132,12 +133,12 @@ msgstr "Gastsessie"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "Afmelden…"
+msgstr "Uitloggen…"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
 msgid "Log Out"
-msgstr "Afmelden"
+msgstr "Uitloggen"
 
 #: ../src/service.c:715
 msgid "Suspend"
@@ -170,7 +171,7 @@ msgstr "Afsluiten"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Waarschuwing"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""

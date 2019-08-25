@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-28 11:49+0200\n"
-"PO-Revision-Date: 2018-04-01 14:42+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2019-08-26 07:24+0000\n"
+"Last-Translator: leela <53352@protonmail.com>\n"
 "Language-Team: Telugu <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/te/>\n"
 "Language: te\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.9-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -25,10 +25,12 @@ msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr "లాగౌట్, పునఃప్రారంభ మరియు మూసివేత చర్యలను రూఢీ చేయడానికి డైలాగును కనుమరుగు చేయి"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:2
+#, fuzzy
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
-msgstr "లాగౌట్, పునఃప్రారంభ మరియు మూసివేత  చర్యల కొరకు రూఢీ డైలాగులు చూయించాలా వద్దా"
+msgstr ""
+"లాగౌట్, పునఃప్రారంభ మరియు మూసివేత  చర్యల కొరకు రూఢీ డైలాగులు చూయించాలా వద్దా."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"

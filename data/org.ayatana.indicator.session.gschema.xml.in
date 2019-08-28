@@ -12,7 +12,7 @@
     </key>
     <key name="suppress-restart-menuitem" type="b">
       <default>false</default>
-      <_summary>Remove the Restart item from the session menu</_summary>
+      <_summary>Remove the Restart item from the session menu.</_summary>
       <_description>Makes it so that the restart button doesn’t show in the session menu.</_description>
     </key>
     <key name="suppress-shutdown-menuitem" type="b">

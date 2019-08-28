@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-28 11:48+0200\n"
+"POT-Creation-Date: 2019-08-28 20:19+0200\n"
 "PO-Revision-Date: 2019-06-29 15:01+0000\n"
 "Last-Translator: Patrick Heijmann <wh33ly@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/ayatana-indicators/"
@@ -43,7 +43,8 @@ msgstr ""
 "Zorgt ervoor dat de knop Afmelden niet wordt getoond in het sessiemenu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-msgid "Remove the Restart item from the session menu"
+#, fuzzy
+msgid "Remove the Restart item from the session menu."
 msgstr "De knop Herstarten verbergen in het sessiemenu"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
@@ -52,7 +53,8 @@ msgstr ""
 "Zorgt ervoor dat de knop Herstarten niet wordt getoond in het sessiemenu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-msgid "Remove the shutdown item from the session menu"
+#, fuzzy
+msgid "Remove the shutdown item from the session menu."
 msgstr "De knop Afsluiten verbergen in het sessiemenu"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-28 11:49+0200\n"
+"POT-Creation-Date: 2019-08-28 20:20+0200\n"
 "PO-Revision-Date: 2019-07-02 20:01+0000\n"
 "Last-Translator: Elizabeth Sherrock <lizzyd710@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -39,7 +39,8 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "用它来隐藏会话菜单中的注销按钮。"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-msgid "Remove the Restart item from the session menu"
+#, fuzzy
+msgid "Remove the Restart item from the session menu."
 msgstr "移除会话菜单中的重启项"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
@@ -47,7 +48,8 @@ msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "用它来隐藏会话菜单中的重启按钮。"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-msgid "Remove the shutdown item from the session menu"
+#, fuzzy
+msgid "Remove the shutdown item from the session menu."
 msgstr "移除会话菜单中的关机项"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8

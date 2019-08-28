@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-28 11:48+0200\n"
+"POT-Creation-Date: 2019-08-28 20:19+0200\n"
 "PO-Revision-Date: 2017-07-21 15:41+0200\n"
 "Last-Translator: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>\n"
 "Language-Team: Shan\n"
@@ -35,7 +35,7 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-msgid "Remove the Restart item from the session menu"
+msgid "Remove the Restart item from the session menu."
 msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
@@ -43,7 +43,7 @@ msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-msgid "Remove the shutdown item from the session menu"
+msgid "Remove the shutdown item from the session menu."
 msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8

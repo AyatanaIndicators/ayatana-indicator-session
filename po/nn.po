@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-28 11:48+0200\n"
+"POT-Creation-Date: 2019-08-28 20:19+0200\n"
 "PO-Revision-Date: 2011-03-26 13:04+0000\n"
 "Last-Translator: Rune Gangstø <runegang@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <nn@li.org>\n"
@@ -39,7 +39,8 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-msgid "Remove the Restart item from the session menu"
+#, fuzzy
+msgid "Remove the Restart item from the session menu."
 msgstr "Fjern «Start på nytt»-oppføringa frå øktmenyen"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
@@ -47,7 +48,8 @@ msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-msgid "Remove the shutdown item from the session menu"
+#, fuzzy
+msgid "Remove the shutdown item from the session menu."
 msgstr "Fjern «Slå av»-oppføringa frå øktmenyen"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8

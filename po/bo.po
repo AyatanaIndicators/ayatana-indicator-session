@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-28 11:48+0200\n"
+"POT-Creation-Date: 2019-08-28 20:19+0200\n"
 "PO-Revision-Date: 2019-08-28 12:24+0000\n"
 "Last-Translator: leela <53352@protonmail.com>\n"
-"Language-Team: Tibetan <https://hosted.weblate.org/projects/"
-"ayatana-indicators/session-applet/bo/>\n"
+"Language-Team: Tibetan <https://hosted.weblate.org/projects/ayatana-"
+"indicators/session-applet/bo/>\n"
 "Language: bo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,7 +40,8 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-msgid "Remove the Restart item from the session menu"
+#, fuzzy
+msgid "Remove the Restart item from the session menu."
 msgstr "འགོ་བསྐྱར་འཛུགས་འདི་ལེ་ཚན་འདེམས་ཐོའི་ནང་ནས་བསུབ་པ"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
@@ -48,7 +49,8 @@ msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-msgid "Remove the shutdown item from the session menu"
+#, fuzzy
+msgid "Remove the shutdown item from the session menu."
 msgstr "སྒོ་རྒྱག་དེ་ལེ་ཚན་འདེམས་ཐོའི་ནང་ནས་བསུབ་པ"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
@@ -192,9 +194,7 @@ msgstr "རྩིས་མེད་གཏོང"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr ""
-"ཁྱོད་ཀྱིས་བྱ་རིམ་ཡོངས་རྫོགས་སྒོ་བརྒྱབ་ནས་རྩིས་འཁོར་འགོ་བསྐྱར་འཛུགས་བྱེད་པ་གཏན"
-"་ཁེལ་ཡིན་ནམ?"
+msgstr "ཁྱོད་ཀྱིས་བྱ་རིམ་ཡོངས་རྫོགས་སྒོ་བརྒྱབ་ནས་རྩིས་འཁོར་འགོ་བསྐྱར་འཛུགས་བྱེད་པ་གཏན་ཁེལ་ཡིན་ནམ?"
 
 #: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"

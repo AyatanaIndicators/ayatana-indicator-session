@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-28 11:48+0200\n"
+"POT-Creation-Date: 2019-08-28 20:19+0200\n"
 "PO-Revision-Date: 2018-07-30 01:41+0000\n"
 "Last-Translator: chrismeurer <christianmeurer@outlook.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -43,7 +43,8 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Faz com que o botão sair não seja mostrado no menu sessão."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-msgid "Remove the Restart item from the session menu"
+#, fuzzy
+msgid "Remove the Restart item from the session menu."
 msgstr "Remover o item Reiniciar do menu de sessão"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
@@ -51,7 +52,8 @@ msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Faz com que o botão de reiniciar não seja mostrado no menu sessão."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-msgid "Remove the shutdown item from the session menu"
+#, fuzzy
+msgid "Remove the shutdown item from the session menu."
 msgstr "Remover o item Desligar do menu de sessão"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8

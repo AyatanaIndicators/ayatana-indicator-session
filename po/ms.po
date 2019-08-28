@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-28 11:48+0200\n"
+"POT-Creation-Date: 2019-08-28 20:19+0200\n"
 "PO-Revision-Date: 2018-04-01 14:39+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Malay <https://hosted.weblate.org/projects/ayatana-indicators/"
@@ -43,7 +43,8 @@ msgstr ""
 "Jadikannya supaya butang daftar keluar tidak dipaparkan dalam menu sesi."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-msgid "Remove the Restart item from the session menu"
+#, fuzzy
+msgid "Remove the Restart item from the session menu."
 msgstr "Buang item Mula Semula daripada menu sesi"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
@@ -51,7 +52,8 @@ msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Jadikannya supaya butang mula semula tidak dipaparkan dalam menu sesi."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-msgid "Remove the shutdown item from the session menu"
+#, fuzzy
+msgid "Remove the shutdown item from the session menu."
 msgstr "Buang item matikan daripada menu sesi"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8

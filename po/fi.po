@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-28 11:48+0200\n"
+"POT-Creation-Date: 2019-08-28 20:19+0200\n"
 "PO-Revision-Date: 2018-04-01 14:37+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Finnish <https://hosted.weblate.org/projects/"
-"ayatana-indicators/session-applet/fi/>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/ayatana-"
+"indicators/session-applet/fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,7 +43,8 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Piilottaa Kirjaudu ulos -valinnan istuntovalikosta."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-msgid "Remove the Restart item from the session menu"
+#, fuzzy
+msgid "Remove the Restart item from the session menu."
 msgstr "Piilota Käynnistä uudelleen -valinta istuntovalikosta"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
@@ -51,7 +52,8 @@ msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Piilottaa Käynnistä uudelleen -valinnan istuntovalikosta."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-msgid "Remove the shutdown item from the session menu"
+#, fuzzy
+msgid "Remove the shutdown item from the session menu."
 msgstr "Piilota Sammuta-valinta istuntovalikosta"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8

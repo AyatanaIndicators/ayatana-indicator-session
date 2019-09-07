@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2018-06-18 11:43+0000\n"
-"Last-Translator: advocatux <advocatux@airpost.net>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/es/>\n"
+"PO-Revision-Date: 2019-09-08 18:24+0000\n"
+"Last-Translator: Abraham Roman <abrahiv666@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.9-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -167,7 +167,7 @@ msgstr "Apagar"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr "Alerta"
+msgstr "Advertencia"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""

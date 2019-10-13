@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2018-04-01 14:38+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2019-10-14 11:52+0000\n"
+"Last-Translator: Abhay Patel <abhay111patel@gmail.com>\n"
 "Language-Team: Hindi <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/hi/>\n"
 "Language: hi\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.9-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -36,89 +36,87 @@ msgstr "सत्र सूची से लाँगआउट मद को ह
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr ""
+msgstr "ऐसा करता है ताकि लॉगाउट बटन सेशॅन मेन्यू में ना दिखाई दे।"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "सत्र सूची से पुनःआरंभ मद को हटा दें"
+msgstr "सेशॅन मेन्यू से रीस्टार्ट आईटम हटा दें।"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr ""
+msgstr "ऐसा करता है ताकि लॉगाउट बटन सेशॅन मेन्यू में ना दिखाई दे।"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "सत्र सूची से बंद करे मद को हटा दें"
+msgstr "सेशॅन मेन्यू से शट-डाउन आईटम को हटा दें।"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr ""
+msgstr "ऐसा करता है ताकि शट-डाउन बटन सेशॅन मेन्यू में ना दिखाई दे।"
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "सिस्टम, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "सिस्टम"
 
 #: ../src/service.c:325
 msgid "Guest"
-msgstr ""
+msgstr "मेहमान"
 
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s डेस्कटॉप सहायता"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s सहायता"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "इस कम्पयूटर के बारे में"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "प्रोग्राम की त्रुटि की जानकारी दे…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
-msgstr ""
+msgstr "सिस्टम सेटिंग्स…"
 
 #: ../src/service.c:364
 msgid "Online Accounts…"
-msgstr ""
+msgstr "ओनलाइन खाते…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "स्क्रीन सेवर शुरू करें"
 
 #: ../src/service.c:575 ../src/service.c:591
 msgid "Switch Account…"
-msgstr ""
+msgstr "अकाउन्ट बदलें…"
 
 #: ../src/service.c:576 ../src/service.c:592
 msgid "Switch Account"
-msgstr ""
+msgstr "अकाउन्ट बदलें"
 
 #: ../src/service.c:588
 msgid "Lock/Switch Account…"
-msgstr ""
+msgstr "अकाउन्ट लॉक करें/बदलें…"
 
 #: ../src/service.c:589
 msgid "Lock/Switch Account"
-msgstr ""
+msgstr "अकाउन्ट लॉक करें/बदलें"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "लॉक"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -126,7 +124,7 @@ msgstr "अतिथि सत्र"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "सत्रांत करें…"
+msgstr "लॉगआउट करें…"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
@@ -135,11 +133,11 @@ msgstr "लॉगआउट करें"
 
 #: ../src/service.c:715
 msgid "Suspend"
-msgstr "स्थगित"
+msgstr "स्थगित करें"
 
 #: ../src/service.c:718
 msgid "Hibernate"
-msgstr "सुप्तावस्था"
+msgstr "सुप्तावस्था करें"
 
 #: ../src/service.c:723
 msgid "Restart…"
@@ -164,7 +162,7 @@ msgstr "बंद करें"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "चेतावनी"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -174,30 +172,36 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"ओपरेटिंग सिस्टम के बग ट्रैकर को वेब ब्राउज़र द्वारा पहुंचे जाने कि जरूरत होती।"
+"\n"
+"Ayatana सेशन इंडिकेटर आपके कंप्यूटर पर कोई भी वेब ब्राउज़र नहीं मिला।"
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "क्या आप अपने सभी कार्यक्रमों को बंद करने तथा कम्प्यूटर से लाँगआउट होना चाहते है?"
+msgstr ""
+"क्या आप अपने सभी कार्यक्रमों को बंद करना तथा कम्प्यूटर से लाँगआउट करना चाहते "
+"है?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
-msgstr "जब तक कम्य्पूटर पुनः चालू नहीं होता कुछ साँफ्टवेयर अद्यतन लागू नहीं होगा."
+msgstr ""
+"जब तक कम्य्पूटर रीस्टार्ट नहीं होता तब तक  कुछ सॉफ्टवेयर उपडटेस लागू नहीं "
+"होंगे।"
 
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
 #: ../src/backend-dbus/actions.c:976
 msgid "Cancel"
-msgstr "रद्द"
+msgstr "रद्द करें"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr "क्या आप अपने सभी कार्यक्रमों को बंद करने तथा कम्प्यूटर को पुनःप्रांरभ करना चाहते है?"
+msgstr ""
+"क्या आप अपने सभी कार्यक्रमों को बंद कर कम्प्यूटर को रीस्टार्ट करना चाहते है?"
 
 #: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr "क्या आप अपने सभी कार्यक्रमों को बंद करने तथा कम्प्यूटर को बंद करना चाहते है?"
+msgstr "क्या आप अपने सभी कार्यक्रमों को बंद कर कम्प्यूटर को बंद करना चाहते है?"
 
 #: ../src/backend-dbus/actions.c:1039
 msgid ""
@@ -207,6 +211,8 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"XFCE डेक्सटॉप के यूजर गाइड को वेब ब्राउज़र द्वारा खोलने कि जरूरत है।\n"
+"Ayatana सेशन इंडिकेटर आपके कंप्यूटर पर कोई भी वेब ब्राउज़र नहीं ढूंढ पाया।"
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -216,6 +222,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana सेशन इंडिकेटर अभी तक नहीं जनता कि,\n"
+"अभी चल रहे डेक्सटॉप के यूजर गाइड या हेल्प सेंटर को कैसे दिखाए।\n"
+"\n"
+"कृपया डेवेलपर्स को यहाँ पर इसकी जानकारी दें:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -226,6 +237,9 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"%s पर जानकारी दिखाने के लिए एक वेब ब्राउज़र की जरूरत है।\n"
+"\n"
+"Ayatana सेशन इंडिकेटर आपके कंप्यूटर पर कोई भी वेब ब्राउज़र नहीं ढूंढ़ पाया।"
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -235,6 +249,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana सेशन इंडिकेटर सिस्टम सेटिंग्स एप्लीकेशन को आपके डेक्सटॉप एनवायरनमेंट "
+"पर evoke करना अभी तक सपोर्ट नहीं करता है।\n"
+"\n"
+"कृपया डेवेलपर्स को इसके बारे में यहाँ पर जानकारी दें:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -244,6 +263,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana सेशन इंडिकेटर अभी तक आपके डेक्सटॉप एनवायरनमेंट के लिए पासवर्ड चेंज "
+"स्पोर्ट नहीं करता है।\n"
+"\n"
+"कृपया डेवेलपर्स को इसके बारे मे यहाँ पर जानकारी दें:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -253,6 +277,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana सेशन इंडिकेटर अभी तक नहीं जानता कि अभी चल रहे डेक्सटॉप एनवायरनमेंट की"
+" जानकारी कैसे दे।\n"
+"\n"
+"कृपया डेवेलपर्स को इसके बारे मे यहाँ पर जानकारी दें:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Lock Screen"
 #~ msgstr "स्क्रीन पर ताला लगाएँ"

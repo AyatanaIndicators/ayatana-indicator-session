@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2019-11-15 16:04+0000\n"
-"Last-Translator: winqooq <winqooq@gmail.com>\n"
+"PO-Revision-Date: 2019-11-24 17:04+0000\n"
+"Last-Translator: Niara <kitekatkek@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/ru/>\n"
 "Language: ru\n"
@@ -169,7 +169,6 @@ msgid "Warning"
 msgstr "Предупреждение"
 
 #: ../src/backend-dbus/actions.c:802
-#, fuzzy
 msgid ""
 "The operating system's bug tracker needs to be accessed with\n"
 "a web browser.\n"
@@ -181,7 +180,7 @@ msgstr ""
 "веб-браузера.\n"
 "\n"
 "Индикатор сеанса Ayatana не мог найти\n"
-"веб-браузера на вашем компьютере."
+"веб-браузер на вашем компьютере."
 
 #: ../src/backend-dbus/actions.c:889
 msgid "Are you sure you want to close all programs and log out?"
@@ -208,7 +207,6 @@ msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr "Вы действительно хотите закрыть все приложения и выключить компьютер?"
 
 #: ../src/backend-dbus/actions.c:1039
-#, fuzzy
 msgid ""
 "The XFCE desktop's user guide needs to be accessed with\n"
 "a web browser.\n"
@@ -220,11 +218,10 @@ msgstr ""
 "через\n"
 "веб-браузер.\n"
 "\n"
-"Индикатор сеанса Ayatana не мог найти\n"
-"веб-браузера на вашем компьютере."
+"Индикатор сеанса Ayatana не смог найти\n"
+"веб-браузер на вашем компьютере."
 
 #: ../src/backend-dbus/actions.c:1044
-#, fuzzy
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -233,13 +230,13 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 "Индикатор сессий Ayatana пока не знает, как показать\n"
-"информацию о запущенной среде рабочего стола.\n"
+"запущенное на рабочем столе руководство пользователя или центр поддержки. \n"
 "\n"
 "Пожалуйста, сообщите об этом разработчикам на:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
-#, c-format, fuzzy
+#, c-format
 msgid ""
 "Displaying information on %s  requires\n"
 "a web browser.\n"
@@ -251,7 +248,7 @@ msgstr ""
 "веб-браузера.\n"
 "\n"
 "Индикатор сеанса Ayatana не смог найти\n"
-"веб-браузера на вашем компьютере."
+"веб-браузер на вашем компьютере."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""

@@ -1,6 +1,175 @@
-2018-08-21 17:28:08 +0200 Mike Gabriel (ccc827b)
+2019-11-27 09:51:18 +0100 Mike Gabriel
 
-	* release 0.4.3 (HEAD -> master, tag: 0.4.3)
+	* release 0.4.4 (HEAD -> master, tag: 0.4.4)
+
+2019-11-23 16:54:32 +0000 Niara (2a28317)
+
+	* Translated using Weblate (Russian)
+
+2019-11-14 15:39:35 +0000 winqooq (372ec8f)
+
+	* Translated using Weblate (Russian)
+
+2019-10-30 14:06:40 +0000 Marcela Korreshi (6bd9498)
+
+	* Translated using Weblate (Albanian)
+
+2019-10-13 08:53:29 +0000 Abhay Patel (bbf2a46)
+
+	* Translated using Weblate (Hindi)
+
+2019-10-07 16:50:07 +0000 Mateusz Rumiński (ff26296)
+
+	* Translated using Weblate (Polish)
+
+2019-09-07 18:00:29 +0000 Abraham Roman (c6643f8)
+
+	* Translated using Weblate (Spanish)
+
+2019-09-02 19:50:49 +0000 Swann Martinet (633600b)
+
+	* Translated using Weblate (French)
+
+2019-09-01 19:02:17 +0000 Moo (7d16fd9)
+
+	* Translated using Weblate (Lithuanian)
+
+2019-08-29 10:16:11 +0000 Anders Jonsson (35b7335)
+
+	* Translated using Weblate (Swedish)
+
+2019-08-28 18:52:34 +0000 Heimen Stoffels (0478177)
+
+	* Translated using Weblate (Dutch)
+
+2019-08-29 05:55:09 +0000 Mike Gabriel (167a399)
+
+	* Translated using Weblate (German)
+
+2019-08-28 20:20:11 +0200 Mike Gabriel (5de79be)
+
+	* update locale files
+
+2019-08-27 11:22:44 +0000 leela (679bb8a)
+
+	* Translated using Weblate (Burmese)
+
+2019-08-27 11:21:11 +0000 leela (2df6eed)
+
+	* Translated using Weblate (Kazakh)
+
+2019-08-27 11:24:26 +0000 leela (679c6b9)
+
+	* Translated using Weblate (Malayalam)
+
+2019-08-27 11:23:53 +0000 leela (2917093)
+
+	* Translated using Weblate (Tibetan)
+
+2019-08-28 11:05:47 +0200 Mike Gabriel (db6033d)
+
+	* Merge branch 'leela52452-master'
+
+2019-08-25 07:03:54 +0000 leela (8d39b02)
+
+	* Translated using Weblate (Telugu)
+
+2019-08-28 08:55:42 +0000 leela (a6ece3f)
+
+	* add trailing stop "Remove the... session menu"
+
+2019-08-28 08:53:08 +0000 leela (b41e846)
+
+	* add trailing stop "Remove the... session menu"
+
+2019-08-25 07:03:54 +0000 leela (bbb6fff)
+
+	* Translated using Weblate (Telugu)
+
+2019-07-22 21:33:19 +0000 Pierre Soubourou (d3282c0)
+
+	* Translated using Weblate (Esperanto)
+
+2019-07-10 09:18:37 +0000 naltul opsu (8f21b93)
+
+	* Translated using Weblate (Russian)
+
+2019-07-01 19:55:20 +0000 Elizabeth Sherrock (95ef362)
+
+	* Translated using Weblate (Chinese (Simplified))
+
+2019-06-28 14:47:54 +0000 Patrick Heijmann (0c22bb1)
+
+	* Translated using Weblate (Dutch)
+
+2019-05-18 13:39:35 +0000 THANOS SIOURDAKIS (609133a)
+
+	* Translated using Weblate (Greek)
+
+2019-04-17 14:54:58 +0000 Rui Mendes (06ebdfe)
+
+	* Translated using Weblate (Portuguese)
+
+2019-03-25 14:40:48 +0000 Ido Dana (d1306cb)
+
+	* Translated using Weblate (Hebrew)
+
+2019-01-26 08:36:58 +0000 ssantos (27d84bc)
+
+	* Translated using Weblate (Portuguese)
+
+2019-01-11 11:00:06 +0000 Louies (ded7ad4)
+
+	* Translated using Weblate (Chinese (Traditional))
+
+2018-11-28 11:28:56 +0000 Mesut Akcan (4c3762a)
+
+	* Translated using Weblate (Turkish)
+
+2018-11-18 21:03:35 +0000 ssantos (eebc2ec)
+
+	* Translated using Weblate (Portuguese)
+
+2018-10-23 17:02:11 +0000 Iván Seoane (ebd3048)
+
+	* Translated using Weblate (Galician)
+
+2018-09-29 15:19:25 +0000 Володимир Бриняк (fae733a)
+
+	* Translated using Weblate (Ukrainian)
+
+2018-09-27 14:33:39 +0000 Володимир Бриняк (f700c61)
+
+	* Translated using Weblate (Ukrainian)
+
+2018-09-27 04:16:10 +0000 Pavel Borecki (f5255f7)
+
+	* Translated using Weblate (Czech)
+
+2018-08-31 15:58:25 +0000 WaldiS (d484288)
+
+	* Translated using Weblate (Polish)
+
+2018-08-29 21:25:38 +0000 WaldiS (8410e6c)
+
+	* Translated using Weblate (Polish)
+
+2018-08-25 15:54:07 +0000 WaldiS (02a6bf8)
+
+	* Translated using Weblate (Polish)
+
+2018-08-23 17:26:47 +0000 WaldiS (adc49be)
+
+	* Translated using Weblate (Polish)
+
+2018-11-16 08:44:05 +0100 Mike Gabriel (4e68b4a)
+
+	* debian/control: Add B/R for indicator-session. The packages
+          a-i-session and i-session share the same artwork files.
+
+2018-08-21 17:28:08 +0200 Mike Gabriel (70f8d93)
+
+	* release 0.4.3 (tag: 0.4.3)
 
 2018-07-29 01:31:49 +0000 chrismeurer (19e273b)
 

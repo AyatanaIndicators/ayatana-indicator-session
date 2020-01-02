@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2018-04-01 14:36+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/hr/>\n"
+"PO-Revision-Date: 2020-01-04 00:21+0000\n"
+"Last-Translator: Milo Ivir <mail@milotype.de>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/hr/>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.10\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -42,18 +42,16 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Skriva tipku odjave u izborniku prijave."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Ukloni tipku za ponovo pokretanje iz izbornika prijave"
+msgstr "Ukloni tipku za ponovno pokretanje iz izbornika sesije."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Skriva tipku ponovnog pokretanja u izborniku prijave."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Ukloni tipku za isključivanje iz izbornika prijave"
+msgstr "Ukloni tipku za isključivanje iz izbornika sesije."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
@@ -63,11 +61,11 @@ msgstr "Skriva tipku isključivanja u izborniku prijave."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Sustav, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Sustav"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -76,64 +74,60 @@ msgstr "Gost"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s pomoć za radnu površinu"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s pomoć"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "O ovom računalu"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Prijavi grešku …"
 
 #: ../src/service.c:362
 msgid "System Settings…"
-msgstr "Postavke sustava…"
+msgstr "Postavke sustava …"
 
 #: ../src/service.c:364
 msgid "Online Accounts…"
-msgstr "Online računi…"
+msgstr "Internetski računi …"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Pokreni zaštitu ekrana"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Promjena korisničkog računa..."
+msgstr "Promijeni račun …"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "Promjena korisničkog računa..."
+msgstr "Promijeni račun"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Promjena korisničkog računa..."
+msgstr "Zaključaj/promijeni račun …"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Promjena korisničkog računa..."
+msgstr "Zaključaj/promijeni račun"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Zaključaj"
 
 #: ../src/service.c:620
 msgid "Guest Session"
-msgstr "Prijava gosta"
+msgstr "Sesija gosta"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "Odjava…"
+msgstr "Odjava …"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
@@ -142,36 +136,36 @@ msgstr "Odjava"
 
 #: ../src/service.c:715
 msgid "Suspend"
-msgstr "Suspenzija"
+msgstr "Odgodi"
 
 #: ../src/service.c:718
 msgid "Hibernate"
-msgstr "Hibernacija"
+msgstr "Zamrzni"
 
 #: ../src/service.c:723
 msgid "Restart…"
-msgstr "Ponovno pokretanje…"
+msgstr "Pokreni ponovo …"
 
 #: ../src/service.c:723 ../src/backend-dbus/actions.c:936
 #: ../src/backend-dbus/actions.c:938
 msgid "Restart"
-msgstr "Ponovno pokretanje"
+msgstr "Pokreni ponovo"
 
 #: ../src/service.c:730
 msgid "Shut Down…"
-msgstr "Isključivanje…"
+msgstr "Isključi …"
 
 #: ../src/service.c:730 ../src/backend-dbus/actions.c:973
 #: ../src/backend-dbus/actions.c:975
 msgid "Shut Down"
-msgstr "Isključivanje"
+msgstr "Isključi"
 
 #: ../src/backend-dbus/actions.c:801 ../src/backend-dbus/actions.c:1038
 #: ../src/backend-dbus/actions.c:1043 ../src/backend-dbus/actions.c:1059
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Upozorenje"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -181,33 +175,34 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Programu za praćenje grešaka operacijskog sustava treba pristupiti s\n"
+"web-preglednikom.\n"
+"\n"
+"Ayatanov indikator sesije nije mogao pronaći niti jednog\n"
+"web-preglednika na računalu."
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "Jeste li sigurni da želite zatvoriti sve programe i odjaviti se?"
+msgstr "Sigurno želiš zatvoriti sve programe i odjaviti se?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
-msgstr "Neke dopune se neće primijeniti dok se računalo ponovno ne pokrene."
+msgstr ""
+"Neke nadogradnje se neće primijeniti sve dok se računalo ponovo ne pokrene."
 
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
 #: ../src/backend-dbus/actions.c:976
 msgid "Cancel"
-msgstr "Otkaži"
+msgstr "Odustani"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr ""
-"Jeste li sigurni da želite zatvoriti sve programe i ponovno pokrenuti "
-"računalo?"
+msgstr "Sigurno želiš zatvoriti sve programe i ponovo pokrenuti računalo?"
 
 #: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr ""
-"Jeste li sigurni da želite zatvoriti sve programe i isključiti računalo?"
+msgstr "Sigurno želiš zatvoriti sve programe i isključiti računalo?"
 
 #: ../src/backend-dbus/actions.c:1039
 msgid ""
@@ -217,6 +212,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Korisničkom priručniku XFCE radne površine treba pristupiti s\n"
+"web-preglednikom.\n"
+"\n"
+"Ayatanov indikator sesije nije mogao pronaći niti jednog\n"
+"web-preglednika na računalu."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -226,6 +226,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatanov indikator sesije još ne zna, kako prikazati korisnički\n"
+"priručnik ili centar pomoći trenutačno pokrenutog okruženja.\n"
+"\n"
+"Prijavi ovo razvijateljima:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -236,6 +241,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Za prikaz informacija na %s potreban je\n"
+"web-preglednik.\n"
+"\n"
+"Ayatanov indikator sesije nije mogao pronaći niti jednog\n"
+"web-preglednika na računalu."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -245,6 +255,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatanov indikator sesije ne podržava pokretanje programa za\n"
+"postavke sustava tvog okruženja – još ne.\n"
+"\n"
+"Prijavi ovo razvijateljima:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -254,6 +269,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatanov indikator sesije ne podržava mijenjanje lozinke\n"
+"za tvoje okruženje – još ne.\n"
+"\n"
+"Prijavi ovo razvijateljima:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -263,6 +283,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatanov indikator sesije još ne zna, kako prikazati informacije\n"
+"trenutačno pokrenutog okruženja.\n"
+"\n"
+"Prijavi ovo razvijateljima:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Klasična prijava gosta"

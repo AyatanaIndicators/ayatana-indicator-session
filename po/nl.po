@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2019-08-29 05:57+0000\n"
+"PO-Revision-Date: 2020-01-20 13:21+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/nl/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9-dev\n"
+"X-Generator: Weblate 3.11-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -35,12 +35,12 @@ msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "De knop Afmelden verbergen in het sessiemenu"
+msgstr "De knop 'Afmelden' verbergen in het sessiemenu"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
-"Zorgt ervoor dat de knop Afmelden niet wordt getoond in het sessiemenu."
+"Zorgt ervoor dat de knop 'Afmelden' niet wordt getoond in het sessiemenu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu."
@@ -49,7 +49,7 @@ msgstr "De knop 'Herstarten' verbergen in het sessiemenu."
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
-"Zorgt ervoor dat de knop Herstarten niet wordt getoond in het sessiemenu."
+"Zorgt ervoor dat de knop 'Herstarten' niet wordt getoond in het sessiemenu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu."
@@ -58,7 +58,7 @@ msgstr "De knop 'Afsluiten' verbergen in het sessiemenu."
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
-"Zorgt ervoor dat de knop Uitschakelen niet wordt getoond in het sessiemenu."
+"Zorgt ervoor dat de knop 'Uitschakelen' niet wordt getoond in het sessiemenu."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
@@ -77,12 +77,12 @@ msgstr "Gast"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr "%s Werkomgevingsondersteuning"
+msgstr "%s-werkomgevingsondersteuning"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr "%s Help"
+msgstr "%s-hulp"
 
 #: ../src/service.c:346
 msgid "About This Computer"
@@ -90,7 +90,7 @@ msgstr "Over deze computer"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr "Rapporteer een bug…"
+msgstr "Meld een bug…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -98,11 +98,11 @@ msgstr "Systeeminstellingen…"
 
 #: ../src/service.c:364
 msgid "Online Accounts…"
-msgstr "Online accounts…"
+msgstr "Online-accounts…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr "Screensaver starten"
+msgstr "Schermbeveiliging starten"
 
 #: ../src/service.c:575 ../src/service.c:591
 msgid "Switch Account…"
@@ -114,7 +114,7 @@ msgstr "Schakel over naar een andere gebruiker"
 
 #: ../src/service.c:588
 msgid "Lock/Switch Account…"
-msgstr "Account vergrendelen/wisselen…"
+msgstr "Vergrendelen/Ander account…"
 
 #: ../src/service.c:589
 msgid "Lock/Switch Account"
@@ -122,7 +122,7 @@ msgstr "Vergrendelen/Ander account"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr "Vergrendel"
+msgstr "Vergrendelen"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -130,12 +130,12 @@ msgstr "Gastsessie"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "Uitloggen…"
+msgstr "Afmelden…"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
 msgid "Log Out"
-msgstr "Uitloggen"
+msgstr "Afmelden"
 
 #: ../src/service.c:715
 msgid "Suspend"
@@ -178,7 +178,7 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
-"De bugtracker moet worden gekoppeld aan een\n"
+"De bugtracker moet worden geopend in een\n"
 "webbrowser.\n"
 "\n"
 "De Ayatana-sessie-indicator heeft geen webbrowser\n"
@@ -202,13 +202,13 @@ msgstr "Annuleren"
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr ""
-"Weet u zeker dat u alle programma's wilt afsluiten en de computer wilt "
+"Weet je zeker dat je alle toepassingen wilt afsluiten en de computer wilt "
 "herstarten?"
 
 #: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
-"Weet u zeker dat u alle programma's wilt afsluiten en de computer wilt "
+"Weet je zeker dat je alle toepassingen wilt afsluiten en de computer wilt "
 "uitzetten?"
 
 #: ../src/backend-dbus/actions.c:1039
@@ -219,6 +219,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"De Xfce-gebruikershandleiding kan alleen worden gelezen in\n"
+"een webbrowser.\n"
+"\n"
+"De Ayatana-sessie-indicator heeft geen webbrowser aangetroffen\n"
+"op je computer."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -228,6 +233,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"De Ayatana-sessie-indicator weet nog niet hoe het de gebruikershand-\n"
+"leiding of het hulpcentrum van de huidige werkomgeving moet tonen.\n"
+"\n"
+"Meld dit aan de ontwikkelaars:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -238,6 +248,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"%s kan alleen worden getoond in\n"
+"een webbrowser.\n"
+"\n"
+"De Ayatana-sessie-indicator heeft geen webbrowser aangetroffen\n"
+"op je computer."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -247,6 +262,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"De Ayatana-sessie-indicator weet nog niet hoe het de systeem-\n"
+"instellingen van je werkomgeving moet openen.\n"
+"\n"
+"Meld dit aan de ontwikkelaars:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -256,6 +276,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"De Ayatana-sessie-indicator weet nog niet hoe het het wacht-\n"
+"woord van de huidige werkomgeving moet wijzigen.\n"
+"\n"
+"Meld dit aan de ontwikkelaars:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -265,6 +290,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"De Ayatana-sessie-indicator weet nog niet hoe het de informatie\n"
+"van de huidige werkomgeving moet tonen.\n"
+"\n"
+"Meld dit aan de ontwikkelaars:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Klassieke gastsessie"

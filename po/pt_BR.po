@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2018-07-30 01:41+0000\n"
-"Last-Translator: chrismeurer <christianmeurer@outlook.com>\n"
+"PO-Revision-Date: 2020-02-26 17:33+0000\n"
+"Last-Translator: Wellington Terumi Uemura <wellingtonuemura@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,14 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.1.1\n"
+"X-Generator: Weblate 4.0-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Não pedir confirmação ao encerrar a sessão, reiniciar ou desligar o "
-"computador."
+"computador"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
@@ -43,18 +43,16 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Faz com que o botão sair não seja mostrado no menu sessão."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Remover o item Reiniciar do menu de sessão"
+msgstr "Remover o item Reiniciar do menu da sessão."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Faz com que o botão de reiniciar não seja mostrado no menu sessão."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Remover o item Desligar do menu de sessão"
+msgstr "Remova o item de desligamento do menu da sessão."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
@@ -64,11 +62,11 @@ msgstr "Faz com que o botão de desligar não seja mostrado no menu sessão."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Sistema, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -77,12 +75,12 @@ msgstr "Convidado"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s Ajuda da Área de Trabalho"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s Ajuda"
 
 #: ../src/service.c:346
 msgid "About This Computer"
@@ -113,18 +111,16 @@ msgid "Switch Account"
 msgstr "Alterar Conta"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Alternar conta de usuário..."
+msgstr "Bloquear/Alternar Conta…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Alternar conta de usuário..."
+msgstr "Bloquear/Alternar Conta"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Bloqueio"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -170,7 +166,7 @@ msgstr "Desligar"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Aviso"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -180,21 +176,23 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"O rastreador de bugs do sistema operacional precisa ser acessado com\n"
+"um navegador da Web.\n"
+"\n"
+"O Indicador de Sessão Ayatana não conseguiu encontrar nenhum\n"
+"navegador web em seu computador."
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr ""
-"Você tem certeza de que deseja fechar todos os programas e encerrar esta "
-"sessão?"
+"Você tem certeza que deseja fechar todos os programas e encerrar esta sessão?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"Algumas atualizações de software não serão aplicadas até que o computador "
-"seja reiniciado."
+"Algumas atualizações de software não serão aplicadas até a próxima "
+"reinicialização."
 
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
 #: ../src/backend-dbus/actions.c:976
@@ -221,6 +219,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"O guia de usuário do desktop XFCE precisa ser acessado com\n"
+"um navegador da Web.\n"
+"\n"
+"O Indicador de Sessão Ayatana não conseguiu encontrar nenhuma\n"
+"navegador web em seu computador."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -230,6 +233,12 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"O Indicador de Sessão Ayatana ainda não sabe exatamente como exibir\n"
+"o centro de ajuda da área de trabalho ou o centro de ajuda que estão em "
+"execução.\n"
+"\n"
+"Por favor, relate o problema aos desenvolvedores em:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -240,6 +249,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Exibindo informações sobre %s requer\n"
+"um navegador da web.\n"
+"\n"
+"O Indicador de Sessão Ayatana não conseguiu encontrar nenhum\n"
+"navegador web em seu computador."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -249,6 +263,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"O Indicador de Sessão Ayatana ainda não suporta evocar o sistema\n"
+"configurações de aplicação para o seu ambiente de área de trabalho.\n"
+"\n"
+"Por favor, relate o problema aos desenvolvedores em:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -258,6 +277,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"O Indicador de Sessão Ayatana ainda não suporta mudanças de senha\n"
+"para o seu ambiente de área de trabalho.\n"
+"\n"
+"Por favor, relate isto aos desenvolvedores no:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -267,6 +291,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"O Indicador de Sessão Ayatana ainda não sabe como exibir\n"
+"a informação do ambiente de trabalho atualmente em execução.\n"
+"\n"
+"Por favor, relate o problemas aos desenvolvedores no:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Sessão clássica de convidado"

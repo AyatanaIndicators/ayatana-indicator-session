@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2019-09-08 18:24+0000\n"
-"Last-Translator: Abraham Roman <abrahiv666@gmail.com>\n"
+"PO-Revision-Date: 2020-04-01 03:15+0000\n"
+"Last-Translator: Johntini <ekardian@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/es/>\n"
 "Language: es\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -42,18 +42,16 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Hace que el botón de cerrar sesión no aparezca en el menú de sesión."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Quitar la opción «Reiniciar» del menú de sesión"
+msgstr "Remover el item de reinicio del menú de sesión."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Hace que el botón de reiniciar no aparezca en el menú de sesión."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Quitar la opción «Apagar» del menú de sesión"
+msgstr "Remover el item de apagado del menú de sesión."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."

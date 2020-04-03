@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2018-04-01 11:35+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Catalan <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/ca/>\n"
+"PO-Revision-Date: 2020-04-03 18:21+0000\n"
+"Last-Translator: raimon ribal <raimon.ribal@gmail.com>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -39,7 +39,7 @@ msgstr "Oculta l'opció de sortida de la sessió del menú de sessió"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr ""
+msgstr "Fa que el botó de desconnexió no aparegui al menú de sessió."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 #, fuzzy

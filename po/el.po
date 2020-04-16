@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2019-05-19 14:48+0000\n"
-"Last-Translator: THANOS SIOURDAKIS <siourdakisthanos@gmail.com>\n"
+"PO-Revision-Date: 2020-04-17 16:11+0000\n"
+"Last-Translator: george k <norhorn@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/el/>\n"
 "Language: el\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.7-dev\n"
+"X-Generator: Weblate 4.0.1-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -40,25 +40,23 @@ msgstr "Αφαίρεση καταχώρισης αποσύνδεσης από τ
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr ""
+msgstr "Tο κουμπί αποσύνδεσης δεν εμφανίζεται στο μενού σύνδεσης."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Αφαίρεση της επανεκκίνησης από το μενού συνεδρίας"
+msgstr "Αφαίρεση της επιλογής επανεκκίνησης από το μενού σύνδεσης."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr ""
+msgstr "Το κουμπί επανεκκίνησης να μην εμφανίζεται στο μενού σύνδεσης."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Αφαίρεση του τερματισμού από το μενού συνεδρίας"
+msgstr "Αφαίρεση της επιλογής τερματισμού από το μενού σύνδεσης."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr ""
+msgstr "Το κουμπί τερματισμού λειτουργίας δεν εμφανίζεται στο μενού σύνδεσης."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187

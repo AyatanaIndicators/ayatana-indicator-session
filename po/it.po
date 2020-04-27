@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-01-26 13:21+0000\n"
-"Last-Translator: Emiliano Gabriele <emilianog1989@gmail.com>\n"
+"PO-Revision-Date: 2020-04-28 11:11+0000\n"
+"Last-Translator: Jeannette L <j.lavoie@net-c.ca>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/it/>\n"
 "Language: it\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 4.0.2\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -57,7 +57,7 @@ msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu."
-msgstr "Rimuove la voce \"Arresta\" dal menu della sessione."
+msgstr "Rimuove la voce \"Arresta\" dal menù della sessione."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
@@ -95,7 +95,7 @@ msgstr "Informazioni sul sistema"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr "Segnala un Bug…"
+msgstr "Segnala un errore…"
 
 #: ../src/service.c:362
 msgid "System Settings…"

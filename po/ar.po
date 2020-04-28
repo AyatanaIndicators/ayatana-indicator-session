@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-04-03 18:21+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2020-04-29 13:11+0000\n"
+"Last-Translator: Mohammed Abd ElFattah Darwesh "
+"<mohammedabdelfattahdarwesh@gmail.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/ar/>\n"
 "Language: ar\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.0.2\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -57,9 +58,9 @@ msgstr "أحفي زر إيقاف التشغيل من قائمة الجلسة."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
-#, c-format, fuzzy
+#, c-format
 msgid "System, %s"
-msgstr "%s ,النظام"
+msgstr "النظام ،٪ s"
 
 #: ../src/service.c:191
 msgid "System"
@@ -214,7 +215,6 @@ msgstr ""
 "متصفح انتلانت على جهاز الكمبيوتر الخاص بك."
 
 #: ../src/backend-dbus/actions.c:1044
-#, fuzzy
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -222,6 +222,9 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"لا يعرف مؤشر جلسة Ayatana بعد ، كيف يظهر\n"
+"دليل مستخدم سطح المكتب أو مركز المساعدة قيد التشغيل حاليًا.\n"
+"\n"
 "يرجى إبلاغ المطورين بهذا على:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
@@ -247,6 +250,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"لا يدعم مؤشر جلسة Ayatana استحضار النظام\n"
+"تطبيق الإعدادات لبيئة سطح المكتب ، حتى الآن.\n"
+"\n"
+"يرجى إبلاغ المطورين بهذا على:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -270,6 +278,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"لا يعرف مؤشر جلسة Ayatana بعد ، كيف يظهر\n"
+"معلومات عن بيئة سطح المكتب قيد التشغيل حاليًا.\n"
+"\n"
+"يرجى إبلاغ المطورين بهذا على:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Lock Screen"
 #~ msgstr "أوصِد الشاشة"

@@ -8,23 +8,23 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2018-06-09 03:44+0000\n"
-"Last-Translator: ۋولقان <nureliosman@gmail.com>\n"
-"Language-Team: Uyghur <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/ug/>\n"
+"PO-Revision-Date: 2020-05-10 11:12+0000\n"
+"Last-Translator: Abdusalam <1810010207@s.upc.edu.cn>\n"
+"Language-Team: Uyghur <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/ug/>\n"
 "Language: ug\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0\n"
+"X-Generator: Weblate 4.1-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
-"تىزىمدىن چىق، قايتا قوزغات ۋە تاقا مەشغۇلاتلارنى جەزمەلەشنى كۆرسىتىدىغان "
-"سۆزلەشكۈنى چەكلە"
+"چېكىنىش ، قايتا قوزغىتىش ۋە تاقاش ھەرىكىتىنى جەزملەشتۈرۈش ئۈچۈن دىئالوگنى "
+"بېسىڭ"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
@@ -43,9 +43,8 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "بۇنىڭ بىلەن چىقىش توپچىسى ئەڭگىمە تىزىملىكىدە كۆرۈنمەيدىغان بولىدۇ."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "session بۇيرۇق تىزىملىكىدىن قايتا قوزغاش دېگەن تۈرىنى ئۆچۈرۈش"
+msgstr "session بۇيرۇق تىزىملىكىدىن قايتا قوزغاش دېگەن تۈرىنى ئۆچۈرۈش."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
@@ -53,9 +52,8 @@ msgstr ""
 "بۇنىڭ بىلەن قايتا قوزغىتىش توپچىسى ئەڭگىمە تىزىملىكىدە كۆرۈنمەيدىغان بولىدۇ."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "session بۇيرۇق تىزىملىكىدىن shutdown دېگەن تۈرىنى ئۆچۈرۈش"
+msgstr "session بۇيرۇق تىزىملىكىدىن ئىتىش دېگەن تۈرىنى ئۆچۈرۈش."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
@@ -65,7 +63,7 @@ msgstr "بۇنىڭ بىلەن تاقاش توپچىسى ئەڭگىمە تىزى�
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "سىستېما ،%s"
 
 #: ../src/service.c:191
 msgid "System"
@@ -76,9 +74,9 @@ msgid "Guest"
 msgstr "مېھمان"
 
 #: ../src/service.c:343
-#, fuzzy, c-format
+#, c-format
 msgid "%s Desktop Help"
-msgstr "%s ئۈستەل ياردەم"
+msgstr "%s ئۈستەل يۈزى ياردىمى"
 
 #: ../src/service.c:344
 #, c-format
@@ -91,7 +89,7 @@ msgstr "بۇ كومپيۇتېر ھەققىدە"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "مەلۇم بىر خاتالىق…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -103,7 +101,7 @@ msgstr "توردىكى ھېساباتلار…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "ئېكران ساقلىغۇچىنى قوزغىتىڭ"
 
 #: ../src/service.c:575 ../src/service.c:591
 msgid "Switch Account…"
@@ -123,7 +121,7 @@ msgstr "ھېساباتىنى قۇلۇپلاش\\ئالماشتۇرۇش"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "قۇلۇپ"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -179,6 +177,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"مەشغۇلات سىستېمىسىنىڭ كەمتۈك ئىز قوغلىغۇچىسىنى زىيارەت قىلىش كېرەك\n"
+"توركۆرگۈ.\n"
+"\n"
+"ئاياتانا يىغىن كۆرسەتكۈچى ھېچقانداق تور تاپالمىدى\n"
+"كومپيۇتېرىڭىزدىكى توركۆرگۈ."
 
 #: ../src/backend-dbus/actions.c:889
 msgid "Are you sure you want to close all programs and log out?"
@@ -210,6 +213,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"XFCE ئۈستەل يۈزى ئىشلەتكۈچى قوللانمىسىنى زىيارەت قىلىش كېرەك\n"
+"توركۆرگۈ.\n"
+"\n"
+"ئاياتانا يىغىن كۆرسەتكۈچى ھېچقانداق تور تاپالمىدى\n"
+"كومپيۇتېرىڭىزدىكى توركۆرگۈ."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -219,6 +227,12 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"ئاياتانا يىغىن كۆرسەتكۈچى تېخى قانداق كۆرسىتىشنى بىلمەيدۇ\n"
+"ھازىر ئىجرا بولۇۋاتقان ئۈستەل يۈزى ئىشلەتكۈچى قوللانمىسى ياكى ياردەم مەركىزى."
+"\n"
+"\n"
+"بۇنى ئاچقۇچىلارغا دوكلات قىلىڭ:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -229,6 +243,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"%s دىكى ئۇچۇرلارنى كۆرسىتىش تەلەپ قىلىنىدۇ\n"
+"توركۆرگۈ.\n"
+"\n"
+"ئاياتانا يىغىن كۆرسەتكۈچى ھېچقانداق تور تاپالمىدى\n"
+"كومپيۇتېرىڭىزدىكى توركۆرگۈ."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -238,6 +257,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"ئاياتانا يىغىن كۆرسەتكۈچى سىستېمىنى قوزغىتىشنى قوللىمايدۇ\n"
+"ئۈستەل يۈزى مۇھىتى ئۈچۈن تەڭشەك قوللىنىشچان پروگراممىسى.\n"
+"\n"
+"بۇنى ئاچقۇچىلارغا دوكلات قىلىڭ:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -247,6 +271,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"ئاياتانا يىغىن كۆرسەتكۈچى پارول ئۆزگەرتىشنى قوللىمايدۇ\n"
+"ئۈستەل يۈزى مۇھىتى ئۈچۈن.\n"
+"\n"
+"بۇنى ئاچقۇچىلارغا دوكلات قىلىڭ:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -256,6 +285,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"ئاياتانا يىغىن كۆرسەتكۈچى تېخى قانداق كۆرسىتىشنى بىلمەيدۇ\n"
+"ھازىر ئىجرا بولۇۋاتقان ئۈستەل مۇھىتى ئۇچۇرى.\n"
+"\n"
+"بۇنى ئاچقۇچىلارغا دوكلات قىلىڭ:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "كلاسسىك مېھمان ئەڭگىمەسى"

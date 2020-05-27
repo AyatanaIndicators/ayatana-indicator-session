@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:20+0200\n"
-"PO-Revision-Date: 2020-05-25 05:41+0000\n"
+"PO-Revision-Date: 2020-05-28 01:41+0000\n"
 "Last-Translator: wdggg <wdggg7@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/zh_Hans/>\n"
@@ -39,18 +39,16 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "用它来隐藏会话菜单中的注销按钮。"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "移除会话菜单中的重启项"
+msgstr "移除会话菜单中的重启选项。"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "用它来隐藏会话菜单中的重启按钮。"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "移除会话菜单中的关机项"
+msgstr "移除会话菜单中的关机项。"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
@@ -60,11 +58,11 @@ msgstr "用它来隐藏会话菜单中的关机按钮。"
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "系统，%s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "系统"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -73,7 +71,7 @@ msgstr "访客"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s 桌面帮助"
 
 #: ../src/service.c:344
 #, c-format
@@ -82,11 +80,11 @@ msgstr "%s帮助"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "关于本机"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "报告bug…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -98,22 +96,19 @@ msgstr "在线账户…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "启动屏幕保护程序"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "切换用户帐号..."
+msgstr "切换用户帐号…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "切换用户帐号..."
+msgstr "切换用户帐号"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "切换用户帐号..."
+msgstr "锁定/切换用户帐号…"
 
 #: ../src/service.c:589
 msgid "Lock/Switch Account"
@@ -121,7 +116,7 @@ msgstr "切换用户帐号"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "锁定"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -177,14 +172,17 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"系统的bug追踪器需要访问\n"
+"您的浏览器。\n"
+"\n"
+"Ayatana菜单指示器无法检测到您电脑上的\n"
+"任何浏览器。"
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr "您确定要关闭所有程序并注销？"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr "一些软件更新要在计算机重启后生效。"
@@ -210,8 +208,14 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"XFCE桌面用户指南需要访问\n"
+"您的浏览器。\n"
+"\n"
+"Ayatana菜单指示器无法检测到您电脑上的\n"
+"任何浏览器。"
 
 #: ../src/backend-dbus/actions.c:1044
+#, fuzzy
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -219,9 +223,14 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana会话指示器尚不知道如何显示\n"
+"当前正在运行的桌面的用户指南或帮助中心。\n"
+"\n"
+"请将此问题反映给开发者：\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
-#, c-format
+#, c-format, fuzzy
 msgid ""
 "Displaying information on %s  requires\n"
 "a web browser.\n"
@@ -229,6 +238,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"在%s上显示信息需要\n"
+"使用浏览器。\n"
+"\n"
+"Ayatana菜单指示器无法检测到您电脑上的\n"
+"任何浏览器。"
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -238,8 +252,14 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana会话指示器暂不支持调用您的桌面环境\n"
+"的系统设置程序。\n"
+"\n"
+"请将此问题反映给开发者：\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
+#, fuzzy
 msgid ""
 "The Ayatana Session Indicator does not support password changes\n"
 "for your desktop environment, yet.\n"
@@ -247,6 +267,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana会话指示器暂不支持为您的桌面环境\n"
+"修改密码。\n"
+"\n"
+"请将此问题反映给开发者：\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -256,6 +281,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana会话指示器暂不清楚如何显示您当前运行的\n"
+"桌面环境的信息。\n"
+"\n"
+"请将此问题反映给开发者：\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "传统客人会话"

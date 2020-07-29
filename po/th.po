@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-07-29 08:41+0000\n"
-"Last-Translator: Google update 2020 <azura9999999999@gmail.com>\n"
+"PO-Revision-Date: 2020-07-30 21:41+0000\n"
+"Last-Translator: UnlimiTed Channel <spvled@gmail.com>\n"
 "Language-Team: Thai <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/th/>\n"
 "Language: th\n"
@@ -21,8 +21,10 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
+#, fuzzy
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
-msgstr "ไม่ต้องแสดงกล่องโต้ตอบยืนยันการออกจากระบบ เริ่มเปิดเครื่องใหม่ และปิดเครื่อง"
+msgstr ""
+"ไม่ต้องแสดงกล่องโต้ตอบยืนยันการออกจากระบบ เริ่มเปิดเครื่องใหม่ และปิดเครื่อง"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""

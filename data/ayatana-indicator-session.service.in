@@ -1,8 +1,11 @@
 [Unit]
 Description=Ayatana Indicator Session Service
 PartOf=graphical-session.target
-After=ayatana-indicators-pre.target
+After=ayatana-indicators.target
 
 [Service]
 ExecStart=@pkglibexecdir@/ayatana-indicator-session-service
 Restart=on-failure
+
+[Install]
+WantedBy=ayatana-indicators.target

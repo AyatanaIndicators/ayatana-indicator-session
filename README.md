@@ -15,7 +15,7 @@ https://wiki.ayatana-indicators.org/AyatanaIndicatorSession
 specification, both need four visual components: (1) an Active Session
 Mark, the user's (2) icon, (3) name, and (4) a Logged In Mark.
 
-### User menuitems have "x-canonical-type" set to "indicator.user-menu-item"
+### User menuitems have "x-ayatana-type" set to "indicator.user-menu-item"
 
    Their four visual components are determined by:
 
@@ -34,7 +34,7 @@ Mark, the user's (2) icon, (3) name, and (4) a Logged In Mark.
       an array of usernames. If the array contains the username in this
       menuitem's "target" attribute, show the Logged In Mark.
 
-### The Guest switcher has "x-canonical-type" set to "indicator.guest-menu-item" action
+### The Guest switcher has "x-ayatana-type" set to "indicator.guest-menu-item" action
 
    Its four visual components are determined by:
 

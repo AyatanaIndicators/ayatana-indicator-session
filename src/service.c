@@ -387,7 +387,7 @@ create_guest_switcher_state (IndicatorSessionService * self)
 }
 
 /**
- * The switch-to-user action's state is a dictionary with these entries: 
+ * The switch-to-user action's state is a dictionary with these entries:
  *  - "active-user" (username string)
  *  - "logged-in-users" (array of username strings)
  */
@@ -618,7 +618,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
       GMenuItem *item;
 
       item = g_menu_item_new (_("Guest Session"), "indicator.switch-to-guest");
-      g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.guest-menu-item");
+      g_menu_item_set_attribute (item, "x-ayatana-type", "s", "indicator.guest-menu-item");
       g_menu_append_item (menu, item);
 
       g_object_unref (item);
@@ -666,7 +666,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
 
       item = g_menu_item_new (label, NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
-      g_menu_item_set_attribute (item, "x-canonical-type", "s", "indicator.user-menu-item");
+      g_menu_item_set_attribute (item, "x-ayatana-type", "s", "indicator.user-menu-item");
 
       if ((serialized_icon = serialize_icon_file (u->icon_file)))
         {
@@ -717,14 +717,14 @@ create_session_section (IndicatorSessionService * self, int profile)
   if (indicator_session_actions_can_hibernate (p->backend_actions))
     g_menu_append (menu, _("Hibernate"), "indicator.hibernate");
 
-  if (profile != PROFILE_LOCKSCREEN && 
+  if (profile != PROFILE_LOCKSCREEN &&
     indicator_session_actions_can_reboot (p->backend_actions))
     {
       const char * label = ellipsis ? _("Restart…") : _("Restart");
       g_menu_append (menu, label, "indicator.reboot");
     }
 
-  if (profile != PROFILE_LOCKSCREEN && 
+  if (profile != PROFILE_LOCKSCREEN &&
     !g_settings_get_boolean (s, "suppress-shutdown-menuitem"))
     {
       const char * label = ellipsis ? _("Shut Down…") : _("Shut Down");
@@ -775,7 +775,7 @@ create_menu (IndicatorSessionService * self, int profile)
 
   /* add submenu to the header */
   header = g_menu_item_new (NULL, "indicator._header");
-  g_menu_item_set_attribute (header, "x-canonical-type", "s", "org.ayatana.indicator.root");
+  g_menu_item_set_attribute (header, "x-ayatana-type", "s", "org.ayatana.indicator.root");
   g_menu_item_set_submenu (header, G_MENU_MODEL (submenu));
   g_object_unref (submenu);
 
@@ -1281,13 +1281,13 @@ my_get_property (GObject     * o,
                   GParamSpec  * pspec)
 {
   IndicatorSessionService * self = INDICATOR_SESSION_SERVICE (o);
- 
+
   switch (property_id)
     {
       case PROP_MAX_USERS:
         g_value_set_uint (value, self->priv->max_users);
         break;
- 
+
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (o, property_id, pspec);
     }

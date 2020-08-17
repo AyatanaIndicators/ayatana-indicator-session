@@ -1,6 +1,201 @@
-2019-11-27 09:51:18 +0100 Mike Gabriel
+2020-08-17 22:41:05 +0200 Mike Gabriel
 
-	* release 0.4.4 (HEAD -> master, tag: 0.4.4)
+	* release 0.8.0 (HEAD -> master, tag: 0.8.0)
+
+2020-08-11 14:23:33 +0200 Mike Gabriel (1210932)
+
+	* Merge branch 'tari01-pr/replace-x-canonical-attributes'
+
+2020-08-11 11:40:17 +0200 Robert Tari (900c824)
+
+	* Replace x-canonical attributes
+
+2020-08-11 07:39:40 +0200 Robert Tari (6a989d2)
+
+	* Merge branch 'sunweaver-pr/drop-upstart-support' Attributes GH PR
+          #9:
+          https://github.com/AyatanaIndicators/ayatana-indicator-session/pull/9
+
+2020-08-10 10:28:03 +0000 Mike Gabriel (456ef4b)
+
+	* Drop all references to upstart.
+
+2020-08-10 08:56:27 +0200 Mike Gabriel (3e9ceaf)
+
+	* debian/ayatana-indicator-session.links: Add FIXME/reminder to drop
+          manual symlinking of systemd user service file once DH
+          compat level is raised to a level above 12.
+
+2020-08-09 22:12:27 +0200 Marius Gripsgard (ee4c1ca)
+
+	* Start indicator in systemd when ayatana-indicators.target is
+          started
+
+2020-08-06 20:57:33 +0000 Nazim-ua (9d29d50)
+
+	* Translated using Weblate (Ukrainian)
+
+2020-08-06 15:16:08 +0200 Mike Gabriel (ceeca05)
+
+	* debian/control: Drop B-D python. Not used (in cmake/GCov.cmake).
+
+2020-07-29 20:45:24 +0000 UnlimiTed Channel (b7a8a04)
+
+	* Translated using Weblate (Thai)
+
+2020-07-28 01:35:10 +0000 Google update 2020 (9c1406d)
+
+	* Translated using Weblate (Thai)
+
+2020-07-28 08:13:21 +0000 Kristjan Räts (65f5901)
+
+	* Translated using Weblate (Estonian)
+
+2020-07-24 12:32:26 +0200 Mike Gabriel (8b10622)
+
+	* CMakeLists.txt: Drop workaround for missing libexec dir on Debian.
+          Debian moved forward and now supports FHS 3.0 (since
+          Debian Policy 4.1.5).
+
+2020-07-07 00:16:36 +0000 Google update 2020 (b0e201c)
+
+	* Translated using Weblate (Thai)
+
+2020-06-14 04:25:57 +0000 MarongHappy (91d5b70)
+
+	* Translated using Weblate (Korean)
+
+2020-05-30 22:16:19 +0000 Juraj Liso (dcd2e4b)
+
+	* Translated using Weblate (Slovak)
+
+2020-05-27 00:53:23 +0000 wdggg (3851fde)
+
+	* Translated using Weblate (Chinese (Simplified))
+
+2020-05-24 05:37:27 +0000 wdggg (7586333)
+
+	* Translated using Weblate (Chinese (Simplified))
+
+2020-05-22 16:07:31 +0000 george k (168d599)
+
+	* Translated using Weblate (Greek)
+
+2020-05-11 22:55:54 +0000 rashed hasan (55faf2b)
+
+	* Translated using Weblate (Macedonian)
+
+2020-05-08 06:02:09 +0000 Abdusalam (4d04e44)
+
+	* Translated using Weblate (Uyghur)
+
+2020-05-09 03:47:39 +0000 iNetRoos (6a5cc02)
+
+	* Translated using Weblate (Afrikaans)
+
+2020-04-28 12:41:36 +0000 Mohammed Abd ElFattah Darwesh (493d224)
+
+	* Translated using Weblate (Arabic)
+
+2020-04-27 09:54:05 +0000 Jeannette L (817cf59)
+
+	* Translated using Weblate (Italian)
+
+2020-04-27 10:23:39 +0000 Jeannette L (1e8802d)
+
+	* Translated using Weblate (French (Canada))
+
+2020-04-27 10:34:25 +0000 Jeannette L (d4ac230)
+
+	* Translated using Weblate (Finnish)
+
+2020-04-27 09:28:06 +0000 Jeannette L (449ec4a)
+
+	* Translated using Weblate (English (United Kingdom))
+
+2020-04-27 09:39:34 +0000 Jeannette L (d467e8b)
+
+	* Translated using Weblate (English (Canada))
+
+2020-04-27 09:43:35 +0000 Jeannette L (ecbdbbc)
+
+	* Translated using Weblate (English (Australia))
+
+2020-04-16 15:55:34 +0000 george k (4b1399f)
+
+	* Translated using Weblate (Greek)
+
+2020-04-14 16:10:35 +0000 Barbul Gergő (d86511c)
+
+	* Translated using Weblate (Hungarian)
+
+2020-04-15 00:04:06 +0000 Jeannette L (eb967f4)
+
+	* Translated using Weblate (French)
+
+2020-04-04 05:55:55 +0000 Kristjan Räts (9f80c6a)
+
+	* Translated using Weblate (Estonian)
+
+2020-04-03 16:18:11 +0000 raimon ribal (06d4bd2)
+
+	* Translated using Weblate (Catalan)
+
+2020-04-03 11:02:51 +0000 Allan Nordhøy (58e966f)
+
+	* Translated using Weblate (Arabic)
+
+2020-04-01 01:23:17 +0000 Johntini (935dc35)
+
+	* Translated using Weblate (Spanish)
+
+2020-03-24 17:23:17 +0000 Violeta Uzunova (997b330)
+
+	* Translated using Weblate (Bulgarian)
+
+2020-03-17 21:49:51 +0000 yagoub fadel (c600173)
+
+	* Translated using Weblate (Arabic)
+
+2020-03-16 05:20:46 +0000 Grace Guo (2fb67ed)
+
+	* Translated using Weblate (Japanese)
+
+2020-02-25 16:35:07 +0000 Wellington Terumi Uemura (e20dd3f)
+
+	* Translated using Weblate (Portuguese (Brazil))
+
+2020-02-22 14:37:30 +0000 Amr Karajah (963deb6)
+
+	* Translated using Weblate (Arabic)
+
+2020-02-20 16:37:56 +0000 Roman Rokon (8a4a8c6)
+
+	* Translated using Weblate (Bengali)
+
+2020-02-15 05:10:27 +0100 Hosted Weblate (76b774d)
+
+	* Update translation files
+
+2020-01-25 13:09:17 +0000 Emiliano Gabriele (c75119d)
+
+	* Translated using Weblate (Italian)
+
+2020-01-19 12:18:26 +0000 Heimen Stoffels (62a82f2)
+
+	* Translated using Weblate (Dutch)
+
+2020-01-04 15:24:29 +0000 ssantos (b105982)
+
+	* Translated using Weblate (Portuguese)
+
+2020-01-02 23:05:31 +0000 Milo Ivir (5d9bbc7)
+
+	* Translated using Weblate (Croatian)
+
+2019-11-27 09:51:18 +0100 Mike Gabriel (d7824c2)
+
+	* release 0.4.4 (tag: 0.4.4)
 
 2019-11-23 16:54:32 +0000 Niara (2a28317)
 

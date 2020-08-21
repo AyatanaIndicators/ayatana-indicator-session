@@ -1,8 +1,9 @@
 # Ayatana System Indicator &mdash; Session
 
-The -session Ayatana System Indicator is the the session menu indicator
-for Unity7 and MATE (optionally for others). Its behavior and features
-are listed at https://wiki.ayatana-indicators.org/AyatanaIndicatorSession
+The -session Ayatana System Indicator is the session menu indicator for
+Unity7, MATE and Lomiri (optionally for others, e.g. XFCE, LXDE). Its
+behavior and features are listed at
+https://wiki.ayatana-indicators.org/AyatanaIndicatorSession
 
 For instructions on building and running built-in tests, see the INSTALL file.
 
@@ -13,7 +14,7 @@ Ayatana Indicator Session has two custom menuitems: the Guest and User
 switchers. As per the
 https://wiki.ayatana-indicators.org/AyatanaIndicatorSession
 specification, both need four visual components: (1) an Active Session
-Mark, the user's (2) icon, (3) name, and (4) a Logged In Mark.
+Mark, the user's (2) icon, (3) name, and (4) a Logged-In Mark.
 
 ### User menuitems have "x-ayatana-type" set to "indicator.user-menu-item"
 

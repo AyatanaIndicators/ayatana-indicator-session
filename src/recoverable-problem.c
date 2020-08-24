@@ -45,7 +45,7 @@ write_null (int fd)
 
 /* Child watcher */
 static gboolean
-apport_child_watch (GPid pid G_GNUC_UNUSED, gint status G_GNUC_UNUSED, gpointer user_data)
+apport_child_watch (gpointer user_data)
 {
     g_main_loop_quit((GMainLoop *)user_data);
     return FALSE;
@@ -145,7 +145,7 @@ report_recoverable_problem (const gchar * signature, GPid report_pid, gboolean w
 
         child_source = g_child_watch_source_new(pid);
         g_source_attach(child_source, context);
-        g_source_set_callback(child_source, (GSourceFunc)apport_child_watch, loop, NULL);
+        g_source_set_callback(child_source, apport_child_watch, loop, NULL);
 
         timeout_source = g_timeout_source_new_seconds(5);
         g_source_attach(timeout_source, context);

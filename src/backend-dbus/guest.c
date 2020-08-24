@@ -21,7 +21,7 @@
 
 #include "guest.h"
 
-struct _IndicatorSessionGuestDbusPriv
+struct _IndicatorSessionGuestDbusPrivate
 {
   GCancellable * cancellable;
 
@@ -34,11 +34,9 @@ struct _IndicatorSessionGuestDbusPriv
   gboolean guest_is_allowed;
 };
 
-typedef IndicatorSessionGuestDbusPriv priv_t;
+typedef IndicatorSessionGuestDbusPrivate priv_t;
 
-G_DEFINE_TYPE (IndicatorSessionGuestDbus,
-               indicator_session_guest_dbus,
-               INDICATOR_TYPE_SESSION_GUEST)
+G_DEFINE_TYPE_WITH_PRIVATE (IndicatorSessionGuestDbus, indicator_session_guest_dbus, INDICATOR_TYPE_SESSION_GUEST)
 
 /***
 ****
@@ -352,8 +350,6 @@ indicator_session_guest_dbus_class_init (IndicatorSessionGuestDbusClass * klass)
   guest_class->is_logged_in = my_is_logged_in;
   guest_class->is_active = my_is_active;
   guest_class->switch_to_guest = my_switch_to_guest;
-
-  g_type_class_add_private (klass, sizeof (IndicatorSessionGuestDbusPriv));
 }
 
 static void
@@ -361,9 +357,7 @@ indicator_session_guest_dbus_init (IndicatorSessionGuestDbus * self)
 {
   priv_t * p;
 
-  p = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                   INDICATOR_TYPE_SESSION_GUEST_DBUS,
-                                   IndicatorSessionGuestDbusPriv);
+  p = indicator_session_guest_dbus_get_instance_private (self);
   p->cancellable = g_cancellable_new ();
   self->priv = p;
 }

@@ -47,7 +47,7 @@ enum
   END_SESSION_TYPE_REBOOT
 };
 
-struct _IndicatorSessionActionsDbusPriv
+struct _IndicatorSessionActionsDbusPrivate
 {
   GCancellable * cancellable;
 
@@ -70,11 +70,9 @@ struct _IndicatorSessionActionsDbusPriv
   gboolean seat_allows_activation;
 };
 
-typedef IndicatorSessionActionsDbusPriv priv_t;
+typedef IndicatorSessionActionsDbusPrivate priv_t;
 
-G_DEFINE_TYPE (IndicatorSessionActionsDbus,
-               indicator_session_actions_dbus,
-               INDICATOR_TYPE_SESSION_ACTIONS)
+G_DEFINE_TYPE_WITH_PRIVATE(IndicatorSessionActionsDbus, indicator_session_actions_dbus, INDICATOR_TYPE_SESSION_ACTIONS)
 
 /***
 ****
@@ -1334,8 +1332,6 @@ indicator_session_actions_dbus_class_init (IndicatorSessionActionsDbusClass * kl
   actions_class->switch_to_greeter = my_switch_to_greeter;
   actions_class->switch_to_guest = my_switch_to_guest;
   actions_class->switch_to_username = my_switch_to_username;
-
-  g_type_class_add_private (klass, sizeof (IndicatorSessionActionsDbusPriv));
 }
 
 static void
@@ -1345,9 +1341,7 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
   priv_t * p;
   GSettings * s;
 
-  p = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                   INDICATOR_TYPE_SESSION_ACTIONS_DBUS,
-                                   IndicatorSessionActionsDbusPriv);
+  p = indicator_session_actions_dbus_get_instance_private (self);
   p->cancellable = g_cancellable_new ();
   p->seat_allows_activation = TRUE;
   self->priv = p;

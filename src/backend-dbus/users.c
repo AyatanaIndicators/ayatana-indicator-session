@@ -21,7 +21,7 @@
 
 #include "users.h"
 
-struct _IndicatorSessionUsersDbusPriv
+struct _IndicatorSessionUsersDbusPrivate
 {
   Login1Manager * login1_manager;
   Login1Seat * login1_seat;
@@ -45,11 +45,9 @@ struct _IndicatorSessionUsersDbusPriv
   guint update_list_tag;
 };
 
-typedef IndicatorSessionUsersDbusPriv priv_t;
+typedef IndicatorSessionUsersDbusPrivate priv_t;
 
-G_DEFINE_TYPE (IndicatorSessionUsersDbus,
-               indicator_session_users_dbus,
-               INDICATOR_TYPE_SESSION_USERS)
+G_DEFINE_TYPE_WITH_PRIVATE(IndicatorSessionUsersDbus, indicator_session_users_dbus, INDICATOR_TYPE_SESSION_USERS)
 
 /***
 ****
@@ -655,8 +653,6 @@ indicator_session_users_dbus_class_init (IndicatorSessionUsersDbusClass * klass)
   users_class->get_uids = my_get_uids;
   users_class->get_user = my_get_user;
   users_class->activate_user = my_activate_user;
-
-  g_type_class_add_private (klass, sizeof (IndicatorSessionUsersDbusPriv));
 }
 
 static void
@@ -664,9 +660,7 @@ indicator_session_users_dbus_init (IndicatorSessionUsersDbus * self)
 {
   priv_t * p;
 
-  p = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                   INDICATOR_TYPE_SESSION_USERS_DBUS,
-                                   IndicatorSessionUsersDbusPriv);
+  p = indicator_session_users_dbus_get_instance_private (self);
   self->priv = p;
   p->cancellable = g_cancellable_new ();
 

@@ -240,7 +240,7 @@ untrack_user (IndicatorSessionUsersDbus * self,
 
   if (uid)
     {
-      g_hash_table_remove (p->uid_to_account, GUINT_TO_POINTER(uid)); 
+      g_hash_table_remove (p->uid_to_account, GUINT_TO_POINTER(uid));
 
       emit_user_removed (self, uid);
     }

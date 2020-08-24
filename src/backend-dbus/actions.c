@@ -449,7 +449,7 @@ my_can_reboot (IndicatorSessionActions * actions)
 {
   IndicatorSessionActionsDbus * self = INDICATOR_SESSION_ACTIONS_DBUS(actions);
   priv_t * p = self->priv;
-  
+
   if (g_settings_get_boolean (p->indicator_settings, "suppress-restart-menuitem"))
     return FALSE;
 

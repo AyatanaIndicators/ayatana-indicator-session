@@ -37,7 +37,7 @@ G_BEGIN_DECLS
 #define INDICATOR_IS_SESSION_USERS_DBUS(o)         (G_TYPE_CHECK_INSTANCE_TYPE ((o), INDICATOR_TYPE_SESSION_USERS_DBUS))
 
 typedef struct _IndicatorSessionUsersDbus        IndicatorSessionUsersDbus;
-typedef struct _IndicatorSessionUsersDbusPriv    IndicatorSessionUsersDbusPriv;
+typedef struct _IndicatorSessionUsersDbusPrivate IndicatorSessionUsersDbusPrivate;
 typedef struct _IndicatorSessionUsersDbusClass   IndicatorSessionUsersDbusClass;
 
 /**
@@ -48,7 +48,7 @@ struct _IndicatorSessionUsersDbus
 {
   /*< private >*/
   IndicatorSessionUsers parent;
-  IndicatorSessionUsersDbusPriv * priv;
+  IndicatorSessionUsersDbusPrivate * priv;
 };
 
 struct _IndicatorSessionUsersDbusClass

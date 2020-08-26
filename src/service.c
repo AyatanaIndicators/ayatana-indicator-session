@@ -33,10 +33,6 @@
 #define ICON_INFO    "system-devices-panel-information"
 #define ICON_ALERT   "system-devices-panel-alert"
 
-G_DEFINE_TYPE (IndicatorSessionService,
-               indicator_session_service,
-               G_TYPE_OBJECT)
-
 /* signals enum */
 enum
 {
@@ -116,6 +112,8 @@ struct _IndicatorSessionServicePrivate
 };
 
 typedef IndicatorSessionServicePrivate priv_t;
+
+G_DEFINE_TYPE_WITH_PRIVATE(IndicatorSessionService, indicator_session_service, G_TYPE_OBJECT)
 
 static const char * get_current_real_name (IndicatorSessionService * self);
 
@@ -1175,9 +1173,7 @@ indicator_session_service_init (IndicatorSessionService * self)
   GIcon * icon;
 
   /* init our priv pointer */
-  p = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                   INDICATOR_TYPE_SESSION_SERVICE,
-                                   IndicatorSessionServicePrivate);
+  p = indicator_session_service_get_instance_private (self);
   p->indicator_settings = g_settings_new ("org.ayatana.indicator.session");
   if (is_mate())
     p->keybinding_settings = g_settings_new ("org.mate.SettingsDaemon.plugins.media-keys");
@@ -1375,8 +1371,6 @@ indicator_session_service_class_init (IndicatorSessionServiceClass * klass)
   object_class->dispose = my_dispose;
   object_class->get_property = my_get_property;
   object_class->set_property = my_set_property;
-
-  g_type_class_add_private (klass, sizeof (IndicatorSessionServicePrivate));
 
   signals[NAME_LOST] = g_signal_new (INDICATOR_SESSION_SERVICE_SIGNAL_NAME_LOST,
                                      G_TYPE_FROM_CLASS(klass),

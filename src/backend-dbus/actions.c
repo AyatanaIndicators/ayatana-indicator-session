@@ -101,6 +101,7 @@ typedef enum
   PROMPT_WITH_ZENITY,
   PROMPT_WITH_AYATANA,
   PROMPT_WITH_MATE,
+  PROMPT_WITH_BUDGIE,
   PROMPT_WITH_XFCE,
 }
 prompt_status_t;
@@ -132,6 +133,20 @@ have_mate_program (const gchar *program)
   return FALSE;
 }
 
+static gboolean have_budgie_program(const gchar *program)
+{
+    g_auto(GStrv) desktop_names = NULL;
+
+    if (is_budgie())
+    {
+        g_autofree gchar *path = g_find_program_in_path(program);
+
+        return path != NULL;
+    }
+
+    return FALSE;
+}
+
 static gboolean
 have_xfce_program (const gchar *program)
 {
@@ -156,6 +171,12 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
       /* can we use the MATE prompt? */
       if ((prompt == PROMPT_NONE) && have_mate_program ("mate-session-save"))
           prompt = PROMPT_WITH_MATE;
+
+        // can we use the BUDGIE (currently GNOME) prompt?
+        if ((prompt == PROMPT_NONE) && have_budgie_program("gnome-session-quit"))
+        {
+            prompt = PROMPT_WITH_BUDGIE;
+        }
 
       /* can we use the XFCE prompt? */
       if ((prompt == PROMPT_NONE) && have_xfce_program ("xfce4-session-logout"))
@@ -873,7 +894,12 @@ my_logout (IndicatorSessionActions * actions)
         /* --logout-dialog presents Logout and (if available) Switch User options */
         run_outside_app ("mate-session-save --logout-dialog");
         break;
+        case PROMPT_WITH_BUDGIE:
+        {
+            run_outside_app("gnome-session-quit --logout");
 
+            break;
+        }
       case PROMPT_WITH_XFCE:
         run_outside_app ("xfce4-session-logout");
         break;
@@ -919,7 +945,12 @@ my_reboot (IndicatorSessionActions * actions)
         /* --shutdown-dialog presents Restart, Shutdown and (if available) Suspend options */
         run_outside_app ("mate-session-save --shutdown-dialog");
         break;
+        case PROMPT_WITH_BUDGIE:
+        {
+            run_outside_app("gnome-session-quit --reboot");
 
+            break;
+        }
       case PROMPT_WITH_XFCE:
         run_outside_app ("xfce4-session-logout");
         break;
@@ -960,7 +991,12 @@ my_power_off (IndicatorSessionActions * actions)
         /* --shutdown-dialog presents Restart, Shutdown and (if available) Suspend options */
         run_outside_app ("mate-session-save --shutdown-dialog");
         break;
+        case PROMPT_WITH_BUDGIE:
+        {
+            run_outside_app("gnome-session-quit --power-off");
 
+            break;
+        }
       case PROMPT_WITH_XFCE:
         run_outside_app ("xfce4-session-logout");
         break;
@@ -1021,7 +1057,11 @@ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   static char * browser = NULL;
 
-  if (have_gnome_program ("yelp"))
+    if (have_budgie_program ("yelp"))
+    {
+        run_outside_app ("yelp help:gnome-user-guide");
+    }
+  else if (have_gnome_program ("yelp"))
     run_outside_app ("yelp help:gnome-user-guide");
   else if (have_mate_program ("yelp"))
     run_outside_app ("yelp help:mate-user-guide");
@@ -1101,6 +1141,10 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 #endif
   if (have_unity_control_center ())
     run_outside_app ("unity-control-center");
+    else if (have_budgie_program("gnome-control-center"))
+    {
+        run_outside_app("gnome-control-center");
+    }
   else if (have_gnome_control_center())
     run_outside_app ("gnome-control-center");
   else if (have_mate_program ("mate-control-center"))
@@ -1141,6 +1185,10 @@ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 #endif
   if (have_unity_control_center ())
     run_outside_app ("unity-control-center info");
+    else if (have_budgie_program("gnome-control-center"))
+    {
+        run_outside_app("gnome-control-center info-overview");
+    }
   else if (have_gnome_control_center())
     run_outside_app ("gnome-control-center info");
   else if (have_mate_program ("mate-system-monitor"))
@@ -1176,6 +1224,10 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
   else if (have_mate_program ("mate-screensaver-command"))
     {
       run_outside_app ("mate-screensaver-command --lock");
+    }
+    else if (have_budgie_program("gnome-screensaver-command"))
+    {
+        run_outside_app("gnome-screensaver-command --lock");
     }
   else if (have_xfce_program ("xflock4"))
     {

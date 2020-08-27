@@ -26,12 +26,14 @@
  */
 #define DESKTOP_UNITY  "Unity"
 #define DESKTOP_MATE   "MATE"
+#define DESKTOP_BUDGIE "Budgie:GNOME"
 #define DESKTOP_GNOME  "GNOME"
 #define DESKTOP_XFCE   "XFCE"
 
 gboolean is_unity();
 gboolean is_gnome();
 gboolean is_mate();
+gboolean is_budgie();
 gboolean is_xfce();
 
 const char* get_distro_name();

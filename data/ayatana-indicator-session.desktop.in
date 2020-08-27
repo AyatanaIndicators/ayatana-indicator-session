@@ -2,7 +2,7 @@
 Type=Application
 Name=Ayatana Indicator Session
 Exec=@pkglibexecdir@/ayatana-indicator-session-service
-OnlyShowIn=Unity;MATE;XFCE;
+OnlyShowIn=Unity;MATE;XFCE;Budgie:GNOME;
 NoDisplay=true
 StartupNotify=false
 Terminal=false

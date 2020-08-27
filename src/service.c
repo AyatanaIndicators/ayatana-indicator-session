@@ -1178,6 +1178,11 @@ indicator_session_service_init (IndicatorSessionService * self)
   if (is_mate())
     p->keybinding_settings = g_settings_new ("org.mate.SettingsDaemon.plugins.media-keys");
 
+    else if (is_budgie())
+    {
+        p->keybinding_settings = g_settings_new("org.gnome.settings-daemon.plugins.media-keys");
+    }
+
   else if (is_gnome() || is_unity())
     p->keybinding_settings = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
 

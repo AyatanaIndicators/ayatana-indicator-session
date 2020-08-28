@@ -31,7 +31,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR} ${SERVICE_INCLUDE_DIRS})
 
 # backendmock
 add_library (backendmock STATIC
-             backend-mock-actions.c 
+             backend-mock-actions.c
              backend-mock-actions.h
              backend-mock.c
              backend-mock.h

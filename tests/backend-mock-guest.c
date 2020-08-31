@@ -21,18 +21,16 @@
 
 #include "backend-mock-guest.h"
 
-struct _IndicatorSessionGuestMockPriv
+struct _IndicatorSessionGuestMockPrivate
 {
   gboolean guest_is_active;
   gboolean guest_is_logged_in;
   gboolean guest_is_allowed;
 };
 
-typedef IndicatorSessionGuestMockPriv priv_t;
+typedef IndicatorSessionGuestMockPrivate priv_t;
 
-G_DEFINE_TYPE (IndicatorSessionGuestMock,
-               indicator_session_guest_mock,
-               INDICATOR_TYPE_SESSION_GUEST)
+G_DEFINE_TYPE_WITH_PRIVATE(IndicatorSessionGuestMock, indicator_session_guest_mock, INDICATOR_TYPE_SESSION_GUEST)
 
 /**
 ***  IndicatorSessionGuest virtual functions
@@ -100,8 +98,6 @@ indicator_session_guest_mock_class_init (IndicatorSessionGuestMockClass * klass)
   guest_class->is_logged_in = my_is_logged_in;
   guest_class->is_active = my_is_active;
   guest_class->switch_to_guest = my_switch_to_guest;
-
-  g_type_class_add_private (klass, sizeof (IndicatorSessionGuestMockPriv));
 }
 
 static void
@@ -110,9 +106,7 @@ indicator_session_guest_mock_init (IndicatorSessionGuestMock * self)
 {
   priv_t * p;
 
-  p = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                   INDICATOR_TYPE_SESSION_GUEST_MOCK,
-                                   IndicatorSessionGuestMockPriv);
+  p = indicator_session_guest_mock_get_instance_private(self);
   self->priv = p;
 
   p->guest_is_allowed = TRUE;

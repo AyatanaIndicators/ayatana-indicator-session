@@ -4,16 +4,16 @@ Copyright 2012 Canonical Ltd.
 Authors:
     Charles Kerr <charles.kerr@canonical.com>
 
-This program is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License version 3, as published 
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3, as published
 by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along 
+You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -23,6 +23,13 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "backend-mock-users.h"
 #include "backend-mock-guest.h"
 #include "backend-mock-actions.h"
+
+gboolean onMainLoopQuit(gpointer pUserData)
+{
+    g_main_loop_quit((GMainLoop*)pUserData);
+
+    return FALSE;
+}
 
 /***
 ****
@@ -169,7 +176,7 @@ class ServiceTest: public GTestDBusFixture
                                                              G_BUS_NAME_WATCHER_FLAGS_NONE,
                                                              on_name_appeared, // quits the loop
                                                              NULL, this, NULL);
-      const guint timer_id = g_timeout_add_seconds (TIME_LIMIT_SEC, (GSourceFunc)g_main_loop_quit, loop);
+      const guint timer_id = g_timeout_add_seconds(TIME_LIMIT_SEC, onMainLoopQuit, loop);
       g_main_loop_run (loop);
       g_source_remove (timer_id);
       g_bus_unwatch_name (watch_id);

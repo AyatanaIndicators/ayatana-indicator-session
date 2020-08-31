@@ -33,7 +33,7 @@ G_BEGIN_DECLS
 #define INDICATOR_IS_SESSION_USERS_MOCK(o)         (G_TYPE_CHECK_INSTANCE_TYPE ((o), INDICATOR_TYPE_SESSION_USERS_MOCK))
 
 typedef struct _IndicatorSessionUsersMock        IndicatorSessionUsersMock;
-typedef struct _IndicatorSessionUsersMockPriv    IndicatorSessionUsersMockPriv;
+typedef struct _IndicatorSessionUsersMockPrivate IndicatorSessionUsersMockPrivate;
 typedef struct _IndicatorSessionUsersMockClass   IndicatorSessionUsersMockClass;
 
 /**
@@ -43,7 +43,7 @@ struct _IndicatorSessionUsersMock
 {
   /*< private >*/
   IndicatorSessionUsers parent;
-  IndicatorSessionUsersMockPriv * priv;
+  IndicatorSessionUsersMockPrivate * priv;
 };
 
 struct _IndicatorSessionUsersMockClass

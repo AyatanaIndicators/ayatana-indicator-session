@@ -20,16 +20,14 @@
 #include "backend-mock.h"
 #include "backend-mock-users.h"
 
-struct _IndicatorSessionUsersMockPriv
+struct _IndicatorSessionUsersMockPrivate
 {
   GHashTable * users;
 };
 
-typedef IndicatorSessionUsersMockPriv priv_t;
+typedef IndicatorSessionUsersMockPrivate priv_t;
 
-G_DEFINE_TYPE (IndicatorSessionUsersMock,
-               indicator_session_users_mock,
-               INDICATOR_TYPE_SESSION_USERS)
+G_DEFINE_TYPE_WITH_PRIVATE(IndicatorSessionUsersMock, indicator_session_users_mock, INDICATOR_TYPE_SESSION_USERS)
 
 /***
 ****  IndicatorSessionUsers virtual functions
@@ -120,8 +118,6 @@ indicator_session_users_mock_class_init (IndicatorSessionUsersMockClass * klass)
   users_class->get_uids = my_get_uids;
   users_class->get_user = my_get_user;
   users_class->activate_user = my_activate_user;
-
-  g_type_class_add_private (klass, sizeof (IndicatorSessionUsersMockPriv));
 }
 
 static void
@@ -130,9 +126,7 @@ indicator_session_users_mock_init (IndicatorSessionUsersMock * self)
 {
   priv_t * p;
 
-  p = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                   INDICATOR_TYPE_SESSION_USERS_MOCK,
-                                   IndicatorSessionUsersMockPriv);
+  p = indicator_session_users_mock_get_instance_private(self);
   self->priv = p;
 
   p->users = g_hash_table_new_full (g_direct_hash,

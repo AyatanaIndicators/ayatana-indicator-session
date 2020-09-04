@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2018-04-01 14:39+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2020-09-05 11:36+0000\n"
+"Last-Translator: antuketot76 <antuketot76@protonmail.com>\n"
 "Language-Team: Malay <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/ms/>\n"
 "Language: ms\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -43,18 +43,16 @@ msgstr ""
 "Jadikannya supaya butang daftar keluar tidak dipaparkan dalam menu sesi."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Buang item Mula Semula daripada menu sesi"
+msgstr "Keluarkan item Mula Semula dari sesi menu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Jadikannya supaya butang mula semula tidak dipaparkan dalam menu sesi."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Buang item matikan daripada menu sesi"
+msgstr "Keluarkan item tutup dari sesi menu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
@@ -64,11 +62,11 @@ msgstr "Jadikannya supaya butang matikan tidak dipaparkan dalam menu sesi."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Sistem, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Sistem"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -77,20 +75,20 @@ msgstr "Tetamu"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "%s Bantuan Desktop"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "%s Bantuan"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Mengenai Komputer Ini"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Repot Pincang…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -102,31 +100,27 @@ msgstr "Akaun Atas Talian…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Aktifkan Penjimat Skrin"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Tukar Akaun Pengguna..."
+msgstr "Tukar Akaun Pengguna Lain…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
 msgstr "Tukar Akaun Pengguna..."
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Tukar Akaun Pengguna..."
+msgstr "Kunci/Tukar Akaun Pengguna…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Tukar Akaun Pengguna..."
+msgstr "Kunci/Tukar Akaun Pengguna"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Kunci"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -156,7 +150,7 @@ msgstr "Mula Semula…"
 #: ../src/service.c:723 ../src/backend-dbus/actions.c:936
 #: ../src/backend-dbus/actions.c:938
 msgid "Restart"
-msgstr "UlangHidup"
+msgstr "Mula Semula"
 
 #: ../src/service.c:730
 msgid "Shut Down…"
@@ -172,7 +166,7 @@ msgstr "Matikan"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Amaran"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -182,35 +176,34 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Pengesan pincang sistem operasi perlu akses dengan\n"
+"pelayar.\n"
+"\n"
+"Ayatana Session indikator tidak dapat mencari pelayar\n"
+" didalam komputer ini ."
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr ""
-"Apakah anda pasti ingin menutup semua perisaian dan daftar keluar dari "
-"komputer?"
+msgstr "Apakah anda pasti ingin menutup semua program dan log keluar?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"Beberapa kemaskini perisai tidak akan berlaku sampai komputer di ulang mula "
-"seterusnya."
+"Beberapa kemaskini tidak dipasang hanya sehingga komputer dimulakan semula."
 
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
 #: ../src/backend-dbus/actions.c:976
 msgid "Cancel"
-msgstr "Batalkan"
+msgstr "Batal"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr ""
-"Apakah anda pasti ingin menutup semua perisaian dan ulang mula komputer?"
+msgstr "Apakah anda pasti ingin menutup semua program dan log keluar?"
 
 #: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr "Apakah anda pasti ingin menutup semua perisaian dan matikan komputer?"
+msgstr "Apakah anda pasti ingin menutup semua program dan matikan komputer?"
 
 #: ../src/backend-dbus/actions.c:1039
 msgid ""
@@ -220,6 +213,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Panduan pengguna desktop XFCE perlu akses dengan\n"
+"pelayar.\n"
+"\n"
+"Ayatana Session Indikator tidak dapat mencari sebarang\n"
+"pelayar didalam komputer anda."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -229,6 +227,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Ayatana Session Indikator tidak tahu, cara paparkan\n"
+"panduan pengguna digunakan atau pusat bantuan\n"
+"\n"
+"Sila repot kepada pencipta aplikasi di:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -239,6 +242,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Paparan informasi di %s  memerlukan\n"
+"pelayar web.\n"
+"\n"
+"The Ayatana Session Indikator tidak dapat mencari sebarang pelayar\n"
+"web didalam komputer ini."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""

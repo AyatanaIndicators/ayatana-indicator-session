@@ -1244,6 +1244,8 @@ indicator_session_service_init (IndicatorSessionService * self)
                             G_CALLBACK(rebuild_logout_section_soon), self);
   g_signal_connect_swapped (gp, "changed::suppress-logout-restart-shutdown",
                             G_CALLBACK(rebuild_session_section_soon), self);
+  g_signal_connect_swapped(gp, "changed::suppress-logout-menuitem",
+                            G_CALLBACK(rebuild_logout_section_soon), self);
   g_signal_connect_swapped (gp, "changed::suppress-shutdown-menuitem",
                             G_CALLBACK(rebuild_session_section_soon), self);
   g_signal_connect_swapped (gp, "changed::show-real-name-on-panel",

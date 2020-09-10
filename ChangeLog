@@ -1,6 +1,67 @@
-2020-08-17 22:41:05 +0200 Mike Gabriel
+2020-09-10 21:23:58 +0200 Mike Gabriel
 
-	* release 0.8.0 (HEAD -> master, tag: 0.8.0)
+	* release 0.8.1 (HEAD -> master, tag: 0.8.1)
+
+2020-09-10 21:06:09 +0200 Mike Gabriel (7938e6e)
+
+	* Merge branch 'tari01-pr/trim-lcov-py3'
+
+2020-09-10 15:52:24 +0200 Robert Tari (a78a659)
+
+	* trim-lcov.py: Port trim-lcov to Python 3
+
+2020-09-05 21:43:52 +0200 Mike Gabriel (948126c)
+
+	* Merge branch 'tari01-pr/suppress-logout'
+
+2020-09-01 22:40:01 +0200 Robert Tari (ba837fd)
+
+	* src/service.c: Fix suppression of Logout item.
+
+2020-09-04 11:25:55 +0000 antuketot76 (104ea83)
+
+	* Translated using Weblate (Malay)
+
+2020-08-31 16:59:09 +0200 Mike Gabriel (c623dec)
+
+	* Merge branch 'tari01-pr/deprecations-warnings'
+
+2020-08-31 16:41:56 +0200 Robert Tari (cacf569)
+
+	* Fix deprecated symbols and build warnings
+
+2020-08-31 16:41:14 +0200 Robert Tari (a8b9159)
+
+	* Whitespace fix
+
+2020-08-26 09:17:36 +0200 Mike Gabriel (7379a3d)
+
+	* Merge branch 'tari01-pr/deprecations-and-warnings'
+
+2020-08-24 18:51:10 +0200 Robert Tari (cd78667)
+
+	* Fix deprecations and build warnings
+
+2020-08-24 18:48:21 +0200 Robert Tari (b3cd9e1)
+
+	* Whitespace fix
+
+2020-08-21 22:17:06 +0000 Mike Gabriel (9ebe29d)
+
+	* Translated using Weblate (German)
+
+2020-08-21 23:52:30 +0200 Federica Govoni (08cd639)
+
+	* Added translation using Weblate (Italian)
+
+2020-08-21 15:18:00 +0200 Mike Gabriel (ee9db40)
+
+	* README.md: Mention Lomiri, XFCE and LXDE; plus some typo
+          improvements.
+
+2020-08-17 22:41:05 +0200 Mike Gabriel (0acb1ba)
+
+	* release 0.8.0 (tag: 0.8.0)
 
 2020-08-11 14:23:33 +0200 Mike Gabriel (1210932)
 

@@ -82,7 +82,7 @@ install (FILES "${AYATANA_INDICATOR_FILE}"
 set (ICON_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/icons/hicolor")
 message (STATUS "${ICON_DIR} is the Icon install dir")
 
-install (DIRECTORY icons
+install (DIRECTORY
          icons/16x16
          icons/22x22
          icons/24x24

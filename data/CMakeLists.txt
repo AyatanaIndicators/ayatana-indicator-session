@@ -9,7 +9,7 @@ set (SCHEMA_FILE "${CMAKE_CURRENT_BINARY_DIR}/${SCHEMA_NAME}")
 set (SCHEMA_FILE_IN "${CMAKE_CURRENT_SOURCE_DIR}/${SCHEMA_NAME}.in")
 
 # generate the .xml file using intltool
-set (ENV{LC_ALL} "C") 
+set (ENV{LC_ALL} "C")
 execute_process (COMMAND intltool-merge -quiet --xml-style --utf8 --no-translations "${SCHEMA_FILE_IN}" "${SCHEMA_FILE}")
 
 # let UseGSettings do the rest
@@ -82,7 +82,7 @@ install (FILES "${AYATANA_INDICATOR_FILE}"
 set (ICON_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/icons/hicolor")
 message (STATUS "${ICON_DIR} is the Icon install dir")
 
-install (DIRECTORY icons
+install (DIRECTORY
          icons/16x16
          icons/22x22
          icons/24x24

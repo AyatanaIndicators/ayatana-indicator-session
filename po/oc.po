@@ -8,23 +8,23 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2018-04-01 14:40+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Occitan <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/oc/>\n"
+"PO-Revision-Date: 2020-09-26 14:40+0000\n"
+"Last-Translator: Quentin PAGÈS <quentinantonin@free.fr>\n"
+"Language-Team: Occitan <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/oc/>\n"
 "Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
-"Suprimir la bóstia de dialòg de confirmacion per la fin de sesilha, "
-"l'atudament e lo reamodament"
+"Suprimir la bóstia de dialòg de confirmacion per la fin de session, "
+"l'atudament e la reaviada"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
@@ -32,7 +32,7 @@ msgid ""
 "actions."
 msgstr ""
 "Afichar o pas la bóstia de dialòg de confirmacion per la fin de sesilha, "
-"l'atudament e lo reamodament"
+"l'atudament e lo reaviada."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
@@ -41,40 +41,38 @@ msgstr "Suprimir la tampadura de sesilha del menut"
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
-"Fa en sòrta que lo boton de desconnexion siá pas afichat dins lo menut de la "
-"sesilha."
+"Fa en sòrta que lo boton de desconnexion siá pas afichat dins lo menú de la "
+"session."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Suprimís l'opcion de reaviada del menut"
+msgstr "Suprimir l'opcion de reaviada del menú."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
-"Fa en sòrta que lo boton de reamodament siá pas afichat dins lo menut de la "
-"sesilha."
+"Fa en sòrta que lo boton de reaviada siá pas afichat dins lo menú de la "
+"session."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Suprimís l'opcion d'arrèst del menut"
+msgstr "Suprimir l’opcion d’arrèst del menú."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
-"Fa en sòrta que lo boton d'atudament siá pas afichat dins lo menut de la "
-"sesilha."
+"Fa en sòrta que lo boton d'atudament siá pas afichat dins lo menú de la "
+"session."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Sistèma, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Sistèma"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -83,20 +81,20 @@ msgstr "Convidat"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "Ajuda de %s"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "Ajuda %s"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "A prepaus d’aqueste ordenador"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Senhalar una avaria…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -108,35 +106,31 @@ msgstr "Comptes en linha…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Aviar l’estalviador d’ecran"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Cambiar de compte d'utilizaire..."
+msgstr "Cambiar de compte…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "Cambiar de compte d'utilizaire..."
+msgstr "Cambiar de compte"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Cambiar de compte d'utilizaire..."
+msgstr "Verrolhar/Cambiar de compte…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Cambiar de compte d'utilizaire..."
+msgstr "Verrolhar/Cambiar de compte"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Verrolhar"
 
 #: ../src/service.c:620
 msgid "Guest Session"
-msgstr "Sesilha convidat"
+msgstr "Session convidat"
 
 #: ../src/service.c:697
 msgid "Log Out…"
@@ -145,7 +139,7 @@ msgstr "Se desconnectar…"
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
 msgid "Log Out"
-msgstr "Tampar la sesilha"
+msgstr "Tampar la session"
 
 #: ../src/service.c:715
 msgid "Suspend"
@@ -157,12 +151,12 @@ msgstr "Ivernar"
 
 #: ../src/service.c:723
 msgid "Restart…"
-msgstr "Reamodar…"
+msgstr "Reaviar…"
 
 #: ../src/service.c:723 ../src/backend-dbus/actions.c:936
 #: ../src/backend-dbus/actions.c:938
 msgid "Restart"
-msgstr "Tornar amodar"
+msgstr "Reaviar"
 
 #: ../src/service.c:730
 msgid "Shut Down…"
@@ -178,7 +172,7 @@ msgstr "Atudar"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Alèrta"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -190,17 +184,15 @@ msgid ""
 msgstr ""
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "Sètz segur que volètz quitar totes los programas e tampar la sesilha ?"
+msgstr "Volètz vertadièrament tampar totes los programas e vos desconnectar ?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"D'unas mesas a jorn logicialas seràn pas efectivas qu'aprèp un reamodament "
-"de l'ordenador."
+"D'unas mesas a jorn logicialas seràn pas aplicadas qu’a l'aviada que ven de "
+"l’ordenador."
 
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
 #: ../src/backend-dbus/actions.c:976
@@ -210,12 +202,11 @@ msgstr "Anullar"
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr ""
-"Sètz segur que volètz quitar totes los programas e reamodar l'ordenador ?"
+"Volètz vertadièrament quitar totes los programas e reaviar l’ordenador ?"
 
 #: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr ""
-"Sètz segur que volètz quitar totes los programas e atudar l'ordenador ?"
+msgstr "Volètz vertadièrament quitar totes los programas e atudar l’ordenador ?"
 
 #: ../src/backend-dbus/actions.c:1039
 msgid ""

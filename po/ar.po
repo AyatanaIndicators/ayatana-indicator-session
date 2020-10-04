@@ -8,9 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-04-29 13:11+0000\n"
-"Last-Translator: Mohammed Abd ElFattah Darwesh "
-"<mohammedabdelfattahdarwesh@gmail.com>\n"
+"PO-Revision-Date: 2020-10-05 12:12+0000\n"
+"Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/ar/>\n"
 "Language: ar\n"
@@ -19,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.0.2\n"
+"X-Generator: Weblate 4.3-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -60,7 +59,7 @@ msgstr "أحفي زر إيقاف التشغيل من قائمة الجلسة."
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr "النظام ،٪ s"
+msgstr "النظام ،%s"
 
 #: ../src/service.c:191
 msgid "System"

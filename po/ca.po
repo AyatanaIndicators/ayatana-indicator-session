@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-04-03 18:21+0000\n"
-"Last-Translator: raimon ribal <raimon.ribal@gmail.com>\n"
+"PO-Revision-Date: 2020-10-30 00:26+0000\n"
+"Last-Translator: Joan CiberSheep <cibersheep@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/ca/>\n"
 "Language: ca\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 4.3.2-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -42,32 +42,30 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Fa que el botó de desconnexió no aparegui al menú de sessió."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Suprimeix l'element de reinici del menú de la sessió"
+msgstr "Suprimeix l'element de reinici del menú de la sessió."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr ""
+msgstr "Fa que el botó de reiniciar no aparegui al menú de sessió."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Suprimeix l'element d'aturada del menú de la sessió"
+msgstr "Suprimeix l'element d'aturada del menú de la sessió."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr ""
+msgstr "Fa que el botó d'aturar no aparegui al menú de sessió."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Sistema, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -76,20 +74,20 @@ msgstr "Convidat"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "Ajuda d'escriptori %s"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "Ajuda %s"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Quant a aquest ordinador"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Informeu d'un error…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -101,29 +99,27 @@ msgstr "Comptes en línia…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Inicia l'estalvi de pantalla"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Comptes en línia…"
+msgstr "Canvia de compte…"
 
 #: ../src/service.c:576 ../src/service.c:592
 msgid "Switch Account"
-msgstr ""
+msgstr "Canvia el compte"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Comptes en línia…"
+msgstr "Bloqueja o canvia de compte…"
 
 #: ../src/service.c:589
 msgid "Lock/Switch Account"
-msgstr ""
+msgstr "Bloqueja o canvia de compte"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Bloqueja"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -169,7 +165,7 @@ msgstr "Atura"
 #: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
 #: ../src/backend-dbus/actions.c:1154
 msgid "Warning"
-msgstr ""
+msgstr "Atenció"
 
 #: ../src/backend-dbus/actions.c:802
 msgid ""
@@ -179,16 +175,19 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"El rastrejador d’errors del sistema operatiu ha d'accedir a\n"
+"un navegador web.\n"
+"\n"
+"L’indicador de sessió Ayatana no n'ha pogut trobar cap\n"
+"a l’ordinador."
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr ""
-"Esteu segur que voleu tancar tots els programes i finalitzar la sessió en "
-"aquest ordinador?"
+"Segur que voleu tancar tots els programes i finalitzar la sessió en aquest "
+"ordinador?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
@@ -217,6 +216,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"La gui d'usuari de l'escriptori XCFE ha d'accedir a\n"
+"un navegador web.\n"
+"\n"
+"L’indicador de sessió Ayatana no n'ha pogut trobar cap\n"
+"a l’ordinador."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -226,6 +230,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"L'indicador de sessió Ayatana encara no sap com mostrar la guia \n"
+"d'usuari o el centre d'ajuda de l'escriptori en execució.\n"
+"\n"
+"Informeu-ho a l'equip de desenvolupament a:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -236,6 +245,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Per mostrar informació a %s cal un \n"
+"navegador web.\n"
+"\n"
+"L’Indicador de sessió Ayatana no n'ha pogut trobar cap \n"
+"al vostre ordinador."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -245,6 +259,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"L'indicador de sessió Ayatana encara no pot mostrar l’aplicació \n"
+"de configuració del sistema per al vostre entorn d’escriptori.\n"
+"\n"
+"Informeu-ho a l'equip de desenvolupament a:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -254,6 +273,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"L'indicador de sessió Ayatana encara no admet canvis de \n"
+"contrasenya per al vostre entorn d’escriptori.\n"
+"\n"
+"Informeu-ho a l'equip de desenvolupament a:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -263,6 +287,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"L'indicador de sessió Ayatana encara no sap com mostrar \n"
+"la informació del vostre entorn d’escriptori actual.\n"
+"\n"
+"Informeu-ho a l'equip de desenvolupament a:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Sessió de convidat clàssica"

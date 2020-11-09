@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-10-30 00:26+0000\n"
+"PO-Revision-Date: 2020-11-10 18:28+0000\n"
 "Last-Translator: Milan Korecky <milan.korecky@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/cs/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.3.2-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -43,19 +43,19 @@ msgstr "Nezobrazí tlačítko odhlášení v nabídce sezení."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu."
-msgstr "Odstranit položku Restartovat z nabídky sezení"
+msgstr "Odstranit položku Restartovat z nabídky sezení."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr "Nezobrazí tlačítko restart v nabídce sezení."
+msgstr "Způsobí to, že se nezobrazí tlačítko restart v nabídce sezení."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu."
-msgstr "Odstranit položku Vypnout z nabídky sezení"
+msgstr "Odstranit položku Vypnout z nabídky sezení."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr "Nezobrazí tlačítko vypnutí v nabídce sezení."
+msgstr "Způsobí to, že se nezobrazí tlačítko vypnutí v nabídce sezení."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187

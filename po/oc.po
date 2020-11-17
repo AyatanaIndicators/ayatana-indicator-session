@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-10-24 16:26+0000\n"
+"PO-Revision-Date: 2020-11-18 21:28+0000\n"
 "Last-Translator: Quentin PAGÈS <quentinantonin@free.fr>\n"
 "Language-Team: Occitan <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/oc/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.3.2-dev\n"
+"X-Generator: Weblate 4.4-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -31,12 +31,12 @@ msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"Afichar o pas la bóstia de dialòg de confirmacion per la fin de sesilha, "
+"Afichar o pas la bóstia de dialòg de confirmacion per la fin de session, "
 "l'atudament e lo reaviada."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "Suprimir la tampadura de sesilha del menut"
+msgstr "Levar l’item Se desconnectar del menú de session"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
@@ -139,7 +139,7 @@ msgstr "Se desconnectar…"
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
 msgid "Log Out"
-msgstr "Tampar la session"
+msgstr "Se desconnectar"
 
 #: ../src/service.c:715
 msgid "Suspend"

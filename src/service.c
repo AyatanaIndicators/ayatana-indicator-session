@@ -19,11 +19,11 @@
 
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <ayatana/common/utils.h>
 
 #include "backend.h"
 #include "recoverable-problem.h"
 #include "service.h"
-
 #include "utils.h"
 
 #define BUS_NAME "org.ayatana.indicator.session"
@@ -1175,16 +1175,18 @@ indicator_session_service_init (IndicatorSessionService * self)
   /* init our priv pointer */
   p = indicator_session_service_get_instance_private (self);
   p->indicator_settings = g_settings_new ("org.ayatana.indicator.session");
-  if (is_mate())
-    p->keybinding_settings = g_settings_new ("org.mate.SettingsDaemon.plugins.media-keys");
-
-    else if (is_budgie())
+  if (ayatana_common_utils_is_mate())
     {
-        p->keybinding_settings = g_settings_new("org.gnome.settings-daemon.plugins.media-keys");
+        p->keybinding_settings = g_settings_new ("org.mate.SettingsDaemon.plugins.media-keys");
     }
-
-  else if (is_gnome() || is_unity())
-    p->keybinding_settings = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
+  else if (ayatana_common_utils_is_budgie())
+    {
+        p->keybinding_settings = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
+    }
+  else if (ayatana_common_utils_is_gnome() || ayatana_common_utils_is_unity())
+    {
+        p->keybinding_settings = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
+    }
 
   self->priv = p;
 

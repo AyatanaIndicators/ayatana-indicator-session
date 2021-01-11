@@ -24,7 +24,7 @@
 #include "recoverable-problem.h"
 #include "service.h"
 
-#include "utils.h"
+#include <ayatana/common/utils.h>
 
 #define BUS_NAME "org.ayatana.indicator.session"
 #define BUS_PATH "/org/ayatana/indicator/session"

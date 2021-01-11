@@ -9,7 +9,6 @@ Build-Depends: cmake,
                intltool,
                libglib2.0-dev (>= 2.36),
                libgtest-dev,
-               liburl-dispatcher1-dev | hello,
                systemd [linux-any],
 Standards-Version: 4.1.1
 Homepage: https://github.com/AyatanaIndicators/ayatana-indicator-session

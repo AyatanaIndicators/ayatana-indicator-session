@@ -1,6 +1,106 @@
-2020-09-10 21:23:58 +0200 Mike Gabriel
+2021-01-28 16:58:43 +0100 Mike Gabriel
 
-	* release 0.8.1 (HEAD -> master, tag: 0.8.1)
+	* release 0.8.2 (HEAD -> master, tag: 0.8.2)
+
+2021-01-13 21:21:42 +0000 Yoshida Shouyou (bba6180)
+
+	* Translated using Weblate (French)
+
+2020-12-30 03:14:12 +0000 J. Lavoie (31ee0e1)
+
+	* Translated using Weblate (Italian)
+
+2020-11-26 13:31:41 +0000 Ács Zoltán (56c077b)
+
+	* Translated using Weblate (Hungarian)
+
+2020-11-17 20:49:15 +0000 Quentin PAGÈS (243e0d0)
+
+	* Translated using Weblate (Occitan)
+
+2020-11-11 20:02:42 +0000 Oğuz Ersen (ea800df)
+
+	* Translated using Weblate (Turkish)
+
+2020-11-09 18:17:41 +0000 Milan Korecky (0f19de5)
+
+	* Translated using Weblate (Czech)
+
+2020-10-29 00:22:51 +0000 Milan Korecky (8cb1255)
+
+	* Translated using Weblate (Czech)
+
+2020-10-28 21:38:37 +0000 Joan CiberSheep (8bfdd72)
+
+	* Translated using Weblate (Catalan)
+
+2020-10-27 12:26:36 +0100 Hosted Weblate (25971f0)
+
+	* Update translation files
+
+2020-10-26 12:44:09 +0100 Weblate (94c0e6b)
+
+	* Added translation using Weblate (Afar)
+
+2020-10-26 12:44:05 +0100 Weblate (a235683)
+
+	* Added translation using Weblate (Assamese)
+
+2020-10-26 12:44:04 +0100 Weblate (e85a054)
+
+	* Added translation using Weblate (Wolof)
+
+2020-10-23 15:32:08 +0000 Quentin PAGÈS (d3363e4)
+
+	* Translated using Weblate (Occitan)
+
+2020-10-12 06:05:36 +0000 Nicholas Guriev (65ae835)
+
+	* Translated using Weblate (Russian)
+
+2020-10-04 11:27:04 +0000 Michal Čihař (1e422b8)
+
+	* Translated using Weblate (Hungarian)
+
+2020-10-04 11:27:28 +0000 Michal Čihař (de5e4ae)
+
+	* Translated using Weblate (Arabic)
+
+2020-09-28 17:30:21 +0000 Quentin PAGÈS (867210a)
+
+	* Translated using Weblate (Occitan)
+
+2020-09-28 04:33:34 +0000 Adolfo Jayme Barrientos (469f2e3)
+
+	* Translated using Weblate (Spanish)
+
+2020-09-25 14:33:24 +0000 Talking Panda (dd49d62)
+
+	* Translated using Weblate (Turkish)
+
+2020-09-24 18:27:01 +0000 Quentin PAGÈS (7a1d808)
+
+	* Translated using Weblate (Occitan)
+
+2020-09-23 20:18:21 +0000 Viktar Vauchkevich (e97bbf2)
+
+	* Translated using Weblate (Belarusian)
+
+2020-09-20 10:14:14 +0200 Mike Gabriel (94dfc37)
+
+	* Merge branch 'tari01-pr/icons-dir'
+
+2020-09-19 19:25:50 +0200 Robert Tari (b5b656e)
+
+	* CMakeLists.txt: Fix duplicate icons directory
+
+2020-09-19 19:24:54 +0200 Robert Tari (6385ea5)
+
+	* Whitespace fix
+
+2020-09-10 21:23:58 +0200 Mike Gabriel (2ed9c23)
+
+	* release 0.8.1 (tag: 0.8.1)
 
 2020-09-10 21:06:09 +0200 Mike Gabriel (7938e6e)
 

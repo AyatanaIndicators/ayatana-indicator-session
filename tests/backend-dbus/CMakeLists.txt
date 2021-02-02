@@ -32,6 +32,8 @@ add_library (desktopmock STATIC
              mock-webcredentials.cc
              mock-webcredentials.h)
 
+add_dependencies(desktopmock dbusbackend)
+
 include_directories (${SERVICE_INCLUDE_DIRS})
 include_directories (${CMAKE_SOURCE_DIR}/src)
 include_directories (${CMAKE_BINARY_DIR}/src)

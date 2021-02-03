@@ -21,7 +21,7 @@
 #include <glib/gi18n.h>
 
 #ifdef HAS_URLDISPATCHER
-# include <url-dispatcher.h>
+# include <lomiri-url-dispatcher.h>
 #endif
 
 #include "dbus-end-session-dialog.h"
@@ -783,7 +783,7 @@ my_bug (IndicatorSessionActions * self G_GNUC_UNUSED)
 
 #ifdef HAS_URLDISPATCHER
   if (g_getenv ("MIR_SOCKET") != NULL)
-    url_dispatch_send(bts_url, NULL, NULL);
+    lomiri_url_dispatch_send(bts_url, NULL, NULL);
   else
 #endif
     {
@@ -1096,7 +1096,7 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
 #ifdef HAS_URLDISPATCHER
   if (g_getenv ("MIR_SOCKET") != NULL)
-    url_dispatch_send("settings:///system", NULL, NULL);
+    lomiri_url_dispatch_send("settings:///system", NULL, NULL);
   else
 #endif
   if (have_unity_control_center ())
@@ -1118,7 +1118,7 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
 #ifdef HAS_URLDISPATCHER
   if (g_getenv ("MIR_SOCKET") != NULL)
-    url_dispatch_send("settings:///system/online-accounts", NULL, NULL);
+    lomiri_url_dispatch_send("settings:///system/online-accounts", NULL, NULL);
   else
 #endif
   if (have_unity_control_center ())
@@ -1136,7 +1136,7 @@ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
 #ifdef HAS_URLDISPATCHER
   if (g_getenv ("MIR_SOCKET") != NULL)
-    url_dispatch_send("settings:///system/about", NULL, NULL);
+    lomiri_url_dispatch_send("settings:///system/about", NULL, NULL);
   else
 #endif
   if (have_unity_control_center ())

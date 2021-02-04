@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-05-23 16:41+0000\n"
-"Last-Translator: george k <norhorn@gmail.com>\n"
+"PO-Revision-Date: 2021-02-05 23:41+0000\n"
+"Last-Translator: Michalis <michalisntovas@yahoo.gr>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/el/>\n"
 "Language: el\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.5-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -137,7 +137,7 @@ msgstr "Αποσύνδεση"
 
 #: ../src/service.c:715
 msgid "Suspend"
-msgstr "Αναστολή"
+msgstr "Αναστολή λειτουργίας"
 
 #: ../src/service.c:718
 msgid "Hibernate"

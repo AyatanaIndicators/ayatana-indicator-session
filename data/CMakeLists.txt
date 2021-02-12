@@ -90,6 +90,3 @@ install (DIRECTORY
          icons/scalable
          DESTINATION "${ICON_DIR}"
          FILES_MATCHING PATTERN "*.png" PATTERN "*.svg")
-
-install(CODE "execute_process (COMMAND gtk-update-icon-cache -t -f ${ICON_DIR})"
-        CODE "message (STATUS \"Updating icon cache\")")

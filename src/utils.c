@@ -106,8 +106,8 @@ get_os_release (void)
               val = g_strdup(in);
               g_clear_error(&error);
             }
- 
-          g_debug("from \"%s\": key [%s] val [%s]", os_release, key->str, val); 
+
+          g_debug("from \"%s\": key [%s] val [%s]", os_release, key->str, val);
           g_hash_table_insert (hash, g_strdup(key->str), val); /* hash owns val now */
         }
 

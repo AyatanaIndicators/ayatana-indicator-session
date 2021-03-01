@@ -106,8 +106,8 @@ get_os_release (void)
               val = g_strdup(in);
               g_clear_error(&error);
             }
- 
-          g_debug("from \"%s\": key [%s] val [%s]", os_release, key->str, val); 
+
+          g_debug("from \"%s\": key [%s] val [%s]", os_release, key->str, val);
           g_hash_table_insert (hash, g_strdup(key->str), val); /* hash owns val now */
         }
 
@@ -144,9 +144,18 @@ get_distro_url (void)
   if (distro_url == NULL)
     {
       GHashTable * os_release = get_os_release();
-      gpointer value = g_hash_table_lookup(os_release, "HOME_URL");
+      gpointer value = g_hash_table_lookup(os_release, "SUPPORT_URL");
+
       if (value == NULL)
-        value = "https://www.gnu.org"; /* fallback value */
+      {
+        value = g_hash_table_lookup(os_release, "HOME_URL");
+
+        if (value == NULL)
+        {
+            value = "https://www.gnu.org"; /* fallback value */
+        }
+      }
+
       distro_url = g_strdup(value);
       g_hash_table_destroy(os_release);
     }

@@ -9,6 +9,9 @@ include /usr/share/dpkg/buildflags.mk
 %:
 	dh $@ --with systemd
 
+override_dh_auto_configure:
+	dh_auto_configure -- -DENABLE_TESTS=ON
+
 override_dh_install:
 	find debian/ayatana-indicator-session/usr/lib -name *.la -delete
 	find debian/ayatana-indicator-session/usr/lib -name *.a -delete

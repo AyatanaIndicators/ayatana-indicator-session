@@ -35,6 +35,22 @@ requires:
     - libgtest-dev
     - dbus
 
+  debian:stable:
+    # Useful URL: https://salsa.debian.org/debian-ayatana-team/ayatana-ido
+    - autopoint
+    - clang
+    - clang-tools
+    - g++
+    - cppcheck
+    - git
+    - cmake
+    - cmake-extras
+    - mate-common
+    - intltool
+    - libglib2.0-dev
+    - libgtest-dev
+    - dbus
+
   ubuntu:
     - autopoint
     - clang
@@ -48,6 +64,19 @@ requires:
     - libglib2.0-dev
     - libgtest-dev
     - liblomiri-url-dispatcher-dev
+
+  ubuntu:focal:
+    - autopoint
+    - clang
+    - clang-tools
+    - g++
+    - git
+    - cmake
+    - cmake-extras
+    - mate-common
+    - intltool
+    - libglib2.0-dev
+    - libgtest-dev
 
 variables:
   - 'CHECKERS="

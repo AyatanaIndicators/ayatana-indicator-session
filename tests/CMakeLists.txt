@@ -18,7 +18,7 @@ add_custom_command (OUTPUT gschemas.compiled
                             ${CMAKE_SOURCE_DIR}/tests/org.gnome.desktop.lockdown.gschema.xml
                             ${CMAKE_SOURCE_DIR}/tests/org.gnome.settings-daemon.plugins.media-keys.gschema.xml
                     COMMAND cp -f ${CMAKE_BINARY_DIR}/data/*gschema.xml ${SCHEMA_DIR}
-                    COMMAND cp -f ${CMAKE_SOURCE_DIR}/tests/*gschema.xml ${SCHEMA_DIR}
+                    COMMAND if [ \"x${CMAKE_SOURCE_DIR}/tests\" != \"x${SCHEMA_DIR}\" ]; then cp -f \"${CMAKE_SOURCE_DIR}/tests/\"*gschema.xml \"${SCHEMA_DIR}\"\; fi
                     COMMAND ${COMPILE_SCHEMA_EXECUTABLE} ${SCHEMA_DIR})
 
 # DBus Activation

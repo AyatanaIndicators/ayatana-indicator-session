@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-11-10 18:28+0000\n"
-"Last-Translator: Milan Korecky <milan.korecky@gmail.com>\n"
+"PO-Revision-Date: 2021-05-02 16:32+0000\n"
+"Last-Translator: Tomáš Marný <tomik.marny@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/cs/>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 4.7-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -74,7 +74,7 @@ msgstr "Host"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr "%s Nápověda k desktopu"
+msgstr "Nápověda k prostředí %s"
 
 #: ../src/service.c:344
 #, c-format
@@ -95,7 +95,7 @@ msgstr "Nastavení systému…"
 
 #: ../src/service.c:364
 msgid "Online Accounts…"
-msgstr "Online účty…"
+msgstr "On-line účty…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
@@ -193,7 +193,7 @@ msgstr "Některé aktualizace softwaru budou uplatněny až po restartu počíta
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
 #: ../src/backend-dbus/actions.c:976
 msgid "Cancel"
-msgstr "Storno"
+msgstr "Zrušit"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"

@@ -5,8 +5,7 @@ Unity7, MATE and Lomiri (optionally for others, e.g. XFCE, LXDE). Its
 behavior and features are listed at
 https://wiki.ayatana-indicators.org/AyatanaIndicatorSession
 
-For instructions on building and running built-in tests, see the INSTALL file.
-
+For instructions on building and running built-in tests, see the INSTALL.md file.
 
 ## Notes for Client Renderers
 

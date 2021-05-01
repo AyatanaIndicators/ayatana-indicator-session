@@ -55,6 +55,11 @@ is_mate ()
   return is_xdg_current_desktop(DESKTOP_MATE);
 }
 
+gboolean is_budgie()
+{
+    return is_xdg_current_desktop(DESKTOP_BUDGIE);
+}
+
 gboolean
 is_xfce ()
 {

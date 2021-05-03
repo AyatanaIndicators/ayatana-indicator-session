@@ -3,7 +3,7 @@
 ##########################################################
 requires:
   archlinux:
-    # Useful URL: https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=ayatana-indicator-keyboard
+    # Useful URL: https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=ayatana-indicator-session
     - clang
     - gcc
     - git
@@ -19,7 +19,7 @@ requires:
     - systemd
 
   debian:
-    # Useful URL: https://salsa.debian.org/debian-ayatana-team/ayatana-ido
+    # Useful URL: https://salsa.debian.org/debian-ayatana-team/ayatana-session
     - autopoint
     - clang
     - clang-tools
@@ -36,7 +36,6 @@ requires:
     - dbus
 
   debian:stable:
-    # Useful URL: https://salsa.debian.org/debian-ayatana-team/ayatana-ido
     - autopoint
     - clang
     - clang-tools

@@ -3,6 +3,8 @@ set_directory_properties (PROPERTIES
                           ADDITIONAL_MAKE_CLEAN_FILES gschemas.compiled)
 set_source_files_properties (gschemas.compiled GENERATED)
 
+SET(COVERAGE_TEST_TARGETS "")
+
 # GSettings:
 # compile the schemas our tests use (ayatana-indicator-session's, lockdown, media-keys)
 # into a gschemas.compiled file in this directory, and help the tests to find
@@ -52,5 +54,7 @@ set_target_properties (test-service PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS
 add_test (test-service test-service)
 add_dependencies (test-service libayatanaindicatorsessionservice backendmock gschemas-compiled)
 target_link_libraries (test-service libayatanaindicatorsessionservice backendmock gtest ${SERVICE_LIBRARIES} ${GTEST_LIBS})
+
+SET(COVERAGE_TEST_TARGETS "${COVERAGE_TEST_TARGETS} test-service")
 
 add_subdirectory (backend-dbus)

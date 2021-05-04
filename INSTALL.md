@@ -21,7 +21,7 @@
 
  - gettext (>= 0.18.1.1-10ubuntu3)
  - glib2.0 (>= 2.35.4)
- - optional: liblomiri-url-dispatcher-dev (>= 0.1)
+ - libayatana-common-dev (>= 0.9.1)
  - cmake (>= 3.13)
  - gcovr (>= 2.4)
  - lcov (>= 1.9)

@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:20+0200\n"
-"PO-Revision-Date: 2020-05-28 01:41+0000\n"
-"Last-Translator: wdggg <wdggg7@gmail.com>\n"
+"PO-Revision-Date: 2021-05-18 02:33+0000\n"
+"Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 4.7-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -215,7 +215,6 @@ msgstr ""
 "任何浏览器。"
 
 #: ../src/backend-dbus/actions.c:1044
-#, fuzzy
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -226,7 +225,7 @@ msgstr ""
 "Ayatana会话指示器尚不知道如何显示\n"
 "当前正在运行的桌面的用户指南或帮助中心。\n"
 "\n"
-"请将此问题反映给开发者：\n"
+"请使用如下链接将此问题反映给开发者：\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060

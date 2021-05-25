@@ -31,16 +31,10 @@ set (CMAKE_INSTALL_FULL_PKGLIBEXECDIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}/${CMAKE_
 find_package (PkgConfig REQUIRED)
 include (FindPkgConfig)
 pkg_check_modules (SERVICE REQUIRED
+                   libayatana-common>=0.9.2
                    glib-2.0>=2.36
                    gio-unix-2.0>=2.36)
 include_directories (${SERVICE_INCLUDE_DIRS})
-
-set(URL_DISPATCHER_REQUIRED_VERSION 0)
-pkg_check_modules(
-  URLDISPATCHER
-  lomiri-url-dispatcher>=${URL_DISPATCHER_REQUIRED_VERSION}
-)
-include_directories(${URLDISPATCHER_INCLUDE_DIRS})
 
 set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")
 

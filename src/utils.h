@@ -20,22 +20,6 @@
 #include <glib.h>
 #include <string.h>
 
-
-/* XDG_CURRENT_DESKTOP environment variable values
- * as set by well-known desktop environments
- */
-#define DESKTOP_UNITY  "Unity"
-#define DESKTOP_MATE   "MATE"
-#define DESKTOP_BUDGIE "Budgie:GNOME"
-#define DESKTOP_GNOME  "GNOME"
-#define DESKTOP_XFCE   "XFCE"
-
-gboolean is_unity();
-gboolean is_gnome();
-gboolean is_mate();
-gboolean is_budgie();
-gboolean is_xfce();
-
 const char* get_distro_name();
 const char* get_distro_url();
 const char* get_distro_bts_url();

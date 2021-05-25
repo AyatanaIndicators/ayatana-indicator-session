@@ -20,9 +20,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#ifdef HAS_URLDISPATCHER
-# include <lomiri-url-dispatcher.h>
-#endif
+#include <ayatana/common/utils.h>
 
 #include "dbus-end-session-dialog.h"
 #include "dbus-login1-manager.h"
@@ -34,11 +32,6 @@
 #include "actions.h"
 
 #include "../utils.h"
-
-/* some prototypes... */
-static char *   find_browser ();
-static void     run_outside_app (const char * cmd);
-static gboolean zenity_warning (const char * icon_name, const char * title, const char * text);
 
 enum
 {
@@ -106,60 +99,6 @@ typedef enum
 }
 prompt_status_t;
 
-
-static gboolean
-have_gnome_program (const gchar *program)
-{
-  g_auto(GStrv) desktop_names = NULL;
-
-  if (is_gnome()) {
-    g_autofree gchar *path = g_find_program_in_path (program);
-    return path != NULL;
-  }
-
-  return FALSE;
-}
-
-static gboolean
-have_mate_program (const gchar *program)
-{
-  g_auto(GStrv) desktop_names = NULL;
-
-  if (is_mate()) {
-    g_autofree gchar *path = g_find_program_in_path (program);
-    return path != NULL;
-  }
-
-  return FALSE;
-}
-
-static gboolean have_budgie_program(const gchar *program)
-{
-    g_auto(GStrv) desktop_names = NULL;
-
-    if (is_budgie())
-    {
-        g_autofree gchar *path = g_find_program_in_path(program);
-
-        return path != NULL;
-    }
-
-    return FALSE;
-}
-
-static gboolean
-have_xfce_program (const gchar *program)
-{
-  g_auto(GStrv) desktop_names = NULL;
-
-  if (is_xfce()) {
-    g_autofree gchar *path = g_find_program_in_path (program);
-    return path != NULL;
-  }
-
-  return FALSE;
-}
-
 static prompt_status_t
 get_prompt_status (IndicatorSessionActionsDbus * self)
 {
@@ -169,17 +108,17 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-logout-restart-shutdown"))
     {
       /* can we use the MATE prompt? */
-      if ((prompt == PROMPT_NONE) && have_mate_program ("mate-session-save"))
+      if ((prompt == PROMPT_NONE) && ayatana_common_utils_have_mate_program ("mate-session-save"))
           prompt = PROMPT_WITH_MATE;
 
         // can we use the BUDGIE (currently GNOME) prompt?
-        if ((prompt == PROMPT_NONE) && have_budgie_program("gnome-session-quit"))
+        if ((prompt == PROMPT_NONE) && ayatana_common_utils_have_budgie_program("gnome-session-quit"))
         {
             prompt = PROMPT_WITH_BUDGIE;
         }
 
       /* can we use the XFCE prompt? */
-      if ((prompt == PROMPT_NONE) && have_xfce_program ("xfce4-session-logout"))
+      if ((prompt == PROMPT_NONE) && ayatana_common_utils_have_xfce_program ("xfce4-session-logout"))
           prompt = PROMPT_WITH_XFCE;
 
       /* can we use the Unity/Ayatana prompt? */
@@ -475,7 +414,7 @@ my_can_reboot (IndicatorSessionActions * actions)
   /* Shutdown and Restart are the same dialog prompt in Unity,
      so disable the redundant 'Restart' menuitem in that mode */
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-shutdown-menuitem"))
-    if (is_unity())
+    if (ayatana_common_utils_is_unity())
       return FALSE;
 
   return TRUE;
@@ -799,84 +738,10 @@ zenity_question (IndicatorSessionActionsDbus * self,
 static void
 my_bug (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  const  char * bts_url = get_distro_bts_url();
-  static char * browser = NULL;
-
-#ifdef HAS_URLDISPATCHER
-  if (g_getenv ("MIR_SOCKET") != NULL)
-    lomiri_url_dispatch_send(bts_url, NULL, NULL);
-  else
-#endif
-    {
-
-      if (browser == NULL)
-        browser = find_browser();
-
-      if (browser != NULL)
-        run_outside_app(g_strdup_printf("%s '%s'", browser, bts_url));
-
-      else
-        zenity_warning ("dialog-warning",
-                        _("Warning"),
-                        _("The operating system's bug tracker needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
-
-    }
-}
-
-static gboolean
-zenity_warning (const char * icon_name,
-                const char * title,
-                const char * text)
-{
-  char * command_line;
-  int exit_status;
-  GError * error;
-  gboolean confirmed;
-  char * zenity;
-
-  confirmed = FALSE;
-  zenity = g_find_program_in_path ("zenity");
-
-  if (zenity)
-    {
-      command_line = g_strdup_printf ("%s"
-                                      " --warning"
-                                      " --icon-name=\"%s\""
-                                      " --title=\"%s\""
-                                      " --text=\"%s\""
-                                      " --no-wrap",
-                                      zenity,
-                                      icon_name,
-                                      title,
-                                      text);
-
-      /* Treat errors as user confirmation.
-         Otherwise how will the user ever log out? */
-      exit_status = -1;
-      error = NULL;
-      if (!g_spawn_command_line_sync (command_line, NULL, NULL, &exit_status, &error))
-        {
-          confirmed = TRUE;
-        }
-      else
-        {
-          confirmed = g_spawn_check_exit_status (exit_status, &error);
-        }
-
-      log_and_clear_error (&error, G_STRLOC, G_STRFUNC);
-      g_free (command_line);
-    }
-  g_free (zenity);
-  return confirmed;
-}
-
-static void
-run_outside_app (const char * cmd)
-{
-  GError * err = NULL;
-  g_debug ("%s calling \"%s\"", G_STRFUNC, cmd);
-  g_spawn_command_line_async (cmd, &err);
-  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
+  if (!ayatana_common_utils_open_url(get_distro_bts_url()))
+    ayatana_common_utils_zenity_warning ("dialog-warning",
+                    _("Warning"),
+                    _("The operating system's bug tracker needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
 }
 
 static void
@@ -892,16 +757,13 @@ my_logout (IndicatorSessionActions * actions)
 
       case PROMPT_WITH_MATE:
         /* --logout-dialog presents Logout and (if available) Switch User options */
-        run_outside_app ("mate-session-save --logout-dialog");
+        ayatana_common_utils_execute_command ("mate-session-save --logout-dialog");
         break;
-        case PROMPT_WITH_BUDGIE:
-        {
-            run_outside_app("gnome-session-quit --logout");
-
-            break;
-        }
+      case PROMPT_WITH_BUDGIE:
+        ayatana_common_utils_execute_command("gnome-session-quit --logout");
+        break;
       case PROMPT_WITH_XFCE:
-        run_outside_app ("xfce4-session-logout");
+        ayatana_common_utils_execute_command ("xfce4-session-logout");
         break;
 
       case PROMPT_NONE:
@@ -943,16 +805,13 @@ my_reboot (IndicatorSessionActions * actions)
 
       case PROMPT_WITH_MATE:
         /* --shutdown-dialog presents Restart, Shutdown and (if available) Suspend options */
-        run_outside_app ("mate-session-save --shutdown-dialog");
+        ayatana_common_utils_execute_command ("mate-session-save --shutdown-dialog");
         break;
-        case PROMPT_WITH_BUDGIE:
-        {
-            run_outside_app("gnome-session-quit --reboot");
-
-            break;
-        }
+      case PROMPT_WITH_BUDGIE:
+        ayatana_common_utils_execute_command("gnome-session-quit --reboot");
+        break;
       case PROMPT_WITH_XFCE:
-        run_outside_app ("xfce4-session-logout");
+        ayatana_common_utils_execute_command ("xfce4-session-logout");
         break;
 
       case PROMPT_NONE:
@@ -981,7 +840,7 @@ my_power_off (IndicatorSessionActions * actions)
       case PROMPT_WITH_AYATANA:
         /* NB: TYPE_REBOOT instead of TYPE_SHUTDOWN because
            the latter adds lock & logout options in Unity... */
-        if (is_unity())
+        if (ayatana_common_utils_is_unity())
           show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
         else
           show_desktop_end_session_dialog (self, END_SESSION_TYPE_SHUTDOWN);
@@ -989,16 +848,13 @@ my_power_off (IndicatorSessionActions * actions)
 
       case PROMPT_WITH_MATE:
         /* --shutdown-dialog presents Restart, Shutdown and (if available) Suspend options */
-        run_outside_app ("mate-session-save --shutdown-dialog");
+        ayatana_common_utils_execute_command ("mate-session-save --shutdown-dialog");
         break;
-        case PROMPT_WITH_BUDGIE:
-        {
-            run_outside_app("gnome-session-quit --power-off");
-
-            break;
-        }
+      case PROMPT_WITH_BUDGIE:
+        ayatana_common_utils_execute_command("gnome-session-quit --power-off");
+        break;
       case PROMPT_WITH_XFCE:
-        run_outside_app ("xfce4-session-logout");
+        ayatana_common_utils_execute_command ("xfce4-session-logout");
         break;
 
       case PROMPT_WITH_ZENITY:
@@ -1021,63 +877,23 @@ my_power_off (IndicatorSessionActions * actions)
 ****
 ***/
 
-static char *
-find_browser ()
-{
-  static char * browser_path = NULL;
-  char* tmp_browser_path;
-  gchar **browser_names;
-
-  int i;
-
-  if (browser_path == NULL)
-  {
-
-    browser_names = g_strsplit ("x-www-browser,google-chrome,firefox,chromium", ",", 0);
-
-    for (i = 0; browser_names[i]; ++i) {
-
-      tmp_browser_path = g_find_program_in_path (browser_names[i]);
-
-      if (tmp_browser_path) {
-        browser_path = g_strdup (tmp_browser_path);
-        g_free (tmp_browser_path);
-        g_strfreev (browser_names);
-        break;
-      }
-    }
-  }
-
-  return browser_path;
-
-}
-
 static void
 my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  static char * browser = NULL;
-
-    if (have_budgie_program ("yelp"))
-    {
-        run_outside_app ("yelp help:gnome-user-guide");
-    }
-  else if (have_gnome_program ("yelp"))
-    run_outside_app ("yelp help:gnome-user-guide");
-  else if (have_mate_program ("yelp"))
-    run_outside_app ("yelp help:mate-user-guide");
-  else if (is_xfce())
-    {
-      if (browser == NULL)
-        browser = find_browser();
-      if (browser != NULL)
-        run_outside_app(g_strdup_printf("%s '%s'", browser, "https://docs.xfce.org/"));
-      else
-        zenity_warning ("dialog-warning",
-                        _("Warning"),
-                        _("The XFCE desktop's user guide needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
-    }
+  if (ayatana_common_utils_have_budgie_program ("yelp"))
+    ayatana_common_utils_execute_command ("yelp help:gnome-user-guide");
+  else if (ayatana_common_utils_have_gnome_program ("yelp"))
+    ayatana_common_utils_execute_command ("yelp help:gnome-user-guide");
+  else if (ayatana_common_utils_have_mate_program ("yelp"))
+    ayatana_common_utils_execute_command ("yelp help:mate-user-guide");
+  else if (ayatana_common_utils_is_xfce()) {
+    if (!ayatana_common_utils_open_url("https://docs.xfce.org/"))
+      ayatana_common_utils_zenity_warning ("dialog-warning",
+                      _("Warning"),
+                      _("The XFCE desktop's user guide needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
+  }
   else
-    zenity_warning ("dialog-warning",
+    ayatana_common_utils_zenity_warning ("dialog-warning",
                     _("Warning"),
                     _("The Ayatana Session Indicator does not know yet, how to show\nthe currently running desktop's user guide or help center.\n\nPlease report this to the developers at:\nhttps://github.com/ArcticaProject/ayatana-indicator-session/issues"));
 }
@@ -1085,74 +901,27 @@ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 static void
 my_distro_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  static char * browser = NULL;
-
-  if (browser == NULL)
-    browser = find_browser();
-
-  if (browser != NULL)
-    run_outside_app(g_strdup_printf("%s '%s'", browser, get_distro_url()));
-  else
-    zenity_warning ("dialog-warning",
+  if (!ayatana_common_utils_open_url(get_distro_url()))
+    ayatana_common_utils_zenity_warning ("dialog-warning",
                     _("Warning"),
                     g_strdup_printf(_("Displaying information on %s  requires\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."), get_distro_name()));
-}
-
-
-static gboolean
-have_unity_control_center (void)
-{
-  gchar *path;
-  gboolean have_ucc;
-
-  if (!is_unity())
-    return FALSE;
-
-  path = g_find_program_in_path ("unity-control-center");
-  have_ucc = path != NULL;
-  g_free (path);
-
-  return have_ucc;
-}
-
-static gboolean
-have_gnome_control_center (void)
-{
-  gchar *path;
-  gboolean have_gcc;
-
-  if (!is_gnome())
-    return FALSE;
-
-  path = g_find_program_in_path ("gnome-control-center");
-  have_gcc = path != NULL;
-  g_free (path);
-
-  return have_gcc;
 }
 
 static void
 my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-#ifdef HAS_URLDISPATCHER
-  if (g_getenv ("MIR_SOCKET") != NULL)
-    lomiri_url_dispatch_send("settings:///system", NULL, NULL);
+  if (ayatana_common_utils_is_lomiri())
+    ayatana_common_utils_open_url("settings:///system");
+  else if (ayatana_common_utils_have_unity_program("unity-control-center"))
+    ayatana_common_utils_execute_command ("unity-control-center");
+  else if (ayatana_common_utils_have_gnome_program("gnome-control-center"))
+    ayatana_common_utils_execute_command ("gnome-control-center");
+  else if (ayatana_common_utils_have_mate_program ("mate-control-center"))
+    ayatana_common_utils_execute_command ("mate-control-center");
+  else if (ayatana_common_utils_have_xfce_program ("xfce4-settings-manager"))
+    ayatana_common_utils_execute_command ("xfce4-settings-manager");
   else
-#endif
-  if (have_unity_control_center ())
-    run_outside_app ("unity-control-center");
-    else if (have_budgie_program("gnome-control-center"))
-    {
-        run_outside_app("gnome-control-center");
-    }
-  else if (have_gnome_control_center())
-    run_outside_app ("gnome-control-center");
-  else if (have_mate_program ("mate-control-center"))
-    run_outside_app ("mate-control-center");
-  else if (have_xfce_program ("xfce4-settings-manager"))
-    run_outside_app ("xfce4-settings-manager");
-  else
-    zenity_warning ("dialog-warning",
+    ayatana_common_utils_zenity_warning ("dialog-warning",
                     _("Warning"),
                     _("The Ayatana Session Indicator does not support evoking the system\nsettings application for your desktop environment, yet.\n\nPlease report this to the developers at:\nhttps://github.com/ArcticaProject/ayatana-indicator-session/issues"));
 }
@@ -1160,17 +929,14 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
 static void
 my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-#ifdef HAS_URLDISPATCHER
-  if (g_getenv ("MIR_SOCKET") != NULL)
-    lomiri_url_dispatch_send("settings:///system/online-accounts", NULL, NULL);
+  if (ayatana_common_utils_is_lomiri())
+    ayatana_common_utils_open_url("settings:///system/online-accounts");
+  else if (ayatana_common_utils_have_unity_program("unity-control-center"))
+    ayatana_common_utils_execute_command ("unity-control-center credentials");
+  else if (ayatana_common_utils_have_gnome_program("gnome-control-center"))
+    ayatana_common_utils_execute_command ("gnome-control-center credentials");
   else
-#endif
-  if (have_unity_control_center ())
-    run_outside_app ("unity-control-center credentials");
-  else if (have_gnome_control_center())
-    run_outside_app ("gnome-control-center credentials");
-  else
-    zenity_warning ("dialog-warning",
+    ayatana_common_utils_zenity_warning ("dialog-warning",
                     _("Warning"),
                     _("The Ayatana Session Indicator does not support password changes\nfor your desktop environment, yet.\n\nPlease report this to the developers at:\nhttps://github.com/ArcticaProject/ayatana-indicator-session/issues"));
 }
@@ -1178,25 +944,20 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
 static void
 my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-#ifdef HAS_URLDISPATCHER
-  if (g_getenv ("MIR_SOCKET") != NULL)
-    lomiri_url_dispatch_send("settings:///system/about", NULL, NULL);
+  if (ayatana_common_utils_is_lomiri())
+    ayatana_common_utils_open_url("settings:///system/about");
+  else if (ayatana_common_utils_have_unity_program("unity-control-center"))
+    ayatana_common_utils_execute_command ("unity-control-center info");
+  else if (ayatana_common_utils_have_budgie_program("gnome-control-center"))
+    ayatana_common_utils_execute_command ("gnome-control-center info-overview");
+  else if (ayatana_common_utils_have_gnome_program("gnome-control-center"))
+    ayatana_common_utils_execute_command ("gnome-control-center info");
+  else if (ayatana_common_utils_have_mate_program ("mate-system-monitor"))
+    ayatana_common_utils_execute_command ("mate-system-monitor --show-system-tab");
+  else if (ayatana_common_utils_have_xfce_program ("xfce4-about"))
+    ayatana_common_utils_execute_command ("xfce4-about");
   else
-#endif
-  if (have_unity_control_center ())
-    run_outside_app ("unity-control-center info");
-    else if (have_budgie_program("gnome-control-center"))
-    {
-        run_outside_app("gnome-control-center info-overview");
-    }
-  else if (have_gnome_control_center())
-    run_outside_app ("gnome-control-center info");
-  else if (have_mate_program ("mate-system-monitor"))
-    run_outside_app ("mate-system-monitor --show-system-tab");
-  else if (have_xfce_program ("xfce4-about"))
-    run_outside_app ("xfce4-about");
-  else
-    zenity_warning ("dialog-warning",
+    ayatana_common_utils_zenity_warning ("dialog-warning",
                     _("Warning"),
                     _("The Ayatana Session Indicator does not know yet, how to show\ninformation of the currently running desktop environment.\n\nPlease report this to the developers at:\nhttps://github.com/ArcticaProject/ayatana-indicator-session/issues"));
 }
@@ -1221,17 +982,17 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
           desktop_session_call_lock (p->desktop_session, p->cancellable, NULL, NULL);
         }
     }
-  else if (have_mate_program ("mate-screensaver-command"))
+  else if (ayatana_common_utils_have_mate_program ("mate-screensaver-command"))
     {
-      run_outside_app ("mate-screensaver-command --lock");
+      ayatana_common_utils_execute_command ("mate-screensaver-command --lock");
     }
-    else if (have_budgie_program("gnome-screensaver-command"))
+  else if (ayatana_common_utils_have_budgie_program("gnome-screensaver-command"))
     {
-        run_outside_app("gnome-screensaver-command --lock");
+        ayatana_common_utils_execute_command("gnome-screensaver-command --lock");
     }
-  else if (have_xfce_program ("xflock4"))
+  else if (ayatana_common_utils_have_xfce_program ("xflock4"))
     {
-      run_outside_app ("xflock4");
+      ayatana_common_utils_execute_command ("xflock4");
     }
   else
     {

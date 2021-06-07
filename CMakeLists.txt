@@ -1,5 +1,5 @@
 project (ayatana-indicator-session C CXX)
-cmake_minimum_required (VERSION 2.8.9)
+cmake_minimum_required (VERSION 3.13)
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
@@ -19,7 +19,7 @@ endif()
 
 ##
 ##  GNU standard installation directories
-## 
+##
 include (GNUInstallDirs)
 set (CMAKE_INSTALL_PKGLIBEXECDIR "${CMAKE_INSTALL_LIBEXECDIR}/${CMAKE_PROJECT_NAME}")
 set (CMAKE_INSTALL_FULL_PKGLIBEXECDIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}/${CMAKE_PROJECT_NAME}")

@@ -20,12 +20,12 @@
 ## Compile-time build dependencies
 
  - gettext (>= 0.18.1.1-10ubuntu3)
- - glib2.0 (>= 2.35.4)
- - libayatana-common-dev (>= 0.9.1)
+ - glib-2.0 (>= 2.35.4)
+ - libayatana-common (>= 0.9.1)
  - cmake (>= 3.13)
  - gcovr (>= 2.4)
  - lcov (>= 1.9)
- - googletest (>= 1.6.0)
+ - gtest (>= 1.6.0)
  - cppcheck
 
 ## Runtime DBus dependencies

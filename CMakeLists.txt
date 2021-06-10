@@ -1,14 +1,18 @@
 project (ayatana-indicator-session C CXX)
 cmake_minimum_required (VERSION 3.13)
 
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    SET(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "..." FORCE)
+endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 set (PROJECT_VERSION "0.8.2")
 set (PACKAGE ${CMAKE_PROJECT_NAME})
 set (GETTEXT_PACKAGE "ayatana-indicator-session")
 
-option (ENABLE_TESTS "Build the package's automatic tests." OFF)
-option (ENABLE_COVERAGE "Generate lcov code coverage reports." OFF)
+option(ENABLE_TESTS "Enable all tests and checks" OFF)
+option(ENABLE_COVERAGE "Enable coverage reports (includes enabling all tests and checks)" OFF)
 
 if(ENABLE_COVERAGE)
     set(ENABLE_TESTS ON)
@@ -36,7 +40,17 @@ pkg_check_modules (SERVICE REQUIRED
                    gio-unix-2.0>=2.36)
 include_directories (${SERVICE_INCLUDE_DIRS})
 
-set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
+    set(COMPILE_FLAGS "${COMPILE_FLAGS} -Weverything")
+    set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wno-c++98-compat -Wno-padded")
+    set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wno-documentation")
+
+else()
+
+    set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wall")
+
+endif()
 
 set (ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
 add_custom_target (dist
@@ -75,3 +89,8 @@ add_subdirectory (po)
 if (${ENABLE_TESTS})
   add_subdirectory (tests)
 endif ()
+
+# Display config info
+
+message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "Unit tests: ${ENABLE_TESTS}")

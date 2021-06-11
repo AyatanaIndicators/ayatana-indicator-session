@@ -26,10 +26,5 @@ set_property (SOURCE main.c
               GETTEXT_PACKAGE="${GETTEXT_PACKAGE}"
               LOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}")
 add_executable (${SERVICE_EXEC} main.c)
-target_link_libraries (${SERVICE_EXEC} libayatanaindicatorsessionservice backenddbus ${SERVICE_LIBRARIES} ${GCOV_LIBS} ${URLDISPATCHER_LIBRARIES})
+target_link_libraries (${SERVICE_EXEC} libayatanaindicatorsessionservice backenddbus ${SERVICE_LIBRARIES} ${URLDISPATCHER_LIBRARIES})
 install (TARGETS ${SERVICE_EXEC} RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_PKGLIBEXECDIR})
-
-# common properties
-set_property (TARGET libayatanaindicatorsessionservice ${SERVICE_EXEC}
-              APPEND_STRING PROPERTY COMPILE_FLAGS
-              " -g ${CC_WARNING_ARGS} ${GCOV_FLAGS}")

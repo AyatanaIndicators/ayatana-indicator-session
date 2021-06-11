@@ -1,9 +1,11 @@
+find_package(GMock)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -no-pie")
+
 # build the necessary schemas
 set_directory_properties (PROPERTIES
                           ADDITIONAL_MAKE_CLEAN_FILES gschemas.compiled)
 set_source_files_properties (gschemas.compiled GENERATED)
-
-SET(COVERAGE_TEST_TARGETS "")
 
 # GSettings:
 # compile the schemas our tests use (ayatana-indicator-session's, lockdown, media-keys)
@@ -33,7 +35,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR} ${SERVICE_INCLUDE_DIRS})
 
 # backendmock
 add_library (backendmock STATIC
-             backend-mock-actions.c 
+             backend-mock-actions.c
              backend-mock-actions.h
              backend-mock.c
              backend-mock.h
@@ -41,7 +43,6 @@ add_library (backendmock STATIC
              backend-mock-guest.h
              backend-mock-users.c
              backend-mock-users.h)
-set_target_properties (backendmock PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS} -g")
 
 add_custom_target(
             gschemas-compiled ALL DEPENDS gschemas.compiled
@@ -50,11 +51,9 @@ add_custom_target(
 # test-service
 add_executable (test-service
                 test-service.cc)
-set_target_properties (test-service PROPERTIES COMPILE_FLAGS " ${CC_WARNING_ARGS} -std=c++0x -g")
+set_target_properties (test-service PROPERTIES COMPILE_FLAGS " -std=c++0x")
 add_test (test-service test-service)
 add_dependencies (test-service libayatanaindicatorsessionservice backendmock gschemas-compiled)
-target_link_libraries (test-service libayatanaindicatorsessionservice backendmock gtest ${SERVICE_LIBRARIES} ${GTEST_LIBS})
-
-SET(COVERAGE_TEST_TARGETS "${COVERAGE_TEST_TARGETS} test-service")
+target_link_libraries (test-service libayatanaindicatorsessionservice backendmock ${SERVICE_LIBRARIES} ${GTEST_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${GMOCK_LIBRARIES})
 
 add_subdirectory (backend-dbus)

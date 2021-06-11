@@ -1,11 +1,4 @@
-# build libgtest
-add_library (gtest STATIC 
-             ${GTEST_SOURCE_DIR}/gtest-all.cc 
-             ${GTEST_SOURCE_DIR}/gtest_main.cc)
-set_target_properties (gtest PROPERTIES INCLUDE_DIRECTORIES
-                       ${GTEST_INCLUDE_DIR})
-
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -g ${CC_WARNING_ARGS}")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
 # build desktopmock
 add_library (desktopmock STATIC
@@ -43,22 +36,16 @@ include_directories (${CMAKE_SOURCE_DIR}/tests)
 add_executable (test-actions
                 test-actions.cc)
 add_test (test-actions test-actions)
-set_tests_properties (test-actions PROPERTIES COMPILE_FLAGS "${SERVICE_CFLAGS}")
-target_link_libraries (test-actions desktopmock backenddbus libayatanaindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})
-SET(COVERAGE_TEST_TARGETS "${COVERAGE_TEST_TARGETS} test-actions")
+target_link_libraries (test-actions desktopmock backenddbus libayatanaindicatorsessionservice ${SERVICE_LDFLAGS} ${GTEST_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${GMOCK_LIBRARIES})
 
 # test the Guest class
 add_executable (test-guest
                 test-guest.cc)
 add_test (test-guest test-guest)
-set_tests_properties (test-guest PROPERTIES COMPILE_FLAGS "${SERVICE_CFLAGS}")
-target_link_libraries (test-guest desktopmock backenddbus libayatanaindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})
-SET(COVERAGE_TEST_TARGETS "${COVERAGE_TEST_TARGETS} test-guest")
+target_link_libraries (test-guest desktopmock backenddbus libayatanaindicatorsessionservice ${SERVICE_LDFLAGS} ${GTEST_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${GMOCK_LIBRARIES})
 
 # test the Users class
 add_executable (test-users
                 test-users.cc)
 add_test (test-users test-users)
-set_tests_properties (test-users PROPERTIES COMPILE_FLAGS "${SERVICE_CFLAGS}")
-target_link_libraries (test-users desktopmock backenddbus libayatanaindicatorsessionservice gtest ${SERVICE_LDFLAGS} ${GTEST_LIBS} ${GCOV_LIBS})
-SET(COVERAGE_TEST_TARGETS "${COVERAGE_TEST_TARGETS} test-users")
+target_link_libraries (test-users desktopmock backenddbus libayatanaindicatorsessionservice ${SERVICE_LDFLAGS} ${GTEST_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${GMOCK_LIBRARIES})

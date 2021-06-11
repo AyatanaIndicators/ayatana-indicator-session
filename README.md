@@ -40,8 +40,6 @@ Unity7, MATE and Lomiri (optionally for others, e.g. XFCE, LXDE). Its
 behavior and features are listed at
 https://wiki.ayatana-indicators.org/AyatanaIndicatorSession
 
-For instructions on building and running built-in tests, see the INSTALL.md file.
-
 ## Notes for Client Renderers
 
 Ayatana Indicator Session has two custom menuitems: the Guest and User
@@ -84,3 +82,11 @@ Mark, the user's (2) icon, (3) name, and (4) a Logged-In Mark.
    4. You can test for the Logged In Mark by checking the action's state.
       The state is a dictionary whose "is-logged-in" key yields a boolean.
       If the boolean is true, show the Logged In Mark.
+
+## License and Copyright
+
+See COPYING and AUTHORS file in this project.
+
+## Building and Testing
+
+For instructions on building and running built-in tests, see the INSTALL.md file.

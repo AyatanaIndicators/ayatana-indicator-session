@@ -23,6 +23,7 @@
  - glib-2.0 (>= 2.35.4)
  - libayatana-common (>= 0.9.1)
  - cmake (>= 3.13)
+ - cmake-extras
  - gcovr (>= 2.4)
  - lcov (>= 1.9)
  - gtest (>= 1.6.0)

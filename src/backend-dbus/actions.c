@@ -369,6 +369,9 @@ on_end_session_dialog_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res
     {
       INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv->end_session_dialog = end_session_dialog;
 
+      g_signal_connect_swapped (end_session_dialog, "notify::g-name-owner",
+                                G_CALLBACK(indicator_session_actions_notify_can_switch), gself);
+
       indicator_session_actions_notify_can_prompt (INDICATOR_SESSION_ACTIONS(gself));
       indicator_session_actions_notify_can_reboot (INDICATOR_SESSION_ACTIONS(gself));
     }
@@ -410,6 +413,9 @@ my_can_reboot (IndicatorSessionActions * actions)
 
   if (g_settings_get_boolean (p->indicator_settings, "suppress-restart-menuitem"))
     return FALSE;
+
+  if (g_settings_get_boolean (p->indicator_settings, "force-restart-menuitem"))
+    return TRUE;
 
   /* Shutdown and Restart are the same dialog prompt in Unity,
      so disable the redundant 'Restart' menuitem in that mode */
@@ -882,6 +888,8 @@ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   if (ayatana_common_utils_have_budgie_program ("yelp"))
     ayatana_common_utils_execute_command ("yelp help:gnome-user-guide");
+  else if (ayatana_common_utils_is_lomiri())
+    ayatana_common_utils_open_url("https://forums.ubports.com");
   else if (ayatana_common_utils_have_gnome_program ("yelp"))
     ayatana_common_utils_execute_command ("yelp help:gnome-user-guide");
   else if (ayatana_common_utils_have_mate_program ("yelp"))
@@ -1178,6 +1186,8 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
   g_signal_connect_swapped (s, "changed::suppress-restart-menuitem",
                             G_CALLBACK(indicator_session_actions_notify_can_reboot), self);
   g_signal_connect_swapped (s, "changed::suppress-shutdown-menuitem",
+                            G_CALLBACK(indicator_session_actions_notify_can_reboot), self);
+  g_signal_connect_swapped (s, "changed::force-restart-menuitem",
                             G_CALLBACK(indicator_session_actions_notify_can_reboot), self);
   p->indicator_settings = s;
 

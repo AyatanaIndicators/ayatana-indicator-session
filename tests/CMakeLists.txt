@@ -1,7 +1,5 @@
 find_package(GMock)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -no-pie")
-
 # build the necessary schemas
 set_directory_properties (PROPERTIES
                           ADDITIONAL_MAKE_CLEAN_FILES gschemas.compiled)
@@ -51,6 +49,7 @@ add_custom_target(
 # test-service
 add_executable (test-service
                 test-service.cc)
+target_link_options(test-service PRIVATE -no-pie)
 set_target_properties (test-service PROPERTIES COMPILE_FLAGS " -std=c++0x")
 add_test (test-service test-service)
 add_dependencies (test-service libayatanaindicatorsessionservice backendmock gschemas-compiled)

@@ -15,6 +15,10 @@ requires:
     - mate-common
     - cmake
     - intltool
+#    - libayatana-common
+    - liblomiri-url-dispatcher
+    - gobject-introspection
+    - vala
     - glib2
     - systemd
 

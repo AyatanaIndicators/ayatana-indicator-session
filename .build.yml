@@ -56,7 +56,6 @@ requires:
     - valac
     - libglib2.0-dev
     - libgtest-dev
-    - liblomiri-url-dispatcher-dev
 
   ubuntu:focal:
     - autopoint

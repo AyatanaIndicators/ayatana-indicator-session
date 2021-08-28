@@ -1,8 +1,10 @@
 /*
  * Copyright 2013 Canonical Ltd.
+ * Copyright 2021 Robert Tari
  *
  * Authors:
  *   Charles Kerr <charles.kerr@canonical.com>
+ *   Robert Tari <robert@tari.in>
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 3, as published
@@ -205,6 +207,7 @@ action_state_for_header (IndicatorSessionService * self)
   if (label && *label)
     g_variant_builder_add (&b, "{sv}", "label", g_variant_new_string (label));
   g_variant_builder_add (&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
+  g_variant_builder_add (&b, "{sv}", "title", g_variant_new_string (_("System")));
   state = g_variant_builder_end (&b);
 
   /* cleanup */

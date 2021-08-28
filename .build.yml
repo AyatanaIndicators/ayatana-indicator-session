@@ -30,8 +30,12 @@ requires:
     - cmake-extras
     - mate-common
     - intltool
-    - libglib2.0-dev
+#    - libayatana-common-dev
     - liblomiri-url-dispatcher-dev
+    - libgirepository1.0-dev
+    - gobject-introspection
+    - valac
+    - libglib2.0-dev
     - libgtest-dev
     - dbus
 
@@ -45,6 +49,11 @@ requires:
     - cmake-extras
     - mate-common
     - intltool
+#    - libayatana-common-dev
+    - liblomiri-url-dispatcher-dev
+    - libgirepository1.0-dev
+    - gobject-introspection
+    - valac
     - libglib2.0-dev
     - libgtest-dev
     - liblomiri-url-dispatcher-dev
@@ -59,6 +68,11 @@ requires:
     - cmake-extras
     - mate-common
     - intltool
+#    - libayatana-common-dev
+#    - liblomiri-url-dispatcher-dev
+    - libgirepository1.0-dev
+    - gobject-introspection
+    - valac
     - libglib2.0-dev
     - libgtest-dev
 

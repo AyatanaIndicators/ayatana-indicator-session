@@ -15,6 +15,10 @@ requires:
     - mate-common
     - cmake
     - intltool
+#    - libayatana-common
+    - liblomiri-url-dispatcher
+    - gobject-introspection
+    - vala
     - glib2
     - systemd
 
@@ -56,7 +60,6 @@ requires:
     - valac
     - libglib2.0-dev
     - libgtest-dev
-    - liblomiri-url-dispatcher-dev
 
   ubuntu:focal:
     - autopoint

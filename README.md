@@ -1,4 +1,4 @@
-# Ayatana System Indicator &mdash; Session [![Build Status](https://travis-ci.com/AyatanaIndicators/ayatana-indicator-session.svg)](https://travis-ci.com/AyatanaIndicators/ayatana-indicator-session)
+# Ayatana System Indicator &mdash; Session [![Build Status](https://api.travis-ci.com/AyatanaIndicators/ayatana-indicator-session.svg)](https://travis-ci.com/github/AyatanaIndicators/ayatana-indicator-session)
 
 ## About Ayatana Indicators
 

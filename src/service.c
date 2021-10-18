@@ -672,7 +672,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
       GMenuItem *item;
 
       item = g_menu_item_new (_("Guest Session"), "indicator.switch-to-guest");
-      g_menu_item_set_attribute (item, "x-ayatana-type", "s", "indicator.guest-menu-item");
+      g_menu_item_set_attribute (item, "x-ayatana-type", "s", "org.ayatana.indicator.guest-menu-item");
       g_menu_append_item (menu, item);
 
       g_object_unref (item);
@@ -720,7 +720,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
 
       item = g_menu_item_new (label, NULL);
       g_menu_item_set_action_and_target (item, "indicator.switch-to-user", "s", u->user_name);
-      g_menu_item_set_attribute (item, "x-ayatana-type", "s", "indicator.user-menu-item");
+      g_menu_item_set_attribute (item, "x-ayatana-type", "s", "org.ayatana.indicator.user-menu-item");
 
       if ((serialized_icon = serialize_icon_file (u->icon_file)))
         {

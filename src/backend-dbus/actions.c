@@ -733,7 +733,11 @@ zenity_question (IndicatorSessionActionsDbus * self,
     }
   else
     {
-      confirmed = g_spawn_check_exit_status (exit_status, &error);
+        #if GLIB_CHECK_VERSION(2, 70, 0)
+            confirmed = g_spawn_check_wait_status (exit_status, &error);
+        #else
+            confirmed = g_spawn_check_exit_status (exit_status, &error);
+        #endif
     }
 
   log_and_clear_error (&error, G_STRLOC, G_STRFUNC);

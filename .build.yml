@@ -12,8 +12,6 @@ requires:
     - which
     - cmake
     - cmake-extras
-    - mate-common
-    - cmake
     - intltool
 #    - libayatana-common
     - liblomiri-url-dispatcher
@@ -24,7 +22,6 @@ requires:
 
   debian:
     # Useful URL: https://salsa.debian.org/debian-ayatana-team/ayatana-session
-    - autopoint
     - clang
     - clang-tools
     - g++
@@ -32,7 +29,6 @@ requires:
     - git
     - cmake
     - cmake-extras
-    - mate-common
     - intltool
 #    - libayatana-common-dev
     - liblomiri-url-dispatcher-dev
@@ -44,14 +40,12 @@ requires:
     - dbus
 
   ubuntu:
-    - autopoint
     - clang
     - clang-tools
     - g++
     - git
     - cmake
     - cmake-extras
-    - mate-common
     - intltool
 #    - libayatana-common-dev
     - liblomiri-url-dispatcher-dev
@@ -63,14 +57,12 @@ requires:
     - dbus
 
   ubuntu:focal:
-    - autopoint
     - clang
     - clang-tools
     - g++
     - git
     - cmake
     - cmake-extras
-    - mate-common
     - intltool
 #    - libayatana-common-dev
 #    - liblomiri-url-dispatcher-dev
@@ -115,10 +107,7 @@ build_scripts:
   -     cppcheck --enable=warning,style,performance,portability,information,missingInclude .
   - fi
   -
-  - if [ -e ./autogen.sh ]; then
-  -     NOCONFIGURE=1 ./autogen.sh
-  -     scan-build $CHECKERS ./configure --prefix=/usr --enable-gtk-doc --enable-compile-warnings=maximum
-  - elif [ -e ./CMakeLists.txt ]; then
+  - if [ -e ./CMakeLists.txt ]; then
   -     if [ ${DISTRO_NAME} == "debian" ] || [ ${DISTRO_NAME} == "ubuntu" ]; then
   -         scan-build $CHECKERS cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON
   -     else
@@ -146,9 +135,7 @@ after_scripts:
   - if [ ${BUILD_TYPE} == "scripts" ];then
   -     XVFB_RUN="$(which xvfb-run || true)"
   -     if [ ${DISTRO_NAME} == "debian" ] || [ ${DISTRO_NAME} == "ubuntu" ];then
-  -         if [ -e ./autogen.sh ]; then
-  -             ${XVFB_RUN} make check
-  -         elif [ -e ./CMakeLists.txt ]; then
+  -         if [ -e ./CMakeLists.txt ]; then
   -             ${XVFB_RUN} env CTEST_OUTPUT_ON_FAILURE=1 make test
   -         fi
   -     fi

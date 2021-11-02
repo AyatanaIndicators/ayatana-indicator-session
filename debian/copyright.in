@@ -119,7 +119,6 @@ Files: CMakeLists.txt
  tests/org.ayatana.indicator.session.gschema.xml
  tests/org.gnome.desktop.lockdown.gschema.xml
  tests/org.gnome.settings-daemon.plugins.media-keys.gschema.xml
- trim-lcov.py
  update-pot.sh
 Copyright: NONE
 License: UNKNOWN

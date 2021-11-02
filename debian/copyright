@@ -108,7 +108,6 @@ Files: CMakeLists.txt
  tests/org.ayatana.indicator.session.gschema.xml
  tests/org.gnome.desktop.lockdown.gschema.xml
  tests/org.gnome.settings-daemon.plugins.media-keys.gschema.xml
- trim-lcov.py
 Copyright: 2012, Canonical Ltd.
   2013, Canonical Ltd.
   2014, Canonical Ltd.

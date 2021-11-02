@@ -71,7 +71,6 @@ Files: CMakeLists.txt
  NEWS
  NEWS.Canonical
  README
- build.sh
  cmake/GCov.cmake
  cmake/GdbusCodegen.cmake
  cmake/Translations.cmake

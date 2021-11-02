@@ -70,7 +70,6 @@ License: GPL (v3)
 
 Files: CMakeLists.txt
  ChangeLog
- MERGE-REVIEW
  NEWS.Canonical
  README
  build.sh

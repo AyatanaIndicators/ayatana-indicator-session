@@ -68,7 +68,6 @@ License: GPL-3
 
 Files: CMakeLists.txt
  ChangeLog
- MERGE-REVIEW
  NEWS
  NEWS.Canonical
  README

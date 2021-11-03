@@ -1,8 +1,10 @@
 /*
  * Copyright 2013 Canonical Ltd.
+ * Copyright 2021 Robert Tari
  *
  * Authors:
  *   Charles Kerr <charles.kerr@canonical.com>
+ *   Robert Tari <robert@tari.in>
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 3, as published
@@ -397,7 +399,7 @@ on_login1_manager_session_list_ready (GObject      * o,
             {
               set_active_uid (self, uid);
 
-              if ((uid==999) && !g_strcmp0 (user_name, "ubuntu"))
+              if ((uid==999) && !g_strcmp0 (user_name, "ayatana"))
                 is_live_session = TRUE;
             }
 

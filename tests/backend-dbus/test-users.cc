@@ -1,8 +1,10 @@
 /*
  * Copyright 2013 Canonical Ltd.
+ * Copyright 2021 Robert Tari
  *
  * Authors:
  *   Charles Kerr <charles.kerr@canonical.com>
+ *   Robert Tari <robert@tari.in>
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 3, as published
@@ -366,7 +368,7 @@ TEST_F (Users, LiveSession)
   ASSERT_FALSE (b);
 
   // now add the criteria for a live session
-  MockUser * live_user = new MockUser (loop, conn, "ubuntu", "Ubuntu", 1, 999);
+  MockUser * live_user = new MockUser (loop, conn, "ayatana", "Ayatana", 1, 999);
   live_user->set_system_account (true);
   accounts->add_user (live_user);
   const int session_tag = login1_manager->add_session (login1_seat, live_user);

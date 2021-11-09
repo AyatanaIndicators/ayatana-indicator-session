@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2020-10-30 00:26+0000\n"
+"PO-Revision-Date: 2021-11-10 20:51+0000\n"
 "Last-Translator: Joan CiberSheep <cibersheep@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/ca/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3.2-dev\n"
+"X-Generator: Weblate 4.9.1-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -201,12 +201,11 @@ msgstr "Cancel·la"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr ""
-"Esteu segur que voleu tancar tots els programes i reiniciar l'ordinador?"
+msgstr "Segur que voleu tancar tots els programes i reiniciar l'ordinador?"
 
 #: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr "Esteu segur que voleu tancar tots els programes i aturar l'ordinador?"
+msgstr "Segur que voleu tancar tots els programes i aturar l'ordinador?"
 
 #: ../src/backend-dbus/actions.c:1039
 msgid ""

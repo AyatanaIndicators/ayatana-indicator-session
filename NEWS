@@ -1,3 +1,29 @@
+Overview of changes in ayatana-indicator-session 0.9.0
+
+  - tests: Use Ayatana as mock user
+  - src/backend-dbus/actions.c: Replace deprecated g_spawn_check_exit_status.
+  - Update Ayatana IDO names.
+  - src/service.c: Add System title to the header.
+  - Use -no-pie build flag for tests only.
+  - Show the "Reboot..." option when ayatana-indicator-session is used in
+    Unity7.
+  - Ensure we request the UI to verify restart availability when Unity7 proxy
+    connects/disconnects.
+  - Only use Lomiri schema if it's installed to avoid hard dependency.
+  - Change the About string only for Lomiri.
+  - Open https://forums.ubports.com under Lomiri.
+  - Use ellipsis and convergence friendly "about" caption.
+  - Plug a memleak.
+  - Add "Desktop mode" switch for Lomiri.
+  - Replace code with libayatana-common functions.
+  - Add Budgie support.
+  - src/utils.c: Try to use SUPPORT_URL in get_distro_url.
+  - Switch from URL Dispatcher to Lomiri URL Dispatcher.
+  - Update/add documentation.
+  - Port to CMake.
+  - Add Travis CI configuration.
+  - Translation updates.
+
 Overview of changes in ayatana-indicator-session 0.8.2
 
   - Fix duplicate icons directory.

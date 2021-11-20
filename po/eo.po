@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2021-11-19 02:49+0000\n"
+"PO-Revision-Date: 2021-11-21 02:53+0000\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/eo/>\n"
@@ -17,44 +17,44 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9.1-dev\n"
+"X-Generator: Weblate 4.9.1\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
-msgstr "Forigi la dialogon por konfirmi la elsaluton, restarton kaj elŝalton"
+msgstr "Ne montri la dialogon por konfirmi adiaŭon, restarton aŭ elŝalton"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"Ĉu montri aŭ ne la dialogojn pri la konfirmo de elŝalto, restarto aŭ "
-"elsaluto."
+"Ĉu montri aŭ ne la dialogojn pri la konfirmo de adiaŭo, restarto aŭ elŝalto."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "Forigi la eron \"Elsaluti\" el la seancmenuo."
+msgstr "Ne montri la menueron «Adiaŭi» en la seanca menuo"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
+#, fuzzy
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Fari tiel ke la elsaluta butono ne aperu en la seanca menuo."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Forigi la eron \"Restarti\" el la seancmenuo."
+msgstr "Ne montri la menueron «Restarti» en la seanca menuo."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
+#, fuzzy
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Faras tiel ke la elsaluta butono ne aperu en la seanca menuo."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Forigi la eron \"Elŝalti\" el la seancmenuo."
+msgstr "Ne montri la menueron «Elŝalti» en la seanca menuo."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
+#, fuzzy
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Fari tiel ke la malŝalta butono ne aperu en la seanca menuo."
 
@@ -80,15 +80,15 @@ msgstr "Labortabla helpo %s"
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "Helpo pri %s"
 
 #: ../src/service.c:346
 msgid "About This Computer"
-msgstr ""
+msgstr "Pri ĉi tiu komputilo"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Raporti cimon…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -103,28 +103,24 @@ msgid "Start Screen Saver"
 msgstr ""
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "Ŝanĝi uzantkonton..."
+msgstr "Ŝanĝi konton…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "Ŝanĝi uzantkonton..."
+msgstr "Ŝanĝi konton"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "Ŝanĝi uzantkonton..."
+msgstr "Ŝlosi/ŝanĝi konton…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "Ŝanĝi uzantkonton..."
+msgstr "Ŝlosi/ŝanĝi konton"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "Ŝlosi"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -132,12 +128,12 @@ msgstr "Gastoseanco"
 
 #: ../src/service.c:697
 msgid "Log Out…"
-msgstr "Elsaluti…"
+msgstr "Adiaŭi…"
 
 #: ../src/service.c:697 ../src/backend-dbus/actions.c:895
 #: ../src/backend-dbus/actions.c:897
 msgid "Log Out"
-msgstr "Elsaluti"
+msgstr "Adiaŭi"
 
 #: ../src/service.c:715
 msgid "Suspend"
@@ -145,7 +141,7 @@ msgstr "Paŭzigi"
 
 #: ../src/service.c:718
 msgid "Hibernate"
-msgstr "Pasivumigi"
+msgstr "Letargiigi"
 
 #: ../src/service.c:723
 msgid "Restart…"
@@ -182,16 +178,13 @@ msgid ""
 msgstr ""
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "Ĉu vi certe volas fermi ĉiujn programarojn kaj fini la seancon?"
+msgstr "Ĉu vi certe volas fermi ĉiujn programojn kaj adiaŭi?"
 
 #: ../src/backend-dbus/actions.c:890
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
-msgstr ""
-"Kelkaj programaraj aktualigoj plenumos tiam, kiam la komputilo restartos."
+msgstr "Kelkaj programoj ĝisdatiĝos tiam, kiam la komputilo restartiĝos."
 
 #: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
 #: ../src/backend-dbus/actions.c:976
@@ -200,11 +193,11 @@ msgstr "Nuligi"
 
 #: ../src/backend-dbus/actions.c:937
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr "Ĉu vi certe volas fermi ĉiujn programarojn kaj restarti la komputilon?"
+msgstr "Ĉu vi certe volas fermi ĉiujn programojn kaj restarti la komputilon?"
 
 #: ../src/backend-dbus/actions.c:974
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr "Ĉu vi certe volas fermi ĉiujn programarojn kaj elŝalti la komputilon?"
+msgstr "Ĉu vi certe volas fermi ĉiujn programojn kaj elŝalti la komputilon?"
 
 #: ../src/backend-dbus/actions.c:1039
 msgid ""

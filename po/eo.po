@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2021-11-21 02:53+0000\n"
+"PO-Revision-Date: 2021-11-22 22:35+0000\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/eo/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 4.10-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -36,27 +36,24 @@ msgid "Remove the Log Out item from the session menu"
 msgstr "Ne montri la menueron «Adiaŭi» en la seanca menuo"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
-#, fuzzy
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr "Fari tiel ke la elsaluta butono ne aperu en la seanca menuo."
+msgstr "Kaŝi en la seanca menuo la butonon por adiaŭi."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu."
 msgstr "Ne montri la menueron «Restarti» en la seanca menuo."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
-#, fuzzy
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr "Faras tiel ke la elsaluta butono ne aperu en la seanca menuo."
+msgstr "Kaŝi en la seanca menuo la butonon por restartigi."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu."
 msgstr "Ne montri la menueron «Elŝalti» en la seanca menuo."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
-#, fuzzy
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr "Fari tiel ke la malŝalta butono ne aperu en la seanca menuo."
+msgstr "Kaŝi en la seanca menuo la butonon por elŝalti."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
@@ -100,7 +97,7 @@ msgstr "Retkontoj…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Lanĉi ekrankurtenon"
 
 #: ../src/service.c:575 ../src/service.c:591
 msgid "Switch Account…"
@@ -176,6 +173,10 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"La cimspurilo de la mastruma sistemo postulas TTT-legilon.\n"
+"\n"
+"La Seanco-Indikilo Ayatana malsukcesis trovi TTT-legilon\n"
+"en via komputilo."
 
 #: ../src/backend-dbus/actions.c:889
 msgid "Are you sure you want to close all programs and log out?"
@@ -207,6 +208,10 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"La manlibro de Xfce postulas TTT-legilon.\n"
+"\n"
+"La Seanco-Indikilo Ayatana malsukcesis trovi TTT-legilon\n"
+"en via komputilo."
 
 #: ../src/backend-dbus/actions.c:1044
 msgid ""
@@ -216,6 +221,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"La Seanc-Indikilo Ayatana ankoraŭ ne povas montri\n"
+"manlibron de la aktuala fasado.\n"
+"\n"
+"Bonvolu raporti tion al la programistoj ĉe:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1060
 #, c-format
@@ -226,6 +236,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Montri informojn pri %s postulas\n"
+"TTT-legilon.\n"
+"\n"
+"La Seanco-Indikilo Ayatana malsukcesis trovi TTT-legilon\n"
+"en via komputilo."
 
 #: ../src/backend-dbus/actions.c:1115
 msgid ""
@@ -235,6 +250,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"La Seanc-Indikilo Ayatana ankoraŭ ne povas lanĉi\n"
+"la sisteman agordilon de la fasado.\n"
+"\n"
+"Bonvolu raporti tion al la programistoj ĉe:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1133
 msgid ""
@@ -244,6 +264,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"La Seanc-Indikilo Ayatana ne subtenas ŝanĝi pasvortojn\n"
+"por via fasado ankoraŭ.\n"
+"\n"
+"Bonvolu raporti tion al la programistoj ĉe:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: ../src/backend-dbus/actions.c:1155
 msgid ""
@@ -253,6 +278,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"La Seanc-Indikilo Ayatana ankoraŭ ne povas montri\n"
+"informojn pri la aktuala fasado.\n"
+"\n"
+"Bonvolu raporti tion al la programistoj ĉe:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Klasika gastseanco"

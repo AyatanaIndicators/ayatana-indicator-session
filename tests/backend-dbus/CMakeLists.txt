@@ -1,5 +1,3 @@
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
 # build desktopmock
 add_library (desktopmock STATIC
              mock-accounts.cc

@@ -349,7 +349,7 @@ get_current_real_name (IndicatorSessionService * self)
 static gboolean
 usage_mode_to_action_state(GValue *value,
                            GVariant *variant,
-                           gpointer unused)
+                           __attribute__((unused)) gpointer unused)
 {
   const gchar* usage_mode = g_variant_get_string(variant, NULL);
   GVariant* ret_var = g_variant_new_boolean(g_strcmp0(usage_mode, "Windowed") == 0 ? TRUE : FALSE);
@@ -359,8 +359,8 @@ usage_mode_to_action_state(GValue *value,
 
 static GVariant*
 action_state_to_usage_mode(const GValue *value,
-                           const GVariantType * unused_expected_type,
-                           gpointer unused)
+                           __attribute__((unused)) const GVariantType * unused_expected_type,
+                           __attribute__((unused)) gpointer unused)
 {
   GVariant* var = g_value_get_variant(value);
   GVariant* ret = g_variant_new_string(g_variant_get_boolean(var) == TRUE ? "Windowed" : "Staged");

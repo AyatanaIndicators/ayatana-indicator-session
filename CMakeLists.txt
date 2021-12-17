@@ -28,6 +28,8 @@ if(ENABLE_WERROR)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
 
+add_definitions("-Wno-sign-compare") # Needed for GTest on Ubuntu
+
 ##
 ##  GNU standard installation directories
 ##

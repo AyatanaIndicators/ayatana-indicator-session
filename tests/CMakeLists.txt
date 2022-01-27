@@ -50,7 +50,6 @@ add_custom_target(
 add_executable (test-service
                 test-service.cc)
 target_link_options(test-service PRIVATE -no-pie)
-set_target_properties (test-service PROPERTIES COMPILE_FLAGS " -std=c++0x")
 add_test (test-service test-service)
 add_dependencies (test-service libayatanaindicatorsessionservice backendmock gschemas-compiled)
 target_link_libraries (test-service libayatanaindicatorsessionservice backendmock ${SERVICE_LIBRARIES} ${GTEST_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${GMOCK_LIBRARIES})

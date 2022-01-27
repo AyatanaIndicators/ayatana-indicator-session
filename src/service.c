@@ -655,9 +655,22 @@ create_switch_section (IndicatorSessionService * self, int profile)
     {
       if (want_accel)
         {
-          gchar * str = g_settings_get_string (p->keybinding_settings, "screensaver");
-          g_menu_item_set_attribute (item, "accel", "s", str);
-          g_free (str);
+            if (ayatana_common_utils_is_mate())
+            {
+                gchar * str = g_settings_get_string (p->keybinding_settings, "screensaver");
+                g_menu_item_set_attribute (item, "accel", "s", str);
+                g_free (str);
+            }
+            else
+            {
+                gchar **lAccels = g_settings_get_strv(p->keybinding_settings, "screensaver");
+
+                if (lAccels != NULL)
+                {
+                    g_menu_item_set_attribute(item, "accel", "s", lAccels[0]);
+                    g_strfreev(lAccels);
+                }
+            }
         }
 
       g_menu_append_item (menu, item);

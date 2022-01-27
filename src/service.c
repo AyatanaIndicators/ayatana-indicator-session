@@ -378,7 +378,7 @@ create_admin_section (IndicatorSessionService * self)
 {
   GMenu * menu;
   priv_t * p = self->priv;
-  gchar * desktop_help_label = g_strdup_printf(_("%s Desktop Help"), get_desktop_name());
+  gchar * desktop_help_label = g_strdup_printf(_("%s Help"), get_desktop_name());
   gchar * distro_help_label = g_strdup_printf(_("%s Help…"), get_distro_name());
   menu = g_menu_new ();
 

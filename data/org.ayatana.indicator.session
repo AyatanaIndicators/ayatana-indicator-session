@@ -3,6 +3,9 @@ Name=ayatana-indicator-session
 ObjectPath=/org/ayatana/indicator/session
 Position=10
 
+[phone]
+ObjectPath=/org/ayatana/indicator/session/desktop
+
 [desktop]
 ObjectPath=/org/ayatana/indicator/session/desktop
 

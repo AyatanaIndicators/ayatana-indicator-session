@@ -23,4 +23,4 @@ set_property (SOURCE main.c
               LOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}")
 add_executable (${SERVICE_EXEC} main.c)
 target_link_libraries (${SERVICE_EXEC} libayatanaindicatorsessionservice backenddbus ${SERVICE_LIBRARIES})
-install (TARGETS ${SERVICE_EXEC} RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_PKGLIBEXECDIR})
+install (TARGETS ${SERVICE_EXEC} RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_LIBEXECDIR}/${CMAKE_PROJECT_NAME})

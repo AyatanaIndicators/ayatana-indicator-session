@@ -1,6 +1,98 @@
+2022-02-17 Mike Gabriel
+
+        * release 22.2.0 (HEAD -> main, tag: 22.2.0)
+
+2022-02-16 Mike Gabriel
+
+        * Merge branch 'tari01-pr/drop-cmake-install-full-pkglibexecdir'
+          (76070b4c)
+
+2022-02-11 Robert Tari
+
+        * Drop pkglibexecdir and use native CMake file configuration
+          (7276ec3b)
+
+2022-02-08 Robert Tari
+
+        * .travis.yml: Run CI builds on Travis CI's Ubuntu focal base system
+          (3b04d065)
+
+2022-01-27 Mike Gabriel
+
+        * Merge branch 'tari01-pr/fix-desktop-help-string' (9da96c4b)
+
+2022-01-27 Robert Tari
+
+        * src/service.c: Fix the Desktop Help string (7ec9d3f0)
+
+2022-01-27 Mike Gabriel
+
+        * Merge branch 'tari01-pr/add-phone-systemd-section' (aab117f6)
+
+2022-01-27 Robert Tari
+
+        * data/org.ayatana.indicator.session: Add phone section (f101336d)
+
+2022-01-27 Mike Gabriel
+
+        * Merge branch 'tari01-pr/fix-systemd-target' (da90e08e)
+
+2022-01-27 Robert Tari
+
+        * data/ayatana-indicator-session.service.in: Fix sytemd unit target
+          (3a06cb9b)
+
+2022-01-27 Mike Gabriel
+
+        * Merge branch 'tari01-pr/fix-gnome-screensaver-accelerator-key-type'
+          (50f9d850)
+
+2022-01-20 Robert Tari
+
+        * Read org.gnome.settings-daemon.plugins.media-keys screensaver as a
+          list (838a9b3b)
+
+2022-01-27 Mike Gabriel
+
+        * Merge branch 'tari01-pr/cleanup-compile-flags' (f62c629f)
+
+2021-12-17 Robert Tari
+
+        * .build.yml: Drop extra compilation flags and build with -Werror
+          (c77322a1)
+        * Clean up compilation flags (d40de8a8)
+        * Fix code to build with -Werror (904438ac)
+
+2022-01-24 Eric
+
+        * Translated using Weblate (Chinese (Simplified)) (1ea9f8bd)
+
+2021-12-15 Mike Gabriel
+
+        * Merge branch
+          'tari01-pr/build-libayatana-common-with-enable-lomiri-features'
+          (35d48d35)
+
+2021-12-06 Robert Tari
+
+        * .build.yml: Build libayatana-common with ENABLE_LOMIRI_FEATURES
+          (8e481a71)
+
+2021-11-22 phlostically
+
+        * Translated using Weblate (Esperanto) (3bf32659)
+
+2021-11-20 phlostically
+
+        * Translated using Weblate (Esperanto) (918e5bdd)
+
+2021-11-18 phlostically
+
+        * Translated using Weblate (Esperanto) (3f129aaa)
+
 2021-11-17 Mike Gabriel
 
-        * release 0.9.0 (HEAD -> main, tag: 0.9.0)
+        * release 0.9.0 (49265d28) (tag: 0.9.0)
 
 2021-11-09 Joan CiberSheep
 

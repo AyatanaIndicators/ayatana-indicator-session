@@ -1,3 +1,19 @@
+Overview of changes in ayatana-indicator-session 22.2.0
+
+  - Upstream version bump to new release versioning scheme:
+    <year>.<month>.<revision>, where <year>.<month> will be
+    bumped in Ayatana Indicators bundle releases and <revision>
+    gets incremented with minor changeset releases.
+  - Drop pkglibexecdir and use native CMake file configuration.
+  - src/service.c: Fix the Desktop Help string.
+  - data/org.ayatana.indicator.session: Add phone section.
+  - data/ayatana-indicator-session.service.in: Fix sytemd unit target.
+  - Read org.gnome.settings-daemon.plugins.media-keys screensaver as a
+    list.
+  - Clean up compilation flags.
+  - Fix code to build with -Werror.
+  - Translation updates.
+
 Overview of changes in ayatana-indicator-session 0.9.0
 
   - tests: Use Ayatana as mock user

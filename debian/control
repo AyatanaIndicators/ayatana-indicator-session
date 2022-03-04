@@ -20,7 +20,6 @@ Vcs-Browser: https://github.com/AyatanaIndicators/ayatana-indicator-session
 Package: ayatana-indicator-session
 Architecture: any
 Depends: ayatana-indicator-common,
-         gnome-settings-daemon | mate-settings-daemon | xfce4-settings,
          gsettings-desktop-schemas,
          systemd [linux-any],
          ${misc:Depends},

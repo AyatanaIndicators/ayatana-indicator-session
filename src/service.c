@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Canonical Ltd.
- * Copyright 2021 Robert Tari
+ * Copyright 2021-2022 Robert Tari
  *
  * Authors:
  *   Charles Kerr <charles.kerr@canonical.com>
@@ -655,11 +655,16 @@ create_switch_section (IndicatorSessionService * self, int profile)
     {
       if (want_accel)
         {
+            gchar *str = NULL;
+
             if (ayatana_common_utils_is_mate())
             {
-                gchar * str = g_settings_get_string (p->keybinding_settings, "screensaver");
-                g_menu_item_set_attribute (item, "accel", "s", str);
-                g_free (str);
+                str = g_settings_get_string (p->keybinding_settings, "screensaver");
+
+            }
+            else if (ayatana_common_utils_is_lomiri())
+            {
+                str = g_settings_get_string (p->keybinding_settings, "lockscreen");
             }
             else
             {
@@ -670,6 +675,12 @@ create_switch_section (IndicatorSessionService * self, int profile)
                     g_menu_item_set_attribute(item, "accel", "s", lAccels[0]);
                     g_strfreev(lAccels);
                 }
+            }
+
+            if (str != NULL)
+            {
+                g_menu_item_set_attribute (item, "accel", "s", str);
+                g_free (str);
             }
         }
 
@@ -1283,10 +1294,8 @@ indicator_session_service_init (IndicatorSessionService * self)
     }
   else if (ayatana_common_utils_is_lomiri())
     {
-        p->keybinding_settings = g_settings_new ("org.gnome.settings-daemon.plugins.media-keys");
+        p->keybinding_settings = g_settings_new ("com.lomiri.Shell.Shortcuts");
 
-        /* Only use unity8 schema if it's installed; this avoids a hard dependency
-        on unity8-schemas */
         usage_mode_schema = g_settings_schema_source_lookup (g_settings_schema_source_get_default (),
                                                        usage_mode_schema_name, TRUE);
         if (usage_mode_schema)

@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2019-03-26 15:37+0000\n"
-"Last-Translator: Ido Dana <idodana01@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/he/>\n"
+"PO-Revision-Date: 2022-03-22 13:55+0000\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 3.6-dev\n"
+"X-Generator: Weblate 4.12-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -41,18 +41,16 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Makes it so that the logout button doesn’t show in the session menu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Remove the Restart item from the session menu"
+msgstr "הסרת פריט ההפעלה מחדש מתפריט ההפעלה."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Makes it so that the restart button doesn’t show in the session menu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Remove the shutdown item from the session menu"
+msgstr "הסרת פריט הכיבוי מתפריט ההפעלה."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
@@ -62,11 +60,11 @@ msgstr "Makes it so that the shutdown button doesn’t show in the session menu.
 #: ../src/service.c:187
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "מערכת, %s"
 
 #: ../src/service.c:191
 msgid "System"
-msgstr ""
+msgstr "מערכת"
 
 #: ../src/service.c:325
 msgid "Guest"
@@ -75,12 +73,12 @@ msgstr "אורח"
 #: ../src/service.c:343
 #, c-format
 msgid "%s Desktop Help"
-msgstr ""
+msgstr "עזרה לשולחן העבודה %s"
 
 #: ../src/service.c:344
 #, c-format
 msgid "%s Help"
-msgstr ""
+msgstr "עזרה עבור %s"
 
 #: ../src/service.c:346
 msgid "About This Computer"
@@ -88,7 +86,7 @@ msgstr "אודות המחשב"
 
 #: ../src/service.c:351
 msgid "Report a Bug…"
-msgstr ""
+msgstr "דיווח על תקלה…"
 
 #: ../src/service.c:362
 msgid "System Settings…"
@@ -100,31 +98,27 @@ msgstr "חשבונות מקוונים…"
 
 #: ../src/service.c:567
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "הפעלת שומר מסך"
 
 #: ../src/service.c:575 ../src/service.c:591
-#, fuzzy
 msgid "Switch Account…"
-msgstr "החלפת חשבון משתמש…"
+msgstr "החלפת חשבון…"
 
 #: ../src/service.c:576 ../src/service.c:592
-#, fuzzy
 msgid "Switch Account"
-msgstr "החלפת חשבון משתמש…"
+msgstr "החלפת חשבון"
 
 #: ../src/service.c:588
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "החלפת חשבון משתמש…"
+msgstr "נעילה/החלפת חשבון…"
 
 #: ../src/service.c:589
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "החלפת חשבון משתמש…"
+msgstr "נעילת/החלפת חשבון"
 
 #: ../src/service.c:595
 msgid "Lock"
-msgstr ""
+msgstr "נעילה"
 
 #: ../src/service.c:620
 msgid "Guest Session"
@@ -182,9 +176,8 @@ msgid ""
 msgstr ""
 
 #: ../src/backend-dbus/actions.c:889
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "האם ברצונך לסגור את כל התכניות ולצאת מההפעלה?"
+msgstr "לסגור את כל התוכניות ולצאת מהחשבון?"
 
 #: ../src/backend-dbus/actions.c:890
 #, fuzzy

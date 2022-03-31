@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 20:19+0200\n"
-"PO-Revision-Date: 2022-03-30 09:10+0000\n"
+"PO-Revision-Date: 2022-04-01 08:10+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/he/>\n"
@@ -22,23 +22,21 @@ msgstr ""
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
-msgstr "Suppress the dialog to confirm logout, restart and shutdown action"
+msgstr "לוותר על החלונית לאישור פעולות יציאה, הפעלה מחדש וכיבוי"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
-msgstr ""
-"Whether or not to show confirmation dialogs for logout, restart and shutdown "
-"actions."
+msgstr "האם להציג חלוניות אישור לפעולות יציאה, הפעלה מחדש וכיבוי."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "Remove the Log Out item from the session menu"
+msgstr "הסרת פריט היציאה מתפריט ההפעלה"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr "Makes it so that the logout button doesn’t show in the session menu."
+msgstr "גורם לכפתור היציאה שלא להופיע בתפריט ההפעלה."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:5
 msgid "Remove the Restart item from the session menu."
@@ -46,7 +44,7 @@ msgstr "הסרת פריט ההפעלה מחדש מתפריט ההפעלה."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr "Makes it so that the restart button doesn’t show in the session menu."
+msgstr "גורם לכפתור ההפעלה מחדש שלא להופיע בתפריט ההפעלה."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:7
 msgid "Remove the shutdown item from the session menu."
@@ -54,7 +52,7 @@ msgstr "הסרת פריט הכיבוי מתפריט ההפעלה."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr "Makes it so that the shutdown button doesn’t show in the session menu."
+msgstr "גורם לכפתור הכיבוי שלא להופיע בתפריט ההפעלה."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:187
@@ -280,6 +278,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"מחוון ההפעלה של Ayatana לא יודע עדיין כיצד להציג\n"
+"מידע על סביבת שולחן עבודה הפעילה כרגע.\n"
+"\n"
+"נא לדווח על כך למפתחים דרך:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "הפעלת אורח קלסית"

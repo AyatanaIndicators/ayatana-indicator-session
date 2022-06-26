@@ -662,11 +662,7 @@ create_switch_section (IndicatorSessionService * self, int profile)
                 str = g_settings_get_string (p->keybinding_settings, "screensaver");
 
             }
-            else if (ayatana_common_utils_is_lomiri())
-            {
-                str = g_settings_get_string (p->keybinding_settings, "lockscreen");
-            }
-            else
+            else if (p->keybinding_settings)
             {
                 gchar **lAccels = g_settings_get_strv(p->keybinding_settings, "screensaver");
 
@@ -1276,6 +1272,7 @@ indicator_session_service_init (IndicatorSessionService * self)
   /* init our priv pointer */
   p = indicator_session_service_get_instance_private (self);
   p->indicator_settings = g_settings_new ("org.ayatana.indicator.session");
+  p->keybinding_settings = NULL;
   if (ayatana_common_utils_is_mate())
     {
         p->keybinding_settings = g_settings_new ("org.mate.SettingsDaemon.plugins.media-keys");
@@ -1294,8 +1291,7 @@ indicator_session_service_init (IndicatorSessionService * self)
     }
   else if (ayatana_common_utils_is_lomiri())
     {
-        p->keybinding_settings = g_settings_new ("com.lomiri.Shell.Shortcuts");
-
+        // Lomiri does not have a keybinding schema. However it has a usage mode schema.
         usage_mode_schema = g_settings_schema_source_lookup (g_settings_schema_source_get_default (),
                                                        usage_mode_schema_name, TRUE);
         if (usage_mode_schema)
@@ -1379,8 +1375,11 @@ indicator_session_service_init (IndicatorSessionService * self)
 
   /* watch for changes to the lock keybinding */
   gp = p->keybinding_settings;
-  g_signal_connect_swapped (gp, "changed::screensaver",
-                            G_CALLBACK(rebuild_switch_section_soon), self);
+  if (gp)
+  {
+      g_signal_connect_swapped (gp, "changed::screensaver",
+                                G_CALLBACK(rebuild_switch_section_soon), self);
+  }
 
   self->priv->own_id = g_bus_own_name (G_BUS_TYPE_SESSION,
                                        BUS_NAME,

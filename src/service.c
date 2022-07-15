@@ -208,6 +208,7 @@ action_state_for_header (IndicatorSessionService * self)
     g_variant_builder_add (&b, "{sv}", "label", g_variant_new_string (label));
   g_variant_builder_add (&b, "{sv}", "visible", g_variant_new_boolean (TRUE));
   g_variant_builder_add (&b, "{sv}", "title", g_variant_new_string (_("System")));
+  g_variant_builder_add (&b, "{sv}", "tooltip", g_variant_new_string (_("Session management, status and user switching")));
   state = g_variant_builder_end (&b);
 
   /* cleanup */

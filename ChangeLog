@@ -1,6 +1,55 @@
+2022-07-15 Mike Gabriel
+
+        * release 22.2.1 (HEAD -> main, tag: 22.2.1)
+
+2022-06-26 Mike Gabriel
+
+        * Merge branch 'peat-psuwit-no-lomiri-lock-shortcut' (dabb9205)
+
+2022-06-23 Ratchanan Srirattanamet
+
+        * src/service.c: don't try to show any lockscreen shortcut on Lomiri
+          (eff77527)
+
+2022-04-23 Sergii Horichenko
+
+        * Translated using Weblate (Russian) (95096378)
+
+2022-03-31 Yaron Shahrabani
+
+        * Translated using Weblate (Hebrew) (50e3edf9)
+
+2022-03-29 Yaron Shahrabani
+
+        * Translated using Weblate (Hebrew) (734eef7b)
+
+2022-03-21 Yaron Shahrabani
+
+        * Translated using Weblate (Hebrew) (a0b4e072)
+
+2022-03-08 Mike Gabriel
+
+        * Merge branch
+          'tari01-pr/read-lockscreen-shortcut-from-lomiri-schemas'
+          (aa4aeb40)
+
+2022-03-04 Robert Tari
+
+        * src/service.c: Read Lomiri's lockscreen shortcut from
+          lomiri-schemas (04290777)
+
+2022-03-08 Mike Gabriel
+
+        * Merge branch 'tari01-pr/drop-settings-daemons-depends' (62774712)
+
+2022-03-04 Robert Tari
+
+        * debian/control: Drop all settings daemons runtime dependencies
+          (e6f63236)
+
 2022-02-17 Mike Gabriel
 
-        * release 22.2.0 (HEAD -> main, tag: 22.2.0)
+        * release 22.2.0 (89bff9db) (tag: 22.2.0)
 
 2022-02-16 Mike Gabriel
 

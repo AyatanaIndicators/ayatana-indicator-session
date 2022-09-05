@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-28 20:19+0200\n"
+"POT-Creation-Date: 2022-09-05 13:41+0200\n"
 "PO-Revision-Date: 2011-09-24 16:03+0000\n"
 "Last-Translator: Daniel Martinez <entaltoaragon@gmail.com>\n"
 "Language-Team: Aragonese <an@li.org>\n"
@@ -58,118 +58,142 @@ msgstr "Borra la opción «Amortar» d'o menú de sesión"
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
 
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:9
+#, fuzzy
+msgid "Force the visibility of Restart item in the session menu"
+msgstr "Borra la opción «Reiniciar» d'o menú de sesión"
+
+#: ../data/org.ayatana.indicator.session.gschema.xml.in:10
+#, fuzzy
+msgid ""
+"Makes it so that the restart shows in the session menu even in the "
+"environments where it should not show."
+msgstr "Fa que lo boton de reinicio no s'amostre en lo menu de sesion."
+
 #. Translators: the name of the menu ("System"), then the user's name
-#: ../src/service.c:187
+#: ../src/service.c:196
 #, c-format
 msgid "System, %s"
 msgstr ""
 
-#: ../src/service.c:191
+#: ../src/service.c:200 ../src/service.c:210
 msgid "System"
 msgstr ""
 
-#: ../src/service.c:325
+#: ../src/service.c:211
+msgid "Session management, status and user switching"
+msgstr ""
+
+#: ../src/service.c:336
 msgid "Guest"
 msgstr "Convidau"
 
-#: ../src/service.c:343
-#, c-format
-msgid "%s Desktop Help"
-msgstr ""
-
-#: ../src/service.c:344
+#: ../src/service.c:382
 #, c-format
 msgid "%s Help"
 msgstr ""
 
-#: ../src/service.c:346
+#: ../src/service.c:383
+#, c-format
+msgid "%s Help…"
+msgstr ""
+
+#: ../src/service.c:387
+msgid "About This Device…"
+msgstr ""
+
+#: ../src/service.c:389
 msgid "About This Computer"
 msgstr ""
 
-#: ../src/service.c:351
+#: ../src/service.c:400
+msgid "Desktop mode"
+msgstr ""
+
+#: ../src/service.c:406
 msgid "Report a Bug…"
 msgstr ""
 
-#: ../src/service.c:362
+#: ../src/service.c:417
 msgid "System Settings…"
 msgstr "Configuracion d'o sistema…"
 
-#: ../src/service.c:364
+#: ../src/service.c:419
 msgid "Online Accounts…"
 msgstr ""
 
-#: ../src/service.c:567
+#: ../src/service.c:622
 msgid "Start Screen Saver"
 msgstr ""
 
-#: ../src/service.c:575 ../src/service.c:591
+#: ../src/service.c:630 ../src/service.c:646
 #, fuzzy
 msgid "Switch Account…"
 msgstr "Cuentas d'usuario…"
 
-#: ../src/service.c:576 ../src/service.c:592
+#: ../src/service.c:631 ../src/service.c:647
 msgid "Switch Account"
 msgstr ""
 
-#: ../src/service.c:588
+#: ../src/service.c:643
 msgid "Lock/Switch Account…"
 msgstr ""
 
-#: ../src/service.c:589
+#: ../src/service.c:644
 msgid "Lock/Switch Account"
 msgstr ""
 
-#: ../src/service.c:595
+#: ../src/service.c:650
 msgid "Lock"
 msgstr ""
 
-#: ../src/service.c:620
+#: ../src/service.c:695
 msgid "Guest Session"
 msgstr "Sesión de convidau"
 
-#: ../src/service.c:697
+#: ../src/service.c:772
 msgid "Log Out…"
 msgstr "Trancar sesion…"
 
-#: ../src/service.c:697 ../src/backend-dbus/actions.c:895
-#: ../src/backend-dbus/actions.c:897
+#: ../src/service.c:772 ../src/backend-dbus/actions.c:791
+#: ../src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "Trancar sesión"
 
-#: ../src/service.c:715
+#: ../src/service.c:790
 msgid "Suspend"
 msgstr "Suspender"
 
-#: ../src/service.c:718
+#: ../src/service.c:793
 msgid "Hibernate"
 msgstr "Hibernar"
 
-#: ../src/service.c:723
+#: ../src/service.c:798
 msgid "Restart…"
 msgstr "Reiniciar…"
 
-#: ../src/service.c:723 ../src/backend-dbus/actions.c:936
-#: ../src/backend-dbus/actions.c:938
+#: ../src/service.c:798 ../src/backend-dbus/actions.c:834
+#: ../src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: ../src/service.c:730
+#: ../src/service.c:805
 msgid "Shut Down…"
 msgstr "Amortar…"
 
-#: ../src/service.c:730 ../src/backend-dbus/actions.c:973
-#: ../src/backend-dbus/actions.c:975
+#: ../src/service.c:805 ../src/backend-dbus/actions.c:873
+#: ../src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "Amortar"
 
-#: ../src/backend-dbus/actions.c:801 ../src/backend-dbus/actions.c:1038
-#: ../src/backend-dbus/actions.c:1043 ../src/backend-dbus/actions.c:1059
-#: ../src/backend-dbus/actions.c:1114 ../src/backend-dbus/actions.c:1132
-#: ../src/backend-dbus/actions.c:1154
+#: ../src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
+#: ../src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
+#: ../src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: ../src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:802
+#: ../src/backend-dbus/actions.c:754
 msgid ""
 "The operating system's bug tracker needs to be accessed with\n"
 "a web browser.\n"
@@ -178,34 +202,34 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:889
+#: ../src/backend-dbus/actions.c:785
 #, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr ""
 "¿De seguras que quiere trancar totz os programas y rematar a suya sesion en "
 "l'equipo?"
 
-#: ../src/backend-dbus/actions.c:890
+#: ../src/backend-dbus/actions.c:786
 #, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
 "Bels esvielles de software no s'aplicaran dica que no se reinicie l'equipo."
 
-#: ../src/backend-dbus/actions.c:898 ../src/backend-dbus/actions.c:939
-#: ../src/backend-dbus/actions.c:976
+#: ../src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: ../src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../src/backend-dbus/actions.c:937
+#: ../src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr "¿De seguras que quiere trancar totz os programas y reiniciar l'equipo?"
 
-#: ../src/backend-dbus/actions.c:974
+#: ../src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr "¿De seguras que quiere trancar totz os programas y amortar l'equipo?"
 
-#: ../src/backend-dbus/actions.c:1039
+#: ../src/backend-dbus/actions.c:905
 msgid ""
 "The XFCE desktop's user guide needs to be accessed with\n"
 "a web browser.\n"
@@ -214,7 +238,7 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1044
+#: ../src/backend-dbus/actions.c:910
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -223,7 +247,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1060
+#: ../src/backend-dbus/actions.c:919
 #, c-format
 msgid ""
 "Displaying information on %s  requires\n"
@@ -233,7 +257,7 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1115
+#: ../src/backend-dbus/actions.c:938
 msgid ""
 "The Ayatana Session Indicator does not support evoking the system\n"
 "settings application for your desktop environment, yet.\n"
@@ -242,7 +266,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1133
+#: ../src/backend-dbus/actions.c:953
 msgid ""
 "The Ayatana Session Indicator does not support password changes\n"
 "for your desktop environment, yet.\n"
@@ -251,7 +275,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:1155
+#: ../src/backend-dbus/actions.c:974
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "information of the currently running desktop environment.\n"
@@ -346,10 +370,6 @@ msgstr ""
 
 #~ msgid "Makes it so that the logout button doesn't show in the session menu."
 #~ msgstr "Fa que lo boton de trancar sesion no s'amostre en o menu de sesion."
-
-#~ msgid ""
-#~ "Makes it so that the restart button doesn't show in the session menu."
-#~ msgstr "Fa que lo boton de reinicio no s'amostre en lo menu de sesion."
 
 #~ msgid ""
 #~ "Makes it so that the shutdown button doesn't show in the session menu."

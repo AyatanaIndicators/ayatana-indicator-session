@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-05 13:42+0200\n"
-"PO-Revision-Date: 2021-06-28 11:32+0000\n"
-"Last-Translator: GM <muziejusinfo@gmail.com>\n"
-"Language-Team: Lithuanian <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/lt/>\n"
+"PO-Revision-Date: 2022-09-08 18:19+0000\n"
+"Last-Translator: Moo <hazap@hotmail.com>\n"
+"Language-Team: Lithuanian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/lt/>\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n % 10 == 1 && (n % 100 < 11 || n % 100 > "
 "19)) ? 0 : ((n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 11 || n % 100 > 19)) ? "
 "1 : 2);\n"
-"X-Generator: Weblate 4.7.1-dev\n"
+"X-Generator: Weblate 4.14.1-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:1
@@ -62,16 +62,16 @@ msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Padaro taip, kad išjungimo mygtukas nebūtų rodomas seanso meniu."
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Pašalinti paleidimo iš naujo punktą iš seanso meniu."
+msgstr "Priverstinai rodo paleidimo iš naujo punktą seanso meniu"
 
 #: ../data/org.ayatana.indicator.session.gschema.xml.in:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
-msgstr "Padaro, kad nesimatytų paleidimo iš naujo mygtuko seanso meniu."
+msgstr ""
+"Padaro taip, kad paleidimas iš naujo seanso meniu būtų rodomas net tose "
+"aplinkose, kuriose jis neturėtų būti rodomas."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: ../src/service.c:196
@@ -85,7 +85,7 @@ msgstr "Sistema"
 
 #: ../src/service.c:211
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Seanso valdymas, būsena ir naudotojų perjungimas"
 
 #: ../src/service.c:336
 msgid "Guest"
@@ -97,23 +97,21 @@ msgid "%s Help"
 msgstr "%s žinynas"
 
 #: ../src/service.c:383
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "%s žinynas"
+msgstr "%s žinynas…"
 
 #: ../src/service.c:387
-#, fuzzy
 msgid "About This Device…"
-msgstr "Apie šį kompiuterį"
+msgstr "Apie šį įrenginį…"
 
 #: ../src/service.c:389
 msgid "About This Computer"
 msgstr "Apie šį kompiuterį"
 
 #: ../src/service.c:400
-#, fuzzy
 msgid "Desktop mode"
-msgstr "%s darbalaukio žinynas"
+msgstr "Darbalaukio veiksena"
 
 #: ../src/service.c:406
 msgid "Report a Bug…"

@@ -2,28 +2,28 @@
   <schema id="org.ayatana.indicator.session" path="/org/ayatana/indicator/session/">
     <key name="suppress-logout-restart-shutdown" type="b">
       <default>false</default>
-      <_summary>Suppress the dialog to confirm logout, restart and shutdown action</_summary>
-      <_description>Whether or not to show confirmation dialogs for logout, restart and shutdown actions.</_description>
+      <summary>Suppress the dialog to confirm logout, restart and shutdown action</summary>
+      <description>Whether or not to show confirmation dialogs for logout, restart and shutdown actions.</description>
     </key>
     <key name="suppress-logout-menuitem" type="b">
       <default>false</default>
-      <_summary>Remove the Log Out item from the session menu</_summary>
-      <_description>Makes it so that the logout button doesn’t show in the session menu.</_description>
+      <summary>Remove the Log Out item from the session menu</summary>
+      <description>Makes it so that the logout button doesn’t show in the session menu.</description>
     </key>
     <key name="suppress-restart-menuitem" type="b">
       <default>false</default>
-      <_summary>Remove the Restart item from the session menu.</_summary>
-      <_description>Makes it so that the restart button doesn’t show in the session menu.</_description>
+      <summary>Remove the Restart item from the session menu.</summary>
+      <description>Makes it so that the restart button doesn’t show in the session menu.</description>
     </key>
     <key name="suppress-shutdown-menuitem" type="b">
       <default>false</default>
-      <_summary>Remove the shutdown item from the session menu.</_summary>
-      <_description>Makes it so that the shutdown button doesn’t show in the session menu.</_description>
+      <summary>Remove the shutdown item from the session menu.</summary>
+      <description>Makes it so that the shutdown button doesn’t show in the session menu.</description>
     </key>
     <key name="force-restart-menuitem" type="b">
       <default>false</default>
-      <_summary>Force the visibility of Restart item in the session menu</_summary>
-      <_description>Makes it so that the restart shows in the session menu even in the environments where it should not show.</_description>
+      <summary>Force the visibility of Restart item in the session menu</summary>
+      <description>Makes it so that the restart shows in the session menu even in the environments where it should not show.</description>
     </key>
     <key type="b" name="show-real-name-on-panel">
       <default>false</default>

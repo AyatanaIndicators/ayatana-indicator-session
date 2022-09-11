@@ -1,5 +1,5 @@
 <schemalist>
-  <schema id="org.ayatana.indicator.session" path="/org/ayatana/indicator/session/">
+  <schema gettext-domain="ayatana-indicator-session" id="org.ayatana.indicator.session" path="/org/ayatana/indicator/session/">
     <key name="suppress-logout-restart-shutdown" type="b">
       <default>false</default>
       <summary>Suppress the dialog to confirm logout, restart and shutdown action</summary>

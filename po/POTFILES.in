@@ -1,4 +1,4 @@
-data/org.ayatana.indicator.session.gschema.xml.in
+data/org.ayatana.indicator.session.gschema.xml
 src/actions.c
 src/guest.c
 src/main.c

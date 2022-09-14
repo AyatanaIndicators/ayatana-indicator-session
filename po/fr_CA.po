@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-05 13:41+0200\n"
+"POT-Creation-Date: 2022-09-14 08:09+0200\n"
 "PO-Revision-Date: 2020-04-28 11:11+0000\n"
 "Last-Translator: Jeannette L <j.lavoie@net-c.ca>\n"
 "Language-Team: French (Canada) <https://hosted.weblate.org/projects/ayatana-"
@@ -19,13 +19,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.0.2\n"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:1
+#: data/org.ayatana.indicator.session.gschema.xml:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Supprimer la demande de confirmation lors d'une déconnexion, d'un "
 "redémarrage ou d'un arrêt"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:2
+#: data/org.ayatana.indicator.session.gschema.xml:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
@@ -33,42 +33,42 @@ msgstr ""
 "Afficher ou non les demandes de confirmation lors d'une déconnexion, d'un "
 "redémarrage ou d'un arrêt."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:3
+#: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
 msgstr "Supprimer l'option de fermeture de session du menu"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:4
+#: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 "Fait en sorte que le bouton de déconnexion ne soit pas affiché pas dans le "
 "menu de la session."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:5
+#: data/org.ayatana.indicator.session.gschema.xml:5
 msgid "Remove the Restart item from the session menu."
 msgstr "Supprimer l'option de redémarrage du menu."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:6
+#: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
 "Fait en sorte que le bouton de redémarrage ne soit pas affiché pas dans le "
 "menu de la session."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:7
+#: data/org.ayatana.indicator.session.gschema.xml:7
 msgid "Remove the shutdown item from the session menu."
 msgstr "Enlever l'option de redémarrage du menu."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:8
+#: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
 "Fait en sorte que le bouton d'extinction ne soit pas affiché pas dans le "
 "menu de la session."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:9
+#: data/org.ayatana.indicator.session.gschema.xml:9
 #, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
 msgstr "Supprimer l'option de redémarrage du menu."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:10
+#: data/org.ayatana.indicator.session.gschema.xml:10
 #, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
@@ -77,131 +77,148 @@ msgstr ""
 "Fait en sorte que le bouton de redémarrage ne soit pas affiché pas dans le "
 "menu de la session."
 
+#: data/org.ayatana.indicator.session.gschema.xml:11
+#, fuzzy
+msgid "Determine the visibility of the User's real name on the panel"
+msgstr "Supprimer l'option de redémarrage du menu."
+
+#: data/org.ayatana.indicator.session.gschema.xml:12
+msgid "Allow for the Removal of the users name from the panel"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:13
+msgid "Show the list of users"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:14
+msgid "Allow for the user list to be hidden by the user."
+msgstr ""
+
 #. Translators: the name of the menu ("System"), then the user's name
-#: ../src/service.c:196
+#: src/service.c:196
 #, c-format
 msgid "System, %s"
 msgstr "Système, %s"
 
-#: ../src/service.c:200 ../src/service.c:210
+#: src/service.c:200 ../src/service.c:210
 msgid "System"
 msgstr "Système"
 
-#: ../src/service.c:211
+#: src/service.c:211
 msgid "Session management, status and user switching"
 msgstr ""
 
-#: ../src/service.c:336
+#: src/service.c:336
 msgid "Guest"
 msgstr "Invité"
 
-#: ../src/service.c:382
+#: src/service.c:382
 #, c-format
 msgid "%s Help"
 msgstr "%s Aide"
 
-#: ../src/service.c:383
+#: src/service.c:383
 #, fuzzy, c-format
 msgid "%s Help…"
 msgstr "%s Aide"
 
-#: ../src/service.c:387
+#: src/service.c:387
 #, fuzzy
 msgid "About This Device…"
 msgstr "À propos de cet ordinateur"
 
-#: ../src/service.c:389
+#: src/service.c:389
 msgid "About This Computer"
 msgstr "À propos de cet ordinateur"
 
-#: ../src/service.c:400
+#: src/service.c:400
 #, fuzzy
 msgid "Desktop mode"
 msgstr "%s Aide pour le bureau"
 
-#: ../src/service.c:406
+#: src/service.c:406
 msgid "Report a Bug…"
 msgstr "Signaler un bogue…"
 
-#: ../src/service.c:417
+#: src/service.c:417
 msgid "System Settings…"
 msgstr "Paramètres système…"
 
-#: ../src/service.c:419
+#: src/service.c:419
 msgid "Online Accounts…"
 msgstr "Comptes en ligne…"
 
-#: ../src/service.c:622
+#: src/service.c:622
 msgid "Start Screen Saver"
 msgstr "Économiseur d'écran"
 
-#: ../src/service.c:630 ../src/service.c:646
+#: src/service.c:630 ../src/service.c:646
 msgid "Switch Account…"
 msgstr "Changer de compte…"
 
-#: ../src/service.c:631 ../src/service.c:647
+#: src/service.c:631 ../src/service.c:647
 msgid "Switch Account"
 msgstr "Changer de compte"
 
-#: ../src/service.c:643
+#: src/service.c:643
 msgid "Lock/Switch Account…"
 msgstr "Verrouiller/Changer de compte…"
 
-#: ../src/service.c:644
+#: src/service.c:644
 msgid "Lock/Switch Account"
 msgstr "Verrouiller/Changer de compte"
 
-#: ../src/service.c:650
+#: src/service.c:650
 msgid "Lock"
 msgstr "Verrouiller"
 
-#: ../src/service.c:695
+#: src/service.c:695
 msgid "Guest Session"
 msgstr "Session d'invité"
 
-#: ../src/service.c:772
+#: src/service.c:772
 msgid "Log Out…"
 msgstr "Déconnexion…"
 
-#: ../src/service.c:772 ../src/backend-dbus/actions.c:791
-#: ../src/backend-dbus/actions.c:793
+#: src/service.c:772 ../src/backend-dbus/actions.c:791
+#: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "Se déconnecter"
 
-#: ../src/service.c:790
+#: src/service.c:790
 msgid "Suspend"
 msgstr "Mettre en veille"
 
-#: ../src/service.c:793
+#: src/service.c:793
 msgid "Hibernate"
 msgstr "Hiberner"
 
-#: ../src/service.c:798
+#: src/service.c:798
 msgid "Restart…"
 msgstr "Redémarrage…"
 
-#: ../src/service.c:798 ../src/backend-dbus/actions.c:834
-#: ../src/backend-dbus/actions.c:836
+#: src/service.c:798 ../src/backend-dbus/actions.c:834
+#: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "Redémarrer"
 
-#: ../src/service.c:805
+#: src/service.c:805
 msgid "Shut Down…"
 msgstr "Arrêt en cours…"
 
-#: ../src/service.c:805 ../src/backend-dbus/actions.c:873
-#: ../src/backend-dbus/actions.c:875
+#: src/service.c:805 ../src/backend-dbus/actions.c:873
+#: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "Éteindre"
 
-#: ../src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
-#: ../src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
-#: ../src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
-#: ../src/backend-dbus/actions.c:973
+#: src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
+#: src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
+#: src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr "Attention"
 
-#: ../src/backend-dbus/actions.c:754
+#: src/backend-dbus/actions.c:754
 msgid ""
 "The operating system's bug tracker needs to be accessed with\n"
 "a web browser.\n"
@@ -215,33 +232,33 @@ msgstr ""
 "L'Indicateur de session Ayatana n'a trouvé aucun\n"
 "navigateur web sur votre ordinateur."
 
-#: ../src/backend-dbus/actions.c:785
+#: src/backend-dbus/actions.c:785
 msgid "Are you sure you want to close all programs and log out?"
 msgstr "Voulez-vous vraiment quitter tous les programmes et vous déconnecter ?"
 
-#: ../src/backend-dbus/actions.c:786
+#: src/backend-dbus/actions.c:786
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
 "Certaines mises à jour logicielles ne seront effectives qu'après un "
 "redémarrage de l'ordinateur."
 
-#: ../src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
-#: ../src/backend-dbus/actions.c:876
+#: src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "Annuler"
 
-#: ../src/backend-dbus/actions.c:835
+#: src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr ""
 "Voulez-vous vraiment quitter tous les programmes et redémarrer l'ordinateur ?"
 
-#: ../src/backend-dbus/actions.c:874
+#: src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
 "Voulez-vous vraiment quitter tous les programmes et éteindre l'ordinateur ?"
 
-#: ../src/backend-dbus/actions.c:905
+#: src/backend-dbus/actions.c:905
 msgid ""
 "The XFCE desktop's user guide needs to be accessed with\n"
 "a web browser.\n"
@@ -255,7 +272,7 @@ msgstr ""
 "L'indicateur de session Ayatana n'a trouvé aucun\n"
 "navigateur web sur votre ordinateur."
 
-#: ../src/backend-dbus/actions.c:910
+#: src/backend-dbus/actions.c:910
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -269,7 +286,7 @@ msgstr ""
 "Veuillez signaler ceci aux développeurs et développeuses sur :\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: ../src/backend-dbus/actions.c:919
+#: src/backend-dbus/actions.c:919
 #, c-format
 msgid ""
 "Displaying information on %s  requires\n"
@@ -284,7 +301,7 @@ msgstr ""
 "L'indicateur de session Ayatana n'a trouvé aucun\n"
 "navigateur web sur votre ordinateur."
 
-#: ../src/backend-dbus/actions.c:938
+#: src/backend-dbus/actions.c:938
 msgid ""
 "The Ayatana Session Indicator does not support evoking the system\n"
 "settings application for your desktop environment, yet.\n"
@@ -298,7 +315,7 @@ msgstr ""
 "Veuillez signaler ceci aux développeurs et développeuses sur :\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: ../src/backend-dbus/actions.c:953
+#: src/backend-dbus/actions.c:953
 msgid ""
 "The Ayatana Session Indicator does not support password changes\n"
 "for your desktop environment, yet.\n"
@@ -312,7 +329,7 @@ msgstr ""
 "Veuillez signaler ceci aux développeurs et développeuse :\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: ../src/backend-dbus/actions.c:974
+#: src/backend-dbus/actions.c:974
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "information of the currently running desktop environment.\n"

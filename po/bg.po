@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-05 13:41+0200\n"
+"POT-Creation-Date: 2022-09-14 08:09+0200\n"
 "PO-Revision-Date: 2020-03-25 17:46+0000\n"
 "Last-Translator: Violeta Uzunova <violeta.uzunova@gmail.com>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/ayatana-"
@@ -20,13 +20,13 @@ msgstr ""
 "X-Generator: Weblate 4.0-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:1
+#: data/org.ayatana.indicator.session.gschema.xml:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
 "Да не се показва диалог за потвърждение при излизане, рестартиране и "
 "изключване"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:2
+#: data/org.ayatana.indicator.session.gschema.xml:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
@@ -34,167 +34,184 @@ msgstr ""
 "Да се показва ли диалог за потвърждение при излизане, рестартиране и "
 "изключване."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:3
+#: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
 msgstr "Премахване реда за излизане от системата"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:4
+#: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "Прави бутонът за излизане да не се показва в менюто."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:5
+#: data/org.ayatana.indicator.session.gschema.xml:5
 msgid "Remove the Restart item from the session menu."
 msgstr "Извадете елемента Рестартиране от менюто на сесията."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:6
+#: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "Прави бутонът за рестартиране да не се показва в менюто."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:7
+#: data/org.ayatana.indicator.session.gschema.xml:7
 msgid "Remove the shutdown item from the session menu."
 msgstr "Премахнете елемента за изключване от менюто на сесията."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:8
+#: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Прави бутонът за изключване да не се показва в менюто."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:9
+#: data/org.ayatana.indicator.session.gschema.xml:9
 #, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
 msgstr "Извадете елемента Рестартиране от менюто на сесията."
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:10
+#: data/org.ayatana.indicator.session.gschema.xml:10
 #, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr "Прави така, че бутонът за рестартиране да не се показва в менюто."
 
+#: data/org.ayatana.indicator.session.gschema.xml:11
+#, fuzzy
+msgid "Determine the visibility of the User's real name on the panel"
+msgstr "Извадете елемента Рестартиране от менюто на сесията."
+
+#: data/org.ayatana.indicator.session.gschema.xml:12
+msgid "Allow for the Removal of the users name from the panel"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:13
+msgid "Show the list of users"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:14
+msgid "Allow for the user list to be hidden by the user."
+msgstr ""
+
 #. Translators: the name of the menu ("System"), then the user's name
-#: ../src/service.c:196
+#: src/service.c:196
 #, c-format
 msgid "System, %s"
 msgstr "Система, %s"
 
-#: ../src/service.c:200 ../src/service.c:210
+#: src/service.c:200 ../src/service.c:210
 msgid "System"
 msgstr "Система"
 
-#: ../src/service.c:211
+#: src/service.c:211
 msgid "Session management, status and user switching"
 msgstr ""
 
-#: ../src/service.c:336
+#: src/service.c:336
 msgid "Guest"
 msgstr "Гост"
 
-#: ../src/service.c:382
+#: src/service.c:382
 #, c-format
 msgid "%s Help"
 msgstr "%s Помощ"
 
-#: ../src/service.c:383
+#: src/service.c:383
 #, fuzzy, c-format
 msgid "%s Help…"
 msgstr "%s Помощ"
 
-#: ../src/service.c:387
+#: src/service.c:387
 #, fuzzy
 msgid "About This Device…"
 msgstr "Относно Този Компютър"
 
-#: ../src/service.c:389
+#: src/service.c:389
 msgid "About This Computer"
 msgstr "Относно Този Компютър"
 
-#: ../src/service.c:400
+#: src/service.c:400
 #, fuzzy
 msgid "Desktop mode"
 msgstr "%s  Десктоп Помощ"
 
-#: ../src/service.c:406
+#: src/service.c:406
 msgid "Report a Bug…"
 msgstr "Докладвайте за грешка…"
 
-#: ../src/service.c:417
+#: src/service.c:417
 msgid "System Settings…"
 msgstr "Системни Настройки…"
 
-#: ../src/service.c:419
+#: src/service.c:419
 msgid "Online Accounts…"
 msgstr "Активни Потребители…"
 
-#: ../src/service.c:622
+#: src/service.c:622
 msgid "Start Screen Saver"
 msgstr "Стартирай Екранен Предпазител"
 
-#: ../src/service.c:630 ../src/service.c:646
+#: src/service.c:630 ../src/service.c:646
 msgid "Switch Account…"
 msgstr "Смяна на потребител…"
 
-#: ../src/service.c:631 ../src/service.c:647
+#: src/service.c:631 ../src/service.c:647
 msgid "Switch Account"
 msgstr "Смяна на Потребител"
 
-#: ../src/service.c:643
+#: src/service.c:643
 msgid "Lock/Switch Account…"
 msgstr "Заключване/Смяна на Потребител…"
 
-#: ../src/service.c:644
+#: src/service.c:644
 msgid "Lock/Switch Account"
 msgstr "Заключване/Смяна на Потребител"
 
-#: ../src/service.c:650
+#: src/service.c:650
 msgid "Lock"
 msgstr "Заключване"
 
-#: ../src/service.c:695
+#: src/service.c:695
 msgid "Guest Session"
 msgstr "Гост"
 
-#: ../src/service.c:772
+#: src/service.c:772
 msgid "Log Out…"
 msgstr "Изход…"
 
-#: ../src/service.c:772 ../src/backend-dbus/actions.c:791
-#: ../src/backend-dbus/actions.c:793
+#: src/service.c:772 ../src/backend-dbus/actions.c:791
+#: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "Излизане"
 
-#: ../src/service.c:790
+#: src/service.c:790
 msgid "Suspend"
 msgstr "Приспиване"
 
-#: ../src/service.c:793
+#: src/service.c:793
 msgid "Hibernate"
 msgstr "Дълбоко заспиване"
 
-#: ../src/service.c:798
+#: src/service.c:798
 msgid "Restart…"
 msgstr "Рестарт…"
 
-#: ../src/service.c:798 ../src/backend-dbus/actions.c:834
-#: ../src/backend-dbus/actions.c:836
+#: src/service.c:798 ../src/backend-dbus/actions.c:834
+#: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "Рестартиране"
 
-#: ../src/service.c:805
+#: src/service.c:805
 msgid "Shut Down…"
 msgstr "Изключване…"
 
-#: ../src/service.c:805 ../src/backend-dbus/actions.c:873
-#: ../src/backend-dbus/actions.c:875
+#: src/service.c:805 ../src/backend-dbus/actions.c:873
+#: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "Изключване"
 
-#: ../src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
-#: ../src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
-#: ../src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
-#: ../src/backend-dbus/actions.c:973
+#: src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
+#: src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
+#: src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr "Предупреждение"
 
-#: ../src/backend-dbus/actions.c:754
+#: src/backend-dbus/actions.c:754
 msgid ""
 "The operating system's bug tracker needs to be accessed with\n"
 "a web browser.\n"
@@ -203,34 +220,34 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:785
+#: src/backend-dbus/actions.c:785
 msgid "Are you sure you want to close all programs and log out?"
 msgstr "Сигурни ли сте, че искате да се затворят всички програми при изход?"
 
-#: ../src/backend-dbus/actions.c:786
+#: src/backend-dbus/actions.c:786
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
 "Някои актуализации няма да бъдат приложени до следващия рестарт на компютъра."
 
-#: ../src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
-#: ../src/backend-dbus/actions.c:876
+#: src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "Отказ"
 
-#: ../src/backend-dbus/actions.c:835
+#: src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr ""
 "Сигурни ли сте, че искате да се затворят всички програми и компютъра да се "
 "рестартира?"
 
-#: ../src/backend-dbus/actions.c:874
+#: src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
 "Сигурни ли сте, че искате да се затворят всички програми и компютъра да се "
 "изключи?"
 
-#: ../src/backend-dbus/actions.c:905
+#: src/backend-dbus/actions.c:905
 msgid ""
 "The XFCE desktop's user guide needs to be accessed with\n"
 "a web browser.\n"
@@ -239,7 +256,7 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:910
+#: src/backend-dbus/actions.c:910
 #, fuzzy
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
@@ -254,7 +271,7 @@ msgstr ""
 "Моля, съобщете това на програмистите на адрес:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: ../src/backend-dbus/actions.c:919
+#: src/backend-dbus/actions.c:919
 #, c-format
 msgid ""
 "Displaying information on %s  requires\n"
@@ -264,7 +281,7 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:938
+#: src/backend-dbus/actions.c:938
 msgid ""
 "The Ayatana Session Indicator does not support evoking the system\n"
 "settings application for your desktop environment, yet.\n"
@@ -278,7 +295,7 @@ msgstr ""
 "Моля, съобщете това на програмистите на адрес:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: ../src/backend-dbus/actions.c:953
+#: src/backend-dbus/actions.c:953
 msgid ""
 "The Ayatana Session Indicator does not support password changes\n"
 "for your desktop environment, yet.\n"
@@ -292,7 +309,7 @@ msgstr ""
 "Моля, съобщете това на програмистите на адрес:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: ../src/backend-dbus/actions.c:974
+#: src/backend-dbus/actions.c:974
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "information of the currently running desktop environment.\n"

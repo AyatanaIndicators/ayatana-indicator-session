@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-05 13:42+0200\n"
+"POT-Creation-Date: 2022-09-14 08:09+0200\n"
 "PO-Revision-Date: 2018-04-01 14:35+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Chinese (Hong Kong) <https://hosted.weblate.org/projects/"
@@ -20,181 +20,198 @@ msgstr ""
 "X-Generator: Weblate 2.20-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:1
+#: data/org.ayatana.indicator.session.gschema.xml:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr "停止確定登出、重新啟動和關機的對話框"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:2
+#: data/org.ayatana.indicator.session.gschema.xml:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr "是否要顯示確定登出、重新啟動和關機的對話框。"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:3
+#: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
 msgstr "從作業階段選單中移除「登出」項目"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:4
+#: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "讓登出按鈕不顯示在工作階段選單內。"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:5
+#: data/org.ayatana.indicator.session.gschema.xml:5
 #, fuzzy
 msgid "Remove the Restart item from the session menu."
 msgstr "從工作階段選單中移除「重新啟動」項目"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:6
+#: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "讓登出按鈕不顯示在工作階段選單內。"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:7
+#: data/org.ayatana.indicator.session.gschema.xml:7
 #, fuzzy
 msgid "Remove the shutdown item from the session menu."
 msgstr "從工作階段選單中移除「關機」項目"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:8
+#: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "讓關機按鈕不顯示在工作階段選單內。"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:9
+#: data/org.ayatana.indicator.session.gschema.xml:9
 #, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
 msgstr "從工作階段選單中移除「重新啟動」項目"
 
-#: ../data/org.ayatana.indicator.session.gschema.xml.in:10
+#: data/org.ayatana.indicator.session.gschema.xml:10
 #, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr "讓重新啟動按鈕不要顯在示作業階段選單內。"
 
+#: data/org.ayatana.indicator.session.gschema.xml:11
+#, fuzzy
+msgid "Determine the visibility of the User's real name on the panel"
+msgstr "從工作階段選單中移除「重新啟動」項目"
+
+#: data/org.ayatana.indicator.session.gschema.xml:12
+msgid "Allow for the Removal of the users name from the panel"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:13
+msgid "Show the list of users"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:14
+msgid "Allow for the user list to be hidden by the user."
+msgstr ""
+
 #. Translators: the name of the menu ("System"), then the user's name
-#: ../src/service.c:196
+#: src/service.c:196
 #, c-format
 msgid "System, %s"
 msgstr ""
 
-#: ../src/service.c:200 ../src/service.c:210
+#: src/service.c:200 ../src/service.c:210
 msgid "System"
 msgstr ""
 
-#: ../src/service.c:211
+#: src/service.c:211
 msgid "Session management, status and user switching"
 msgstr ""
 
-#: ../src/service.c:336
+#: src/service.c:336
 msgid "Guest"
 msgstr "訪客"
 
-#: ../src/service.c:382
+#: src/service.c:382
 #, c-format
 msgid "%s Help"
 msgstr ""
 
-#: ../src/service.c:383
+#: src/service.c:383
 #, c-format
 msgid "%s Help…"
 msgstr ""
 
-#: ../src/service.c:387
+#: src/service.c:387
 msgid "About This Device…"
 msgstr ""
 
-#: ../src/service.c:389
+#: src/service.c:389
 msgid "About This Computer"
 msgstr ""
 
-#: ../src/service.c:400
+#: src/service.c:400
 msgid "Desktop mode"
 msgstr ""
 
-#: ../src/service.c:406
+#: src/service.c:406
 msgid "Report a Bug…"
 msgstr ""
 
-#: ../src/service.c:417
+#: src/service.c:417
 msgid "System Settings…"
 msgstr "系統設定值…"
 
-#: ../src/service.c:419
+#: src/service.c:419
 msgid "Online Accounts…"
 msgstr "線上帳號…"
 
-#: ../src/service.c:622
+#: src/service.c:622
 msgid "Start Screen Saver"
 msgstr ""
 
-#: ../src/service.c:630 ../src/service.c:646
+#: src/service.c:630 ../src/service.c:646
 #, fuzzy
 msgid "Switch Account…"
 msgstr "切換使用者..."
 
-#: ../src/service.c:631 ../src/service.c:647
+#: src/service.c:631 ../src/service.c:647
 #, fuzzy
 msgid "Switch Account"
 msgstr "切換使用者..."
 
-#: ../src/service.c:643
+#: src/service.c:643
 #, fuzzy
 msgid "Lock/Switch Account…"
 msgstr "切換使用者..."
 
-#: ../src/service.c:644
+#: src/service.c:644
 #, fuzzy
 msgid "Lock/Switch Account"
 msgstr "切換使用者..."
 
-#: ../src/service.c:650
+#: src/service.c:650
 msgid "Lock"
 msgstr ""
 
-#: ../src/service.c:695
+#: src/service.c:695
 msgid "Guest Session"
 msgstr "訪客作業階段"
 
-#: ../src/service.c:772
+#: src/service.c:772
 msgid "Log Out…"
 msgstr "登出…"
 
-#: ../src/service.c:772 ../src/backend-dbus/actions.c:791
-#: ../src/backend-dbus/actions.c:793
+#: src/service.c:772 ../src/backend-dbus/actions.c:791
+#: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "登出"
 
-#: ../src/service.c:790
+#: src/service.c:790
 msgid "Suspend"
 msgstr "暫停"
 
-#: ../src/service.c:793
+#: src/service.c:793
 msgid "Hibernate"
 msgstr "休眠"
 
-#: ../src/service.c:798
+#: src/service.c:798
 msgid "Restart…"
 msgstr "重新啟動…"
 
-#: ../src/service.c:798 ../src/backend-dbus/actions.c:834
-#: ../src/backend-dbus/actions.c:836
+#: src/service.c:798 ../src/backend-dbus/actions.c:834
+#: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "重新啟動"
 
-#: ../src/service.c:805
+#: src/service.c:805
 msgid "Shut Down…"
 msgstr "關機…"
 
-#: ../src/service.c:805 ../src/backend-dbus/actions.c:873
-#: ../src/backend-dbus/actions.c:875
+#: src/service.c:805 ../src/backend-dbus/actions.c:873
+#: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "關機"
 
-#: ../src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
-#: ../src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
-#: ../src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
-#: ../src/backend-dbus/actions.c:973
+#: src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
+#: src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
+#: src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:754
+#: src/backend-dbus/actions.c:754
 msgid ""
 "The operating system's bug tracker needs to be accessed with\n"
 "a web browser.\n"
@@ -203,31 +220,31 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:785
+#: src/backend-dbus/actions.c:785
 #, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
 msgstr "您是否真的想關閉所有程式並登出電腦？"
 
-#: ../src/backend-dbus/actions.c:786
+#: src/backend-dbus/actions.c:786
 #, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr "有些軟件更新在電腦下次重新啟動前未能套用。"
 
-#: ../src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
-#: ../src/backend-dbus/actions.c:876
+#: src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "取消"
 
-#: ../src/backend-dbus/actions.c:835
+#: src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr "您是否真的想關閉所有程式並重新啟動電腦？"
 
-#: ../src/backend-dbus/actions.c:874
+#: src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr "您是否真的想關閉所有程式並關掉電腦？"
 
-#: ../src/backend-dbus/actions.c:905
+#: src/backend-dbus/actions.c:905
 msgid ""
 "The XFCE desktop's user guide needs to be accessed with\n"
 "a web browser.\n"
@@ -236,7 +253,7 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:910
+#: src/backend-dbus/actions.c:910
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -245,7 +262,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:919
+#: src/backend-dbus/actions.c:919
 #, c-format
 msgid ""
 "Displaying information on %s  requires\n"
@@ -255,7 +272,7 @@ msgid ""
 "browser on your computer."
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:938
+#: src/backend-dbus/actions.c:938
 msgid ""
 "The Ayatana Session Indicator does not support evoking the system\n"
 "settings application for your desktop environment, yet.\n"
@@ -264,7 +281,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:953
+#: src/backend-dbus/actions.c:953
 msgid ""
 "The Ayatana Session Indicator does not support password changes\n"
 "for your desktop environment, yet.\n"
@@ -273,7 +290,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 
-#: ../src/backend-dbus/actions.c:974
+#: src/backend-dbus/actions.c:974
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "information of the currently running desktop environment.\n"

@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-14 08:27+0200\n"
-"PO-Revision-Date: 2020-08-07 21:32+0000\n"
-"Last-Translator: Nazim-ua <nazim-ua@ukr.net>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/uk/>\n"
+"PO-Revision-Date: 2022-09-15 22:18+0000\n"
+"Last-Translator: Sergii Horichenko <m@sgg.im>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.2-dev\n"
+"X-Generator: Weblate 4.14.1-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -60,33 +60,32 @@ msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Робить так, що кнопка вимкнення не відображається в меню сесії."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Прибрати пункт «Перезавантаження» з меню сесії."
+msgstr "Примусове відображення пункту \"Перезавантаження\" у меню сеансу"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
-msgstr "Вимкнути показ кнопки «Перезавантаження» в меню."
+msgstr ""
+"Примушує відображати \"Перезавантаження\" в меню сеансу навіть у тих "
+"середовищах, де не повинно відображатися."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Прибрати пункт «Перезавантаження» з меню сесії."
+msgstr "Визначає чи відображати повне ім'я Користувача на панелі"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Дозволяє видалити ім'я користувача з панелі"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Показати список користувачів"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Дозволити користувачу приховувати список користувачів."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196
@@ -100,7 +99,7 @@ msgstr "Система"
 
 #: src/service.c:211
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Керування сеансами, статусом та перемиканням користувачів"
 
 #: src/service.c:336
 msgid "Guest"
@@ -112,23 +111,21 @@ msgid "%s Help"
 msgstr "%s Допомога"
 
 #: src/service.c:383
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "%s Допомога"
+msgstr "%s Допомога…"
 
 #: src/service.c:387
-#, fuzzy
 msgid "About This Device…"
-msgstr "Про цей комп'ютер"
+msgstr "Про цей пристрій…"
 
 #: src/service.c:389
 msgid "About This Computer"
 msgstr "Про цей комп'ютер"
 
 #: src/service.c:400
-#, fuzzy
 msgid "Desktop mode"
-msgstr "%s Довідка на робочому столі"
+msgstr "Режим робочого столу"
 
 #: src/service.c:406
 msgid "Report a Bug…"

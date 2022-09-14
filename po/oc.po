@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-14 08:27+0200\n"
-"PO-Revision-Date: 2022-09-08 18:19+0000\n"
+"PO-Revision-Date: 2022-09-15 22:18+0000\n"
 "Last-Translator: Quentin PAGÈS <quentinantonin@free.fr>\n"
-"Language-Team: Occitan <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/oc/>\n"
+"Language-Team: Occitan <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/oc/>\n"
 "Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -77,21 +77,21 @@ msgstr ""
 "environament ont se deu pas mostrar."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Forçar la visibilitat de l’element Reaviar del menú de session"
+msgstr ""
+"Determinar la visibilitat del nom vertadièr de l’utilizaire dins lo panèl"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Permetre de tirar lo nom de l’utilizaire d’al panèl"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Afichar la lista dels utilizaires"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Permetre a l’utilizaire d’amagar la lista d’utilizaires."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196

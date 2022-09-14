@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-14 08:27+0200\n"
-"PO-Revision-Date: 2021-05-02 16:32+0000\n"
-"Last-Translator: Tomáš Marný <tomik.marny@gmail.com>\n"
+"PO-Revision-Date: 2022-09-14 11:47+0000\n"
+"Last-Translator: Milan Korecky <milan.korecky@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/cs/>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.14.1-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -58,35 +58,32 @@ msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Způsobí to, že se nezobrazí tlačítko vypnutí v nabídce sezení."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Odstranit položku Restartovat z nabídky sezení."
+msgstr "Odstranit položku Restartovat z nabídky sezení"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr ""
-"Provede se takové nastavení, že tlačítko pro restart nebude zobrazeno v "
-"nabídce sezení."
+"Provede se takové nastavení, že tlačítko pro restart bude zobrazeno i v "
+"nabídce sezení ve kterém by se zobrazovat nemělo."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Odstranit položku Restartovat z nabídky sezení."
+msgstr "Určete viditelnost skutečného jména uživatele na panelu"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Povolit odstranění jména uživatele z panelu"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Zobrazit seznam uživatelů"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Povolit, aby uživatel skryl seznam uživatelů."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196
@@ -100,7 +97,7 @@ msgstr "Systém"
 
 #: src/service.c:211
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Správa relací, stav a přepínání uživatelů"
 
 #: src/service.c:336
 msgid "Guest"
@@ -112,23 +109,21 @@ msgid "%s Help"
 msgstr "Nápověda k %s"
 
 #: src/service.c:383
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "Nápověda k %s"
+msgstr "%s Nápověda k…"
 
 #: src/service.c:387
-#, fuzzy
 msgid "About This Device…"
-msgstr "O tomto počítači"
+msgstr "O tomto počítači…"
 
 #: src/service.c:389
 msgid "About This Computer"
 msgstr "O tomto počítači"
 
 #: src/service.c:400
-#, fuzzy
 msgid "Desktop mode"
-msgstr "Nápověda k prostředí %s"
+msgstr "Desktopový režim"
 
 #: src/service.c:406
 msgid "Report a Bug…"

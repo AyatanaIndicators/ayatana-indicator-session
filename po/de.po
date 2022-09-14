@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-14 08:27+0200\n"
-"PO-Revision-Date: 2022-09-07 03:27+0000\n"
+"PO-Revision-Date: 2022-09-14 11:47+0000\n"
 "Last-Translator: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/de/>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -72,21 +72,20 @@ msgstr ""
 "werden sollte."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Sichtbarkeit des Eintrags zum Neustarten im Sitzungsmenü forcieren"
+msgstr "Vollständiger Name des Benutzers in der Leiste sichtbar"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Ermöglicht das Entfernen des Benutzernamens aus der Leiste"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Benutzerliste anzeigen"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Ermöglicht es dem Benutzer die Benutzerliste zu verstecken."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196

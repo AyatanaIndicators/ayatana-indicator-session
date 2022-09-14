@@ -1,6 +1,76 @@
+2022-09-14 Mike Gabriel
+
+        * release 22.9.0 (HEAD -> main, tag: 22.9.0)
+        * Translated using Weblate (German) (a2c55594)
+
+2022-09-14 Milan Korecky
+
+        * Translated using Weblate (Czech) (d80883f1)
+
+2022-09-14 Mike Gabriel
+
+        * po/*.po{,t}: Translation strings update (esp. source file
+          references). (8b9499f7)
+        * update-po{,t}.sh: Also catch multi-file source file references.
+          (cee76651)
+
+2022-09-14 Eric
+
+        * Translated using Weblate (Chinese (Simplified)) (97b91745)
+
+2022-09-14 Mike Gabriel
+
+        * po/*.po: Update translation strings. (2058a927)
+
+2022-09-13 Robert Tari
+
+        * Merge branch 'sunweaver-pr/fix-and-update-translations' (6bca8f18)
+
+2022-09-11 Mike Gabriel
+
+        * po/ayatana-indicator-session.pot: Update translation template file.
+          (fa225cf2)
+        * data/org.ayatana.indicator.session.gschema.xml: Add gettext-domain
+          property to <schema /> tag. (30b55bb0)
+        * data/: Fix translating the indicator's .gschema.xml file.
+          (fb1aebac)
+        * update-po{,t}.sh: Omit ../ at beginning of file names in .po(t)
+          file(s). (dd82acd7)
+
+2022-09-07 Quentin PAGÈS
+
+        * Translated using Weblate (Occitan) (8fc23663)
+
+2022-09-07 Moo
+
+        * Translated using Weblate (Lithuanian) (a016e792)
+
+2022-09-05 Eric
+
+        * Translated using Weblate (Chinese (Simplified)) (01395f8a)
+
+2022-09-06 Wellington Terumi Uemura
+
+        * Translated using Weblate (Portuguese (Brazil)) (d46ee3da)
+
+2022-09-05 Yaron Shahrabani
+
+        * Translated using Weblate (Hebrew) (ed4878a5)
+
+2022-09-05 Mike Gabriel
+
+        * Translated using Weblate (German) (b9aefb32)
+        * po/*.po{,t}: Translation strings update. (8b84185c)
+
 2022-07-15 Mike Gabriel
 
-        * release 22.2.1 (HEAD -> main, tag: 22.2.1)
+        * Merge branch 'tari01-pr/add-tooltip' (8472d6f0)
+        * release 22.2.1 (dd8ead32)
+        * release 22.2.1 (22ca3955) (tag: 22.2.1)
+
+2022-07-13 Robert Tari
+
+        * src/service.c: Add tooltip to indicator (61a990a0)
 
 2022-06-26 Mike Gabriel
 

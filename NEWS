@@ -1,3 +1,10 @@
+Overview of changes in ayatana-indicator-session 22.9.0
+
+  - Add tooltip support.
+  - data/org.ayatana.indicator.session.gschema.xml: Add gettext-domain
+    property to <schema /> tag.
+  - Translation updates.
+
 Overview of changes in ayatana-indicator-session 22.2.1
 
   - src/service.c: don't try to show any lockscreen shortcut on Lomiri.

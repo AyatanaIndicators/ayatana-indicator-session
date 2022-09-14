@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 08:09+0200\n"
+"POT-Creation-Date: 2022-09-14 08:27+0200\n"
 "PO-Revision-Date: 2020-01-04 00:21+0000\n"
 "Last-Translator: Milo Ivir <mail@milotype.de>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/ayatana-"
@@ -94,7 +94,7 @@ msgstr ""
 msgid "System, %s"
 msgstr "Sustav, %s"
 
-#: src/service.c:200 ../src/service.c:210
+#: src/service.c:200 src/service.c:210
 msgid "System"
 msgstr "Sustav"
 
@@ -146,11 +146,11 @@ msgstr "Internetski računi …"
 msgid "Start Screen Saver"
 msgstr "Pokreni zaštitu ekrana"
 
-#: src/service.c:630 ../src/service.c:646
+#: src/service.c:630 src/service.c:646
 msgid "Switch Account…"
 msgstr "Promijeni račun …"
 
-#: src/service.c:631 ../src/service.c:647
+#: src/service.c:631 src/service.c:647
 msgid "Switch Account"
 msgstr "Promijeni račun"
 
@@ -174,7 +174,7 @@ msgstr "Sesija gosta"
 msgid "Log Out…"
 msgstr "Odjava …"
 
-#: src/service.c:772 ../src/backend-dbus/actions.c:791
+#: src/service.c:772 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "Odjava"
@@ -191,7 +191,7 @@ msgstr "Zamrzni"
 msgid "Restart…"
 msgstr "Pokreni ponovo …"
 
-#: src/service.c:798 ../src/backend-dbus/actions.c:834
+#: src/service.c:798 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "Pokreni ponovo"
@@ -200,14 +200,14 @@ msgstr "Pokreni ponovo"
 msgid "Shut Down…"
 msgstr "Isključi …"
 
-#: src/service.c:805 ../src/backend-dbus/actions.c:873
+#: src/service.c:805 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "Isključi"
 
-#: src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
-#: src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
-#: src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:904
+#: src/backend-dbus/actions.c:909 src/backend-dbus/actions.c:918
+#: src/backend-dbus/actions.c:937 src/backend-dbus/actions.c:952
 #: src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr "Upozorenje"
@@ -236,7 +236,7 @@ msgid ""
 msgstr ""
 "Neke nadogradnje se neće primijeniti sve dok se računalo ponovo ne pokrene."
 
-#: src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "Odustani"

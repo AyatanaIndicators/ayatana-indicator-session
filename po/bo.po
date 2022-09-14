@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 08:09+0200\n"
+"POT-Creation-Date: 2022-09-14 08:27+0200\n"
 "PO-Revision-Date: 2019-08-28 12:24+0000\n"
 "Last-Translator: leela <53352@protonmail.com>\n"
 "Language-Team: Tibetan <https://hosted.weblate.org/projects/ayatana-"
@@ -92,7 +92,7 @@ msgstr ""
 msgid "System, %s"
 msgstr ""
 
-#: src/service.c:200 ../src/service.c:210
+#: src/service.c:200 src/service.c:210
 msgid "System"
 msgstr ""
 
@@ -142,11 +142,11 @@ msgstr ""
 msgid "Start Screen Saver"
 msgstr ""
 
-#: src/service.c:630 ../src/service.c:646
+#: src/service.c:630 src/service.c:646
 msgid "Switch Account…"
 msgstr ""
 
-#: src/service.c:631 ../src/service.c:647
+#: src/service.c:631 src/service.c:647
 msgid "Switch Account"
 msgstr ""
 
@@ -170,7 +170,7 @@ msgstr "སྐུ་མགྲོན་ལེ་ཚན"
 msgid "Log Out…"
 msgstr "ཕྱིར་འདོན་་་"
 
-#: src/service.c:772 ../src/backend-dbus/actions.c:791
+#: src/service.c:772 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "ཕྱིར་འདོན"
@@ -187,7 +187,7 @@ msgstr "ངལ་གསོ"
 msgid "Restart…"
 msgstr "འགོ་བསྐྱར་འཛུགས་་་"
 
-#: src/service.c:798 ../src/backend-dbus/actions.c:834
+#: src/service.c:798 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "འགོ་བསྐྱར་འཛུགས"
@@ -196,14 +196,14 @@ msgstr "འགོ་བསྐྱར་འཛུགས"
 msgid "Shut Down…"
 msgstr "སྒོ་རྒྱག་པ་་་"
 
-#: src/service.c:805 ../src/backend-dbus/actions.c:873
+#: src/service.c:805 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "སྒོ་རྒྱག་པ"
 
-#: src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
-#: src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
-#: src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:904
+#: src/backend-dbus/actions.c:909 src/backend-dbus/actions.c:918
+#: src/backend-dbus/actions.c:937 src/backend-dbus/actions.c:952
 #: src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr ""
@@ -228,7 +228,7 @@ msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr "རྩིས་འཁོར་འགོ་བསྐྱར་འཛུགས་མ་བྱས་པར་མཉེན་ཆས་གསར་སྒྱུར་གྱི་ཕན་འབྲས་མི་ཐོན"
 
-#: src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "རྩིས་མེད་གཏོང"

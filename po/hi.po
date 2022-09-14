@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 08:09+0200\n"
+"POT-Creation-Date: 2022-09-14 08:27+0200\n"
 "PO-Revision-Date: 2019-10-14 11:52+0000\n"
 "Last-Translator: Abhay Patel <abhay111patel@gmail.com>\n"
 "Language-Team: Hindi <https://hosted.weblate.org/projects/ayatana-indicators/"
@@ -89,7 +89,7 @@ msgstr ""
 msgid "System, %s"
 msgstr "सिस्टम, %s"
 
-#: src/service.c:200 ../src/service.c:210
+#: src/service.c:200 src/service.c:210
 msgid "System"
 msgstr "सिस्टम"
 
@@ -141,11 +141,11 @@ msgstr "ओनलाइन खाते…"
 msgid "Start Screen Saver"
 msgstr "स्क्रीन सेवर शुरू करें"
 
-#: src/service.c:630 ../src/service.c:646
+#: src/service.c:630 src/service.c:646
 msgid "Switch Account…"
 msgstr "अकाउन्ट बदलें…"
 
-#: src/service.c:631 ../src/service.c:647
+#: src/service.c:631 src/service.c:647
 msgid "Switch Account"
 msgstr "अकाउन्ट बदलें"
 
@@ -169,7 +169,7 @@ msgstr "अतिथि सत्र"
 msgid "Log Out…"
 msgstr "लॉगआउट करें…"
 
-#: src/service.c:772 ../src/backend-dbus/actions.c:791
+#: src/service.c:772 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "लॉगआउट करें"
@@ -186,7 +186,7 @@ msgstr "सुप्तावस्था करें"
 msgid "Restart…"
 msgstr "पुन:आरंभ करें…"
 
-#: src/service.c:798 ../src/backend-dbus/actions.c:834
+#: src/service.c:798 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "पुनः आरंभ करें"
@@ -195,14 +195,14 @@ msgstr "पुनः आरंभ करें"
 msgid "Shut Down…"
 msgstr "बंद करें…"
 
-#: src/service.c:805 ../src/backend-dbus/actions.c:873
+#: src/service.c:805 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "बंद करें"
 
-#: src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
-#: src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
-#: src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:904
+#: src/backend-dbus/actions.c:909 src/backend-dbus/actions.c:918
+#: src/backend-dbus/actions.c:937 src/backend-dbus/actions.c:952
 #: src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr "चेतावनी"
@@ -227,7 +227,7 @@ msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr "जब तक कम्य्पूटर रीस्टार्ट नहीं होता तब तक  कुछ सॉफ्टवेयर उपडटेस लागू नहीं होंगे।"
 
-#: src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "रद्द करें"

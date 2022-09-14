@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 08:09+0200\n"
+"POT-Creation-Date: 2022-09-14 08:27+0200\n"
 "PO-Revision-Date: 2020-11-27 14:29+0000\n"
 "Last-Translator: Ács Zoltán <acszoltan111@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/ayatana-"
@@ -93,7 +93,7 @@ msgstr ""
 msgid "System, %s"
 msgstr "Rendszer, %s"
 
-#: src/service.c:200 ../src/service.c:210
+#: src/service.c:200 src/service.c:210
 msgid "System"
 msgstr "Rendszer"
 
@@ -145,11 +145,11 @@ msgstr "Online fiókok…"
 msgid "Start Screen Saver"
 msgstr "Képernyővédő elindítása"
 
-#: src/service.c:630 ../src/service.c:646
+#: src/service.c:630 src/service.c:646
 msgid "Switch Account…"
 msgstr "Felhasználóváltás…"
 
-#: src/service.c:631 ../src/service.c:647
+#: src/service.c:631 src/service.c:647
 msgid "Switch Account"
 msgstr "Felhasználóváltás"
 
@@ -173,7 +173,7 @@ msgstr "Vendég-munkamenet"
 msgid "Log Out…"
 msgstr "Kijelentkezés…"
 
-#: src/service.c:772 ../src/backend-dbus/actions.c:791
+#: src/service.c:772 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "Kijelentkezés"
@@ -190,7 +190,7 @@ msgstr "Hibernálás"
 msgid "Restart…"
 msgstr "Újraindítás…"
 
-#: src/service.c:798 ../src/backend-dbus/actions.c:834
+#: src/service.c:798 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "Újraindítás"
@@ -199,14 +199,14 @@ msgstr "Újraindítás"
 msgid "Shut Down…"
 msgstr "Leállítás…"
 
-#: src/service.c:805 ../src/backend-dbus/actions.c:873
+#: src/service.c:805 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "Leállítás"
 
-#: src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
-#: src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
-#: src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:904
+#: src/backend-dbus/actions.c:909 src/backend-dbus/actions.c:918
+#: src/backend-dbus/actions.c:937 src/backend-dbus/actions.c:952
 #: src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr "Figyelmeztetés"
@@ -236,7 +236,7 @@ msgstr ""
 "Néhány szoftverfrissítés nem kerül alkalmazásra a számítógép következő "
 "újraindításáig."
 
-#: src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "Mégse"

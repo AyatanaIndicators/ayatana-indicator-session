@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 08:09+0200\n"
+"POT-Creation-Date: 2022-09-14 08:27+0200\n"
 "PO-Revision-Date: 2019-08-26 07:24+0000\n"
 "Last-Translator: leela <53352@protonmail.com>\n"
 "Language-Team: Telugu <https://hosted.weblate.org/projects/ayatana-"
@@ -92,7 +92,7 @@ msgstr ""
 msgid "System, %s"
 msgstr ""
 
-#: src/service.c:200 ../src/service.c:210
+#: src/service.c:200 src/service.c:210
 msgid "System"
 msgstr ""
 
@@ -142,12 +142,12 @@ msgstr "ఆన్‌లైన్ ఖాతాలు…"
 msgid "Start Screen Saver"
 msgstr ""
 
-#: src/service.c:630 ../src/service.c:646
+#: src/service.c:630 src/service.c:646
 #, fuzzy
 msgid "Switch Account…"
 msgstr "వాడుకరి ఖాతా మార్చు..."
 
-#: src/service.c:631 ../src/service.c:647
+#: src/service.c:631 src/service.c:647
 #, fuzzy
 msgid "Switch Account"
 msgstr "వాడుకరి ఖాతా మార్చు..."
@@ -174,7 +174,7 @@ msgstr "అతిథి సెషను"
 msgid "Log Out…"
 msgstr "లాగౌట్…"
 
-#: src/service.c:772 ../src/backend-dbus/actions.c:791
+#: src/service.c:772 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "లాగౌట్"
@@ -191,7 +191,7 @@ msgstr "సుప్తావస్థ"
 msgid "Restart…"
 msgstr "పునః ప్రారంభించు…"
 
-#: src/service.c:798 ../src/backend-dbus/actions.c:834
+#: src/service.c:798 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "పునఃప్రారంభించు"
@@ -200,14 +200,14 @@ msgstr "పునఃప్రారంభించు"
 msgid "Shut Down…"
 msgstr "మూసి వేయి…"
 
-#: src/service.c:805 ../src/backend-dbus/actions.c:873
+#: src/service.c:805 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "మూసివేయి"
 
-#: src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
-#: src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
-#: src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:904
+#: src/backend-dbus/actions.c:909 src/backend-dbus/actions.c:918
+#: src/backend-dbus/actions.c:937 src/backend-dbus/actions.c:952
 #: src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr ""
@@ -232,7 +232,7 @@ msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr "కొ న్ని సాప్ట్వేర్ల నవీకరణలు కంప్యూటర్ పున:ప్రారంభం అయ్యే వరకూ అన్వయించబడవు."
 
-#: src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "రద్దుచేయి"

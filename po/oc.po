@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 08:09+0200\n"
+"POT-Creation-Date: 2022-09-14 08:27+0200\n"
 "PO-Revision-Date: 2022-09-08 18:19+0000\n"
 "Last-Translator: Quentin PAGÈS <quentinantonin@free.fr>\n"
 "Language-Team: Occitan <https://hosted.weblate.org/projects/ayatana-"
@@ -99,7 +99,7 @@ msgstr ""
 msgid "System, %s"
 msgstr "Sistèma, %s"
 
-#: src/service.c:200 ../src/service.c:210
+#: src/service.c:200 src/service.c:210
 msgid "System"
 msgstr "Sistèma"
 
@@ -149,11 +149,11 @@ msgstr "Comptes en linha…"
 msgid "Start Screen Saver"
 msgstr "Aviar l’estalviador d’ecran"
 
-#: src/service.c:630 ../src/service.c:646
+#: src/service.c:630 src/service.c:646
 msgid "Switch Account…"
 msgstr "Cambiar de compte…"
 
-#: src/service.c:631 ../src/service.c:647
+#: src/service.c:631 src/service.c:647
 msgid "Switch Account"
 msgstr "Cambiar de compte"
 
@@ -177,7 +177,7 @@ msgstr "Session convidat"
 msgid "Log Out…"
 msgstr "Se desconnectar…"
 
-#: src/service.c:772 ../src/backend-dbus/actions.c:791
+#: src/service.c:772 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "Se desconnectar"
@@ -194,7 +194,7 @@ msgstr "Ivernar"
 msgid "Restart…"
 msgstr "Reaviar…"
 
-#: src/service.c:798 ../src/backend-dbus/actions.c:834
+#: src/service.c:798 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "Reaviar"
@@ -203,14 +203,14 @@ msgstr "Reaviar"
 msgid "Shut Down…"
 msgstr "Atudar…"
 
-#: src/service.c:805 ../src/backend-dbus/actions.c:873
+#: src/service.c:805 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "Atudar"
 
-#: src/backend-dbus/actions.c:753 ../src/backend-dbus/actions.c:904
-#: src/backend-dbus/actions.c:909 ../src/backend-dbus/actions.c:918
-#: src/backend-dbus/actions.c:937 ../src/backend-dbus/actions.c:952
+#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:904
+#: src/backend-dbus/actions.c:909 src/backend-dbus/actions.c:918
+#: src/backend-dbus/actions.c:937 src/backend-dbus/actions.c:952
 #: src/backend-dbus/actions.c:973
 msgid "Warning"
 msgstr "Alèrta"
@@ -240,7 +240,7 @@ msgstr ""
 "D'unas mesas a jorn logicialas seràn pas aplicadas qu’a l'aviada que ven de "
 "l’ordenador."
 
-#: src/backend-dbus/actions.c:794 ../src/backend-dbus/actions.c:837
+#: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
 msgid "Cancel"
 msgstr "Anullar"

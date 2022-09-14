@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-14 08:27+0200\n"
-"PO-Revision-Date: 2022-09-07 03:27+0000\n"
+"PO-Revision-Date: 2022-09-15 22:18+0000\n"
 "Last-Translator: Wellington Terumi Uemura <wellingtonuemura@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/pt_BR/>\n"
@@ -71,21 +71,20 @@ msgstr ""
 "não deveria aparecer."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Impor a visibilidade do item reiniciar no menu da sessão"
+msgstr "Determine a visibilidade do nome real do usuário no painel"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Permita a remoção do nome dos usuários do painel"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Mostre a lista de usuários"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Permita que a lista de usuários seja ocultada pelo usuário."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196

@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-14 08:27+0200\n"
-"PO-Revision-Date: 2022-09-07 03:27+0000\n"
-"Last-Translator: Eric <hamburger1024@firemail.cc>\n"
+"PO-Revision-Date: 2022-09-17 11:17+0000\n"
+"Last-Translator: Eric <hamburger1024@mailbox.org>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -65,9 +65,8 @@ msgid ""
 msgstr "启用后，在即使不应该显示重启项的环境中也会在会话菜单中显示该项。"
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "强制会话菜单中的重启项的可见性。"
+msgstr "决定控制面板上用户真名的可见性。"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"

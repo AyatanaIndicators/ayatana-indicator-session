@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-14 08:27+0200\n"
-"PO-Revision-Date: 2020-11-12 20:28+0000\n"
-"Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
-"Language-Team: Turkish <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/tr/>\n"
+"PO-Revision-Date: 2022-09-26 14:17+0000\n"
+"Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 4.14.1\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -59,33 +59,32 @@ msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Bilgisayarı Kapat Düğmesini Oturum Menüsünde Görünür Yapar."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Yeniden Başlat öğesini oturum menüsünden kaldır."
+msgstr "Oturum menüsünde Yeniden Başlat ögesinin görünürlüğünü zorla"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
-msgstr "Yeniden başlat düğmesinin oturum menüsünde görünmemesini sağlar."
+msgstr ""
+"Yeniden başlatmanın gösterilmemesi gereken ortamlarda bile oturum menüsünde "
+"gösterilmesini sağlar."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Yeniden Başlat öğesini oturum menüsünden kaldır."
+msgstr "Kullanıcının gerçek adının panelde görünürlüğünü belirle"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Kullanıcı adının panelden kaldırılmasına izin ver"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Kullanıcı listesini göster"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Kullanıcı listesinin kullanıcı tarafından gizlenmesine izin ver."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196
@@ -99,7 +98,7 @@ msgstr "Sistem"
 
 #: src/service.c:211
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Oturum yönetimi, durum ve kullanıcı değiştirme"
 
 #: src/service.c:336
 msgid "Guest"
@@ -111,23 +110,21 @@ msgid "%s Help"
 msgstr "%s Yardım"
 
 #: src/service.c:383
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "%s Yardım"
+msgstr "%s Yardımı…"
 
 #: src/service.c:387
-#, fuzzy
 msgid "About This Device…"
-msgstr "Bu Bilgisayar Hakkında"
+msgstr "Bu Aygıt Hakkında…"
 
 #: src/service.c:389
 msgid "About This Computer"
 msgstr "Bu Bilgisayar Hakkında"
 
 #: src/service.c:400
-#, fuzzy
 msgid "Desktop mode"
-msgstr "%s Masaüstü Yardımı"
+msgstr "Masaüstü modu"
 
 #: src/service.c:406
 msgid "Report a Bug…"

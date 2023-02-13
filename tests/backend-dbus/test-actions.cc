@@ -263,10 +263,10 @@ TEST_F (Actions, PowerOff)
   g_settings_reset (indicator_settings, SUPPRESS_KEY);
 }
 
-TEST_F (Actions, LogoutUnity)
+TEST_F (Actions, LogoutLomiri)
 {
-  MockUnitySession desktop_session(loop, conn);
-  ASSERT_EQ (MockUnitySession::None, desktop_session.last_action());
+  MockLomiriSession lomiri_session(loop, conn);
+  ASSERT_EQ (MockLomiriSession::None, lomiri_session.last_action());
   wait_msec();
 
   // confirm that user is prompted
@@ -276,7 +276,7 @@ TEST_F (Actions, LogoutUnity)
   ASSERT_TRUE (end_session_dialog->is_open());
   end_session_dialog->cancel();
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::None, desktop_session.last_action());
+  ASSERT_EQ (MockLomiriSession::None, lomiri_session.last_action());
 
   // confirm that user is prompted
   // and that logout is called when user confirms the logout dialog
@@ -285,19 +285,19 @@ TEST_F (Actions, LogoutUnity)
   ASSERT_TRUE (end_session_dialog->is_open ());
   end_session_dialog->confirm_logout ();
   wait_msec (100);
-  ASSERT_EQ (MockUnitySession::RequestLogout, desktop_session.last_action());
+  ASSERT_EQ (MockLomiriSession::RequestLogout, lomiri_session.last_action());
 
   // confirm that we try to call SessionManager::LogoutQuet
   // when prompts are disabled
   login1_manager->clear_last_action ();
-  desktop_session.clear_last_action ();
+  lomiri_session.clear_last_action ();
   ASSERT_EQ ("", login1_manager->last_action());
-  ASSERT_EQ (MockUnitySession::None, desktop_session.last_action ());
+  ASSERT_EQ (MockLomiriSession::None, lomiri_session.last_action ());
   g_settings_set_boolean (indicator_settings, SUPPRESS_KEY, TRUE);
   wait_msec (50);
   indicator_session_actions_logout (actions);
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::RequestLogout, desktop_session.last_action ());
+  ASSERT_EQ (MockLomiriSession::RequestLogout, lomiri_session.last_action ());
   g_settings_reset (indicator_settings, SUPPRESS_KEY);
 }
 
@@ -356,29 +356,29 @@ TEST_F (Actions, Hibernate)
 
 TEST_F (Actions, SwitchToScreensaver)
 {
-  MockUnitySession desktop_session(loop, conn);
+  MockLomiriSession lomiri_session(loop, conn);
 
-  ASSERT_EQ (MockUnitySession::None, desktop_session.last_action());
+  ASSERT_EQ (MockLomiriSession::None, lomiri_session.last_action());
   indicator_session_actions_switch_to_screensaver (actions);
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::Lock, desktop_session.last_action());
+  ASSERT_EQ (MockLomiriSession::Lock, lomiri_session.last_action());
 }
 
 TEST_F (Actions, SwitchToGreeter)
 {
-  MockUnitySession desktop_session(loop, conn);
+  MockLomiriSession lomiri_session(loop, conn);
 
   ASSERT_NE (MockDisplayManagerSeat::GREETER, dm_seat->last_action());
-  ASSERT_EQ (MockUnitySession::None, desktop_session.last_action());
+  ASSERT_EQ (MockLomiriSession::None, lomiri_session.last_action());
   indicator_session_actions_switch_to_greeter (actions);
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::PromptLock, desktop_session.last_action());
+  ASSERT_EQ (MockLomiriSession::PromptLock, lomiri_session.last_action());
   ASSERT_EQ (MockDisplayManagerSeat::GREETER, dm_seat->last_action());
 }
 
 TEST_F (Actions, SwitchToGuest)
 {
-  MockUnitySession desktop_session(loop, conn);
+  MockLomiriSession lomiri_session(loop, conn);
 
   // allow guests
   dm_seat->set_guest_allowed (true);
@@ -394,12 +394,12 @@ TEST_F (Actions, SwitchToGuest)
   wait_for_signal (login1_seat->skeleton(), "notify::active-session");
   ASSERT_EQ (guest_session_tag, login1_seat->active_session());
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::PromptLock, desktop_session.last_action());
+  ASSERT_EQ (MockLomiriSession::PromptLock, lomiri_session.last_action());
 }
 
 TEST_F (Actions, SwitchToUsername)
 {
-  MockUnitySession desktop_session(loop, conn);
+  MockLomiriSession lomiri_session(loop, conn);
   const char * const dr1_username = "whartnell";
   const char * const dr2_username = "ptroughton";
   MockUser * dr1_user;
@@ -417,7 +417,7 @@ TEST_F (Actions, SwitchToUsername)
   wait_for_signal (login1_seat->skeleton(), "notify::active-session");
   ASSERT_EQ (dr1_session, login1_seat->active_session());
   wait_msec (50);
-  ASSERT_EQ (MockUnitySession::PromptLock, desktop_session.last_action());
+  ASSERT_EQ (MockLomiriSession::PromptLock, lomiri_session.last_action());
 
   indicator_session_actions_switch_to_username (actions, dr2_username);
   wait_for_signal (login1_seat->skeleton(), "notify::active-session");

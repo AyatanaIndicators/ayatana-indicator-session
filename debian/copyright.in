@@ -100,7 +100,7 @@ Files: CMakeLists.txt
  debian/watch
  po/CMakeLists.txt
  src/CMakeLists.txt
- src/backend-dbus/org.ayatana.Desktop.Session.xml
+ src/backend-dbus/com.lomiri.Shell.Session.xml
  src/backend-dbus/org.ayatana.indicators.webcredentials.xml
  src/backend-dbus/org.freedesktop.Accounts.User.xml
  src/backend-dbus/org.freedesktop.Accounts.xml

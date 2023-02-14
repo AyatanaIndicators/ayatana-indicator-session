@@ -17,19 +17,19 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOCK_UNITY_SESSION_H
-#define MOCK_UNITY_SESSION_H
+#ifndef MOCK_LOMIRI_SESSION_H
+#define MOCK_LOMIRI_SESSION_H
 
 #include "mock-object.h" // parent class
-#include "backend-dbus/desktop-session.h" // Desktop Session
+#include "backend-dbus/lomiri-session.h" // Lomiri Session
 
-class MockUnitySession: public MockObject
+class MockLomiriSession: public MockObject
 {
   public:
 
-    MockUnitySession (GMainLoop       * loop,
+    MockLomiriSession (GMainLoop       * loop,
                       GDBusConnection * bus_connection);
-    virtual ~MockUnitySession ();
+    virtual ~MockLomiriSession ();
 
   public:
 
@@ -39,16 +39,16 @@ class MockUnitySession: public MockObject
 
   private:
 
-    DesktopSession * my_skeleton;
+    LomiriShellSession * my_skeleton;
     Action my_last_action;
 
-    static gboolean handle_lock (DesktopSession *,
+    static gboolean handle_lock (LomiriShellSession *,
                                  GDBusMethodInvocation *,
                                  gpointer);
-    static gboolean handle_prompt_lock (DesktopSession *,
+    static gboolean handle_prompt_lock (LomiriShellSession *,
                                         GDBusMethodInvocation *,
                                         gpointer);
-    static gboolean handle_request_logout (DesktopSession *,
+    static gboolean handle_request_logout (LomiriShellSession *,
                                            GDBusMethodInvocation *,
                                            gpointer);
 

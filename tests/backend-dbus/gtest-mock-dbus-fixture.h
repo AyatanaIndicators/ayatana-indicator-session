@@ -25,7 +25,7 @@
 #include "mock-display-manager-seat.h"
 #include "mock-end-session-dialog.h"
 #include "mock-screen-saver.h"
-#include "mock-unity-session.h"
+#include "mock-lomiri-session.h"
 #include "mock-session-manager.h"
 #include "mock-user.h"
 #include "mock-webcredentials.h"

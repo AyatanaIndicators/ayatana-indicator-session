@@ -42,8 +42,8 @@ Files: src/actions.c
  tests/backend-dbus/mock-screen-saver.h
  tests/backend-dbus/mock-session-manager.cc
  tests/backend-dbus/mock-session-manager.h
- tests/backend-dbus/mock-unity-session.cc
- tests/backend-dbus/mock-unity-session.h
+ tests/backend-dbus/mock-lomiri-session.cc
+ tests/backend-dbus/mock-lomiri-session.h
  tests/backend-dbus/mock-user.cc
  tests/backend-dbus/mock-user.h
  tests/backend-dbus/mock-webcredentials.cc
@@ -88,7 +88,7 @@ Files: CMakeLists.txt
  po/POTFILES.in
  src/CMakeLists.txt
  src/backend-dbus/CMakeLists.txt
- src/backend-dbus/org.ayatana.Desktop.Session.xml
+ src/backend-dbus/com.lomiri.Shell.Session.xml
  src/backend-dbus/org.ayatana.indicators.webcredentials.xml
  src/backend-dbus/org.freedesktop.Accounts.User.xml
  src/backend-dbus/org.freedesktop.Accounts.xml

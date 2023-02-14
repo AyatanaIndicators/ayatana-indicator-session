@@ -27,7 +27,7 @@
 #include "dbus-webcredentials.h"
 #include "gnome-screen-saver.h"
 #include "gnome-session-manager.h"
-#include "desktop-session.h"
+#include "lomiri-session.h"
 
 #include "actions.h"
 
@@ -48,7 +48,7 @@ struct _IndicatorSessionActionsDbusPrivate
   GSettings * indicator_settings;
   GnomeScreenSaver * screen_saver;
   GnomeSessionManager * session_manager;
-  DesktopSession * desktop_session;
+  LomiriShellSession * lomiri_session;
   Login1Manager * login1_manager;
   GCancellable * login1_manager_cancellable;
   Login1Seat * login1_seat;
@@ -92,7 +92,7 @@ typedef enum
 {
   PROMPT_NONE,
   PROMPT_WITH_ZENITY,
-  PROMPT_WITH_AYATANA,
+  PROMPT_WITH_LOMIRI,
   PROMPT_WITH_MATE,
   PROMPT_WITH_BUDGIE,
   PROMPT_WITH_XFCE,
@@ -121,13 +121,13 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
       if ((prompt == PROMPT_NONE) && ayatana_common_utils_have_xfce_program ("xfce4-session-logout"))
           prompt = PROMPT_WITH_XFCE;
 
-      /* can we use the Unity/Ayatana prompt? */
+      /* can we use Lomiri prompt? */
       if ((prompt == PROMPT_NONE) && p && p->end_session_dialog)
         {
           GDBusProxy * proxy = G_DBUS_PROXY (p->end_session_dialog);
           char * name = g_dbus_proxy_get_name_owner (proxy);
           if (name != NULL)
-            prompt = PROMPT_WITH_AYATANA;
+            prompt = PROMPT_WITH_LOMIRI;
           g_free (name);
         }
 
@@ -219,16 +219,16 @@ on_screensaver_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpoin
 }
 
 static void
-on_desktop_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gself)
+on_lomiri_proxy_ready (GObject * o G_GNUC_UNUSED, GAsyncResult * res, gpointer gself)
 {
   GError * err;
-  DesktopSession * us;
+  LomiriShellSession * us;
 
   err = NULL;
-  us = desktop_session_proxy_new_for_bus_finish (res, &err);
+  us = lomiri_shell_session_proxy_new_for_bus_finish (res, &err);
   if (err == NULL)
     {
-      INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv->desktop_session = us;
+      INDICATOR_SESSION_ACTIONS_DBUS(gself)->priv->lomiri_session = us;
     }
 
   log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
@@ -420,7 +420,7 @@ my_can_reboot (IndicatorSessionActions * actions)
   /* Shutdown and Restart are the same dialog prompt in Unity,
      so disable the redundant 'Restart' menuitem in that mode */
   if (!g_settings_get_boolean (p->indicator_settings, "suppress-shutdown-menuitem"))
-    if (ayatana_common_utils_is_unity())
+    if (ayatana_common_utils_is_unity() || ayatana_common_utils_is_lomiri())
       return FALSE;
 
   return TRUE;
@@ -547,14 +547,14 @@ logout_now_gnome_session_manager (IndicatorSessionActionsDbus * self)
 }
 
 static void
-on_desktop_logout_response (GObject * o,
-                          GAsyncResult * res,
-                          gpointer gself)
+on_lomiri_logout_response (GObject * o,
+                           GAsyncResult * res,
+                           gpointer gself)
 {
   GError * error;
 
   error = NULL;
-  desktop_session_call_request_logout_finish (DESKTOP_SESSION(o), res, &error);
+  lomiri_shell_session_call_request_logout_finish (LOMIRI_SHELL_SESSION(o), res, &error);
 
   if (error != NULL)
     {
@@ -574,15 +574,15 @@ logout_now_desktop (IndicatorSessionActionsDbus * self)
   priv_t * p = self->priv;
   gboolean called = FALSE;
 
-  if (is_owned_proxy (p->desktop_session))
+  if (is_owned_proxy (p->lomiri_session))
     {
       called = TRUE;
-      g_debug ("calling desktop_session_call_request_logout()");
-      desktop_session_call_request_logout (p->desktop_session,
-                                         p->cancellable,
-                                         on_desktop_logout_response,
-                                         self);
-    }
+      g_debug ("calling lomiri_shell_session_call_request_logout()");
+      lomiri_shell_session_call_request_logout (p->lomiri_session,
+                                          p->cancellable,
+                                          on_lomiri_logout_response,
+                                          self);
+     }
 
   return called;
 }
@@ -675,7 +675,7 @@ on_open_end_session_dialog_ready (GObject      * o,
 }
 
 static void
-show_desktop_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
+show_lomiri_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
   gpointer o = p->end_session_dialog;
@@ -761,8 +761,8 @@ my_logout (IndicatorSessionActions * actions)
 
   switch (get_prompt_status (self))
     {
-      case PROMPT_WITH_AYATANA:
-        show_desktop_end_session_dialog (self, END_SESSION_TYPE_LOGOUT);
+      case PROMPT_WITH_LOMIRI:
+        show_lomiri_end_session_dialog (self, END_SESSION_TYPE_LOGOUT);
         break;
 
       case PROMPT_WITH_MATE:
@@ -809,8 +809,8 @@ my_reboot (IndicatorSessionActions * actions)
 
   switch (get_prompt_status (self))
     {
-      case PROMPT_WITH_AYATANA:
-        show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
+      case PROMPT_WITH_LOMIRI:
+        show_lomiri_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
         break;
 
       case PROMPT_WITH_MATE:
@@ -847,13 +847,13 @@ my_power_off (IndicatorSessionActions * actions)
 
   switch (get_prompt_status (self))
     {
-      case PROMPT_WITH_AYATANA:
+      case PROMPT_WITH_LOMIRI:
         /* NB: TYPE_REBOOT instead of TYPE_SHUTDOWN because
-           the latter adds lock & logout options in Unity... */
-        if (ayatana_common_utils_is_unity())
-          show_desktop_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
+           the latter adds lock & logout options in Unity and Lomiri... */
+        if (ayatana_common_utils_is_unity() || ayatana_common_utils_is_lomiri())
+          show_lomiri_end_session_dialog (self, END_SESSION_TYPE_REBOOT);
         else
-          show_desktop_end_session_dialog (self, END_SESSION_TYPE_SHUTDOWN);
+          show_lomiri_end_session_dialog (self, END_SESSION_TYPE_SHUTDOWN);
         break;
 
       case PROMPT_WITH_MATE:
@@ -983,15 +983,15 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  if (is_owned_proxy (p->desktop_session))
+  if (is_owned_proxy (p->lomiri_session))
     {
       if (immediate)
         {
-          desktop_session_call_prompt_lock (p->desktop_session, p->cancellable, NULL, NULL);
+          lomiri_shell_session_call_prompt_lock (p->lomiri_session, p->cancellable, NULL, NULL);
         }
       else
         {
-          desktop_session_call_lock (p->desktop_session, p->cancellable, NULL, NULL);
+          lomiri_shell_session_call_lock (p->lomiri_session, p->cancellable, NULL, NULL);
         }
     }
   else if (ayatana_common_utils_have_mate_program ("mate-screensaver-command"))
@@ -1100,7 +1100,7 @@ my_dispose (GObject * o)
 
   g_clear_object (&p->screen_saver);
   g_clear_object (&p->session_manager);
-  g_clear_object (&p->desktop_session);
+  g_clear_object (&p->lomiri_session);
   set_dm_seat (self, NULL);
   set_login1_manager (self, NULL);
   set_login1_seat (self, NULL);
@@ -1203,13 +1203,13 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
                                         on_screensaver_proxy_ready,
                                         self);
 
-  desktop_session_proxy_new_for_bus (G_BUS_TYPE_SESSION,
-                                   G_DBUS_PROXY_FLAGS_NONE,
-                                   "org.ayatana.Desktop",
-                                   "/org/ayatana/Desktop/Session",
-                                   p->cancellable,
-                                   on_desktop_proxy_ready,
-                                   self);
+  lomiri_shell_session_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+                                    G_DBUS_PROXY_FLAGS_NONE,
+                                    "com.lomiri.Shell",
+                                    "/com/lomiri/Shell/Session",
+                                    p->cancellable,
+                                    on_lomiri_proxy_ready,
+                                    self);
 
   gnome_session_manager_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                            G_DBUS_PROXY_FLAGS_NONE,
@@ -1229,7 +1229,7 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
 
   end_session_dialog_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                         G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
-                                        "org.ayatana.Desktop",
+                                        "com.lomiri.Shell",
                                         "/org/gnome/SessionManager/EndSessionDialog",
                                         p->cancellable,
                                         on_end_session_dialog_proxy_ready,

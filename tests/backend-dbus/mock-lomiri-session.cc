@@ -17,36 +17,36 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "mock-unity-session.h"
+#include "mock-lomiri-session.h"
 
 
 gboolean
-MockUnitySession :: handle_lock (DesktopSession          * us,
+MockLomiriSession :: handle_lock (LomiriShellSession          * us,
                                  GDBusMethodInvocation * inv,
                                  gpointer                gself)
 {
-  static_cast<MockUnitySession*>(gself)->my_last_action = Lock;
-  desktop_session_complete_lock (us, inv);
+  static_cast<MockLomiriSession*>(gself)->my_last_action = Lock;
+  lomiri_shell_session_complete_lock (us, inv);
   return true;
 }
 
 gboolean
-MockUnitySession :: handle_prompt_lock (DesktopSession          * us,
+MockLomiriSession :: handle_prompt_lock (LomiriShellSession          * us,
                                         GDBusMethodInvocation * inv,
                                         gpointer                gself)
 {
-  static_cast<MockUnitySession*>(gself)->my_last_action = PromptLock;
-  desktop_session_complete_prompt_lock (us, inv);
+  static_cast<MockLomiriSession*>(gself)->my_last_action = PromptLock;
+  lomiri_shell_session_complete_prompt_lock (us, inv);
   return true;
 }
 
 gboolean
-MockUnitySession :: handle_request_logout (DesktopSession          * us,
+MockLomiriSession :: handle_request_logout (LomiriShellSession          * us,
                                            GDBusMethodInvocation * inv,
                                            gpointer                gself)
 {
-  static_cast<MockUnitySession*>(gself)->my_last_action = RequestLogout;
-  desktop_session_complete_request_logout (us, inv);
+  static_cast<MockLomiriSession*>(gself)->my_last_action = RequestLogout;
+  lomiri_shell_session_complete_request_logout (us, inv);
   return true;
 }
 
@@ -56,15 +56,15 @@ MockUnitySession :: handle_request_logout (DesktopSession          * us,
 
 namespace
 {
-  const char * const UNITY_SESSION_NAME = "org.ayatana.Desktop";
-  const char * const UNITY_SESSION_PATH = "/org/ayatana/Desktop/Session";
+  const char * const LOMIRI_SESSION_NAME = "com.lomiri.Shell";
+  const char * const LOMIRI_SESSION_PATH = "/com/lomiri/Shell/Session";
 
 }
 
-MockUnitySession :: MockUnitySession (GMainLoop       * loop,
+MockLomiriSession :: MockLomiriSession (GMainLoop       * loop,
                                       GDBusConnection * bus_connection):
-  MockObject (loop, bus_connection, UNITY_SESSION_NAME, UNITY_SESSION_PATH),
-  my_skeleton (desktop_session_skeleton_new ()),
+  MockObject (loop, bus_connection, LOMIRI_SESSION_NAME, LOMIRI_SESSION_PATH),
+  my_skeleton (lomiri_shell_session_skeleton_new ()),
   my_last_action (None)
 {
   g_signal_connect (my_skeleton, "handle-lock",
@@ -77,7 +77,7 @@ MockUnitySession :: MockUnitySession (GMainLoop       * loop,
   set_skeleton (G_DBUS_INTERFACE_SKELETON(my_skeleton));
 }
 
-MockUnitySession :: ~MockUnitySession ()
+MockLomiriSession :: ~MockLomiriSession ()
 {
   g_clear_object (&my_skeleton);
 }

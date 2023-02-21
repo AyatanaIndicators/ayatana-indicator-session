@@ -388,7 +388,7 @@ create_admin_section (IndicatorSessionService * self)
     }
     else
     {
-      desktop_help_label = g_strdup_printf(_("%s Help"), get_desktop_name());
+      desktop_help_label = g_strdup_printf(_("%s Help…"), get_desktop_name());
       distro_help_label  = g_strdup_printf(_("%s Help…"), get_distro_name());
     }
   menu = g_menu_new ();

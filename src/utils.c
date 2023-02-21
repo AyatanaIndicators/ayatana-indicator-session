@@ -152,3 +152,27 @@ get_desktop_name (void)
 
   return desktop_name;
 }
+
+const char*
+get_desktop_session (void)
+{
+  static const char * desktop_session = NULL;
+  const char * xdg_desktop_session;
+
+  if (desktop_session == NULL)
+    {
+      xdg_desktop_session = g_getenv ("XDG_DESKTOP_SESSION");
+
+      if (xdg_desktop_session == NULL)
+        {
+          /* try DESKTOP_SESSION env var if XDG_DESKTOP_SESSION is unset */
+          desktop_session = g_getenv ("DESKTOP_SESSION");
+        }
+      else
+        {
+          desktop_session = xdg_desktop_session;
+        }
+    }
+
+  return desktop_session;
+}

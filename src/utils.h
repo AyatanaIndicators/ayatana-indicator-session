@@ -24,6 +24,7 @@ const char* get_distro_name();
 const char* get_distro_url();
 const char* get_distro_bts_url();
 const char* get_desktop_name();
+const char* get_desktop_session();
 GHashTable*  get_os_release();
 
 #endif /* __INDICATOR_SESSION_UTILS_H__ */

@@ -379,8 +379,18 @@ create_admin_section (IndicatorSessionService * self)
 {
   GMenu * menu;
   priv_t * p = self->priv;
-  gchar * desktop_help_label = g_strdup_printf(_("%s Help"), get_desktop_name());
-  gchar * distro_help_label = g_strdup_printf(_("%s Help…"), get_distro_name());
+  gchar * desktop_help_label = NULL;
+  gchar * distro_help_label = NULL;
+  if (g_strcmp0(get_desktop_session(), "ubuntu-touch") == 0)
+    {
+      desktop_help_label = g_strdup(_("About Ubuntu Touch…"));
+      distro_help_label  = g_strdup(_("About UBports Foundation…"));
+    }
+    else
+    {
+      desktop_help_label = g_strdup_printf(_("%s Help"), get_desktop_name());
+      distro_help_label  = g_strdup_printf(_("%s Help…"), get_distro_name());
+    }
   menu = g_menu_new ();
 
   if (ayatana_common_utils_is_lomiri()) {

@@ -145,9 +145,10 @@ get_desktop_name (void)
   if (desktop_name == NULL)
     {
       xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
-      if (xdg_current_desktop != NULL) {
-        desktop_name = g_strsplit (xdg_current_desktop, ":", 0)[0];
-      }
+      if (xdg_current_desktop != NULL)
+        {
+          desktop_name = g_strsplit (xdg_current_desktop, ":", 0)[0];
+        }
     }
 
   return desktop_name;

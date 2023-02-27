@@ -890,10 +890,12 @@ my_power_off (IndicatorSessionActions * actions)
 static void
 my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
-  if (ayatana_common_utils_have_budgie_program ("yelp"))
+  if (g_strcmp0(get_desktop_session(), "ubuntu-touch") == 0)
+    ayatana_common_utils_open_url("https://ubuntu-touch.io/");
+  else if (ayatana_common_utils_have_budgie_program ("yelp"))
     ayatana_common_utils_execute_command ("yelp help:gnome-user-guide");
   else if (ayatana_common_utils_is_lomiri())
-    ayatana_common_utils_open_url("https://forums.ubports.com");
+    ayatana_common_utils_open_url("https://lomiri.com");
   else if (ayatana_common_utils_have_gnome_program ("yelp"))
     ayatana_common_utils_execute_command ("yelp help:gnome-user-guide");
   else if (ayatana_common_utils_have_mate_program ("yelp"))

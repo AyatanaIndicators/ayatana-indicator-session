@@ -98,21 +98,29 @@ get_distro_url (void)
 
   if (distro_url == NULL)
     {
-      GHashTable * os_release = get_os_release();
-      gpointer value = g_hash_table_lookup(os_release, "SUPPORT_URL");
-
-      if (value == NULL)
-      {
-        value = g_hash_table_lookup(os_release, "HOME_URL");
-
-        if (value == NULL)
+      if (g_strcmp0(get_desktop_session(), "ubuntu-touch") == 0)
         {
-            value = "https://www.gnu.org"; /* fallback value */
+          distro_url = g_strdup("https://ubports.com");
         }
-      }
+      else
+        {
 
-      distro_url = g_strdup(value);
-      g_hash_table_destroy(os_release);
+          GHashTable * os_release = get_os_release();
+          gpointer value = g_hash_table_lookup(os_release, "SUPPORT_URL");
+
+          if (value == NULL)
+          {
+            value = g_hash_table_lookup(os_release, "HOME_URL");
+
+            if (value == NULL)
+            {
+                value = "https://www.gnu.org"; /* fallback value */
+            }
+          }
+
+          distro_url = g_strdup(value);
+          g_hash_table_destroy(os_release);
+        }
     }
 
   return distro_url;
@@ -125,12 +133,19 @@ get_distro_bts_url (void)
 
   if (distro_bts_url == NULL)
     {
-      GHashTable * os_release = get_os_release();
-      gpointer value = g_hash_table_lookup(os_release, "BUG_REPORT_URL");
-      if (value == NULL)
-        value = "https://github.com/AyatanaIndicators/ayatana-indicator-session/issues"; /* fallback value */
-      distro_bts_url = g_strdup(value);
-      g_hash_table_destroy(os_release);
+      if (g_strcmp0(get_desktop_session(), "ubuntu-touch") == 0)
+        {
+          distro_bts_url = g_strdup("https://gitlab.com/ubports/porting");
+        }
+      else
+        {
+          GHashTable * os_release = get_os_release();
+          gpointer value = g_hash_table_lookup(os_release, "BUG_REPORT_URL");
+          if (value == NULL)
+            value = "https://github.com/AyatanaIndicators/ayatana-indicator-session/issues"; /* fallback value */
+          distro_bts_url = g_strdup(value);
+          g_hash_table_destroy(os_release);
+        }
     }
 
   return distro_bts_url;
@@ -145,10 +160,35 @@ get_desktop_name (void)
   if (desktop_name == NULL)
     {
       xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
-      if (xdg_current_desktop != NULL) {
-        desktop_name = g_strsplit (xdg_current_desktop, ":", 0)[0];
-      }
+      if (xdg_current_desktop != NULL)
+        {
+          desktop_name = g_strsplit (xdg_current_desktop, ":", 0)[0];
+        }
     }
 
   return desktop_name;
+}
+
+const char*
+get_desktop_session (void)
+{
+  static const char * desktop_session = NULL;
+  const char * xdg_desktop_session;
+
+  if (desktop_session == NULL)
+    {
+      xdg_desktop_session = g_getenv ("XDG_DESKTOP_SESSION");
+
+      if (xdg_desktop_session == NULL)
+        {
+          /* try DESKTOP_SESSION env var if XDG_DESKTOP_SESSION is unset */
+          desktop_session = g_getenv ("DESKTOP_SESSION");
+        }
+      else
+        {
+          desktop_session = xdg_desktop_session;
+        }
+    }
+
+  return desktop_session;
 }

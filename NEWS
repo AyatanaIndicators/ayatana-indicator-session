@@ -1,3 +1,10 @@
+Overview of changes in ayatana-indicator-session 22.9.1
+
+  - Provide special menu entries for devices powered by Ubuntu Touch.
+  - UnitySession -> LomiriSession: Re-rename related changes that we
+    erroneously hid away as Ayatana DesktopSession.
+  - Translation updates.
+
 Overview of changes in ayatana-indicator-session 22.9.0
 
   - Add tooltip support.

@@ -1,6 +1,82 @@
+2023-02-28 Mike Gabriel
+
+        * release 22.9.1 (HEAD -> main, tag: 22.9.1)
+
+2023-02-27 Robert Tari
+
+        * Merge branch 'sunweaver-pr/special-handling-for-ubuntu-touch'
+          (e2a40789)
+
+2023-02-21 Mike Gabriel
+
+        * src/service.c: Add ellipsis to desktop help. (4e48436b)
+        * src/{service.c,dbus-backends/actions.c}: Special treatment if
+          running in an Ubuntu Touch session for desktop help,
+          distro help and bug reporting URL. (5b53d364)
+        * src/utils.c: Code formatting change (no-op change) in
+          get_desktop_name(). (8e572015)
+        * src/utils.(c|h): Add get_desktop_session() helper function.
+          (2f800334)
+        * src/dbus-backend/actions.c: Return 'lomiri.com' as Lomiri URL
+          (instead of UBports Forum). (8265a6af)
+
+2023-02-14 Robert Tari
+
+        * Merge branch 'sunweaver-pr/full-lomiri-integration' (cbafa7e6)
+
+2023-02-13 Mike Gabriel
+
+        * UnitySession -> LomiriSession: Re-rename related changes that we
+          erroneously hid away as Ayatana DesktopSession. (8c4df621)
+
+2023-02-12 Anders Jonsson
+
+        * Translated using Weblate (Swedish) (f9d1e0d6)
+
+2023-02-10 Luna Jernberg
+
+        * Translated using Weblate (Swedish) (99aab0a6)
+
+2022-10-17 Gediminas Murauskas
+
+        * Translated using Weblate (Lithuanian) (455c3e53)
+
+2022-10-07 Eric
+
+        * Translated using Weblate (Chinese (Simplified)) (f0a51b33)
+
+2022-09-29 이정희
+
+        * Translated using Weblate (Korean) (05aafb6b)
+
+2022-09-25 Oğuz Ersen
+
+        * Translated using Weblate (Turkish) (97c08f05)
+
+2022-09-22 Yaron Shahrabani
+
+        * Translated using Weblate (Hebrew) (c1eb182a)
+
+2022-09-16 Eric
+
+        * Translated using Weblate (Chinese (Simplified)) (ef42c425)
+
+2022-09-14 Sergii Horichenko
+
+        * Translated using Weblate (Ukrainian) (79f94750)
+        * Translated using Weblate (Russian) (48f0c1c4)
+
+2022-09-14 Wellington Terumi Uemura
+
+        * Translated using Weblate (Portuguese (Brazil)) (e05fbec1)
+
+2022-09-14 Quentin PAGÈS
+
+        * Translated using Weblate (Occitan) (0ef6c599)
+
 2022-09-14 Mike Gabriel
 
-        * release 22.9.0 (HEAD -> main, tag: 22.9.0)
+        * release 22.9.0 (fce84911) (tag: 22.9.0)
         * Translated using Weblate (German) (a2c55594)
 
 2022-09-14 Milan Korecky

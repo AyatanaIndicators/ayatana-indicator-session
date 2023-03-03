@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-14 08:27+0200\n"
-"PO-Revision-Date: 2023-03-03 13:40+0000\n"
+"PO-Revision-Date: 2023-03-04 14:42+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/es/>\n"
@@ -71,19 +71,19 @@ msgstr ""
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Determinar la visibilidad del nombre real del usuario en el panel."
+msgstr "Determinar la visibilidad del nombre real del usuario en el panel"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Permitir la eliminación del nombre del usuario del panel"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Mostrar la lista de usuarios"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Permite que el usuario oculte la lista de usuarios."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196
@@ -97,7 +97,7 @@ msgstr "Sistema"
 
 #: src/service.c:211
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Gestión de sesiones, estado y cambio de usuario"
 
 #: src/service.c:336
 msgid "Guest"
@@ -109,23 +109,21 @@ msgid "%s Help"
 msgstr "Ayuda de %s"
 
 #: src/service.c:383
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "Ayuda de %s"
+msgstr "%s Ayuda…"
 
 #: src/service.c:387
-#, fuzzy
 msgid "About This Device…"
-msgstr "Acerca del equipo"
+msgstr "Acerca de este dispositivo…"
 
 #: src/service.c:389
 msgid "About This Computer"
 msgstr "Acerca del equipo"
 
 #: src/service.c:400
-#, fuzzy
 msgid "Desktop mode"
-msgstr "Ayuda de escritorio de %s"
+msgstr "Modo escritorio"
 
 #: src/service.c:406
 msgid "Report a Bug…"

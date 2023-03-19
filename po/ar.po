@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 08:27+0200\n"
+"POT-Creation-Date: 2023-03-19 12:44+0100\n"
 "PO-Revision-Date: 2020-10-05 12:12+0000\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/ayatana-"
@@ -102,109 +102,112 @@ msgstr ""
 msgid "Guest"
 msgstr "زائر"
 
-#: src/service.c:382
-#, c-format
-msgid "%s Help"
-msgstr "%s المساعدة"
+#: src/service.c:386
+msgid "About Ubuntu Touch…"
+msgstr ""
 
-#: src/service.c:383
+#: src/service.c:387
+msgid "About UBports Foundation…"
+msgstr ""
+
+#: src/service.c:391 src/service.c:392
 #, fuzzy, c-format
 msgid "%s Help…"
 msgstr "%s المساعدة"
 
-#: src/service.c:387
+#: src/service.c:397
 #, fuzzy
 msgid "About This Device…"
 msgstr "بيانات هذا الجهاز"
 
-#: src/service.c:389
+#: src/service.c:399
 msgid "About This Computer"
 msgstr "بيانات هذا الجهاز"
 
-#: src/service.c:400
+#: src/service.c:410
 #, fuzzy
 msgid "Desktop mode"
 msgstr "%s المساعدة في سطح المكتب"
 
-#: src/service.c:406
+#: src/service.c:416
 msgid "Report a Bug…"
 msgstr "الإبلاغ عن مشكلة…"
 
-#: src/service.c:417
+#: src/service.c:427
 msgid "System Settings…"
 msgstr "إعدادات النظام…"
 
-#: src/service.c:419
+#: src/service.c:429
 msgid "Online Accounts…"
 msgstr "الحسابات المتصلة…"
 
-#: src/service.c:622
+#: src/service.c:632
 msgid "Start Screen Saver"
 msgstr "بدء تشغيل الشاشة"
 
-#: src/service.c:630 src/service.c:646
+#: src/service.c:640 src/service.c:656
 msgid "Switch Account…"
 msgstr "تبديل الحسابات…"
 
-#: src/service.c:631 src/service.c:647
+#: src/service.c:641 src/service.c:657
 msgid "Switch Account"
 msgstr "تبديل الحساب"
 
-#: src/service.c:643
+#: src/service.c:653
 msgid "Lock/Switch Account…"
 msgstr "قفل/تبديل الحساب…"
 
-#: src/service.c:644
+#: src/service.c:654
 msgid "Lock/Switch Account"
 msgstr "قفل/تبديل الحساب"
 
-#: src/service.c:650
+#: src/service.c:660
 msgid "Lock"
 msgstr "قفل"
 
-#: src/service.c:695
+#: src/service.c:705
 msgid "Guest Session"
 msgstr "جلسة ضيف"
 
-#: src/service.c:772
+#: src/service.c:782
 msgid "Log Out…"
 msgstr "اخرج…"
 
-#: src/service.c:772 src/backend-dbus/actions.c:791
+#: src/service.c:782 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "اخرج"
 
-#: src/service.c:790
+#: src/service.c:800
 msgid "Suspend"
 msgstr "علّق"
 
-#: src/service.c:793
+#: src/service.c:803
 msgid "Hibernate"
 msgstr "أسبِت"
 
-#: src/service.c:798
+#: src/service.c:808
 msgid "Restart…"
 msgstr "أعد التشغيل…"
 
-#: src/service.c:798 src/backend-dbus/actions.c:834
+#: src/service.c:808 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "أعِد التشغيل"
 
-#: src/service.c:805
+#: src/service.c:815
 msgid "Shut Down…"
 msgstr "أطفئ…"
 
-#: src/service.c:805 src/backend-dbus/actions.c:873
+#: src/service.c:815 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "أطفئ"
 
-#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:904
-#: src/backend-dbus/actions.c:909 src/backend-dbus/actions.c:918
-#: src/backend-dbus/actions.c:937 src/backend-dbus/actions.c:952
-#: src/backend-dbus/actions.c:973
+#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
+#: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920
+#: src/backend-dbus/actions.c:939 src/backend-dbus/actions.c:954
+#: src/backend-dbus/actions.c:975
 msgid "Warning"
 msgstr "تحذير"
 
@@ -243,7 +246,7 @@ msgstr "أمتأكد أنك ترغب في إغلاق كل البرامج وإع�
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr "أمتأكد أنك ترغب في إغلاق كل البرامج وإطفاء الحاسوب؟"
 
-#: src/backend-dbus/actions.c:905
+#: src/backend-dbus/actions.c:907
 msgid ""
 "The XFCE desktop's user guide needs to be accessed with\n"
 "a web browser.\n"
@@ -256,7 +259,7 @@ msgstr ""
 "تعذر على مؤشر جلسة Ayatana العثور على أي \n"
 "متصفح انتلانت على جهاز الكمبيوتر الخاص بك."
 
-#: src/backend-dbus/actions.c:910
+#: src/backend-dbus/actions.c:912
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -270,7 +273,7 @@ msgstr ""
 "يرجى إبلاغ المطورين بهذا على:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: src/backend-dbus/actions.c:919
+#: src/backend-dbus/actions.c:921
 #, c-format
 msgid ""
 "Displaying information on %s  requires\n"
@@ -284,7 +287,7 @@ msgstr ""
 "تعذر على مؤشر جلسة Ayatana العثور على أي \n"
 "متصفح شبكة على جهاز الكمبيوتر الخاص بك."
 
-#: src/backend-dbus/actions.c:938
+#: src/backend-dbus/actions.c:940
 msgid ""
 "The Ayatana Session Indicator does not support evoking the system\n"
 "settings application for your desktop environment, yet.\n"
@@ -298,7 +301,7 @@ msgstr ""
 "يرجى إبلاغ المطورين بهذا على:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: src/backend-dbus/actions.c:953
+#: src/backend-dbus/actions.c:955
 msgid ""
 "The Ayatana Session Indicator does not support password changes\n"
 "for your desktop environment, yet.\n"
@@ -312,7 +315,7 @@ msgstr ""
 "يرجى إبلاغ المطورين بهذا على:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: src/backend-dbus/actions.c:974
+#: src/backend-dbus/actions.c:976
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "information of the currently running desktop environment.\n"
@@ -325,6 +328,10 @@ msgstr ""
 "\n"
 "يرجى إبلاغ المطورين بهذا على:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
+
+#, c-format
+#~ msgid "%s Help"
+#~ msgstr "%s المساعدة"
 
 #~ msgid "Lock Screen"
 #~ msgstr "أوصِد الشاشة"

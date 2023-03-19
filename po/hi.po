@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 08:27+0200\n"
+"POT-Creation-Date: 2023-03-19 12:44+0100\n"
 "PO-Revision-Date: 2019-10-14 11:52+0000\n"
 "Last-Translator: Abhay Patel <abhay111patel@gmail.com>\n"
 "Language-Team: Hindi <https://hosted.weblate.org/projects/ayatana-indicators/"
@@ -101,109 +101,112 @@ msgstr ""
 msgid "Guest"
 msgstr "मेहमान"
 
-#: src/service.c:382
-#, c-format
-msgid "%s Help"
-msgstr "%s सहायता"
+#: src/service.c:386
+msgid "About Ubuntu Touch…"
+msgstr ""
 
-#: src/service.c:383
+#: src/service.c:387
+msgid "About UBports Foundation…"
+msgstr ""
+
+#: src/service.c:391 src/service.c:392
 #, fuzzy, c-format
 msgid "%s Help…"
 msgstr "%s सहायता"
 
-#: src/service.c:387
+#: src/service.c:397
 #, fuzzy
 msgid "About This Device…"
 msgstr "इस कम्पयूटर के बारे में"
 
-#: src/service.c:389
+#: src/service.c:399
 msgid "About This Computer"
 msgstr "इस कम्पयूटर के बारे में"
 
-#: src/service.c:400
+#: src/service.c:410
 #, fuzzy
 msgid "Desktop mode"
 msgstr "%s डेस्कटॉप सहायता"
 
-#: src/service.c:406
+#: src/service.c:416
 msgid "Report a Bug…"
 msgstr "प्रोग्राम की त्रुटि की जानकारी दे…"
 
-#: src/service.c:417
+#: src/service.c:427
 msgid "System Settings…"
 msgstr "सिस्टम सेटिंग्स…"
 
-#: src/service.c:419
+#: src/service.c:429
 msgid "Online Accounts…"
 msgstr "ओनलाइन खाते…"
 
-#: src/service.c:622
+#: src/service.c:632
 msgid "Start Screen Saver"
 msgstr "स्क्रीन सेवर शुरू करें"
 
-#: src/service.c:630 src/service.c:646
+#: src/service.c:640 src/service.c:656
 msgid "Switch Account…"
 msgstr "अकाउन्ट बदलें…"
 
-#: src/service.c:631 src/service.c:647
+#: src/service.c:641 src/service.c:657
 msgid "Switch Account"
 msgstr "अकाउन्ट बदलें"
 
-#: src/service.c:643
+#: src/service.c:653
 msgid "Lock/Switch Account…"
 msgstr "अकाउन्ट लॉक करें/बदलें…"
 
-#: src/service.c:644
+#: src/service.c:654
 msgid "Lock/Switch Account"
 msgstr "अकाउन्ट लॉक करें/बदलें"
 
-#: src/service.c:650
+#: src/service.c:660
 msgid "Lock"
 msgstr "लॉक"
 
-#: src/service.c:695
+#: src/service.c:705
 msgid "Guest Session"
 msgstr "अतिथि सत्र"
 
-#: src/service.c:772
+#: src/service.c:782
 msgid "Log Out…"
 msgstr "लॉगआउट करें…"
 
-#: src/service.c:772 src/backend-dbus/actions.c:791
+#: src/service.c:782 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "लॉगआउट करें"
 
-#: src/service.c:790
+#: src/service.c:800
 msgid "Suspend"
 msgstr "स्थगित करें"
 
-#: src/service.c:793
+#: src/service.c:803
 msgid "Hibernate"
 msgstr "सुप्तावस्था करें"
 
-#: src/service.c:798
+#: src/service.c:808
 msgid "Restart…"
 msgstr "पुन:आरंभ करें…"
 
-#: src/service.c:798 src/backend-dbus/actions.c:834
+#: src/service.c:808 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "पुनः आरंभ करें"
 
-#: src/service.c:805
+#: src/service.c:815
 msgid "Shut Down…"
 msgstr "बंद करें…"
 
-#: src/service.c:805 src/backend-dbus/actions.c:873
+#: src/service.c:815 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "बंद करें"
 
-#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:904
-#: src/backend-dbus/actions.c:909 src/backend-dbus/actions.c:918
-#: src/backend-dbus/actions.c:937 src/backend-dbus/actions.c:952
-#: src/backend-dbus/actions.c:973
+#: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
+#: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920
+#: src/backend-dbus/actions.c:939 src/backend-dbus/actions.c:954
+#: src/backend-dbus/actions.c:975
 msgid "Warning"
 msgstr "चेतावनी"
 
@@ -240,7 +243,7 @@ msgstr "क्या आप अपने सभी कार्यक्रम�
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr "क्या आप अपने सभी कार्यक्रमों को बंद कर कम्प्यूटर को बंद करना चाहते है?"
 
-#: src/backend-dbus/actions.c:905
+#: src/backend-dbus/actions.c:907
 msgid ""
 "The XFCE desktop's user guide needs to be accessed with\n"
 "a web browser.\n"
@@ -251,7 +254,7 @@ msgstr ""
 "XFCE डेक्सटॉप के यूजर गाइड को वेब ब्राउज़र द्वारा खोलने कि जरूरत है।\n"
 "Ayatana सेशन इंडिकेटर आपके कंप्यूटर पर कोई भी वेब ब्राउज़र नहीं ढूंढ पाया।"
 
-#: src/backend-dbus/actions.c:910
+#: src/backend-dbus/actions.c:912
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "the currently running desktop's user guide or help center.\n"
@@ -265,7 +268,7 @@ msgstr ""
 "कृपया डेवेलपर्स को यहाँ पर इसकी जानकारी दें:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: src/backend-dbus/actions.c:919
+#: src/backend-dbus/actions.c:921
 #, c-format
 msgid ""
 "Displaying information on %s  requires\n"
@@ -278,7 +281,7 @@ msgstr ""
 "\n"
 "Ayatana सेशन इंडिकेटर आपके कंप्यूटर पर कोई भी वेब ब्राउज़र नहीं ढूंढ़ पाया।"
 
-#: src/backend-dbus/actions.c:938
+#: src/backend-dbus/actions.c:940
 msgid ""
 "The Ayatana Session Indicator does not support evoking the system\n"
 "settings application for your desktop environment, yet.\n"
@@ -292,7 +295,7 @@ msgstr ""
 "कृपया डेवेलपर्स को इसके बारे में यहाँ पर जानकारी दें:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: src/backend-dbus/actions.c:953
+#: src/backend-dbus/actions.c:955
 msgid ""
 "The Ayatana Session Indicator does not support password changes\n"
 "for your desktop environment, yet.\n"
@@ -306,7 +309,7 @@ msgstr ""
 "कृपया डेवेलपर्स को इसके बारे मे यहाँ पर जानकारी दें:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
-#: src/backend-dbus/actions.c:974
+#: src/backend-dbus/actions.c:976
 msgid ""
 "The Ayatana Session Indicator does not know yet, how to show\n"
 "information of the currently running desktop environment.\n"
@@ -319,6 +322,10 @@ msgstr ""
 "\n"
 "कृपया डेवेलपर्स को इसके बारे मे यहाँ पर जानकारी दें:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
+
+#, c-format
+#~ msgid "%s Help"
+#~ msgstr "%s सहायता"
 
 #~ msgid "Lock Screen"
 #~ msgstr "स्क्रीन पर ताला लगाएँ"

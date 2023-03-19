@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 12:44+0100\n"
-"PO-Revision-Date: 2022-09-15 22:18+0000\n"
+"PO-Revision-Date: 2023-03-21 19:42+0000\n"
 "Last-Translator: Wellington Terumi Uemura <wellingtonuemura@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/pt_BR/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.1-dev\n"
+"X-Generator: Weblate 4.16.2-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -106,11 +106,11 @@ msgstr "Convidado"
 
 #: src/service.c:386
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "Sobre o Ubuntu Touch…"
 
 #: src/service.c:387
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "Sobre a Fundação UBports…"
 
 #: src/service.c:391 src/service.c:392
 #, c-format

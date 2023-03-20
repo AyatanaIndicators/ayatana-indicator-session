@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 12:44+0100\n"
-"PO-Revision-Date: 2023-03-17 19:42+0000\n"
+"PO-Revision-Date: 2023-03-21 19:42+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/nl/>\n"
@@ -34,61 +34,58 @@ msgstr ""
 
 #: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "De knop 'Afmelden' verbergen in het sessiemenu"
+msgstr "Knop ‘Afmelden’ verbergen in sessiemenu"
 
 #: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
-"Zorgt ervoor dat de knop 'Afmelden' niet wordt getoond in het sessiemenu."
+"Zorgt er voor dat de knop ‘Afmelden’ niet wordt getoond in het sessiemenu."
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
 msgid "Remove the Restart item from the session menu."
-msgstr "De knop 'Herstarten' verbergen in het sessiemenu."
+msgstr "Knop ‘Herstarten’ verbergen in sessiemenu."
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
-"Zorgt ervoor dat de knop 'Herstarten' niet wordt getoond in het sessiemenu."
+"Zorgt er voor dat de knop ‘Herstarten’ niet wordt getoond in het sessiemenu."
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
 msgid "Remove the shutdown item from the session menu."
-msgstr "De knop 'Afsluiten' verbergen in het sessiemenu."
+msgstr "Knop ‘Afsluiten’ verbergen in sessiemenu."
 
 #: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
-"Zorgt ervoor dat de knop 'Uitschakelen' niet wordt getoond in het sessiemenu."
+"Zorgt er voor dat de knop ‘Afsluiten’ niet wordt getoond in het sessiemenu."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "De knop 'Herstarten' verbergen in het sessiemenu."
+msgstr "Knop ‘Herstarten’ gedwongen tonen in sessiemenu"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr ""
-"Zorgt ervoor dat de knop om te herstarten niet meer wordt weergegeven in het "
-"sessiemenu."
+"Zorgt er voor dat de knop ‘Herstarten’ wordt getoond in het sessiemenu, "
+"zelfs als de werkomgeving dit niet toestaat."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "De knop 'Herstarten' verbergen in het sessiemenu."
+msgstr "Zichtbaarheid van echte naam van gebruiker op paneel bepalen"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Gebruikersnaam verbergen op paneel toestaan"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Lijst met gebruikers tonen"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Staat doe dat de gebruikerslijst verborgen mag worden."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196
@@ -102,7 +99,7 @@ msgstr "Systeem"
 
 #: src/service.c:211
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Sessiebeheer, status en gebruikerswisseling"
 
 #: src/service.c:336
 msgid "Guest"
@@ -110,34 +107,32 @@ msgstr "Gast"
 
 #: src/service.c:386
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "Over Ubuntu Touch…"
 
 #: src/service.c:387
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "Over Stichting UBports…"
 
 #: src/service.c:391 src/service.c:392
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "%s-hulp"
+msgstr "%s-hulp…"
 
 #: src/service.c:397
-#, fuzzy
 msgid "About This Device…"
-msgstr "Over deze computer"
+msgstr "Over dit apparaat…"
 
 #: src/service.c:399
 msgid "About This Computer"
 msgstr "Over deze computer"
 
 #: src/service.c:410
-#, fuzzy
 msgid "Desktop mode"
-msgstr "%s-werkomgevingsondersteuning"
+msgstr "Computermodus"
 
 #: src/service.c:416
 msgid "Report a Bug…"
-msgstr "Meld een bug…"
+msgstr "Bug melden…"
 
 #: src/service.c:427
 msgid "System Settings…"
@@ -225,7 +220,7 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
-"De bugtracker moet worden geopend in een\n"
+"De bugtracker dient te worden geopend in een\n"
 "webbrowser.\n"
 "\n"
 "De Ayatana-sessie-indicator heeft geen webbrowser\n"
@@ -233,14 +228,12 @@ msgstr ""
 
 #: src/backend-dbus/actions.c:785
 msgid "Are you sure you want to close all programs and log out?"
-msgstr ""
-"Weet je zeker dat je alle toepassingen wilt afsluiten en wilt afmelden?"
+msgstr "Weet je zeker dat je alle programma's wilt afsluiten en wilt afmelden?"
 
 #: src/backend-dbus/actions.c:786
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
-msgstr ""
-"Sommige updates worden niet doorgevoerd totdat de computer wordt herstart."
+msgstr "Sommige updates worden pas doorgevoerd als de computer wordt herstart."
 
 #: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
@@ -250,14 +243,14 @@ msgstr "Annuleren"
 #: src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr ""
-"Weet je zeker dat je alle toepassingen wilt afsluiten en de computer wilt "
+"Weet je zeker dat je alle programma's wilt afsluiten en de computer wilt "
 "herstarten?"
 
 #: src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
 msgstr ""
-"Weet je zeker dat je alle toepassingen wilt afsluiten en de computer wilt "
-"uitzetten?"
+"Weet je zeker dat je alle programma's wilt afsluiten en de computer wilt "
+"afsluiten?"
 
 #: src/backend-dbus/actions.c:907
 msgid ""

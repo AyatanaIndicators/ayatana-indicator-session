@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 12:44+0100\n"
-"PO-Revision-Date: 2018-04-01 14:37+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Georgian <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/ka/>\n"
+"PO-Revision-Date: 2023-04-12 04:50+0000\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/ka/>\n"
 "Language: ka\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 4.17-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -40,39 +40,34 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "გადატვირთვის ღილაკის ამოღება სესიის მენიუდან"
+msgstr "გადატვირთვის ღილაკის სესიის მენიუდან ამოღება."
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "გათიშვის ღილაკის ამოღება სესიის მენიუდან"
+msgstr "გათიშვის ღილაკის სესიის მენიუდან ამოღება."
 
 #: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "გადატვირთვის ღილაკის ამოღება სესიის მენიუდან"
+msgstr "გადატვირთვის ღილაკის სესიის მენიუდან ამოღება"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
-msgstr "კომპიუტერის გადატვირთვის ღილაკი აღარ გამოჩნდება სესიის მენიუში."
+msgstr "კომპიუტერის გადატვირთვის ღილაკი სესიის მენიუში აღარ გამოჩნდება."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "გადატვირთვის ღილაკის ამოღება სესიის მენიუდან"
+msgstr "გადატვირთვის ღილაკის სესიის მენიუდან ამოღება"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
@@ -221,18 +216,14 @@ msgid ""
 msgstr ""
 
 #: src/backend-dbus/actions.c:785
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr ""
-"დარწმუნებული ხართ, რომ გსურთ ყველა პროგრამის დახურვა და ანგარიშიდან გასვლა?"
+msgstr "დარწმუნებული ხართ, რომ გსურთ ყველა პროგრამის დახურვა და გასვლა?"
 
 #: src/backend-dbus/actions.c:786
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"ზოგიერთი პროგრამული განახლება არ დაყენდება სანამ არ მოხდება კომპიუტერის "
-"გადატვირთვა."
+"ზოგიერთი პროგრამის განახლება არ დაყენდება, სანამ კომპიუტერს არ გადატვირთავთ."
 
 #: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876

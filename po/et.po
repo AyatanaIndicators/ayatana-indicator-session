@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 12:44+0100\n"
-"PO-Revision-Date: 2020-07-29 08:41+0000\n"
+"PO-Revision-Date: 2023-04-26 02:47+0000\n"
 "Last-Translator: Kristjan Räts <kristjanrats@gmail.com>\n"
-"Language-Team: Estonian <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/et/>\n"
+"Language-Team: Estonian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/et/>\n"
 "Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.2-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -58,33 +58,32 @@ msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Teeb nii, et väljalülitamise nuppu sessioonimenüüs ei näidata."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Taaskäivituse nupu eemaldamine sessioonimenüüst."
+msgstr "Taaskäivituse kohustatud näitamine sessioonimenüüs"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
-msgstr "Taaskäivituse nuppu ei näidata sessioonimenüüs."
+msgstr ""
+"Teeb nii, et taaskäivituse on sessioonimenüüs nähtav ka nendes keskkondades, "
+"kus ta seda olla ei tohiks ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Taaskäivituse nupu eemaldamine sessioonimenüüst."
+msgstr "Otsusta kasutaja pärisnime näitamine paneelil"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Luba kasutaja nime paneelilt eemaldamine"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Kuva kasutajate loend"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Luba kasutajal peita kasutajate loend."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196
@@ -98,7 +97,7 @@ msgstr "Süsteem"
 
 #: src/service.c:211
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Sessiooni haldus, olek ja kasutaja vahetamine"
 
 #: src/service.c:336
 msgid "Guest"
@@ -106,30 +105,28 @@ msgstr "Külaline"
 
 #: src/service.c:386
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "Ubuntu Touchist…"
 
 #: src/service.c:387
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "UBports Foundationist…"
 
 #: src/service.c:391 src/service.c:392
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "%s abi"
+msgstr "%s abi…"
 
 #: src/service.c:397
-#, fuzzy
 msgid "About This Device…"
-msgstr "Selle arvuti teave"
+msgstr "Selle arvuti teave…"
 
 #: src/service.c:399
 msgid "About This Computer"
 msgstr "Selle arvuti teave"
 
 #: src/service.c:410
-#, fuzzy
 msgid "Desktop mode"
-msgstr "%s töölaua abi"
+msgstr "Töölaua režiim"
 
 #: src/service.c:416
 msgid "Report a Bug…"

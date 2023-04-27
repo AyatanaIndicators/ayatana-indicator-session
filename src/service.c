@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Canonical Ltd.
- * Copyright 2021-2022 Robert Tari
+ * Copyright 2021-2023 Robert Tari
  *
  * Authors:
  *   Charles Kerr <charles.kerr@canonical.com>
@@ -379,30 +379,59 @@ create_admin_section (IndicatorSessionService * self)
 {
   GMenu * menu;
   priv_t * p = self->priv;
-  gchar * desktop_help_label = NULL;
-  gchar * distro_help_label = NULL;
-  if (g_strcmp0(get_desktop_session(), "ubuntu-touch") == 0)
-    {
-      desktop_help_label = g_strdup(_("About Ubuntu Touch…"));
-      distro_help_label  = g_strdup(_("About UBports Foundation…"));
-    }
-    else
-    {
-      desktop_help_label = g_strdup_printf(_("%s Help…"), get_desktop_name());
-      distro_help_label  = g_strdup_printf(_("%s Help…"), get_distro_name());
-    }
   menu = g_menu_new ();
 
-  if (ayatana_common_utils_is_lomiri()) {
-      g_menu_append (menu, _("About This Device…"), "indicator.about");
-  } else {
-      g_menu_append (menu, _("About This Computer"), "indicator.about");
+  gboolean bShowDeviceInfo = g_settings_get_boolean (self->priv->indicator_settings, "show-device-info");
+
+  if (bShowDeviceInfo)
+  {
+      if (ayatana_common_utils_is_lomiri())
+      {
+          g_menu_append (menu, _("About This Device…"), "indicator.about");
+      }
+      else
+      {
+          g_menu_append (menu, _("About This Computer"), "indicator.about");
+      }
   }
 
-  g_menu_append (menu, desktop_help_label, "indicator.desktop_help");
-  g_menu_append (menu, distro_help_label, "indicator.distro_help");
-  g_free (desktop_help_label);
-  g_free (distro_help_label);
+  gboolean bShowDesktopHelp = g_settings_get_boolean (self->priv->indicator_settings, "show-desktop-help");
+
+  if (bShowDesktopHelp)
+  {
+      gchar *desktop_help_label = NULL;
+
+      if (g_strcmp0(get_desktop_session(), "ubuntu-touch") == 0)
+      {
+          desktop_help_label = g_strdup(_("About Ubuntu Touch…"));
+      }
+      else
+      {
+          desktop_help_label = g_strdup_printf(_("%s Help…"), get_desktop_name());
+      }
+
+      g_menu_append (menu, desktop_help_label, "indicator.desktop_help");
+      g_free (desktop_help_label);
+  }
+
+  gboolean bShowDistroHelp = g_settings_get_boolean (self->priv->indicator_settings, "show-distro-help");
+
+  if (bShowDistroHelp)
+  {
+      gchar *distro_help_label = NULL;
+
+      if (g_strcmp0(get_desktop_session(), "ubuntu-touch") == 0)
+      {
+          distro_help_label  = g_strdup(_("About UBports Foundation…"));
+      }
+      else
+      {
+          distro_help_label  = g_strdup_printf(_("%s Help…"), get_distro_name());
+      }
+
+      g_menu_append (menu, distro_help_label, "indicator.distro_help");
+      g_free (distro_help_label);
+  }
 
   if (p->usage_mode_action && ayatana_common_utils_is_lomiri())
   {
@@ -413,7 +442,13 @@ create_admin_section (IndicatorSessionService * self)
       g_object_unref(menu_item);
   }
 
-  g_menu_append (menu, _("Report a Bug…"), "indicator.bug");
+  gboolean bShowBugReport = g_settings_get_boolean (self->priv->indicator_settings, "show-bug-report");
+
+  if (bShowBugReport)
+  {
+      g_menu_append (menu, _("Report a Bug…"), "indicator.bug");
+  }
+
   return G_MENU_MODEL (menu);
 }
 
@@ -1383,6 +1418,10 @@ indicator_session_service_init (IndicatorSessionService * self)
                             G_CALLBACK(rebuild_header_soon), self);
   g_signal_connect_swapped (gp, "changed::user-show-menu",
                             G_CALLBACK(user_show_menu_changed), self);
+  g_signal_connect_swapped (gp, "changed::show-device-info", G_CALLBACK (rebuild_admin_section_soon), self);
+  g_signal_connect_swapped (gp, "changed::show-desktop-help", G_CALLBACK (rebuild_admin_section_soon), self);
+  g_signal_connect_swapped (gp, "changed::show-distro-help", G_CALLBACK (rebuild_admin_section_soon), self);
+  g_signal_connect_swapped (gp, "changed::show-bug-report", G_CALLBACK (rebuild_admin_section_soon), self);
 
   /* watch for changes to the lock keybinding */
   gp = p->keybinding_settings;

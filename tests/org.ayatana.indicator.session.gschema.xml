@@ -31,7 +31,26 @@
       <summary>Show the list of users</summary>
       <description>Allow for the user list to be hidden by the user.</description>
     </key>
-
+    <key name="show-device-info" type="b">
+      <default>true</default>
+      <summary>Show device info item</summary>
+      <description>Show the device information menu item.</description>
+    </key>
+    <key name="show-desktop-help" type="b">
+      <default>true</default>
+      <summary>Show desktop help item</summary>
+      <description>Show the desktop environment help menu item.</description>
+    </key>
+    <key name="show-distro-help" type="b">
+      <default>true</default>
+      <summary>Show distro help item</summary>
+      <description>Show the distribution help menu item.</description>
+    </key>
+    <key name="show-bug-report" type="b">
+      <default>true</default>
+      <summary>Show bug report item</summary>
+      <description>Show the bug report menu item.</description>
+    </key>
   </schema>
-  
+
 </schemalist>

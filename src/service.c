@@ -381,6 +381,22 @@ create_admin_section (IndicatorSessionService * self)
   priv_t * p = self->priv;
   menu = g_menu_new ();
 
+  gboolean bShowCustom = g_settings_get_boolean (self->priv->indicator_settings, "show-custom-item");
+
+  if (bShowCustom)
+  {
+      gchar *sLabel = g_settings_get_string (self->priv->indicator_settings, "custom-item-label");
+      gchar *sUri = g_settings_get_string (self->priv->indicator_settings, "custom-item-uri");
+
+      if (*sLabel != '\0' && *sUri != '\0')
+      {
+        g_menu_append (menu, sLabel, "indicator.custom");
+      }
+
+      g_free (sUri);
+      g_free (sLabel);
+  }
+
   gboolean bShowDeviceInfo = g_settings_get_boolean (self->priv->indicator_settings, "show-device-info");
 
   if (bShowDeviceInfo)
@@ -1039,6 +1055,13 @@ on_user_activated (GSimpleAction * a         G_GNUC_UNUSED,
                                                 username);
 }
 
+static void on_custom_activated (GSimpleAction *pAction G_GNUC_UNUSED, GVariant *pParam G_GNUC_UNUSED, gpointer pUserData)
+{
+    IndicatorSessionService *self = INDICATOR_SESSION_SERVICE (pUserData);
+    gchar *sUri = g_settings_get_string (self->priv->indicator_settings, "custom-item-uri");
+    ayatana_common_utils_open_url (sUri);
+}
+
 static void
 init_gactions (IndicatorSessionService * self)
 {
@@ -1059,7 +1082,8 @@ init_gactions (IndicatorSessionService * self)
     { "switch-to-screensaver",  on_screensaver_activated     },
     { "switch-to-greeter",      on_greeter_activated         },
     { "suspend",                on_suspend_activated         },
-    { "power-off",              on_power_off_activated       }
+    { "power-off",              on_power_off_activated       },
+    { "custom",                 on_custom_activated          }
   };
 
   p->actions = g_simple_action_group_new ();
@@ -1422,6 +1446,9 @@ indicator_session_service_init (IndicatorSessionService * self)
   g_signal_connect_swapped (gp, "changed::show-desktop-help", G_CALLBACK (rebuild_admin_section_soon), self);
   g_signal_connect_swapped (gp, "changed::show-distro-help", G_CALLBACK (rebuild_admin_section_soon), self);
   g_signal_connect_swapped (gp, "changed::show-bug-report", G_CALLBACK (rebuild_admin_section_soon), self);
+  g_signal_connect_swapped (gp, "changed::show-custom-item", G_CALLBACK (rebuild_admin_section_soon), self);
+  g_signal_connect_swapped (gp, "changed::custom-item-label", G_CALLBACK (rebuild_admin_section_soon), self);
+  g_signal_connect_swapped (gp, "changed::custom-item-uri", G_CALLBACK (rebuild_admin_section_soon), self);
 
   /* watch for changes to the lock keybinding */
   gp = p->keybinding_settings;

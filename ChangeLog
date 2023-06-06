@@ -1,6 +1,88 @@
+2023-06-06 Mike Gabriel
+
+        * release 22.9.2 (HEAD -> main, tag: 22.9.2)
+        * Merge branch 'tari01-pr/custom-item' (c09eb8cc)
+
+2023-05-07 Robert Tari
+
+        * Add custom label to admin section (cf32ce6b)
+        * CMakeLists.txt: Move project version to CMake's project()
+          (514cd389)
+
+2023-05-20 Milo Ivir
+
+        * Translated using Weblate (Croatian) (3977a1e6)
+
+2023-04-27 Mike Gabriel
+
+        * Merge branch 'tari01-pr/hide-admin-section' (5c624d42)
+
+2023-04-06 Robert Tari
+
+        * Add options to hide items in the admin section (b4cabeb1)
+        * CMakeLists.txt: Fix CMake version warning (8ab10462)
+
+2023-04-25 Kristjan Räts
+
+        * Translated using Weblate (Estonian) (d62ffc80)
+
+2023-04-11 Temuri Doghonadze
+
+        * Translated using Weblate (Georgian) (63086997)
+
+2023-04-06 ssantos
+
+        * Translated using Weblate (Portuguese) (091a6705)
+
+2023-04-07 Mike Gabriel
+
+        * CMakeLists.txt: Fix version number. (b41d25fe)
+
+2023-03-29 Quentin PAGÈS
+
+        * Translated using Weblate (Occitan) (f125c14e)
+
+2023-03-22 Tomáš Marný
+
+        * Translated using Weblate (Czech) (747ee8cc)
+
+2023-03-19 Oğuz Ersen
+
+        * Translated using Weblate (Turkish) (29be7b46)
+
+2023-03-19 Wellington Terumi Uemura
+
+        * Translated using Weblate (Portuguese (Brazil)) (1a831665)
+
+2023-03-20 Heimen Stoffels
+
+        * Translated using Weblate (Dutch) (48e862fa)
+
+2023-03-19 Yaron Shahrabani
+
+        * Translated using Weblate (Hebrew) (0350368d)
+
+2023-03-19 gallegonovato
+
+        * Translated using Weblate (Spanish) (7b33336b)
+
+2023-03-19 Mike Gabriel
+
+        * Translated using Weblate (German) (7fed3824)
+        * po/: Translation updates. (ce6eab17)
+
+2023-03-16 Heimen Stoffels
+
+        * Translated using Weblate (Dutch) (c5f9238c)
+
+2023-03-03 gallegonovato
+
+        * Translated using Weblate (Spanish) (c755c65b)
+        * Translated using Weblate (Spanish) (83a3256b)
+
 2023-02-28 Mike Gabriel
 
-        * release 22.9.1 (HEAD -> main, tag: 22.9.1)
+        * release 22.9.1 (9931b0ba) (tag: 22.9.1)
 
 2023-02-27 Robert Tari
 

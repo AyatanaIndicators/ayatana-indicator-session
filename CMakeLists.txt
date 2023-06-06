@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.13)
-project (ayatana-indicator-session C CXX)
+project (ayatana-indicator-session VERSION 22.9.1 LANGUAGES C CXX)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     SET(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "..." FORCE)
@@ -7,7 +7,6 @@ endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-set (PROJECT_VERSION "22.9.1")
 set (PACKAGE ${CMAKE_PROJECT_NAME})
 set (GETTEXT_PACKAGE "ayatana-indicator-session")
 

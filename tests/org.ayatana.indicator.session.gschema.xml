@@ -51,6 +51,20 @@
       <summary>Show bug report item</summary>
       <description>Show the bug report menu item.</description>
     </key>
+    <key name="show-custom-item" type="b">
+      <default>false</default>
+      <summary>Show custom item</summary>
+      <description>Show the custom menu item.</description>
+    </key>
+    <key name="custom-item-label" type="s">
+      <default>""</default>
+      <summary>Custom item label</summary>
+      <description>The label of the custom menu item.</description>
+    </key>
+    <key name="custom-item-uri" type="s">
+      <default>""</default>
+      <summary>Custom item URI</summary>
+      <description>The location the custom menu item should open.</description>
+    </key>
   </schema>
-
 </schemalist>

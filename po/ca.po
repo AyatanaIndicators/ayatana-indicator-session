@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 12:44+0100\n"
-"PO-Revision-Date: 2021-11-10 20:51+0000\n"
+"PO-Revision-Date: 2023-06-23 22:50+0000\n"
 "Last-Translator: Joan CiberSheep <cibersheep@gmail.com>\n"
-"Language-Team: Catalan <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/ca/>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9.1-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -58,33 +58,32 @@ msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Fa que el botó d'aturar no aparegui al menú de sessió."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Suprimeix l'element de reinici del menú de la sessió."
+msgstr "Força la visibilitat de l'element de reinici al menú de sessió"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
-msgstr "Fes que el botó de reinici no es mostri al menú de la sessió."
+msgstr ""
+"Fes que el botó de reinici no es mostri al menú de la sessió fins i tot als "
+"entorns on no s'hauria de mostrar."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Suprimeix l'element de reinici del menú de la sessió."
+msgstr "Determina la visibilitat del nom real del o la usuària al panell"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Permet eliminar els noms del o la usuària del panell"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Mostra la llista dels i les usuàries"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Permet al o la usuària amagar la llista dels i les usuàries."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196
@@ -98,7 +97,7 @@ msgstr "Sistema"
 
 #: src/service.c:211
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Gestió de la sessió, estat i canvi dels o les usuàries"
 
 #: src/service.c:336
 msgid "Guest"
@@ -106,30 +105,28 @@ msgstr "Convidat"
 
 #: src/service.c:386
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "Quant a l'Ubuntu Touch…"
 
 #: src/service.c:387
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "Quant a la fundació UBports…"
 
 #: src/service.c:391 src/service.c:392
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "Ajuda %s"
+msgstr "Ajuda sobre %s…"
 
 #: src/service.c:397
-#, fuzzy
 msgid "About This Device…"
-msgstr "Quant a aquest ordinador"
+msgstr "Quant a aquest dispositiu…"
 
 #: src/service.c:399
 msgid "About This Computer"
 msgstr "Quant a aquest ordinador"
 
 #: src/service.c:410
-#, fuzzy
 msgid "Desktop mode"
-msgstr "Ajuda d'escriptori %s"
+msgstr "Mode d'escriptori"
 
 #: src/service.c:416
 msgid "Report a Bug…"

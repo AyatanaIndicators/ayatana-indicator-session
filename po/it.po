@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 12:44+0100\n"
-"PO-Revision-Date: 2020-12-31 03:29+0000\n"
-"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/it/>\n"
+"PO-Revision-Date: 2023-06-28 11:51+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@tuta.io>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.1-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -66,35 +66,32 @@ msgstr ""
 "sessione."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Rimuove la voce «Riavvia» dal menù della sessione."
+msgstr "Forza la visibilità della voce «Riavvia» dal menù della sessione"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr ""
-"Fa in modo che il pulsante per riavviare il computer non compaia nel menù "
-"della sessione."
+"Fa in modo che il riavvio venga visualizzato nel menu di sessione anche "
+"negli ambienti in cui non dovrebbe essere visualizzato."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Rimuove la voce «Riavvia» dal menù della sessione."
+msgstr "Determina la visibilità del nome reale dell'Utente sul pannello"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Consente di rimuovere il nome dell'utente dal pannello"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Mostra l'elenco degli utenti"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Consente all'utente di nascondere l'elenco degli utenti."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:196
@@ -108,7 +105,7 @@ msgstr "Sistema"
 
 #: src/service.c:211
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Gestione delle sessioni, stato e commutazione degli utenti"
 
 #: src/service.c:336
 msgid "Guest"
@@ -116,30 +113,28 @@ msgstr "Ospite"
 
 #: src/service.c:386
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "Informazioni su Ubuntu Touch …"
 
 #: src/service.c:387
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "Informazioni su UBports Foundation…"
 
 #: src/service.c:391 src/service.c:392
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "%s Aiuto"
+msgstr "%s Aiuto…"
 
 #: src/service.c:397
-#, fuzzy
 msgid "About This Device…"
-msgstr "Informazioni sul sistema"
+msgstr "Informazioni su questo Dispositivo…"
 
 #: src/service.c:399
 msgid "About This Computer"
 msgstr "Informazioni sul sistema"
 
 #: src/service.c:410
-#, fuzzy
 msgid "Desktop mode"
-msgstr "%s Aiuto del desktop"
+msgstr "Modalità Desktop"
 
 #: src/service.c:416
 msgid "Report a Bug…"

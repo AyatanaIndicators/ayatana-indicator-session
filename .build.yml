@@ -13,12 +13,13 @@ requires:
     - cmake
     - cmake-extras
     - intltool
-#    - libayatana-common
+    - libayatana-common
     - liblomiri-url-dispatcher
     - gobject-introspection
     - vala
     - glib2
     - systemd
+    - librda
 
   debian:
     # Useful URL: https://salsa.debian.org/debian-ayatana-team/ayatana-session
@@ -38,6 +39,7 @@ requires:
     - libglib2.0-dev
     - libgtest-dev
     - dbus
+    - librda-dev
 
   ubuntu:
     - clang
@@ -55,6 +57,7 @@ requires:
     - libglib2.0-dev
     - libgtest-dev
     - dbus
+    - librda-dev
 
   ubuntu:focal:
     - clang
@@ -72,6 +75,7 @@ requires:
     - libglib2.0-dev
     - libgtest-dev
     - dbus
+    - librda-dev
 
 variables:
   - 'CHECKERS="

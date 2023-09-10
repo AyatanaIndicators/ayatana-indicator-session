@@ -22,7 +22,7 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <ayatana/common/utils.h>
-
+#include <rda/rda.h>
 #include "backend.h"
 #include "recoverable-problem.h"
 #include "service.h"
@@ -115,6 +115,7 @@ struct _IndicatorSessionServicePrivate
   GDBusConnection * conn;
   GCancellable * cancellable;
   GVariant * default_icon_serialized;
+  gboolean bLocal;
 };
 
 typedef IndicatorSessionServicePrivate priv_t;
@@ -676,6 +677,11 @@ create_switch_section (IndicatorSessionService * self, int profile)
 
   menu = g_menu_new ();
 
+  if (!self->priv->bLocal)
+  {
+      return G_MENU_MODEL (menu);
+  }
+
   /* lockswitch */
   if (indicator_session_users_is_live_session (p->backend_users))
     {
@@ -828,11 +834,21 @@ create_logout_section (IndicatorSessionService * self)
 
   menu = g_menu_new ();
 
-  if (indicator_session_actions_can_logout (p->backend_actions))
-    {
-      const char * label = ellipsis ? _("Log Out…") : _("Log Out");
-      g_menu_append (menu, label, "indicator.logout");
-    }
+  if (!self->priv->bLocal || indicator_session_actions_can_logout (p->backend_actions))
+  {
+        const char * label = NULL;
+
+        if (self->priv->bLocal && ellipsis)
+        {
+            label = _("Log Out…");
+        }
+        else
+        {
+            label = _("Log Out");
+        }
+
+        g_menu_append (menu, label, "indicator.logout");
+  }
 
   return G_MENU_MODEL (menu);
 }
@@ -847,25 +863,35 @@ create_session_section (IndicatorSessionService * self, int profile)
 
   menu = g_menu_new ();
 
-  if (indicator_session_actions_can_suspend (p->backend_actions))
-    g_menu_append (menu, _("Suspend"), "indicator.suspend");
+  if (self->priv->bLocal)
+  {
+        if (indicator_session_actions_can_suspend (p->backend_actions))
+            g_menu_append (menu, _("Suspend"), "indicator.suspend");
 
-  if (indicator_session_actions_can_hibernate (p->backend_actions))
-    g_menu_append (menu, _("Hibernate"), "indicator.hibernate");
+        if (indicator_session_actions_can_hibernate (p->backend_actions))
+            g_menu_append (menu, _("Hibernate"), "indicator.hibernate");
 
-  if (profile != PROFILE_LOCKSCREEN &&
-    indicator_session_actions_can_reboot (p->backend_actions))
-    {
-      const char * label = ellipsis ? _("Restart…") : _("Restart");
-      g_menu_append (menu, label, "indicator.reboot");
-    }
+        if (profile != PROFILE_LOCKSCREEN && indicator_session_actions_can_reboot (p->backend_actions))
+        {
+            const char * label = ellipsis ? _("Restart…") : _("Restart");
+            g_menu_append (menu, label, "indicator.reboot");
+        }
 
-  if (profile != PROFILE_LOCKSCREEN &&
-    !g_settings_get_boolean (s, "suppress-shutdown-menuitem"))
-    {
-      const char * label = ellipsis ? _("Shut Down…") : _("Shut Down");
-      g_menu_append (menu, label, "indicator.power-off");
-    }
+        if (profile != PROFILE_LOCKSCREEN && !g_settings_get_boolean (s, "suppress-shutdown-menuitem"))
+        {
+            const char * label = ellipsis ? _("Shut Down…") : _("Shut Down");
+            g_menu_append (menu, label, "indicator.power-off");
+        }
+  }
+  else
+  {
+        gboolean bSuspendable = rda_session_can_be_suspended ();
+
+        if (bSuspendable)
+        {
+            g_menu_append (menu, _("Suspend Remote Session"), "indicator.remotesuspend");
+        }
+  }
 
   return G_MENU_MODEL (menu);
 }
@@ -986,7 +1012,16 @@ on_logout_activated (GSimpleAction * a      G_GNUC_UNUSED,
                      GVariant      * param  G_GNUC_UNUSED,
                      gpointer        gself)
 {
-  indicator_session_actions_logout (get_backend_actions(gself));
+    IndicatorSessionService *self = INDICATOR_SESSION_SERVICE (gself);
+
+    if (!self->priv->bLocal)
+    {
+        rda_session_terminate ();
+    }
+    else
+    {
+        indicator_session_actions_logout (get_backend_actions(gself));
+    }
 }
 
 static void
@@ -1062,6 +1097,11 @@ static void on_custom_activated (GSimpleAction *pAction G_GNUC_UNUSED, GVariant 
     ayatana_common_utils_open_url (sUri);
 }
 
+static void onRemoteSuspend (GSimpleAction *pAction G_GNUC_UNUSED, GVariant *pParam G_GNUC_UNUSED, gpointer pUserData)
+{
+    rda_session_suspend ();
+}
+
 static void
 init_gactions (IndicatorSessionService * self)
 {
@@ -1083,7 +1123,8 @@ init_gactions (IndicatorSessionService * self)
     { "switch-to-greeter",      on_greeter_activated         },
     { "suspend",                on_suspend_activated         },
     { "power-off",              on_power_off_activated       },
-    { "custom",                 on_custom_activated          }
+    { "custom",                 on_custom_activated          },
+    { "remotesuspend",                  onRemoteSuspend              }
   };
 
   p->actions = g_simple_action_group_new ();
@@ -1372,6 +1413,7 @@ indicator_session_service_init (IndicatorSessionService * self)
     }
 
   self->priv = p;
+  self->priv->bLocal = rda_session_is_local ();
 
   /* init the backend objects */
   p->cancellable = g_cancellable_new ();

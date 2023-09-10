@@ -48,7 +48,8 @@ include (FindPkgConfig)
 pkg_check_modules (SERVICE REQUIRED
                    libayatana-common>=0.9.2
                    glib-2.0>=2.36
-                   gio-unix-2.0>=2.36)
+                   gio-unix-2.0>=2.36
+                   rda)
 include_directories (${SERVICE_INCLUDE_DIRS})
 
 set (ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})

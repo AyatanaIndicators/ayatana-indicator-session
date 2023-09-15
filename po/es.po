@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 12:44+0100\n"
-"PO-Revision-Date: 2023-03-21 19:42+0000\n"
+"PO-Revision-Date: 2023-09-16 20:12+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/es/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.2-dev\n"
+"X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -208,7 +208,7 @@ msgstr "Apagar"
 #: src/backend-dbus/actions.c:939 src/backend-dbus/actions.c:954
 #: src/backend-dbus/actions.c:975
 msgid "Warning"
-msgstr "Alerta"
+msgstr "Advertencia"
 
 #: src/backend-dbus/actions.c:754
 msgid ""

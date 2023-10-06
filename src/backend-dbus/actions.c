@@ -1,8 +1,10 @@
 /*
  * Copyright 2013 Canonical Ltd.
+ * Copyright 2023 Robert Tari
  *
  * Authors:
  *   Charles Kerr <charles.kerr@canonical.com>
+ *   Robert Tari <robert@tari.in>
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 3, as published
@@ -56,8 +58,6 @@ struct _IndicatorSessionActionsDbusPrivate
   GCancellable * dm_seat_cancellable;
   Webcredentials * webcredentials;
   EndSessionDialog * end_session_dialog;
-  char * zenity;
-
   gboolean can_suspend;
   gboolean can_hibernate;
   gboolean seat_allows_activation;
@@ -91,7 +91,7 @@ log_and_clear_error (GError ** err, const char * loc, const char * func)
 typedef enum
 {
   PROMPT_NONE,
-  PROMPT_WITH_ZENITY,
+  PROMPT_WITH_UTILS,
   PROMPT_WITH_LOMIRI,
   PROMPT_WITH_MATE,
   PROMPT_WITH_BUDGIE,
@@ -131,9 +131,8 @@ get_prompt_status (IndicatorSessionActionsDbus * self)
           g_free (name);
         }
 
-      /* can we use zenity? */
-      if ((prompt == PROMPT_NONE) && p && p->zenity)
-        prompt = PROMPT_WITH_ZENITY;
+      if ((prompt == PROMPT_NONE) && p)
+        prompt = PROMPT_WITH_UTILS;
     }
 
   return prompt;
@@ -695,56 +694,6 @@ show_lomiri_end_session_dialog (IndicatorSessionActionsDbus * self, int type)
                                 self);
 }
 
-static gboolean
-zenity_question (IndicatorSessionActionsDbus * self,
-                 const char * icon_name,
-                 const char * title,
-                 const char * text,
-                 const char * ok_label,
-                 const char * cancel_label)
-{
-  char * command_line;
-  int exit_status;
-  GError * error;
-  gboolean confirmed;
-
-  command_line = g_strdup_printf ("%s"
-                                  " --question"
-                                  " --icon-name=\"%s\""
-                                  " --title=\"%s\""
-                                  " --text=\"%s\""
-                                  " --ok-label=\"%s\""
-                                  " --cancel-label=\"%s\""
-                                  " --no-wrap",
-                                  self->priv->zenity,
-                                  icon_name,
-                                  title,
-                                  text,
-                                  ok_label,
-                                  cancel_label);
-
-  /* Treat errors as user confirmation.
-     Otherwise how will the user ever log out? */
-  exit_status = -1;
-  error = NULL;
-  if (!g_spawn_command_line_sync (command_line, NULL, NULL, &exit_status, &error))
-    {
-      confirmed = TRUE;
-    }
-  else
-    {
-        #if GLIB_CHECK_VERSION(2, 70, 0)
-            confirmed = g_spawn_check_wait_status (exit_status, &error);
-        #else
-            confirmed = g_spawn_check_exit_status (exit_status, &error);
-        #endif
-    }
-
-  log_and_clear_error (&error, G_STRLOC, G_STRFUNC);
-  g_free (command_line);
-  return confirmed;
-}
-
 static void
 my_bug (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
@@ -780,19 +729,17 @@ my_logout (IndicatorSessionActions * actions)
         logout_now (self);
         break;
 
-      case PROMPT_WITH_ZENITY:
+      case PROMPT_WITH_UTILS:
         {
           const char * primary = _("Are you sure you want to close all programs and log out?");
           const char * secondary = _("Some software updates won't be applied until the computer next restarts.");
           char * text = g_strdup_printf ("<big><b>%s</b></big>\n \n%s", primary, secondary);
 
-          gboolean confirmed = zenity_question (self,
-                                                "system-log-out",
-                                                _("Log Out"),
-                                                text,
-                                                _("Log Out"),
-                                                _("Cancel"));
-
+          gboolean confirmed = ayatana_common_utils_zenity_question ("system-log-out",
+                                                                    _("Log Out"),
+                                                                    text,
+                                                                    _("Log Out"),
+                                                                    _("Cancel"));
           g_free (text);
 
           if (confirmed)
@@ -828,14 +775,16 @@ my_reboot (IndicatorSessionActions * actions)
         reboot_now (self);
         break;
 
-      case PROMPT_WITH_ZENITY:
-        if (zenity_question (self,
-              "system-restart",
-              _("Restart"),
-              _("Are you sure you want to close all programs and restart the computer?"),
-              _("Restart"),
-              _("Cancel")))
-          reboot_now (self);
+      case PROMPT_WITH_UTILS:
+        if (ayatana_common_utils_zenity_question ("system-restart",
+                                                _("Restart"),
+                                                _("Are you sure you want to close all programs and restart the computer?"),
+                                                _("Restart"),
+                                                _("Cancel")))
+        {
+            reboot_now (self);
+        }
+
         break;
     }
 }
@@ -867,14 +816,16 @@ my_power_off (IndicatorSessionActions * actions)
         ayatana_common_utils_execute_command ("xfce4-session-logout");
         break;
 
-      case PROMPT_WITH_ZENITY:
-        if (zenity_question (self,
-              "system-shutdown",
-              _("Shut Down"),
-              _("Are you sure you want to close all programs and shut down the computer?"),
-              _("Shut Down"),
-              _("Cancel")))
-          power_off_now (self);
+      case PROMPT_WITH_UTILS:
+        if (ayatana_common_utils_zenity_question ("system-shutdown",
+                                                _("Shut Down"),
+                                                _("Are you sure you want to close all programs and shut down the computer?"),
+                                                _("Shut Down"),
+                                                _("Cancel")))
+        {
+            power_off_now (self);
+        }
+
         break;
 
       case PROMPT_NONE:
@@ -1113,10 +1064,7 @@ my_dispose (GObject * o)
 static void
 my_finalize (GObject * o)
 {
-  IndicatorSessionActionsDbus * self = INDICATOR_SESSION_ACTIONS_DBUS (o);
-  priv_t * p = self->priv;
 
-  g_free (p->zenity);
 }
 
 
@@ -1172,8 +1120,6 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
   p->cancellable = g_cancellable_new ();
   p->seat_allows_activation = TRUE;
   self->priv = p;
-
-  p->zenity = g_find_program_in_path ("zenity");
 
   s = g_settings_new ("org.gnome.desktop.lockdown");
   g_signal_connect_swapped (s, "changed::disable-lock-screen",

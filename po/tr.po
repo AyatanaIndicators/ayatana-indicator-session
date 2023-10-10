@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-19 12:44+0100\n"
+"POT-Creation-Date: 2023-10-11 00:02+0200\n"
 "PO-Revision-Date: 2023-03-21 19:42+0000\n"
 "Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
-"Language-Team: Turkish <https://hosted.weblate.org/projects/"
-"ayatana-indicators/session-applet/tr/>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/ayatana-"
+"indicators/session-applet/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -86,123 +86,185 @@ msgstr "Kullanıcı listesini göster"
 msgid "Allow for the user list to be hidden by the user."
 msgstr "Kullanıcı listesinin kullanıcı tarafından gizlenmesine izin ver."
 
+#: data/org.ayatana.indicator.session.gschema.xml:15
+msgid "Show device info item"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:16
+msgid "Show the device information menu item."
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:17
+msgid "Show desktop help item"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:18
+msgid "Show the desktop environment help menu item."
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:19
+msgid "Show distro help item"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:20
+msgid "Show the distribution help menu item."
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:21
+msgid "Show bug report item"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:22
+msgid "Show the bug report menu item."
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:23
+msgid "Show custom item"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:24
+#, fuzzy
+msgid "Show the custom menu item."
+msgstr "Kullanıcı listesini göster"
+
+#: data/org.ayatana.indicator.session.gschema.xml:25
+msgid "Custom item label"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:26
+msgid "The label of the custom menu item."
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:27
+msgid "Custom item URI"
+msgstr ""
+
+#: data/org.ayatana.indicator.session.gschema.xml:28
+msgid "The location the custom menu item should open."
+msgstr ""
+
 #. Translators: the name of the menu ("System"), then the user's name
-#: src/service.c:196
+#: src/service.c:197
 #, c-format
 msgid "System, %s"
 msgstr "Sistem, %s"
 
-#: src/service.c:200 src/service.c:210
+#: src/service.c:201 src/service.c:211
 msgid "System"
 msgstr "Sistem"
 
-#: src/service.c:211
+#: src/service.c:212
 msgid "Session management, status and user switching"
 msgstr "Oturum yönetimi, durum ve kullanıcı değiştirme"
 
-#: src/service.c:336
+#: src/service.c:337
 msgid "Guest"
 msgstr "Konuk"
 
-#: src/service.c:386
+#: src/service.c:407
+msgid "About This Device…"
+msgstr "Bu Aygıt Hakkında…"
+
+#: src/service.c:411
+msgid "About This Computer"
+msgstr "Bu Bilgisayar Hakkında"
+
+#: src/service.c:423
 msgid "About Ubuntu Touch…"
 msgstr "Ubuntu Touch Hakkında…"
 
-#: src/service.c:387
-msgid "About UBports Foundation…"
-msgstr "UBports Vakfı Hakkında…"
-
-#: src/service.c:391 src/service.c:392
+#: src/service.c:427 src/service.c:446
 #, c-format
 msgid "%s Help…"
 msgstr "%s Yardımı…"
 
-#: src/service.c:397
-msgid "About This Device…"
-msgstr "Bu Aygıt Hakkında…"
+#: src/service.c:442
+msgid "About UBports Foundation…"
+msgstr "UBports Vakfı Hakkında…"
 
-#: src/service.c:399
-msgid "About This Computer"
-msgstr "Bu Bilgisayar Hakkında"
-
-#: src/service.c:410
+#: src/service.c:456
 msgid "Desktop mode"
 msgstr "Masaüstü modu"
 
-#: src/service.c:416
+#: src/service.c:466
 msgid "Report a Bug…"
 msgstr "Hata Bildir…"
 
-#: src/service.c:427
+#: src/service.c:479
 msgid "System Settings…"
 msgstr "Sistem Ayarları…"
 
-#: src/service.c:429
+#: src/service.c:481
 msgid "Online Accounts…"
 msgstr "Çevrimiçi Hesaplar…"
 
-#: src/service.c:632
+#: src/service.c:689
 msgid "Start Screen Saver"
 msgstr "Ekran Koruyucuyu Başlat"
 
-#: src/service.c:640 src/service.c:656
+#: src/service.c:697 src/service.c:713
 msgid "Switch Account…"
 msgstr "Hesap değiştir…"
 
-#: src/service.c:641 src/service.c:657
+#: src/service.c:698 src/service.c:714
 msgid "Switch Account"
 msgstr "Hesap değiştir"
 
-#: src/service.c:653
+#: src/service.c:710
 msgid "Lock/Switch Account…"
 msgstr "Hesap Kilitle/Değiştir…"
 
-#: src/service.c:654
+#: src/service.c:711
 msgid "Lock/Switch Account"
 msgstr "Hesap Kilitle/Değiştir"
 
-#: src/service.c:660
+#: src/service.c:717
 msgid "Lock"
 msgstr "Kilitle"
 
-#: src/service.c:705
+#: src/service.c:762
 msgid "Guest Session"
 msgstr "Konuk Oturumu"
 
-#: src/service.c:782
+#: src/service.c:843
 msgid "Log Out…"
 msgstr "Oturumu Kapat…"
 
-#: src/service.c:782 src/backend-dbus/actions.c:791
+#: src/service.c:847 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
 msgstr "Oturumu Kapat"
 
-#: src/service.c:800
+#: src/service.c:869
 msgid "Suspend"
 msgstr "Askıya Al"
 
-#: src/service.c:803
+#: src/service.c:872
 msgid "Hibernate"
 msgstr "Hazırda Beklet"
 
-#: src/service.c:808
+#: src/service.c:876
 msgid "Restart…"
 msgstr "Yeniden Başlat…"
 
-#: src/service.c:808 src/backend-dbus/actions.c:834
+#: src/service.c:876 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
 msgstr "Yeniden Başlat"
 
-#: src/service.c:815
+#: src/service.c:882
 msgid "Shut Down…"
 msgstr "Bilgisayarı Kapat…"
 
-#: src/service.c:815 src/backend-dbus/actions.c:873
+#: src/service.c:882 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
 msgstr "Bilgisayarı Kapat"
+
+#: src/service.c:892
+#, fuzzy
+msgid "Suspend Remote Session"
+msgstr "Konuk Oturumu"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920

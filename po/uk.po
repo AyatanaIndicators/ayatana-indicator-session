@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2023-06-15 15:52+0000\n"
-"Last-Translator: Sergii Horichenko <m@sgg.im>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/uk/>\n"
+"PO-Revision-Date: 2023-10-13 04:14+0000\n"
+"Last-Translator: Serhii Horichenko <m@sgg.im>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.18.1-dev\n"
+"X-Generator: Weblate 5.1-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -37,7 +37,7 @@ msgstr ""
 
 #: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "Прибрати пункт «Завершити сеанс» з меню"
+msgstr "Прибрати з меню сеансу пункт \"Завершити сеанс\""
 
 #: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
@@ -45,7 +45,7 @@ msgstr "Робить так, що кнопка виходу не відобра�
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
 msgid "Remove the Restart item from the session menu."
-msgstr "Прибрати пункт «Перезавантаження» з меню сесії."
+msgstr "Прибрати з меню сеансу пункт \"Перезавантаження\"."
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
@@ -53,7 +53,7 @@ msgstr "Робить так, що кнопка перезавантаження 
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
 msgid "Remove the shutdown item from the session menu."
-msgstr "Прибрати пункт «Вимкнути» з меню сесії."
+msgstr "Прибрати з меню сеансу пункт \"Вимкнути\"."
 
 #: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
@@ -89,60 +89,59 @@ msgstr "Дозволити користувачу приховувати спи�
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr ""
+msgstr "Показати пункт з інформацією про пристрій"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr ""
+msgstr "Показати пункт меню з інформацію про пристрій."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr ""
+msgstr "Показати пункт з довідкою робочого столу"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr ""
+msgstr "Показати пункт меню з довідкою щодо оточення робочого столу."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr ""
+msgstr "Показати пункт з довідкою дистрибутива"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "Показати пункт меню з довідкою про дистрибутив."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr ""
+msgstr "Показати пункт зі звітом про помилку"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr ""
+msgstr "Показати пункт меню зі звітом про помилку."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr ""
+msgstr "Показати власний пункт"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
-#, fuzzy
 msgid "Show the custom menu item."
-msgstr "Показати список користувачів"
+msgstr "Показати власний пункт меню."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "Ярлик власного пункту"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "Ярлик власного пункту меню."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "Посилання власного пункту"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
-msgstr ""
+msgstr "Розташування, яке повинне відкритися власним пунктом меню."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:197
@@ -263,9 +262,8 @@ msgid "Shut Down"
 msgstr "Вимкнути"
 
 #: src/service.c:892
-#, fuzzy
 msgid "Suspend Remote Session"
-msgstr "Гостьовий сеанс"
+msgstr "Призупинити віддалений сеанс"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920

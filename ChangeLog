@@ -1,6 +1,77 @@
+2023-10-13 Mike Gabriel
+
+        * release 23.10.0 (HEAD -> main, tag: 23.10.0)
+        * Translated using Weblate (German) (18b2f8d7)
+
+2023-10-12 Serhii Horichenko
+
+        * Translated using Weblate (Ukrainian) (a852e427)
+        * Translated using Weblate (Russian) (db08c65d)
+
+2023-10-11 Wellington Terumi Uemura
+
+        * Translated using Weblate (Portuguese (Brazil)) (bf599a53)
+
+2023-10-11 Heimen Stoffels
+
+        * Translated using Weblate (Dutch) (ec1f5409)
+
+2023-10-11 Mike Gabriel
+
+        * po/: Update translation files. (a761437e)
+
+2023-09-15 gallegonovato
+
+        * Translated using Weblate (Spanish) (016a4218)
+
+2023-09-15 Mike Gabriel
+
+        * Translated using Weblate (German) (9fabcc56)
+
+2023-09-10 Mike Gabriel
+
+        * Merge branch 'tari01-pr/add-rda' (ac1c3d56)
+
+2023-08-06 Robert Tari
+
+        * .build.yml: Add librda dependency (830773c4)
+        * debian/control: Add librda dependency (f6e69080)
+        * Add remote session detection/termination (52bc8932)
+
+2023-09-06 Luna Jernberg
+
+        * Translated using Weblate (Swedish) (e072850c)
+
+2023-08-06 Robert Tari
+
+        * Merge branch 'liushuyu-main' (bac7bccc)
+
+2023-08-04 Salif Mehmed
+
+        * Translated using Weblate (Bulgarian) (419142b1)
+        * Translated using Weblate (Bulgarian) (232e1325)
+
+2023-07-21 liushuyu
+
+        * tests/backend-dbus/mock-login1-seat.cc: fix build with GCC 13
+          (8cf9538f)
+
+2023-06-27 Sylke Vicious
+
+        * Translated using Weblate (Italian) (c2f9ad79)
+
+2023-06-22 Joan CiberSheep
+
+        * Translated using Weblate (Catalan) (e8062e7a)
+
+2023-06-14 Sergii Horichenko
+
+        * Translated using Weblate (Ukrainian) (45d4c5c6)
+        * Translated using Weblate (Russian) (6727c35d)
+
 2023-06-06 Mike Gabriel
 
-        * release 22.9.2 (HEAD -> main, tag: 22.9.2)
+        * release 22.9.2 (0585f9e3) (tag: 22.9.2)
         * Merge branch 'tari01-pr/custom-item' (c09eb8cc)
 
 2023-05-07 Robert Tari
@@ -5047,7 +5118,7 @@
         * Upstream release 0.2.7;  Remove
           debian/patches/restore_lock_screen.patch added by
           downstream. (47974492)
-        * 0.2.7 (791f0b47) (tag: upstream-0.2.7, tag: 0.2.7)
+        * 0.2.7 (791f0b47) (tag: 0.2.7)
         * releasing version 0.2.6-0ubuntu3~ppa3 (e0253f40)
         * Upstream Merge   * Adding a switch for translators if the "Switch
           From"     translation doesn't make sense (LP: #545893)

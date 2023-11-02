@@ -1132,7 +1132,7 @@ init_gactions (IndicatorSessionService * self)
     { "suspend",                on_suspend_activated         },
     { "power-off",              on_power_off_activated       },
     { "custom",                 on_custom_activated          },
-    { "remotesuspend",                  onRemoteSuspend              }
+    { "remotesuspend",          onRemoteSuspend              }
   };
 
   p->actions = g_simple_action_group_new ();

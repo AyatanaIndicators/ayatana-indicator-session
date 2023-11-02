@@ -1103,7 +1103,7 @@ static void on_custom_activated (GSimpleAction *pAction G_GNUC_UNUSED, GVariant 
     ayatana_common_utils_open_url (sUri);
 }
 
-static void onRemoteSuspend (GSimpleAction *pAction G_GNUC_UNUSED, GVariant *pParam G_GNUC_UNUSED, gpointer pUserData)
+static void on_remote_suspend (GSimpleAction *pAction G_GNUC_UNUSED, GVariant *pParam G_GNUC_UNUSED, gpointer pUserData)
 {
 #ifdef RDA_ENABLED
     rda_session_suspend ();
@@ -1132,7 +1132,7 @@ init_gactions (IndicatorSessionService * self)
     { "suspend",                on_suspend_activated         },
     { "power-off",              on_power_off_activated       },
     { "custom",                 on_custom_activated          },
-    { "remotesuspend",          onRemoteSuspend              }
+    { "remotesuspend",          on_remote_suspend            }
   };
 
   p->actions = g_simple_action_group_new ();

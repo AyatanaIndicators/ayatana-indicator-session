@@ -14,6 +14,7 @@ set (GETTEXT_PACKAGE "ayatana-indicator-session")
 option(ENABLE_TESTS "Enable all tests and checks" OFF)
 option(ENABLE_COVERAGE "Enable coverage reports (includes enabling all tests and checks)" OFF)
 option(ENABLE_WERROR "Treat all build warnings as errors" OFF)
+option(ENABLE_RDA "Enable RDA (remote desktop awareness)" ON)
 
 if(ENABLE_COVERAGE)
     set(ENABLE_TESTS ON)
@@ -45,11 +46,18 @@ include (GNUInstallDirs)
 ##
 find_package (PkgConfig REQUIRED)
 include (FindPkgConfig)
-pkg_check_modules (SERVICE REQUIRED
-                   libayatana-common>=0.9.2
-                   glib-2.0>=2.36
-                   gio-unix-2.0>=2.36
-                   rda)
+set (SERVICE REQUIRED
+     libayatana-common>=0.9.2
+     glib-2.0>=2.36
+     gio-unix-2.0>=2.36)
+
+if (ENABLE_RDA)
+	list (APPEND SERVICE rda)
+	add_definitions (-DRDA_ENABLED)
+endif ()
+
+pkg_check_modules (SERVICE REQUIRED ${SERVICE})
+
 include_directories (${SERVICE_INCLUDE_DIRS})
 
 set (ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})

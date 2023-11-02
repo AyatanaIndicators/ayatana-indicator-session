@@ -22,7 +22,9 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <ayatana/common/utils.h>
-#include <rda/rda.h>
+#ifdef RDA_ENABLED
+#  include <rda/rda.h>
+#endif /* RDA_ENABLED */
 #include "backend.h"
 #include "recoverable-problem.h"
 #include "service.h"
@@ -885,12 +887,14 @@ create_session_section (IndicatorSessionService * self, int profile)
   }
   else
   {
+#ifdef RDA_ENABLED
         gboolean bSuspendable = rda_session_can_be_suspended ();
 
         if (bSuspendable)
         {
             g_menu_append (menu, _("Suspend Remote Session"), "indicator.remotesuspend");
         }
+#endif
   }
 
   return G_MENU_MODEL (menu);
@@ -1016,7 +1020,9 @@ on_logout_activated (GSimpleAction * a      G_GNUC_UNUSED,
 
     if (!self->priv->bLocal)
     {
+#ifdef RDA_ENABLED
         rda_session_terminate ();
+#endif /* RDA_ENABLED */
     }
     else
     {
@@ -1099,7 +1105,9 @@ static void on_custom_activated (GSimpleAction *pAction G_GNUC_UNUSED, GVariant 
 
 static void onRemoteSuspend (GSimpleAction *pAction G_GNUC_UNUSED, GVariant *pParam G_GNUC_UNUSED, gpointer pUserData)
 {
+#ifdef RDA_ENABLED
     rda_session_suspend ();
+#endif /* RDA_ENABLED */
 }
 
 static void
@@ -1413,7 +1421,9 @@ indicator_session_service_init (IndicatorSessionService * self)
     }
 
   self->priv = p;
+#if RDA_ENABLED
   self->priv->bLocal = rda_session_is_local ();
+#endif /* RDA_ENABLED */
 
   /* init the backend objects */
   p->cancellable = g_cancellable_new ();

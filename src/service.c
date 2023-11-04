@@ -892,8 +892,8 @@ create_session_section (IndicatorSessionService * self, int profile)
 
         if (bSuspendable)
         {
-            char * suspend_remote = g_strdup_printf (_("Suspend %s Session"), rda_get_remote_technology_name());
-            g_menu_append (menu, _("Suspend Remote %s Session"), "indicator.remotesuspend");
+            gchar *suspend_remote = g_strdup_printf (_("Suspend %s Session"), rda_get_remote_technology_name());
+            g_menu_append (menu, suspend_remote, "indicator.remotesuspend");
             free (suspend_remote);
         }
 #endif

@@ -1,6 +1,65 @@
+2023-11-06 Mike Gabriel
+
+        * release 23.10.1 (HEAD -> main, tag: 23.10.1)
+
+2023-11-04 Mike Gabriel
+
+        * Merge branch 'tari01-pr/drop-zenity' (34f6b0c8)
+
+2023-10-07 Robert Tari
+
+        * debian/control: Drop zenity dependency and bump
+          libayatana-common-dev to 0.9.9 (4a7adb1d)
+        * src/backend-dbus/actions.c: Switch to
+          ayatana_common_utils_zenity_question (9b1b97a9)
+
+2023-11-04 Robert Tari
+
+        * Merge branch
+          'sunweaver-pr/remote-technology-name-in-suspend-menu-item'
+          (75be6c2d)
+        * src/service.c: Add formatted string to menu (c18b57d2)
+
+2023-11-02 Mike Gabriel
+
+        * src/service.c: In remote session, show remote technology name in
+          menu item label. (65b79215)
+
+2023-11-02 Robert Tari
+
+        * Merge branch 'sunweaver-pr/rda-optional' (4a9824a8)
+
+2023-11-02 Mike Gabriel
+
+        * src/service.c: Rename onRemoteSuspend -> on_remote_suspend (better
+          matching with other function names). (eca237d3)
+        * src/service.c: White-space fix. (8fd1edd3)
+        * {CMakeLists.txt,src/service.c}: Make building against librda
+          optional. (ba840e53)
+
+2023-10-25 Quentin PAGÈS
+
+        * Translated using Weblate (Occitan) (9e19aaef)
+
+2023-10-24 Moo
+
+        * Translated using Weblate (Lithuanian) (ab37dd86)
+
+2023-10-20 Jozef Mlich
+
+        * Translated using Weblate (Czech) (0ee44e90)
+
+2023-10-16 Yaron Shahrabani
+
+        * Translated using Weblate (Hebrew) (88846bad)
+
+2023-10-14 gallegonovato
+
+        * Translated using Weblate (Spanish) (812876b9)
+
 2023-10-13 Mike Gabriel
 
-        * release 23.10.0 (HEAD -> main, tag: 23.10.0)
+        * release 23.10.0 (844aef1c) (tag: 23.10.0)
         * Translated using Weblate (German) (18b2f8d7)
 
 2023-10-12 Serhii Horichenko

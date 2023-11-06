@@ -1,3 +1,11 @@
+Overview of changes in ayatana-indicator-session 23.10.1
+
+  - Make building against librda optional.
+  - In remote session, show remote technology name in menu item label.
+  - Use ayatana_common_utils_zenity_question from libayatana-common
+    instead of directly calling zenity.
+  - Translation updates.
+
 Overview of changes in ayatana-indicator-session 23.10.0
 
   - tests/backend-dbus/mock-login1-seat.cc: fix build with GCC 13.

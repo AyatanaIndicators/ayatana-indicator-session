@@ -1,6 +1,61 @@
+2023-11-19 Mike Gabriel
+
+        * release 23.10.2 (HEAD -> main, tag: 23.10.2)
+
+2023-11-19 Robert Tari
+
+        * Merge branch
+          'sunweaver-pr/assume-local-session-if-built-without-RDA'
+          (00746188)
+
+2023-11-08 bittin1ddc447d824349b2
+
+        * Translated using Weblate (Swedish) (4192cf6a)
+
+2023-11-08 Ivo Xavier
+
+        * Translated using Weblate (Portuguese) (f117dc0d)
+
+2023-11-08 Lionel Duboeuf
+
+        * Translated using Weblate (French) (b5e18734)
+
+2023-11-08 Jozef Mlich
+
+        * Translated using Weblate (Czech) (15df175a)
+
+2023-11-05 Oğuz Ersen
+
+        * Translated using Weblate (Turkish) (49857b34)
+
+2023-11-18 Mike Gabriel
+
+        * src/service.c: Initialize bLocal as true if building without RDA
+          support. (25ba8ee9)
+
+2023-11-08 bittin1ddc447d824349b2
+
+        * Translated using Weblate (Swedish) (dee3c1c3)
+
+2023-11-08 Ivo Xavier
+
+        * Translated using Weblate (Portuguese) (61e7c213)
+
+2023-11-08 Lionel Duboeuf
+
+        * Translated using Weblate (French) (a33e0a8a)
+
+2023-11-08 Jozef Mlich
+
+        * Translated using Weblate (Czech) (46297cc0)
+
+2023-11-05 Oğuz Ersen
+
+        * Translated using Weblate (Turkish) (cfef340e)
+
 2023-11-06 Mike Gabriel
 
-        * release 23.10.1 (HEAD -> main, tag: 23.10.1)
+        * release 23.10.1 (4301580b) (tag: 23.10.1)
 
 2023-11-04 Mike Gabriel
 

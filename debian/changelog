@@ -1,3 +1,10 @@
+ayatana-indicator-session (23.10.2-0) unstable; urgency=medium
+
+  * Upstream-provided Debian package for ayatana-indicator-session.
+    See upstream ChangeLog for recent changes.
+
+ -- Mike Gabriel <sunweaver@debian.org>  Sun, 19 Nov 2023 10:30:41 +0100
+
 ayatana-indicator-session (23.10.1-0) unstable; urgency=medium
 
   * Upstream-provided Debian package for ayatana-indicator-session.

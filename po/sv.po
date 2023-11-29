@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2023-11-09 14:33+0000\n"
+"PO-Revision-Date: 2023-11-30 10:04+0000\n"
 "Last-Translator: bittin1ddc447d824349b2 <bittin@reimu.nl>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/sv/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.2-dev\n"
+"X-Generator: Weblate 5.3-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -62,11 +62,12 @@ msgid "Force the visibility of Restart item in the session menu"
 msgstr "Tvinga synlighet för objektet Starta om i sessionsmenyn"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
-msgstr "Gör så att omstartsknappen inte visas i sessionsmenyn."
+msgstr ""
+"Gör det så att omstart visas i sessionsmenyn även i de miljöer där den inte "
+"ska visas."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
 msgid "Determine the visibility of the User's real name on the panel"
@@ -106,7 +107,7 @@ msgstr "Visa distributionens hjälpobjekt"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "Visa menyposten för distributionshjälp."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
@@ -126,15 +127,15 @@ msgstr "Visa det anpassade menyalternativet."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "Anpassad etikett för föremål"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "Etiketten för det anpassade menyalternativet."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "URI för anpassat objekt"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
@@ -259,9 +260,8 @@ msgid "Shut Down"
 msgstr "Stäng av"
 
 #: src/service.c:892
-#, fuzzy
 msgid "Suspend Remote Session"
-msgstr "Gästsession"
+msgstr "Suspendera Fjärrsession"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920

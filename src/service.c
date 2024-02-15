@@ -1424,7 +1424,7 @@ indicator_session_service_init (IndicatorSessionService * self)
 
   self->priv = p;
 #if RDA_ENABLED
-  self->priv->bLocal = rda_session_is_local ();
+  self->priv->bLocal = !rda_session_is_remote ();
 #else
   self->priv->bLocal = TRUE;
 #endif /* RDA_ENABLED */

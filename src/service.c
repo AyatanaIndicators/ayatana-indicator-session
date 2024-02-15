@@ -1426,7 +1426,7 @@ indicator_session_service_init (IndicatorSessionService * self)
 #if RDA_ENABLED
   self->priv->bLocal = rda_session_is_local ();
 #else
-  self->priv->bLocal = true;
+  self->priv->bLocal = TRUE;
 #endif /* RDA_ENABLED */
 
   /* init the backend objects */

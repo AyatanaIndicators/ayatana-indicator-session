@@ -1,3 +1,10 @@
+Overview of changes in ayatana-indicator-session 24.2.0
+
+  - src/service.c: Boolean values need to be upper-case.
+  - src/service.c: Use !rda_session_is_remote() rather than
+    rda_session_is_local().
+  - Translation updates.
+
 Overview of changes in ayatana-indicator-session 23.10.3
 
   - Translation updates.

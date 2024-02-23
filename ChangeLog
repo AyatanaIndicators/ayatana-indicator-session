@@ -1,6 +1,32 @@
+2024-02-23 Mike Gabriel
+
+        * release 24.2.0 (HEAD -> main, tag: 24.2.0)
+
+2024-02-16 Robert Tari
+
+        * Merge branch 'sunweaver-pr/fix-tests-with-rda-enabled' (dbb6858f)
+
+2024-02-05 Mike Gabriel
+
+        * src/service.c: Boolean values need to be upper-case. (efcda58a)
+
+2024-02-16 Robert Tari
+
+        * Merge branch 'sunweaver-pr/boolean-newby' (a7e621f9)
+
+2024-02-05 Mike Gabriel
+
+        * src/service.c: Use !rda_session_is_remote() rather than
+          rda_session_is_local(). (b18f3c70)
+        * src/service.c: Boolean values need to be upper-case. (5e2bf9eb)
+
+2024-01-29 Moo
+
+        * Translated using Weblate (Lithuanian) (db07408b)
+
 2023-12-26 Mike Gabriel
 
-        * release 23.10.3 (HEAD -> main, tag: 23.10.3)
+        * release 23.10.3 (aefb2cdf) (tag: 23.10.3)
 
 2023-11-29 bittin1ddc447d824349b2
 

@@ -8,43 +8,44 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2022-09-30 18:16+0000\n"
+"PO-Revision-Date: 2024-03-15 14:01+0000\n"
 "Last-Translator: 이정희 <daemul72@gmail.com>\n"
-"Language-Team: Korean <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/ko/>\n"
+"Language-Team: Korean <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/ko/>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 5.5-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
-msgstr "나가거나 다시 시작, 또는 컴퓨터를 끌 때 물어보지 않음"
+msgstr "로그아웃, 재시작 및 컴퓨터 끄기 작업을 확인하는 대화상자를 표시하지 않습니다"
 
 #: data/org.ayatana.indicator.session.gschema.xml:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
-msgstr "나가거나 다시 시작, 또는 컴퓨터를 끌 때 물어볼지 결정합니다."
+msgstr "로그아웃, 재시작 및 컴퓨터 끄기 작업에 대한 확인 대화 상자를 표시할지 여부를 "
+"설정합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "세션 메뉴에서 나가기 항목 빼기"
+msgstr "세션 메뉴에서 로그아웃 항목 제거하기"
 
 #: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr "나가는 단추를 세션 메뉴에 나타나지 않게 합니다."
+msgstr "세션 메뉴에 로그아웃 버튼이 표시되지 않도록 합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
 msgid "Remove the Restart item from the session menu."
-msgstr "세션 메뉴에서 다시 시작 항목을 제거합니다."
+msgstr "세션 메뉴에서 재시작 항목을 제거합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr "다시 시작 단추가 세션 메뉴에 나타나지 않게 합니다."
+msgstr "세션 메뉴에 재시작 버튼이 표시되지 않도록 설정합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
 msgid "Remove the shutdown item from the session menu."
@@ -52,26 +53,26 @@ msgstr "세션 메뉴에서 컴퓨터 끄기 항목을 제거합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr "컴퓨터 끄기 단추가 세션 메뉴에 나타나지 않게 합니다."
+msgstr "컴퓨터 끄기 버튼이 세션 메뉴에 표시되지 않도록 설정합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "세션 메뉴에서 다시 시작 항목의 가시성 강제 표시"
+msgstr "세션 메뉴에서 재시작 항목의 표시 여부 강제 설정"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
-msgstr ""
-"다시 시작이 표시되지 않아야 하는 환경에서도 세션 메뉴에 표시되도록 합니다."
+msgstr "재시작이 표시되어서는 안 되는 환경에서도 세션 메뉴에 재시작이 표시되도록 "
+"합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "패널에서 사용자의 실제 이름의 가시성 확인"
+msgstr "패널에서 사용자의 실명 공개 여부를 결정합니다"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr "패널에서 사용자 이름 제거 허용"
+msgstr "패널에서 사용자 이름 제거를 허용합니다"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
@@ -83,60 +84,59 @@ msgstr "사용자가 사용자 목록을 숨길 수 있도록 허용합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr ""
+msgstr "장치 정보 항목 표시하기"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr ""
+msgstr "장치 정보 메뉴 항목을 표시합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr ""
+msgstr "데스크톱 도움말 항목 표시하기"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr ""
+msgstr "데스크톱 환경 도움말 메뉴 항목을 표시합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr ""
+msgstr "배포 도움말 항목 표시하기"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "배포 도움말 메뉴 항목을 표시합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr ""
+msgstr "버그 리포트 항목 표시하기"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr ""
+msgstr "버그 리포트 메뉴 항목을 표시합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr ""
+msgstr "사용자 지정 항목 표시하기"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
-#, fuzzy
 msgid "Show the custom menu item."
-msgstr "사용자 목록 표시"
+msgstr "사용자 지정 메뉴 항목을 표시합니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "사용자 지정 항목 레이블"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "사용자 지정 메뉴 항목의 레이블입니다."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "사용자 지정 항목 URI"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
-msgstr ""
+msgstr "사용자 지정 메뉴 항목이 열릴 위치입니다."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:197
@@ -166,7 +166,7 @@ msgstr "이 컴퓨터 정보"
 
 #: src/service.c:423
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "Ubuntu 터치 소개…"
 
 #: src/service.c:427 src/service.c:446
 #, c-format
@@ -175,7 +175,7 @@ msgstr "%s 도움말…"
 
 #: src/service.c:442
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "UBports 재단 소개…"
 
 #: src/service.c:456
 msgid "Desktop mode"
@@ -223,29 +223,29 @@ msgstr "손님 세션"
 
 #: src/service.c:843
 msgid "Log Out…"
-msgstr "나가기…"
+msgstr "로그 아웃…"
 
 #: src/service.c:847 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
-msgstr "나가기"
+msgstr "로그 아웃"
 
 #: src/service.c:869
 msgid "Suspend"
-msgstr "대기"
+msgstr "절전"
 
 #: src/service.c:872
 msgid "Hibernate"
-msgstr "잠자기"
+msgstr "최대 절전"
 
 #: src/service.c:876
 msgid "Restart…"
-msgstr "다시 시작…"
+msgstr "재시작…"
 
 #: src/service.c:876 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
-msgstr "다시 시작"
+msgstr "재시작"
 
 #: src/service.c:882
 msgid "Shut Down…"
@@ -257,9 +257,8 @@ msgid "Shut Down"
 msgstr "컴퓨터 끄기"
 
 #: src/service.c:892
-#, fuzzy
 msgid "Suspend Remote Session"
-msgstr "손님 세션"
+msgstr "절전 원격 세션"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920
@@ -276,9 +275,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
-"운영 체제의 버그 추적기는 웹 브라우저를 통해 액세스해야 합니다.\n"
+"운영 체제의 버그 추적기를 사용하려면 웹 브라우저로\n"
+"액세스해야 합니다.\n"
 "\n"
-"Ayatana 세션 표시기가 컴퓨터에서 웹 브라우저를 찾을 수 없습니다."
+"Ayatana 세션 표시도구가 컴퓨터에서 웹 브라우저를\n"
+"찾을 수 없습니다."
 
 #: src/backend-dbus/actions.c:785
 msgid "Are you sure you want to close all programs and log out?"
@@ -297,7 +298,7 @@ msgstr "취소"
 
 #: src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr "모든 프로그램을 닫고 컴퓨터를 다시 시작하시겠습니까?"
+msgstr "모든 프로그램을 닫고 컴퓨터를 재시작하시겠습니까?"
 
 #: src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
@@ -314,7 +315,7 @@ msgstr ""
 "XFCE 데스크톱의 사용자 가이드는 웹 브라우저로\n"
 "액세스해야 합니다.\n"
 "\n"
-"Ayatana 세션 표시기가 컴퓨터에서 웹 브라우저를\n"
+"Ayatana 세션 표시도구가 컴퓨터에서 웹 브라우저를\n"
 "찾을 수 없습니다."
 
 #: src/backend-dbus/actions.c:912
@@ -325,7 +326,7 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"Ayatana 세션 표시기는 현재 실행 중인 데스크톱의 사용자 안내서\n"
+"Ayatana 세션 표시도구는 현재 실행 중인 데스크톱의 사용자 안내서\n"
 "또는 도움말 센터를 표시하는 방법을 아직 알지 못합니다.\n"
 "\n"
 "다음 위치에서 개발자에게 이 사실을 보고하십시오:\n"
@@ -343,7 +344,7 @@ msgstr ""
 "%s에 대한 정보를 표시하려면 웹 브라우저가 \n"
 "필요합니다.\n"
 "\n"
-"Ayatana 세션 표시기가 컴퓨터에서 웹 브라우저를 \n"
+"Ayatana 세션 표시도구가 컴퓨터에서 웹 브라우저를 \n"
 "찾을 수 없습니다."
 
 #: src/backend-dbus/actions.c:940
@@ -354,7 +355,7 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"Ayatana 세션 표시기는 데스크톱 환경에 대한 시스템 설정\n"
+"Ayatana 세션 표시도구는 데스크톱 환경에 대한 시스템 설정\n"
 "응용프로그램 실행을 아직 지원하지 않습니다.\n"
 "\n"
 "다음 시간에 개발자에게 이 사실을 보고해 주십시오:\n"
@@ -368,9 +369,10 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"Ayatana 세션 표시기는 데스크톱 환경의 암호 변경을 지원하지 않습니다.\n"
+"Ayatana 세션 표시도구는 아직 데스크탑 환경에 대한 비밀번호 변경을\n"
+"지원하지 않습니다.\n"
 "\n"
-"다음 시간에 개발자에게 이 사실을 보고해 주십시오:\n"
+"다음 주소로 개발자에게 이 내용을 보고해 주세요:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:976
@@ -381,7 +383,7 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"Ayatana 세션 표시기는 현재 실행 중인 데스크톱 환경의 정보를\n"
+"Ayatana 세션 표시도구는 현재 실행 중인 데스크톱 환경의 정보를\n"
 "표시하는 방법을 아직 알지 못합니다.\n"
 "\n"
 "다음 시간에 개발자에게 이 사실을 보고해 주십시오:\n"

@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2023-11-09 14:33+0000\n"
-"Last-Translator: Lionel Duboeuf <lduboeuf@ouvaton.org>\n"
+"PO-Revision-Date: 2024-03-23 23:01+0000\n"
+"Last-Translator: Steve <steve.kueffer.ch@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.2-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -69,12 +69,12 @@ msgid "Force the visibility of Restart item in the session menu"
 msgstr "Supprimer l'option de redémarrage du menu"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr ""
-"Fait en sorte que le bouton de redémarrage n'apparaisse pas dans le menu."
+"Fait en sorte que le redémarrage apparaisse dans le menu de la session même "
+"dans les environnements où il ne devrait pas apparaître."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
 msgid "Determine the visibility of the User's real name on the panel"
@@ -188,9 +188,8 @@ msgid "About UBports Foundation…"
 msgstr "A propos de la fondation UBports…"
 
 #: src/service.c:456
-#, fuzzy
 msgid "Desktop mode"
-msgstr "%s Aide pour le bureau"
+msgstr "Mode bureau"
 
 #: src/service.c:466
 msgid "Report a Bug…"
@@ -268,9 +267,8 @@ msgid "Shut Down"
 msgstr "Éteindre"
 
 #: src/service.c:892
-#, fuzzy
 msgid "Suspend Remote Session"
-msgstr "Session d'invité"
+msgstr "Suspendre la session distante"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920

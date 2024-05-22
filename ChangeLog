@@ -1,6 +1,31 @@
+2024-05-22 Mike Gabriel
+
+        * release 24.5.0 (HEAD -> main, tag: 24.5.0)
+
+2024-05-21 Robert Tari
+
+        * Merge branch 'sunweaver-pr/lomiri-indicators-target' (b706a633)
+
+2024-05-21 Mike Gabriel
+
+        * data/ayatana-indicator-session.service.in: Become part of
+          lomiri-indicators.target. (16f108be)
+
+2024-04-01 复予
+
+        * Translated using Weblate (Chinese (Simplified)) (c9ee6ea1)
+
+2024-03-22 Steve
+
+        * Translated using Weblate (French) (1001b221)
+
+2024-03-14 이정희
+
+        * Translated using Weblate (Korean) (f7027084)
+
 2024-02-23 Mike Gabriel
 
-        * release 24.2.0 (HEAD -> main, tag: 24.2.0)
+        * release 24.2.0 (aafe9ced) (tag: 24.2.0)
 
 2024-02-16 Robert Tari
 

@@ -1,3 +1,9 @@
+Overview of changes in ayatana-indicator-session 24.5.0
+
+  - data/ayatana-indicator-session.service.in: Become part of
+    lomiri-indicators.target.
+  - Translation updates.
+
 Overview of changes in ayatana-indicator-session 24.2.0
 
   - src/service.c: Boolean values need to be upper-case.

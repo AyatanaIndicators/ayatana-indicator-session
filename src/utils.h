@@ -18,13 +18,12 @@
 #define __INDICATOR_SESSION_UTILS_H__
 
 #include <glib.h>
-#include <string.h>
 
-const char* get_distro_name();
-const char* get_distro_url();
-const char* get_distro_bts_url();
-const char* get_desktop_name();
-const char* get_desktop_session();
-GHashTable*  get_os_release();
+const char* get_distro_name(void);
+const char* get_distro_url(void);
+const char* get_distro_bts_url(void);
+const char* get_desktop_name(void);
+const char* get_desktop_session(void);
+GHashTable*  get_os_release(void);
 
 #endif /* __INDICATOR_SESSION_UTILS_H__ */

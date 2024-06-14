@@ -21,8 +21,8 @@
 
 namespace
 {
-  const char * const MY_NAME = "org.ayatana.indicators.webcredentials";
-  const char * const MY_PATH = "/org/ayatana/indicators/webcredentials";
+  const char * const MY_NAME = "com.lomiri.indicators.webcredentials";
+  const char * const MY_PATH = "/com/lomiri/indicators/webcredentials";
 }
 
 MockWebcredentials :: MockWebcredentials (GMainLoop       * loop,

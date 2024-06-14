@@ -1169,8 +1169,8 @@ indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
 
   webcredentials_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                                     G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
-                                    "org.ayatana.indicators.webcredentials",
-                                    "/org/ayatana/indicators/webcredentials",
+                                    "com.lomiri.indicators.webcredentials",
+                                    "/com/lomiri/indicators/webcredentials",
                                     p->cancellable,
                                     on_webcredentials_proxy_ready,
                                     self);

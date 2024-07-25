@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2024-07-09 08:09+0000\n"
+"PO-Revision-Date: 2024-07-26 11:09+0000\n"
 "Last-Translator: Ricky From Hong Kong <lamricky11@hotmail.com>\n"
 "Language-Team: Chinese (Traditional, Hong Kong) <https://hosted.weblate.org/"
 "projects/ayatana-indicators/session-applet/zh_Hant_HK/>\n"
@@ -205,18 +205,16 @@ msgid "Switch Account…"
 msgstr "切換使用者…"
 
 #: src/service.c:698 src/service.c:714
-#, fuzzy
 msgid "Switch Account"
-msgstr "切換使用者..."
+msgstr "切換使用者帳號"
 
 #: src/service.c:710
 msgid "Lock/Switch Account…"
 msgstr "鎖定／切換使用者…"
 
 #: src/service.c:711
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "切換使用者..."
+msgstr "鎖定/切換使用者帳號"
 
 #: src/service.c:717
 msgid "Lock"

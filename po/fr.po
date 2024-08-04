@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2024-03-23 23:01+0000\n"
+"PO-Revision-Date: 2024-08-05 15:09+0000\n"
 "Last-Translator: Steve <steve.kueffer.ch@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/fr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -275,7 +275,7 @@ msgstr "Suspendre la session distante"
 #: src/backend-dbus/actions.c:939 src/backend-dbus/actions.c:954
 #: src/backend-dbus/actions.c:975
 msgid "Warning"
-msgstr "Attention"
+msgstr "Alerte"
 
 #: src/backend-dbus/actions.c:754
 msgid ""

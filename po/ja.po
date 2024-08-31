@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2024-08-13 09:09+0000\n"
+"PO-Revision-Date: 2024-09-01 07:09+0000\n"
 "Last-Translator: umesaburo sagawa <atowa-notonare-yamatonare427@pm.me>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -41,18 +41,16 @@ msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr "ログアウトボタンをセッションメニューから隠します。"
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "セッションメニューから「再起動」を削除"
+msgstr "セッションメニューから「再起動」を削除。"
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr "再起動ボタンをセッションメニューから隠します。"
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "セッションメニューからシャットダウンを削除"
+msgstr "セッションメニューからシャットダウンを削除。"
 
 #: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
@@ -203,24 +201,20 @@ msgid "Start Screen Saver"
 msgstr ""
 
 #: src/service.c:697 src/service.c:713
-#, fuzzy
 msgid "Switch Account…"
-msgstr "ユーザーアカウントの切り替え..."
+msgstr "ユーザーアカウントの切り替え…"
 
 #: src/service.c:698 src/service.c:714
-#, fuzzy
 msgid "Switch Account"
-msgstr "ユーザーアカウントの切り替え..."
+msgstr "ユーザーアカウントの切り替え"
 
 #: src/service.c:710
-#, fuzzy
 msgid "Lock/Switch Account…"
-msgstr "ユーザーアカウントの切り替え..."
+msgstr "アカウントをロック/切り替え…"
 
 #: src/service.c:711
-#, fuzzy
 msgid "Lock/Switch Account"
-msgstr "ユーザーアカウントの切り替え..."
+msgstr "アカウントのロック/切り替え"
 
 #: src/service.c:717
 msgid "Lock"

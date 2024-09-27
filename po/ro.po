@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2018-04-01 14:41+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Romanian <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/ro/>\n"
+"PO-Revision-Date: 2024-09-29 00:16+0000\n"
+"Last-Translator: Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>\n"
+"Language-Team: Romanian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/ro/>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -32,203 +32,204 @@ msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"Specifică dacă să fie afișat un dialog pentru acțiunile de ieșire, repornire "
-"și oprire."
+"Dacă se afișează sau nu dialogul de confirmare pentru acțiunile de ieșire, "
+"repornire și oprire."
 
 #: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "Elimină elementul „Ieșire” din meniul de sesiune"
+msgstr "Elimină elementul «Ieșire» din meniul de sesiune"
 
 #: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
+"Face în așa fel încât butonul de «Ieșire» să nu apară în meniul de sesiune."
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Elimină elementul „Repornire” din meniul de sesiune"
+msgstr "Elimină elementul «Repornire» din meniul de sesiune"
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
+"Face în așa fel încât butonul de «Repornire» să nu apară în meniul de "
+"sesiune."
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Elimină elementul „Oprire” din meniul de sesiune"
+msgstr "Elimină elementul «Oprire» din meniul de sesiune"
 
 #: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr ""
+"Face în așa fel încât butonul de «Oprire» să nu apară în meniul de sesiune."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Elimină elementul „Repornire” din meniul de sesiune"
+msgstr "Forțează afișarea butonului de «Repornire» în meniul de sesiune"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr ""
-"Face ca butonul de repornire să nu mai fie afișat în meniul de sesiune."
+"Face ca butonul de «Repornire» să apară în meniul de sesiune chiar și în "
+"mediile în care nu ar trebui să apară."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Elimină elementul „Repornire” din meniul de sesiune"
+msgstr "Determină afișarea numelui real al utilizatorului pe panou"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Permite «Eliminarea» numelui utilizatorilor din panou"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Afișează lista de utilizatori"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Permite ca lista de utilizatori să fie ascunsă de către utilizator."
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr ""
+msgstr "Afișează elementul de informații despre dispozitiv"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr ""
+msgstr "Afișează elementul de meniu «Informații despre dispozitiv»."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr ""
+msgstr "Afișează elementul de ajutor pentru «Birou»"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr ""
+msgstr "Afișează elementul de meniu «Ajutor din mediul de birou»."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr ""
+msgstr "Afișează elementul de «Ajutor al distribuției»"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "Afișează elementul de meniu «Ajutor al distribuției»."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr ""
+msgstr "Afișează elementul «Raport de eroare»"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr ""
+msgstr "Afișează elementul de meniu «Raport de eroare»."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr ""
+msgstr "Afișează elementul personalizat"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
 msgid "Show the custom menu item."
-msgstr ""
+msgstr "Afișează elementul de meniu personalizat."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "Eticheta elementului personalizat"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "Eticheta elementului de meniu personalizat."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "URI pentru elementul personalizat"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
 msgstr ""
+"Locația în care ar trebui să se deschidă elementul de meniu personalizat."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:197
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Sistem, %s"
 
 #: src/service.c:201 src/service.c:211
 msgid "System"
-msgstr ""
+msgstr "Sistem"
 
 #: src/service.c:212
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Gestionarea sesiunii, starea și schimbarea utilizatorilor"
 
 #: src/service.c:337
 msgid "Guest"
-msgstr ""
+msgstr "Invitat"
 
 #: src/service.c:407
 msgid "About This Device…"
-msgstr ""
+msgstr "Despre acest dispozitiv…"
 
 #: src/service.c:411
 msgid "About This Computer"
-msgstr ""
+msgstr "Despre acest calculator"
 
 #: src/service.c:423
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "Despre Ubuntu Touch…"
 
 #: src/service.c:427 src/service.c:446
 #, c-format
 msgid "%s Help…"
-msgstr ""
+msgstr "%s Ajutor…"
 
 #: src/service.c:442
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "Despre Fundația UBports…"
 
 #: src/service.c:456
 msgid "Desktop mode"
-msgstr ""
+msgstr "Modul de birou"
 
 #: src/service.c:466
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Raportați o eroare…"
 
 #: src/service.c:479
 msgid "System Settings…"
-msgstr ""
+msgstr "Configurări sistem…"
 
 #: src/service.c:481
 msgid "Online Accounts…"
-msgstr ""
+msgstr "Conturi în Internet…"
 
 #: src/service.c:689
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Lansare protector de ecran"
 
 #: src/service.c:697 src/service.c:713
 msgid "Switch Account…"
-msgstr ""
+msgstr "Schimbă contul…"
 
 #: src/service.c:698 src/service.c:714
 msgid "Switch Account"
-msgstr ""
+msgstr "Schimbă contul"
 
 #: src/service.c:710
 msgid "Lock/Switch Account…"
-msgstr ""
+msgstr "Blocare/Schimbare cont…"
 
 #: src/service.c:711
 msgid "Lock/Switch Account"
-msgstr ""
+msgstr "Blocare/Schimbare cont"
 
 #: src/service.c:717
 msgid "Lock"
-msgstr ""
+msgstr "Blocare"
 
 #: src/service.c:762
 msgid "Guest Session"
-msgstr "Sesiune oaspete"
+msgstr "Sesiune invitat"
 
 #: src/service.c:843
 msgid "Log Out…"
@@ -266,16 +267,15 @@ msgid "Shut Down"
 msgstr "Oprire"
 
 #: src/service.c:892
-#, fuzzy
 msgid "Suspend Remote Session"
-msgstr "Sesiune oaspete"
+msgstr "Suspendarea sesiunii de la distanță"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920
 #: src/backend-dbus/actions.c:939 src/backend-dbus/actions.c:954
 #: src/backend-dbus/actions.c:975
 msgid "Warning"
-msgstr ""
+msgstr "Avertisment"
 
 #: src/backend-dbus/actions.c:754
 msgid ""
@@ -285,18 +285,23 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Sistemul de urmărire a erorilor al sistemului de operare\n"
+"trebuie să fie accesat cu un navigator web.\n"
+"\n"
+"Indicatorul de sesiune Ayatana nu a putut găsi niciun\n"
+"navigator web în calculatorul dvs."
 
 #: src/backend-dbus/actions.c:785
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "Sigur doriți să închideți toate programele și să ieșiți din cont?"
+msgstr ""
+"Sunteți sigur că doriți să închideți toate programele și să ieșiți din "
+"sesiune?"
 
 #: src/backend-dbus/actions.c:786
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"Unele actualizări nu se vor aplica până la următoarea repornire a "
+"Unele actualizări software nu vor fi aplicate până la următoarea repornire a "
 "calculatorului."
 
 #: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
@@ -307,11 +312,14 @@ msgstr "Renunță"
 #: src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
 msgstr ""
-"Sigur doriți să închideți toate aplicațiile și să reporniți calculatorul?"
+"Sunteți sigur că doriți să închideți toate programele și să reporniți "
+"calculatorul?"
 
 #: src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr "Sigur doriți să închideți toate programele și să opriți calculatorul?"
+msgstr ""
+"Sunteți sigur că doriți să închideți toate programele și să opriți "
+"calculatorul?"
 
 #: src/backend-dbus/actions.c:907
 msgid ""
@@ -321,6 +329,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Ghidul de utilizare al biroului XFCE trebuie să fie\n"
+"accesat cu un navigator web.\n"
+"\n"
+"Indicatorul de sesiune Ayatana nu a putut găsi niciun\n"
+"navigator web în calculatorul dvs"
 
 #: src/backend-dbus/actions.c:912
 msgid ""
@@ -330,6 +343,12 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Indicatorul de sesiune Ayatana nu știe încă cum să afișeze ghidul\n"
+"utilizatorului sau centrul de ajutor al  mediului de birou care\n"
+"rulează în prezent.\n"
+"\n"
+"Vă rugăm să raportați acest lucru dezvoltatorilor la adresa:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:921
 #, c-format
@@ -340,6 +359,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Afișarea informațiilor privind %s necesită\n"
+"un navigator web.\n"
+"\n"
+"Indicatorul de sesiune Ayatana nu a putut găsi niciun\n"
+"navigator web în calculatorul dvs."
 
 #: src/backend-dbus/actions.c:940
 msgid ""
@@ -349,6 +373,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Indicatorul de sesiune Ayatana nu permite încă evocarea aplicației\n"
+"de configurări de sistem pentru mediul dvs. de birou.\n"
+"\n"
+"Vă rugăm să raportați acest lucru dezvoltatorilor la adresa:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:955
 msgid ""
@@ -358,6 +387,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Indicatorul de sesiune Ayatana nu permite încă schimbarea parolei\n"
+"pentru mediul dvs. de birou.\n"
+"\n"
+"Vă rugăm să raportați acest lucru dezvoltatorilor la adresa:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:976
 msgid ""
@@ -367,6 +401,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Indicatorul de sesiune Ayatana nu știe încă cum să afișeze informații\n"
+"despre mediul de birou care rulează în prezent.\n"
+"\n"
+"Vă rugăm să raportați acest lucru dezvoltatorilor la adresa:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Lock Screen"
 #~ msgstr "Blocare ecran"

@@ -1,3 +1,11 @@
+Overview of changes in ayatana-indicator-session 24.5.1
+
+  - Switch from com.canonical.indicators.webcredentials D-Bus service
+    to new com.lomiri.indicators.webcredentials.
+  - Fix function declarations.
+  - Add high contrast icons
+  - Translation updates.
+
 Overview of changes in ayatana-indicator-session 24.5.0
 
   - data/ayatana-indicator-session.service.in: Become part of

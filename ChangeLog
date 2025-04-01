@@ -1,6 +1,87 @@
+2025-04-01 Mike Gabriel
+
+        * release 24.5.1 (HEAD -> main, tag: 24.5.1)
+        * Merge branch 'tari01-pr/add-high-contrast-icons' (5110e006)
+
+2025-04-01 Robert Tari
+
+        * Add high contrast icons (a48b8e91)
+
+2025-03-29 Manuela Silva
+
+        * Translated using Weblate (Portuguese) (2276739b)
+
+2025-02-17 Temuri Doghonadze
+
+        * Translated using Weblate (Georgian) (96065f62)
+
+2025-02-08 Remus-Gabriel Chelu
+
+        * Translated using Weblate (Romanian) (94b08f7f)
+
+2024-12-05 தமிழ்நேரம்
+
+        * Translated using Weblate (Tamil) (9e9eceae)
+
+2024-11-08 தமிழ்நேரம்
+
+        * Translated using Weblate (Tamil) (16c3e440)
+
+2024-09-27 Remus-Gabriel Chelu
+
+        * Translated using Weblate (Romanian) (dff9e06e)
+
+2024-08-31 umesaburo sagawa
+
+        * Translated using Weblate (Japanese) (ed4f1125)
+
+2024-08-12 Ricky From Hong Kong
+
+        * Translated using Weblate (Chinese (Traditional)) (e75c56dc)
+
+2024-08-13 umesaburo sagawa
+
+        * Translated using Weblate (Japanese) (c4548880)
+
+2024-08-04 Steve
+
+        * Translated using Weblate (French) (890028f4)
+
+2024-07-25 Ricky From Hong Kong
+
+        * Translated using Weblate (Chinese (Traditional, Hong Kong))
+          (8e79da3e)
+
+2024-07-16 Quentin PAGÈS
+
+        * Translated using Weblate (Occitan) (2bd3a01e)
+
+2024-07-08 Ricky From Hong Kong
+
+        * Translated using Weblate (Chinese (Traditional, Hong Kong))
+          (654002de)
+
+2024-07-03 Mike Gabriel
+
+        * Merge branch 'gber-personal/gber/fix-declarations' (21334981)
+
+2024-05-23 Guido Berhoerster
+
+        * Fix function declarations (4a0973c4)
+
+2024-06-15 Robert Tari
+
+        * Merge branch 'sunweaver-pr/com-lomiri-indicators-webcredentials'
+          (306bc5a3)
+
+2024-06-14 Mike Gabriel
+
+        * Switch from com.canonical.indicators.webcredentials D-Bus service
+          to new com.lomiri.indicators.webcredentials. (666f701f)
+
 2024-05-22 Mike Gabriel
 
-        * release 24.5.0 (HEAD -> main, tag: 24.5.0)
+        * release 24.5.0 (9c0d33f5) (tag: 24.5.0)
 
 2024-05-21 Robert Tari
 

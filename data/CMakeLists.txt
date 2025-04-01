@@ -69,15 +69,4 @@ install (FILES "${AYATANA_INDICATOR_FILE}"
 ##  Icons
 ##
 
-# where to install
-set (ICON_DIR "${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor")
-message (STATUS "${ICON_DIR} is the Icon install dir")
-
-install (DIRECTORY
-         icons/16x16
-         icons/22x22
-         icons/24x24
-         icons/32x32
-         icons/scalable
-         DESTINATION "${ICON_DIR}"
-         FILES_MATCHING PATTERN "*.png" PATTERN "*.svg")
+install (DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/icons" DESTINATION "${CMAKE_INSTALL_FULL_DATADIR}")

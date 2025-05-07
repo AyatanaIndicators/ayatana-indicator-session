@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2023-04-26 02:47+0000\n"
-"Last-Translator: Kristjan Räts <kristjanrats@gmail.com>\n"
-"Language-Team: Estonian <https://hosted.weblate.org/projects/ayatana-"
-"indicators/session-applet/et/>\n"
+"PO-Revision-Date: 2025-05-08 11:02+0000\n"
+"Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
+"Language-Team: Estonian <https://hosted.weblate.org/projects/"
+"ayatana-indicators/session-applet/et/>\n"
 "Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -83,64 +83,63 @@ msgstr "Kuva kasutajate loend"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr "Luba kasutajal peita kasutajate loend."
+msgstr "Luba kasutajal peita kasutajate loendit."
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr ""
+msgstr "Näita seadme teabekirjet"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr ""
+msgstr "Näita seadme teabe menüükirjet."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr ""
+msgstr "Näita töölaua abiteavet"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr ""
+msgstr "Näita töölauakeskkonna abiteabe menüükirjet."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr ""
+msgstr "Näita distributsiooni abiteavet"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "Näita distributsiooni abiteabe menüükirjet."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr ""
+msgstr "Näita vigadest teatamise võimalust"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr ""
+msgstr "Näita vigadest teatamise menüükirjet."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr ""
+msgstr "Näita kohandatud teavet"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
-#, fuzzy
 msgid "Show the custom menu item."
-msgstr "Kuva kasutajate loend"
+msgstr "Näita sinu loodud menüükirjet."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "Kohandatud teabe silt"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "Sinu loodud menüükirje silt."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "Sinu loodud menüükirje URI"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
-msgstr ""
+msgstr "Asukoht, mille sinu loodud menüükirje peaks avama."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:197
@@ -170,7 +169,7 @@ msgstr "Selle arvuti teave"
 
 #: src/service.c:423
 msgid "About Ubuntu Touch…"
-msgstr "Ubuntu Touchist…"
+msgstr "Teave: Ubuntu Touch…"
 
 #: src/service.c:427 src/service.c:446
 #, c-format
@@ -207,7 +206,7 @@ msgstr "Vaheta kontot…"
 
 #: src/service.c:698 src/service.c:714
 msgid "Switch Account"
-msgstr "Konto vahetus"
+msgstr "Vaheta kontot"
 
 #: src/service.c:710
 msgid "Lock/Switch Account…"
@@ -261,9 +260,8 @@ msgid "Shut Down"
 msgstr "Lülita välja"
 
 #: src/service.c:892
-#, fuzzy
 msgid "Suspend Remote Session"
-msgstr "Külalissessioon"
+msgstr "Uinuta kaugsessioon"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920
@@ -280,10 +278,10 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
-"Operatsioonisüsteemi veahaldurit peab kasutama\n"
+"Operatsioonisüsteemi veahaldurit pead kasutama\n"
 "veebilehitsejaga.\n"
 "\n"
-"Ayatana Session Indicator ei suutnud su arvutist\n"
+"Aytana sessiooniindikaator ei suutnud su arvutist\n"
 "leida mitte ühtegi veebilehitsejat."
 
 #: src/backend-dbus/actions.c:785
@@ -361,10 +359,10 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"Ayatana Session Indicator ei toeta hetkel süsteemi sätete \n"
+"Ayatana sessiooniindikaator ei toeta hetkel süsteemi seadistuste \n"
 "rakendamist su töölaua keskkonnale.\n"
 "\n"
-"Palun raporteeri sellest arendajatele aadressil:\n"
+"Palun teata sellest arendajatele aadressil:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:955
@@ -375,10 +373,10 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"Ayatana Session Indicator ei toeta hetkel kasutatavas töölaua \n"
-"keskkonnas parooli vahetamist .\n"
+"Ayatana sessiooniindikaator ei toeta hetkel kasutatavas töölaua- \n"
+"keskkonnas salasõna vahetamist .\n"
 "\n"
-"Palun raporteeri selles arendajatele aadressil:\n"
+"Palun teata sellest arendajatele aadressil:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:976
@@ -389,10 +387,10 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"Ayatana Session Indicator ei tea hetkel, kuidas kuvada hetkel\n"
-"töötava töölaua keskkonna informatsiooni.\n"
+"Ayatana sessiooniindikaator ei tea hetkel, kuidas kuvada hetkel\n"
+"töötava töölauakeskkonna teavet.\n"
 "\n"
-"Palun raporteeri sellest arendajatel aadressil:\n"
+"Palun teata sellest arendajatel aadressil:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #, c-format

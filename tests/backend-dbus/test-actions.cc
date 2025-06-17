@@ -1,8 +1,10 @@
 /*
  * Copyright 2013 Canonical Ltd.
+ * Copyright 2025 Robert Tari
  *
  * Authors:
  *   Charles Kerr <charles.kerr@canonical.com>
+ *   Robert Tari <robert@tari.in>
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 3, as published
@@ -361,7 +363,7 @@ TEST_F (Actions, SwitchToScreensaver)
   ASSERT_EQ (MockLomiriSession::None, lomiri_session.last_action());
   indicator_session_actions_switch_to_screensaver (actions);
   wait_msec (50);
-  ASSERT_EQ (MockLomiriSession::Lock, lomiri_session.last_action());
+  ASSERT_EQ (MockLomiriSession::PromptLock, lomiri_session.last_action());
 }
 
 TEST_F (Actions, SwitchToGreeter)

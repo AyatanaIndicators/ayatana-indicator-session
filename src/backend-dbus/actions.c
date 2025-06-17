@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Canonical Ltd.
- * Copyright 2023 Robert Tari
+ * Copyright 2023-2025 Robert Tari
  *
  * Authors:
  *   Charles Kerr <charles.kerr@canonical.com>
@@ -970,7 +970,7 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
 static void
 my_switch_to_screensaver (IndicatorSessionActions * self)
 {
-  lock_current_session (self, FALSE);
+  lock_current_session (self, TRUE);
 }
 
 static void

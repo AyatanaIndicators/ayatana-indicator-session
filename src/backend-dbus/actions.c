@@ -910,7 +910,7 @@ static void
 my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
 {
   if (ayatana_common_utils_is_lomiri())
-    ayatana_common_utils_open_url("settings:///system/about");
+    ayatana_common_utils_open_url("settings:///system/system-information");
   else if (ayatana_common_utils_have_unity_program("unity-control-center"))
     ayatana_common_utils_execute_command ("unity-control-center info");
   else if (ayatana_common_utils_have_budgie_program("gnome-control-center"))

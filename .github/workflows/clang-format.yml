@@ -1,0 +1,83 @@
+name: clang-format Check
+
+on:
+  pull_request:
+    paths:
+      - '**.c'
+      - '**.h'
+      - '**.cpp'
+      - '**.hpp'
+
+jobs:
+  clang-format-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+      
+      - name: Get changed files
+        id: changed-files
+        run: |
+          # Get the list of changed C/C++ files
+          git fetch origin ${{ github.base_ref }}
+          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT origin/${{ github.base_ref }}...HEAD | grep -E '\.(c|h|cpp|hpp)$' || true)
+          
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No C/C++ files changed"
+            echo "files=" >> $GITHUB_OUTPUT
+          else
+            echo "Changed files:"
+            echo "$CHANGED_FILES"
+            # Convert newlines to spaces for output
+            FILES_SPACE_SEPARATED=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+            echo "files=$FILES_SPACE_SEPARATED" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Run clang-format check
+        if: steps.changed-files.outputs.files != ''
+        run: |
+          FILES="${{ steps.changed-files.outputs.files }}"
+          
+          if [ -z "$FILES" ]; then
+            echo "No files to check"
+            exit 0
+          fi
+          
+          echo "Checking formatting for: $FILES"
+          
+          FAILED=0
+          for file in $FILES; do
+            if [ -f "$file" ]; then
+              echo "Checking $file..."
+              # Check if file needs formatting
+              if ! clang-format --dry-run --Werror "$file" 2>&1; then
+                echo "❌ $file needs formatting"
+                echo ""
+                echo "Diff for $file:"
+                clang-format --style=file "$file" | diff -u "$file" - || true
+                echo ""
+                FAILED=1
+              else
+                echo "✅ $file is properly formatted"
+              fi
+            fi
+          done
+          
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "================================"
+            echo "clang-format check failed!"
+            echo "Please run './format-code.sh' to format your code"
+            echo "================================"
+            exit 1
+          fi
+          
+          echo "All files are properly formatted!"

@@ -20,55 +20,57 @@
 #ifndef MOCK_LOGIN1_MANAGER_H
 #define MOCK_LOGIN1_MANAGER_H
 
+#include "backend-dbus/dbus-login1-manager.h"
+#include "mock-object.h"
 #include <set>
 #include <string>
-#include "mock-object.h"
-#include "backend-dbus/dbus-login1-manager.h"
 
 class MockLogin1Seat;
 class MockUser;
 
-class MockLogin1Manager: public MockObject
-{
-  public:
+class MockLogin1Manager : public MockObject {
+public:
+  MockLogin1Manager(GMainLoop *loop, GDBusConnection *bus_connection);
+  virtual ~MockLogin1Manager();
 
-    MockLogin1Manager (GMainLoop       * loop,
-                           GDBusConnection * bus_connection);
-    virtual ~MockLogin1Manager ();
+  int add_session(MockLogin1Seat *seat, MockUser *user);
+  void remove_session(MockLogin1Seat *seat, int session_tag);
 
-    int add_session (MockLogin1Seat * seat, MockUser * user);
-    void remove_session (MockLogin1Seat * seat, int session_tag);
+  void add_seat(MockLogin1Seat *seat);
 
-    void add_seat (MockLogin1Seat * seat);
+  const std::string &can_suspend() const;
+  const std::string &can_hibernate() const;
 
-    const std::string& can_suspend () const;
-    const std::string& can_hibernate () const;
+  const std::string &last_action() const { return my_last_action; }
+  void clear_last_action() { my_last_action.clear(); }
 
-    const std::string& last_action () const { return my_last_action; }
-    void clear_last_action () { my_last_action.clear(); }
+private:
+  void emit_session_new(MockLogin1Seat *seat, int tag) const;
+  void emit_session_removed(MockLogin1Seat *seat, int tag) const;
 
-  private:
+  GVariant *list_sessions() const;
 
-    void emit_session_new (MockLogin1Seat * seat, int tag) const;
-    void emit_session_removed (MockLogin1Seat * seat, int tag) const;
+  static gboolean handle_list_sessions(Login1Manager *, GDBusMethodInvocation *,
+                                       gpointer);
+  static gboolean handle_can_suspend(Login1Manager *, GDBusMethodInvocation *,
+                                     gpointer);
+  static gboolean handle_can_hibernate(Login1Manager *, GDBusMethodInvocation *,
+                                       gpointer);
+  static gboolean handle_reboot(Login1Manager *, GDBusMethodInvocation *,
+                                gboolean, gpointer);
+  static gboolean handle_power_off(Login1Manager *, GDBusMethodInvocation *,
+                                   gboolean, gpointer);
+  static gboolean handle_suspend(Login1Manager *, GDBusMethodInvocation *,
+                                 gboolean, gpointer);
+  static gboolean handle_hibernate(Login1Manager *, GDBusMethodInvocation *,
+                                   gboolean, gpointer);
 
-    GVariant * list_sessions () const;
-
-    static gboolean handle_list_sessions (Login1Manager *, GDBusMethodInvocation *, gpointer);
-    static gboolean handle_can_suspend   (Login1Manager *, GDBusMethodInvocation *, gpointer);
-    static gboolean handle_can_hibernate (Login1Manager *, GDBusMethodInvocation *, gpointer);
-    static gboolean handle_reboot        (Login1Manager *, GDBusMethodInvocation *, gboolean, gpointer);
-    static gboolean handle_power_off     (Login1Manager *, GDBusMethodInvocation *, gboolean, gpointer);
-    static gboolean handle_suspend       (Login1Manager *, GDBusMethodInvocation *, gboolean, gpointer);
-    static gboolean handle_hibernate     (Login1Manager *, GDBusMethodInvocation *, gboolean, gpointer);
-
-  private:
-
-    Login1Manager * my_skeleton;
-    std::set<MockLogin1Seat*> my_seats;
-    std::string my_can_suspend;
-    std::string my_can_hibernate;
-    std::string my_last_action;
+private:
+  Login1Manager *my_skeleton;
+  std::set<MockLogin1Seat *> my_seats;
+  std::string my_can_suspend;
+  std::string my_can_hibernate;
+  std::string my_last_action;
 };
 
 #endif // #ifndef MOCK_LOGIN1_MANAGER_H

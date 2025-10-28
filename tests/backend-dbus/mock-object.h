@@ -22,41 +22,36 @@
 
 #include <string>
 
-#include <glib.h>
 #include <gio/gio.h>
+#include <glib.h>
 
-class MockObject
-{
-  public:
+class MockObject {
+public:
+  MockObject(GMainLoop *loop, GDBusConnection *bus_connection,
+             const std::string &object_name, const std::string &object_path);
 
-    MockObject (GMainLoop          * loop,
-                GDBusConnection    * bus_connection,
-                const std::string  & object_name,
-                const std::string  & object_path);
+  virtual ~MockObject();
 
-    virtual ~MockObject ();
+  const char *name() const { return my_object_name.c_str(); }
+  const char *path() const { return my_object_path.c_str(); }
 
-    const char * name() const { return my_object_name.c_str(); }
-    const char * path() const { return my_object_path.c_str(); }
+  GDBusInterfaceSkeleton *skeleton() { return my_skeleton; }
 
-    GDBusInterfaceSkeleton * skeleton() { return my_skeleton; }
+protected:
+  guint my_owner_id;
+  GMainLoop *my_loop;
+  GDBusConnection *my_bus_connection;
+  const std::string my_object_name;
+  const std::string my_object_path;
+  GDBusInterfaceSkeleton *my_skeleton;
 
-  protected:
+  void set_skeleton(GDBusInterfaceSkeleton *skeleton);
 
-    guint my_owner_id;
-    GMainLoop * my_loop;
-    GDBusConnection * my_bus_connection;
-    const std::string my_object_name;
-    const std::string my_object_path;
-    GDBusInterfaceSkeleton * my_skeleton;
-
-    void set_skeleton (GDBusInterfaceSkeleton * skeleton);
-
-  private:
-    // safeguard to make sure we don't copy-by-value...
-    // this object's holding a handful of pointers
-    MockObject (const MockObject& rhs);
-    MockObject& operator= (const MockObject& rhs);
+private:
+  // safeguard to make sure we don't copy-by-value...
+  // this object's holding a handful of pointers
+  MockObject(const MockObject &rhs);
+  MockObject &operator=(const MockObject &rhs);
 };
 
 #endif

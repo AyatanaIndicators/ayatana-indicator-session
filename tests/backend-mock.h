@@ -28,10 +28,10 @@
 
 G_BEGIN_DECLS
 
-extern GSettings               * mock_settings;
-extern IndicatorSessionActions * mock_actions;
-extern IndicatorSessionUsers   * mock_users;
-extern IndicatorSessionGuest   * mock_guest;
+extern GSettings *mock_settings;
+extern IndicatorSessionActions *mock_actions;
+extern IndicatorSessionUsers *mock_users;
+extern IndicatorSessionGuest *mock_guest;
 
 G_END_DECLS
 

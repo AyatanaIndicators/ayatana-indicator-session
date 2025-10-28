@@ -22,23 +22,21 @@
 #include "backend-mock-guest.h"
 #include "backend-mock-users.h"
 
-GSettings               * mock_settings = NULL;
-IndicatorSessionActions * mock_actions  = NULL;
-IndicatorSessionUsers   * mock_users    = NULL;
-IndicatorSessionGuest   * mock_guest    = NULL;
+GSettings *mock_settings = NULL;
+IndicatorSessionActions *mock_actions = NULL;
+IndicatorSessionUsers *mock_users = NULL;
+IndicatorSessionGuest *mock_guest = NULL;
 
-void
-backend_get (GCancellable             * cancellable G_GNUC_UNUSED,
-             IndicatorSessionActions ** setme_actions,
-             IndicatorSessionUsers   ** setme_users,
-             IndicatorSessionGuest   ** setme_guest)
-{
+void backend_get(GCancellable *cancellable G_GNUC_UNUSED,
+                 IndicatorSessionActions **setme_actions,
+                 IndicatorSessionUsers **setme_users,
+                 IndicatorSessionGuest **setme_guest) {
   if (setme_actions != NULL)
-    *setme_actions = g_object_ref (mock_actions);
+    *setme_actions = g_object_ref(mock_actions);
 
   if (setme_users != NULL)
-    *setme_users = g_object_ref (mock_users);
+    *setme_users = g_object_ref(mock_users);
 
   if (setme_guest != NULL)
-    *setme_guest = g_object_ref (mock_guest);
+    *setme_guest = g_object_ref(mock_guest);
 }

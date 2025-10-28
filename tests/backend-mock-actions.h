@@ -20,40 +20,45 @@
 #ifndef __INDICATOR_SESSION_ACTIONS_MOCK_H__
 #define __INDICATOR_SESSION_ACTIONS_MOCK_H__
 
-#include <glib.h>
 #include <glib-object.h>
+#include <glib.h>
 
 #include "actions.h" /* parent class */
 
 G_BEGIN_DECLS
 
-#define INDICATOR_TYPE_SESSION_ACTIONS_MOCK          (indicator_session_actions_mock_get_type())
-#define INDICATOR_SESSION_ACTIONS_MOCK(o)            (G_TYPE_CHECK_INSTANCE_CAST ((o), INDICATOR_TYPE_SESSION_ACTIONS_MOCK, IndicatorSessionActionsMock))
-#define INDICATOR_SESSION_ACTIONS_MOCK_GET_CLASS(o)  (G_TYPE_INSTANCE_GET_CLASS ((o), INDICATOR_TYPE_SESSION_ACTIONS_MOCK, IndicatorSessionActionsMockClass))
-#define INDICATOR_IS_SESSION_ACTIONS_MOCK(o)         (G_TYPE_CHECK_INSTANCE_TYPE ((o), INDICATOR_TYPE_SESSION_ACTIONS_MOCK))
+#define INDICATOR_TYPE_SESSION_ACTIONS_MOCK                                    \
+  (indicator_session_actions_mock_get_type())
+#define INDICATOR_SESSION_ACTIONS_MOCK(o)                                      \
+  (G_TYPE_CHECK_INSTANCE_CAST((o), INDICATOR_TYPE_SESSION_ACTIONS_MOCK,        \
+                              IndicatorSessionActionsMock))
+#define INDICATOR_SESSION_ACTIONS_MOCK_GET_CLASS(o)                            \
+  (G_TYPE_INSTANCE_GET_CLASS((o), INDICATOR_TYPE_SESSION_ACTIONS_MOCK,         \
+                             IndicatorSessionActionsMockClass))
+#define INDICATOR_IS_SESSION_ACTIONS_MOCK(o)                                   \
+  (G_TYPE_CHECK_INSTANCE_TYPE((o), INDICATOR_TYPE_SESSION_ACTIONS_MOCK))
 
-typedef struct _IndicatorSessionActionsMock        IndicatorSessionActionsMock;
-typedef struct _IndicatorSessionActionsMockPriv    IndicatorSessionActionsMockPriv;
-typedef struct _IndicatorSessionActionsMockClass   IndicatorSessionActionsMockClass;
+typedef struct _IndicatorSessionActionsMock IndicatorSessionActionsMock;
+typedef struct _IndicatorSessionActionsMockPriv IndicatorSessionActionsMockPriv;
+typedef struct _IndicatorSessionActionsMockClass
+    IndicatorSessionActionsMockClass;
 
 /**
  * An implementation of IndicatorSessionActions that lies about everything.
  */
-struct _IndicatorSessionActionsMock
-{
+struct _IndicatorSessionActionsMock {
   /*< private >*/
   IndicatorSessionActions parent;
-  IndicatorSessionActionsMockPriv * priv;
+  IndicatorSessionActionsMockPriv *priv;
 };
 
-struct _IndicatorSessionActionsMockClass
-{
+struct _IndicatorSessionActionsMockClass {
   IndicatorSessionActionsClass parent_class;
 };
 
-GType indicator_session_actions_mock_get_type (void);
+GType indicator_session_actions_mock_get_type(void);
 
-IndicatorSessionActions * indicator_session_actions_mock_new (void);
+IndicatorSessionActions *indicator_session_actions_mock_new(void);
 
 G_END_DECLS
 

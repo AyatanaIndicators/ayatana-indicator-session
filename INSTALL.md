@@ -77,3 +77,40 @@ cmake .. -DENABLE_COVERAGE=ON
 make
 make coverage-html
 ```
+
+## For developers - code formatting
+
+This project uses clang-format to maintain consistent code style. Before submitting a pull request, please ensure your code is properly formatted.
+
+### Check code formatting
+
+To check if your code follows the project's formatting style without making changes:
+
+```bash
+./format-code.sh check
+```
+
+To check a specific file:
+
+```bash
+./format-code.sh check src/service.c
+```
+
+### Format code automatically
+
+To automatically format all C/C++ files in the project:
+
+```bash
+./format-code.sh
+```
+
+To format a specific file:
+
+```bash
+./format-code.sh src/service.c
+```
+
+### CI Integration
+
+All pull requests are automatically checked for proper formatting using GitHub Actions. If your PR fails the clang-format check, run `./format-code.sh` locally to fix the formatting issues.
+

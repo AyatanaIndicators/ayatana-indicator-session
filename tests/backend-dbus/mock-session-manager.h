@@ -20,31 +20,24 @@
 #ifndef MOCK_SESSION_MANAGER_H
 #define MOCK_SESSION_MANAGER_H
 
-#include "mock-object.h" // parent class
 #include "backend-dbus/gnome-session-manager.h" // GnomeSessionManager
+#include "mock-object.h"                        // parent class
 
-class MockSessionManager: public MockObject
-{
-  public:
+class MockSessionManager : public MockObject {
+public:
+  MockSessionManager(GMainLoop *loop, GDBusConnection *bus_connection);
+  virtual ~MockSessionManager();
 
-    MockSessionManager (GMainLoop       * loop,
-                        GDBusConnection * bus_connection);
-    virtual ~MockSessionManager ();
+public:
+  enum Action { None, LogoutNormal, LogoutQuiet, LogoutForce };
+  Action last_action() { return my_last_action; }
 
-  public:
+private:
+  GnomeSessionManager *my_skeleton;
+  Action my_last_action;
 
-    enum Action { None, LogoutNormal, LogoutQuiet, LogoutForce };
-    Action last_action () { return my_last_action; }
-
-  private:
-
-    GnomeSessionManager * my_skeleton;
-    Action my_last_action;
-
-    static gboolean handle_logout (GnomeSessionManager *,
-                                   GDBusMethodInvocation *,
-                                   guint,
-                                   gpointer);
+  static gboolean handle_logout(GnomeSessionManager *, GDBusMethodInvocation *,
+                                guint, gpointer);
 };
 
 #endif

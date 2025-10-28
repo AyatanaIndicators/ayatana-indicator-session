@@ -37,10 +37,10 @@ G_BEGIN_DECLS
  * one for production in libbackenddbus (in src/backend-dbus/) or
  * one for testing in libbackendmock (in tests/).
  */
-void backend_get (GCancellable             * cancellable,
-                  IndicatorSessionActions ** setme_actions,
-                  IndicatorSessionUsers   ** setme_users,
-                  IndicatorSessionGuest   ** setme_guest);
+void backend_get(GCancellable *cancellable,
+                 IndicatorSessionActions **setme_actions,
+                 IndicatorSessionUsers **setme_users,
+                 IndicatorSessionGuest **setme_guest);
 
 G_END_DECLS
 

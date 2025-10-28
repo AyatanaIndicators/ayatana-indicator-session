@@ -20,39 +20,45 @@
 #ifndef MOCK_END_SESSION_DIALOG_H
 #define MOCK_END_SESSION_DIALOG_H
 
-#include "mock-object.h" // parent class
 #include "backend-dbus/dbus-end-session-dialog.h" // EndSessionDialog
+#include "mock-object.h"                          // parent class
 
-class MockEndSessionDialog: public MockObject
-{
-  public:
+class MockEndSessionDialog : public MockObject {
+public:
+  MockEndSessionDialog(GMainLoop *loop, GDBusConnection *bus_connection);
+  virtual ~MockEndSessionDialog();
 
-    MockEndSessionDialog (GMainLoop       * loop,
-                          GDBusConnection * bus_connection);
-    virtual ~MockEndSessionDialog ();
+  bool is_open() const { return my_isOpen; }
 
-    bool is_open () const { return my_isOpen; }
+  void cancel() {
+    my_isOpen = false;
+    end_session_dialog_emit_canceled(my_skeleton);
+  }
+  void confirm_logout() {
+    my_isOpen = false;
+    end_session_dialog_emit_confirmed_logout(my_skeleton);
+  }
+  void confirm_reboot() {
+    my_isOpen = false;
+    end_session_dialog_emit_confirmed_reboot(my_skeleton);
+  }
+  void confirm_shutdown() {
+    my_isOpen = false;
+    end_session_dialog_emit_confirmed_shutdown(my_skeleton);
+  }
+  void close() {
+    my_isOpen = false;
+    end_session_dialog_emit_closed(my_skeleton);
+  }
 
-    void cancel ()           { my_isOpen = false; end_session_dialog_emit_canceled (my_skeleton); }
-    void confirm_logout ()   { my_isOpen = false; end_session_dialog_emit_confirmed_logout (my_skeleton); }
-    void confirm_reboot ()   { my_isOpen = false; end_session_dialog_emit_confirmed_reboot (my_skeleton); }
-    void confirm_shutdown () { my_isOpen = false; end_session_dialog_emit_confirmed_shutdown (my_skeleton); }
-    void close ()            { my_isOpen = false; end_session_dialog_emit_closed (my_skeleton); }
+private:
+  EndSessionDialog *my_skeleton;
 
-  private:
+  bool my_isOpen;
 
-    EndSessionDialog * my_skeleton;
-
-    bool my_isOpen;
-
-    static gboolean handle_open (EndSessionDialog *,
-                                 GDBusMethodInvocation *,
-                                 guint,
-                                 guint,
-                                 guint,
-                                 const gchar * const *,
-                                 gpointer);
-
+  static gboolean handle_open(EndSessionDialog *, GDBusMethodInvocation *,
+                              guint, guint, guint, const gchar *const *,
+                              gpointer);
 
 #if 0
     static gboolean handle_lock (GnomeScreenSaver *,

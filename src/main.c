@@ -20,8 +20,8 @@
 #include <locale.h>
 #include <stdlib.h> /* exit() */
 
-#include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <glib/gi18n.h>
 
 #include "service.h"
 
@@ -29,40 +29,36 @@
 ****
 ***/
 
-static void
-on_name_lost (gpointer instance G_GNUC_UNUSED, gpointer loop)
-{
-  g_warning ("exiting: service couldn't acquire, or lost ownership of, busname");
+static void on_name_lost(gpointer instance G_GNUC_UNUSED, gpointer loop) {
+  g_warning("exiting: service couldn't acquire, or lost ownership of, busname");
 
-  g_main_loop_quit (loop);
+  g_main_loop_quit(loop);
 }
 
-int
-main (int argc G_GNUC_UNUSED, char ** argv G_GNUC_UNUSED)
-{
-  GMainLoop * loop;
-  IndicatorSessionService * service;
+int main(int argc G_GNUC_UNUSED, char **argv G_GNUC_UNUSED) {
+  GMainLoop *loop;
+  IndicatorSessionService *service;
 
   /* Work around a deadlock in glib's type initialization. It can be
    * removed when https://bugzilla.gnome.org/show_bug.cgi?id=674885 is
    * fixed.
    */
-  g_type_ensure (G_TYPE_DBUS_CONNECTION);
+  g_type_ensure(G_TYPE_DBUS_CONNECTION);
 
   /* boilerplate i18n */
-  setlocale (LC_ALL, "");
-  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-  textdomain (GETTEXT_PACKAGE);
+  setlocale(LC_ALL, "");
+  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+  textdomain(GETTEXT_PACKAGE);
 
   /* run */
-  service = indicator_session_service_new ();
-  loop = g_main_loop_new (NULL, FALSE);
-  g_signal_connect (service, INDICATOR_SESSION_SERVICE_SIGNAL_NAME_LOST,
-                    G_CALLBACK(on_name_lost), loop);
-  g_main_loop_run (loop);
+  service = indicator_session_service_new();
+  loop = g_main_loop_new(NULL, FALSE);
+  g_signal_connect(service, INDICATOR_SESSION_SERVICE_SIGNAL_NAME_LOST,
+                   G_CALLBACK(on_name_lost), loop);
+  g_main_loop_run(loop);
 
   /* cleanup */
-  g_clear_object (&service);
-  g_main_loop_unref (loop);
+  g_clear_object(&service);
+  g_main_loop_unref(loop);
   return 0;
 }

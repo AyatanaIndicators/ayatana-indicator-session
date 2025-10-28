@@ -20,51 +20,56 @@
 #ifndef __INDICATOR_SESSION_SERVICE_H__
 #define __INDICATOR_SESSION_SERVICE_H__
 
-#include <glib.h>
 #include <glib-object.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
 /* standard GObject macros */
-#define INDICATOR_TYPE_SESSION_SERVICE          (indicator_session_service_get_type())
-#define INDICATOR_SESSION_SERVICE(o)            (G_TYPE_CHECK_INSTANCE_CAST ((o), INDICATOR_TYPE_SESSION_SERVICE, IndicatorSessionService))
-#define INDICATOR_SESSION_SERVICE_GET_CLASS(o)  (G_TYPE_INSTANCE_GET_CLASS ((o), INDICATOR_TYPE_SESSION_SERVICE, IndicatorSessionServiceClass))
-#define INDICATOR_SESSION_SERVICE_CLASS(k)      (G_TYPE_CHECK_CLASS_CAST ((k), INDICATOR_TYPE_SESSION_SERVICE, IndicatorSessionServiceClass))
-#define INDICATOR_IS_SESSION_SERVICE(o)         (G_TYPE_CHECK_INSTANCE_TYPE ((o), INDICATOR_TYPE_SESSION_SERVICE))
+#define INDICATOR_TYPE_SESSION_SERVICE (indicator_session_service_get_type())
+#define INDICATOR_SESSION_SERVICE(o)                                           \
+  (G_TYPE_CHECK_INSTANCE_CAST((o), INDICATOR_TYPE_SESSION_SERVICE,             \
+                              IndicatorSessionService))
+#define INDICATOR_SESSION_SERVICE_GET_CLASS(o)                                 \
+  (G_TYPE_INSTANCE_GET_CLASS((o), INDICATOR_TYPE_SESSION_SERVICE,              \
+                             IndicatorSessionServiceClass))
+#define INDICATOR_SESSION_SERVICE_CLASS(k)                                     \
+  (G_TYPE_CHECK_CLASS_CAST((k), INDICATOR_TYPE_SESSION_SERVICE,                \
+                           IndicatorSessionServiceClass))
+#define INDICATOR_IS_SESSION_SERVICE(o)                                        \
+  (G_TYPE_CHECK_INSTANCE_TYPE((o), INDICATOR_TYPE_SESSION_SERVICE))
 
-typedef struct _IndicatorSessionService         IndicatorSessionService;
-typedef struct _IndicatorSessionServiceClass    IndicatorSessionServiceClass;
-typedef struct _IndicatorSessionServicePrivate  IndicatorSessionServicePrivate;
+typedef struct _IndicatorSessionService IndicatorSessionService;
+typedef struct _IndicatorSessionServiceClass IndicatorSessionServiceClass;
+typedef struct _IndicatorSessionServicePrivate IndicatorSessionServicePrivate;
 
 /* signal keys */
-#define INDICATOR_SESSION_SERVICE_SIGNAL_NAME_LOST   "name-lost"
+#define INDICATOR_SESSION_SERVICE_SIGNAL_NAME_LOST "name-lost"
 
 /**
  * The Indicator Session Service.
  */
-struct _IndicatorSessionService
-{
+struct _IndicatorSessionService {
   /*< private >*/
   GObject parent;
-  IndicatorSessionServicePrivate * priv;
+  IndicatorSessionServicePrivate *priv;
 };
 
-struct _IndicatorSessionServiceClass
-{
+struct _IndicatorSessionServiceClass {
   GObjectClass parent_class;
 
   /* signals */
 
-  void (* name_lost)(IndicatorSessionService * self);
+  void (*name_lost)(IndicatorSessionService *self);
 };
 
 /***
 ****
 ***/
 
-GType indicator_session_service_get_type (void);
+GType indicator_session_service_get_type(void);
 
-IndicatorSessionService * indicator_session_service_new (void);
+IndicatorSessionService *indicator_session_service_new(void);
 
 G_END_DECLS
 

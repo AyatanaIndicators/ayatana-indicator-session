@@ -20,38 +20,36 @@
 #ifndef MOCK_LOMIRI_SESSION_H
 #define MOCK_LOMIRI_SESSION_H
 
-#include "mock-object.h" // parent class
 #include "backend-dbus/lomiri-session.h" // Lomiri Session
+#include "mock-object.h"                 // parent class
 
-class MockLomiriSession: public MockObject
-{
-  public:
+class MockLomiriSession : public MockObject {
+public:
+  MockLomiriSession(GMainLoop *loop, GDBusConnection *bus_connection);
+  virtual ~MockLomiriSession();
 
-    MockLomiriSession (GMainLoop       * loop,
-                      GDBusConnection * bus_connection);
-    virtual ~MockLomiriSession ();
+public:
+  enum Action {
+    None,
+    Lock,
+    PromptLock,
+    RequestLogout,
+    RequestShutdown,
+    RequestReboot
+  };
+  Action last_action() { return my_last_action; }
+  void clear_last_action() { my_last_action = None; }
 
-  public:
+private:
+  LomiriShellSession *my_skeleton;
+  Action my_last_action;
 
-    enum Action { None, Lock, PromptLock, RequestLogout, RequestShutdown, RequestReboot };
-    Action last_action () { return my_last_action; }
-    void clear_last_action () { my_last_action = None; }
-
-  private:
-
-    LomiriShellSession * my_skeleton;
-    Action my_last_action;
-
-    static gboolean handle_lock (LomiriShellSession *,
-                                 GDBusMethodInvocation *,
-                                 gpointer);
-    static gboolean handle_prompt_lock (LomiriShellSession *,
-                                        GDBusMethodInvocation *,
-                                        gpointer);
-    static gboolean handle_request_logout (LomiriShellSession *,
-                                           GDBusMethodInvocation *,
-                                           gpointer);
-
+  static gboolean handle_lock(LomiriShellSession *, GDBusMethodInvocation *,
+                              gpointer);
+  static gboolean handle_prompt_lock(LomiriShellSession *,
+                                     GDBusMethodInvocation *, gpointer);
+  static gboolean handle_request_logout(LomiriShellSession *,
+                                        GDBusMethodInvocation *, gpointer);
 };
 
 #endif

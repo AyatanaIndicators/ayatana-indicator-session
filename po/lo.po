@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2025-11-14 03:45+0000\n"
+"PO-Revision-Date: 2025-11-15 03:51+0000\n"
 "Last-Translator: BoneNI <bounkirdni@gmail.com>\n"
 "Language-Team: Lao <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/lo/>\n"
@@ -21,241 +21,243 @@ msgstr ""
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
-msgstr ""
+msgstr "ລະງັບກ່ອງໂຕ້ຕອບເພື່ອຢືນຢັນການອອກຈາກລະບົບ, ເລີ່ມໃໝ່ ແລະ ປິດເຄື່ອງ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
+"ຈະສະແດງ ຫຼື ບໍ່ສະແດງກ່ອງໂຕ້ຕອບຢືນຢັນສຳລັບການກະທຳອອກຈາກລະບົບ, ເລີ່ມໃໝ່ ແລະ ປິດເຄື່ອງ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
-msgstr ""
+msgstr "ເອົາລາຍການອອກຈາກລະບົບອອກຈາກເມນູເຊດຊັນ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr ""
+msgstr "ເຮັດໃຫ້ປຸ່ມອອກຈາກລະບົບບໍ່ສະແດງໃນເມນູເຊດຊັນ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
 msgid "Remove the Restart item from the session menu."
-msgstr ""
+msgstr "ເອົາລາຍການເລີ່ມໃໝ່ອອກຈາກເມນູເຊດຊັນ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr ""
+msgstr "ເຮັດໃຫ້ປຸ່ມເລີ່ມໃໝ່ບໍ່ສະແດງໃນເມນູເຊດຊັນ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
 msgid "Remove the shutdown item from the session menu."
-msgstr ""
+msgstr "ເອົາລາຍການປິດເຄື່ອງອອກຈາກເມນູເຊດຊັນ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr ""
+msgstr "ເຮັດໃຫ້ປຸ່ມປິດເຄື່ອງບໍ່ສະແດງໃນເມນູເຊດຊັນ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
 msgid "Force the visibility of Restart item in the session menu"
-msgstr ""
+msgstr "ບັງຄັບການສະແດງຜົນລາຍການເລີ່ມໃໝ່ໃນເມນູເຊດຊັນ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr ""
+"ເຮັດໃຫ້ການເລີ່ມໃໝ່ສະແດງໃນເມນູເຊດຊັນ ເຖິງແມ່ນວ່າໃນສະພາບແວດລ້ອມທີ່ມັນບໍ່ຄວນສະແດງ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr ""
+msgstr "ກຳນົດການສະແດງຜົນຊື່ແທ້ຂອງຜູ້ໃຊ້ເທິງແຖບ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "ອະນຸຍາດໃຫ້ເອົາຊື່ຜູ້ໃຊ້ອອກຈາກແຖບໄດ້"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "ສະແດງລາຍຊື່ຜູ້ໃຊ້"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "ອະນຸຍາດໃຫ້ຜູ້ໃຊ້ສາມາດເຊື່ອງລາຍຊື່ຜູ້ໃຊ້ໄດ້."
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr ""
+msgstr "ສະແດງລາຍການຂໍ້ມູນອຸປະກອນ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr ""
+msgstr "ສະແດງລາຍການເມນູຂໍ້ມູນອຸປະກອນ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr ""
+msgstr "ສະແດງລາຍການຊ່ວຍເຫຼືອເດັສທັອບ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr ""
+msgstr "ສະແດງລາຍການເມນູຊ່ວຍເຫຼືອສະພາບແວດລ້ອມເດັສທັອບ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr ""
+msgstr "ສະແດງລາຍການຊ່ວຍເຫຼືອຂອງລະບົບ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "ສະແດງລາຍການເມນູຊ່ວຍເຫຼືອຂອງລະບົບປະຕິບັດການ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr ""
+msgstr "ສະແດງລາຍການລາຍງານບັກ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr ""
+msgstr "ສະແດງລາຍການເມນູລາຍງານບັກ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr ""
+msgstr "ສະແດງລາຍການກຳນົດເອງ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
 msgid "Show the custom menu item."
-msgstr ""
+msgstr "ສະແດງລາຍການເມນູກຳນົດເອງ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "ປ້າຍກຳກັບລາຍການກຳນົດເອງ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "ປ້າຍກຳກັບຂອງລາຍການເມນູກຳນົດເອງ."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "URI ຂອງລາຍການກຳນົດເອງ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
-msgstr ""
+msgstr "ທີ່ຕັ້ງທີ່ລາຍການເມນູກຳນົດເອງຄວນເປີດ."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:197
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "ລະບົບ, %s"
 
 #: src/service.c:201 src/service.c:211
 msgid "System"
-msgstr ""
+msgstr "ລະບົບ"
 
 #: src/service.c:212
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "ການຈັດການເຊດຊັນ, ສະຖານະ ແລະ ການສະຫຼັບຜູ້ໃຊ້"
 
 #: src/service.c:337
 msgid "Guest"
-msgstr ""
+msgstr "ແຂກ"
 
 #: src/service.c:407
 msgid "About This Device…"
-msgstr ""
+msgstr "ກ່ຽວກັບອຸປະກອນນີ້…"
 
 #: src/service.c:411
 msgid "About This Computer"
-msgstr ""
+msgstr "ກ່ຽວກັບຄອມພິວເຕີນີ້"
 
 #: src/service.c:423
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "ກ່ຽວກັບ Ubuntu Touch…"
 
 #: src/service.c:427 src/service.c:446
 #, c-format
 msgid "%s Help…"
-msgstr ""
+msgstr "ຊ່ວຍເຫຼືອ %s…"
 
 #: src/service.c:442
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "ກ່ຽວກັບມູນນິທິ UBports…"
 
 #: src/service.c:456
 msgid "Desktop mode"
-msgstr ""
+msgstr "ໂໝດເດັສທັອບ"
 
 #: src/service.c:466
 msgid "Report a Bug…"
-msgstr ""
+msgstr "ລາຍງານບັກ…"
 
 #: src/service.c:479
 msgid "System Settings…"
-msgstr ""
+msgstr "ຕັ້ງຄ່າລະບົບ…"
 
 #: src/service.c:481
 msgid "Online Accounts…"
-msgstr ""
+msgstr "ບັນຊີອອນລາຍ…"
 
 #: src/service.c:689
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "ເລີ່ມໂປຣແກຣມພັກໜ້າຈໍ"
 
 #: src/service.c:697 src/service.c:713
 msgid "Switch Account…"
-msgstr ""
+msgstr "ສະຫຼັບບັນຊີ…"
 
 #: src/service.c:698 src/service.c:714
 msgid "Switch Account"
-msgstr ""
+msgstr "ສະຫຼັບບັນຊີ"
 
 #: src/service.c:710
 msgid "Lock/Switch Account…"
-msgstr ""
+msgstr "ລັອກ/ສະຫຼັບບັນຊີ…"
 
 #: src/service.c:711
 msgid "Lock/Switch Account"
-msgstr ""
+msgstr "ລັອກ/ສະຫຼັບບັນຊີ"
 
 #: src/service.c:717
 msgid "Lock"
-msgstr ""
+msgstr "ລັອກ"
 
 #: src/service.c:762
 msgid "Guest Session"
-msgstr ""
+msgstr "ເຊດຊັນແຂກ"
 
 #: src/service.c:843
 msgid "Log Out…"
-msgstr ""
+msgstr "ອອກຈາກລະບົບ…"
 
 #: src/service.c:847 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
-msgstr ""
+msgstr "ອອກຈາກລະບົບ"
 
 #: src/service.c:869
 msgid "Suspend"
-msgstr ""
+msgstr "ພັກເຄື່ອງ"
 
 #: src/service.c:872
 msgid "Hibernate"
-msgstr ""
+msgstr "ພັກຈຳສິນ"
 
 #: src/service.c:876
 msgid "Restart…"
-msgstr ""
+msgstr "ເລີ່ມໃໝ່…"
 
 #: src/service.c:876 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
-msgstr ""
+msgstr "ເລີ່ມໃໝ່"
 
 #: src/service.c:882
 msgid "Shut Down…"
-msgstr ""
+msgstr "ປິດເຄື່ອງ…"
 
 #: src/service.c:882 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
-msgstr ""
+msgstr "ປິດເຄື່ອງ"
 
 #: src/service.c:892
 msgid "Suspend Remote Session"
-msgstr ""
+msgstr "ພັກເຊດຊັນທາງໄກ"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920
@@ -272,28 +274,32 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"ຕົວຕິດຕາມບັກຂອງລະບົບປະຕິບັດການຈຳເປັນຕ້ອງເຂົ້າເຖິງດ້ວຍເວັບເບຣົາເຊີ.\n"
+"\n"
+"ຕົວຊີ້ບອກເຊດຊັນ Ayatana ບໍ່ພົບເວັບເບຣົາເຊີໃດໆໃນຄອມພິວເຕີຂອງທ່ານ."
 
 #: src/backend-dbus/actions.c:785
 msgid "Are you sure you want to close all programs and log out?"
-msgstr ""
+msgstr "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການປິດໂປຣແກຣມທັງໝົດ ແລະ ອອກຈາກລະບົບ?"
 
 #: src/backend-dbus/actions.c:786
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
+"ການອັບເດດຊັອຟແວບາງລາຍການຈະບໍ່ຖືກນຳໃຊ້ ຈົນກວ່າຄອມພິວເຕີຈະເລີ່ມໃໝ່ໃນຄັ້ງຕໍ່ໄປ."
 
 #: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
 msgid "Cancel"
-msgstr ""
+msgstr "ຍົກເລີກ"
 
 #: src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr ""
+msgstr "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການປິດໂປຣແກຣມທັງໝົດ ແລະ ເລີ່ມຄອມພິວເຕີໃໝ່?"
 
 #: src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr ""
+msgstr "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການປິດໂປຣແກຣມທັງໝົດ ແລະ ປິດຄອມພິວເຕີ?"
 
 #: src/backend-dbus/actions.c:907
 msgid ""
@@ -303,6 +309,9 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"ຄູ່ມືຜູ້ໃຊ້ຂອງເດັສທັອບ XFCE ຈຳເປັນຕ້ອງເຂົ້າເຖິງດ້ວຍເວັບເບຣົາເຊີ.\n"
+"\n"
+"ຕົວຊີ້ບອກເຊດຊັນ Ayatana ບໍ່ພົບເວັບເບຣົາເຊີໃດໆໃນຄອມພິວເຕີຂອງທ່ານ."
 
 #: src/backend-dbus/actions.c:912
 msgid ""
@@ -312,6 +321,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"ຕົວຊີ້ບອກເຊດຊັນ Ayatana ຍັງບໍ່ຮູ້ວິທີການສະແດງຄູ່ມືຜູ້ໃຊ້ ຫຼື "
+"ສູນຊ່ວຍເຫຼືອຂອງສະພາບແວດລ້ອມເດັສທັອບທີ່ກຳລັງເຮັດວຽກຢູ່.\n"
+"\n"
+"ກະລຸນາລາຍງານບັນຫານີ້ໃຫ້ນັກພັດທະນາໄດ້ທີ່:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:921
 #, c-format
@@ -322,6 +336,9 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"ການສະແດງຂໍ້ມູນກ່ຽວກັບ %s ຈຳເປັນຕ້ອງໃຊ້ເວັບເບຣົາເຊີ.\n"
+"\n"
+"ຕົວຊີ້ບອກເຊດຊັນ Ayatana ບໍ່ພົບເວັບເບຣົາເຊີໃດໆໃນຄອມພິວເຕີຂອງທ່ານ."
 
 #: src/backend-dbus/actions.c:940
 msgid ""
@@ -331,6 +348,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"ຕົວຊີ້ບອກເຊດຊັນ Ayatana "
+"ຍັງບໍ່ຮອງຮັບການເອີ້ນໃຊ້ແອັບພລິເຄຊັນຕັ້ງຄ່າລະບົບສຳລັບສະພາບແວດລ້ອມເດັສທັອບຂອງທ່ານ.\n"
+"\n"
+"ກະລຸນາລາຍງານບັນຫານີ້ໃຫ້ນັກພັດທະນາໄດ້ທີ່:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:955
 msgid ""
@@ -340,6 +362,10 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"ຕົວຊີ້ບອກເຊດຊັນ Ayatana ຍັງບໍ່ຮອງຮັບການປ່ຽນລະຫັດຜ່ານສຳລັບສະພາບແວດລ້ອມເດັສທັອບຂອງທ່ານ.\n"
+"\n"
+"ກະລຸນາລາຍງານບັນຫານີ້ໃຫ້ນັກພັດທະນາໄດ້ທີ່:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:976
 msgid ""
@@ -349,3 +375,7 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"ຕົວຊີ້ບອກເຊດຊັນ Ayatana ຍັງບໍ່ຮູ້ວິທີການສະແດງຂໍ້ມູນຂອງສະພາບແວດລ້ອມເດັສທັອບທີ່ກຳລັງເຮັດວຽກຢູ່.\n"
+"\n"
+"ກະລຸນາລາຍງານບັນຫານີ້ໃຫ້ນັກພັດທະນາໄດ້ທີ່:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"

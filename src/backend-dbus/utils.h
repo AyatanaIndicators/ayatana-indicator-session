@@ -20,8 +20,8 @@
 #ifndef __DBUS_UTILS_H__
 #define __DBUS_UTILS_H__
 
-#include <glib.h>
 #include <glib-object.h>
+#include <glib.h>
 
 #include "dbus-accounts.h"
 #include "dbus-display-manager.h"
@@ -29,21 +29,17 @@
 #include "dbus-login1-seat.h"
 
 typedef void (*indicator_session_util_session_proxies_func)(
-                   Login1Manager      * login1_manager,
-                   Login1Seat         * login1_seat,
-                   DisplayManagerSeat * display_manager_seat,
-                   Accounts           * account_manager,
-                   GCancellable       * cancellable,
-                   gpointer             user_data);
+    Login1Manager *login1_manager, Login1Seat *login1_seat,
+    DisplayManagerSeat *display_manager_seat, Accounts *account_manager,
+    GCancellable *cancellable, gpointer user_data);
 
 /**
  * Both users-dbus and guest-dbus need some of these proxies.
  * Getting them all involves a lot of steps, so instead of repeating
  * ourselves, the common dbus steps are extracted to this func.
  */
-void indicator_session_util_get_session_proxies (
-                   indicator_session_util_session_proxies_func   func,
-                   GCancellable                                * cancellable,
-                   gpointer                                      user_data);
+void indicator_session_util_get_session_proxies(
+    indicator_session_util_session_proxies_func func, GCancellable *cancellable,
+    gpointer user_data);
 
 #endif

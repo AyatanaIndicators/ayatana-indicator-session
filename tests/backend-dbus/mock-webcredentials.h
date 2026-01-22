@@ -20,23 +20,23 @@
 #ifndef MOCK_WEBCREDENTIALS_H
 #define MOCK_WEBCREDENTIALS_H
 
-#include "mock-object.h" // parent class
 #include "backend-dbus/dbus-webcredentials.h" // Webcredentials
+#include "mock-object.h"                      // parent class
 
-class MockWebcredentials: public MockObject
-{
-  public:
+class MockWebcredentials : public MockObject {
+public:
+  MockWebcredentials(GMainLoop *loop, GDBusConnection *bus_connection);
+  virtual ~MockWebcredentials();
 
-    MockWebcredentials (GMainLoop       * loop,
-                        GDBusConnection * bus_connection);
-    virtual ~MockWebcredentials ();
+  bool has_error() const {
+    return webcredentials_get_error_status(my_skeleton);
+  }
+  void set_error(bool b) const {
+    webcredentials_set_error_status(my_skeleton, b);
+  }
 
-    bool has_error () const { return webcredentials_get_error_status (my_skeleton); }
-    void set_error (bool b) const { webcredentials_set_error_status (my_skeleton, b); }
-
-  private:
-
-    Webcredentials * my_skeleton;
+private:
+  Webcredentials *my_skeleton;
 };
 
 #endif

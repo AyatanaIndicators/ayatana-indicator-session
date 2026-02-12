@@ -21,8 +21,7 @@
 
 #include "backend-mock-guest.h"
 
-struct _IndicatorSessionGuestMockPrivate
-{
+struct _IndicatorSessionGuestMockPrivate {
   gboolean guest_is_active;
   gboolean guest_is_logged_in;
   gboolean guest_is_allowed;
@@ -30,52 +29,42 @@ struct _IndicatorSessionGuestMockPrivate
 
 typedef IndicatorSessionGuestMockPrivate priv_t;
 
-G_DEFINE_TYPE_WITH_PRIVATE(IndicatorSessionGuestMock, indicator_session_guest_mock, INDICATOR_TYPE_SESSION_GUEST)
+G_DEFINE_TYPE_WITH_PRIVATE(IndicatorSessionGuestMock,
+                           indicator_session_guest_mock,
+                           INDICATOR_TYPE_SESSION_GUEST)
 
 /**
 ***  IndicatorSessionGuest virtual functions
 **/
 
-static gboolean
-my_is_allowed (IndicatorSessionGuest * self)
-{
+static gboolean my_is_allowed(IndicatorSessionGuest *self) {
   return INDICATOR_SESSION_GUEST_MOCK(self)->priv->guest_is_allowed;
 }
 
-static gboolean
-my_is_logged_in (IndicatorSessionGuest * self)
-{
-  g_return_val_if_fail (INDICATOR_IS_SESSION_GUEST_MOCK(self), FALSE);
+static gboolean my_is_logged_in(IndicatorSessionGuest *self) {
+  g_return_val_if_fail(INDICATOR_IS_SESSION_GUEST_MOCK(self), FALSE);
 
   return INDICATOR_SESSION_GUEST_MOCK(self)->priv->guest_is_logged_in;
 }
 
-static gboolean
-my_is_active (IndicatorSessionGuest * self)
-{
+static gboolean my_is_active(IndicatorSessionGuest *self) {
   return INDICATOR_SESSION_GUEST_MOCK(self)->priv->guest_is_active;
 }
 
-static void
-my_switch_to_guest (IndicatorSessionGuest * self G_GNUC_UNUSED)
-{
-  g_message ("%s %s FIXME", G_STRLOC, G_STRFUNC);
+static void my_switch_to_guest(IndicatorSessionGuest *self G_GNUC_UNUSED) {
+  g_message("%s %s FIXME", G_STRLOC, G_STRFUNC);
 }
 
 /***
 ****  GObject virtual Functions
 ***/
 
-static void
-my_dispose (GObject * o)
-{
-  G_OBJECT_CLASS (indicator_session_guest_mock_parent_class)->dispose (o);
+static void my_dispose(GObject *o) {
+  G_OBJECT_CLASS(indicator_session_guest_mock_parent_class)->dispose(o);
 }
 
-static void
-my_finalize (GObject * o)
-{
-  G_OBJECT_CLASS (indicator_session_guest_mock_parent_class)->finalize (o);
+static void my_finalize(GObject *o) {
+  G_OBJECT_CLASS(indicator_session_guest_mock_parent_class)->finalize(o);
 }
 
 /***
@@ -84,16 +73,15 @@ my_finalize (GObject * o)
 
 static void
 /* cppcheck-suppress unusedFunction */
-indicator_session_guest_mock_class_init (IndicatorSessionGuestMockClass * klass)
-{
-  GObjectClass * object_class;
-  IndicatorSessionGuestClass * guest_class;
+indicator_session_guest_mock_class_init(IndicatorSessionGuestMockClass *klass) {
+  GObjectClass *object_class;
+  IndicatorSessionGuestClass *guest_class;
 
-  object_class = G_OBJECT_CLASS (klass);
+  object_class = G_OBJECT_CLASS(klass);
   object_class->dispose = my_dispose;
   object_class->finalize = my_finalize;
 
-  guest_class = INDICATOR_SESSION_GUEST_CLASS (klass);
+  guest_class = INDICATOR_SESSION_GUEST_CLASS(klass);
   guest_class->is_allowed = my_is_allowed;
   guest_class->is_logged_in = my_is_logged_in;
   guest_class->is_active = my_is_active;
@@ -102,9 +90,8 @@ indicator_session_guest_mock_class_init (IndicatorSessionGuestMockClass * klass)
 
 static void
 /* cppcheck-suppress unusedFunction */
-indicator_session_guest_mock_init (IndicatorSessionGuestMock * self)
-{
-  priv_t * p;
+indicator_session_guest_mock_init(IndicatorSessionGuestMock *self) {
+  priv_t *p;
 
   p = indicator_session_guest_mock_get_instance_private(self);
   self->priv = p;
@@ -118,10 +105,8 @@ indicator_session_guest_mock_init (IndicatorSessionGuestMock * self)
 ****  Public
 ***/
 
-IndicatorSessionGuest *
-indicator_session_guest_mock_new (void)
-{
-  gpointer o = g_object_new (INDICATOR_TYPE_SESSION_GUEST_MOCK, NULL);
+IndicatorSessionGuest *indicator_session_guest_mock_new(void) {
+  gpointer o = g_object_new(INDICATOR_TYPE_SESSION_GUEST_MOCK, NULL);
 
-  return INDICATOR_SESSION_GUEST (o);
+  return INDICATOR_SESSION_GUEST(o);
 }

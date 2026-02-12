@@ -20,48 +20,51 @@
 #ifndef __USERS_MOCK_H__
 #define __USERS_MOCK_H__
 
-#include <glib.h>
 #include <glib-object.h>
+#include <glib.h>
 
 #include "users.h" /* parent class */
 
 G_BEGIN_DECLS
 
-#define INDICATOR_TYPE_SESSION_USERS_MOCK          (indicator_session_users_mock_get_type())
-#define INDICATOR_SESSION_USERS_MOCK(o)            (G_TYPE_CHECK_INSTANCE_CAST ((o), INDICATOR_TYPE_SESSION_USERS_MOCK, IndicatorSessionUsersMock))
-#define INDICATOR_SESSION_USERS_MOCK_GET_CLASS(o)  (G_TYPE_INSTANCE_GET_CLASS ((o), INDICATOR_TYPE_SESSION_USERS_MOCK, IndicatorSessionUsersMockClass))
-#define INDICATOR_IS_SESSION_USERS_MOCK(o)         (G_TYPE_CHECK_INSTANCE_TYPE ((o), INDICATOR_TYPE_SESSION_USERS_MOCK))
+#define INDICATOR_TYPE_SESSION_USERS_MOCK                                      \
+  (indicator_session_users_mock_get_type())
+#define INDICATOR_SESSION_USERS_MOCK(o)                                        \
+  (G_TYPE_CHECK_INSTANCE_CAST((o), INDICATOR_TYPE_SESSION_USERS_MOCK,          \
+                              IndicatorSessionUsersMock))
+#define INDICATOR_SESSION_USERS_MOCK_GET_CLASS(o)                              \
+  (G_TYPE_INSTANCE_GET_CLASS((o), INDICATOR_TYPE_SESSION_USERS_MOCK,           \
+                             IndicatorSessionUsersMockClass))
+#define INDICATOR_IS_SESSION_USERS_MOCK(o)                                     \
+  (G_TYPE_CHECK_INSTANCE_TYPE((o), INDICATOR_TYPE_SESSION_USERS_MOCK))
 
-typedef struct _IndicatorSessionUsersMock        IndicatorSessionUsersMock;
-typedef struct _IndicatorSessionUsersMockPrivate IndicatorSessionUsersMockPrivate;
-typedef struct _IndicatorSessionUsersMockClass   IndicatorSessionUsersMockClass;
+typedef struct _IndicatorSessionUsersMock IndicatorSessionUsersMock;
+typedef struct _IndicatorSessionUsersMockPrivate
+    IndicatorSessionUsersMockPrivate;
+typedef struct _IndicatorSessionUsersMockClass IndicatorSessionUsersMockClass;
 
 /**
  * An implementation of IndicatorSessionUsers that lies about everything.
  */
-struct _IndicatorSessionUsersMock
-{
+struct _IndicatorSessionUsersMock {
   /*< private >*/
   IndicatorSessionUsers parent;
-  IndicatorSessionUsersMockPrivate * priv;
+  IndicatorSessionUsersMockPrivate *priv;
 };
 
-struct _IndicatorSessionUsersMockClass
-{
+struct _IndicatorSessionUsersMockClass {
   IndicatorSessionUsersClass parent_class;
 };
 
-GType indicator_session_users_mock_get_type (void);
+GType indicator_session_users_mock_get_type(void);
 
-IndicatorSessionUsers * indicator_session_users_mock_new (void);
+IndicatorSessionUsers *indicator_session_users_mock_new(void);
 
-void indicator_session_users_mock_add_user (IndicatorSessionUsersMock * self,
-                                            IndicatorSessionUser      * user);
+void indicator_session_users_mock_add_user(IndicatorSessionUsersMock *self,
+                                           IndicatorSessionUser *user);
 
-void indicator_session_users_mock_remove_user (IndicatorSessionUsersMock * self,
-                                               guint                       uid);
-
-
+void indicator_session_users_mock_remove_user(IndicatorSessionUsersMock *self,
+                                              guint uid);
 
 G_END_DECLS
 

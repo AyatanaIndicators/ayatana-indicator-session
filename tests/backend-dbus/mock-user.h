@@ -20,38 +20,31 @@
 #ifndef MOCK_USER_H
 #define MOCK_USER_H
 
-#include "mock-object.h" // parent class
 #include "backend-dbus/dbus-user.h" // AccountsUser
+#include "mock-object.h"            // parent class
 
-class MockUser: public MockObject
-{
-  protected:
+class MockUser : public MockObject {
+protected:
+  static guint get_next_uid();
 
-    static guint get_next_uid ();
+public:
+  MockUser(GMainLoop *loop, GDBusConnection *bus_connection,
+           const char *userName, const char *realName, guint64 login_frequency,
+           guint uid = get_next_uid());
+  virtual ~MockUser();
 
-  public:
+  const char *username() const;
+  const char *realname() const;
+  void set_realname(const char *);
+  guint uid() const;
+  guint64 login_frequency() const;
+  // bool system_account() const;
 
-    MockUser (GMainLoop       * loop,
-              GDBusConnection * bus_connection,
-              const char      * userName,
-              const char      * realName,
-              guint64           login_frequency,
-              guint             uid = get_next_uid());
-    virtual ~MockUser ();
+  bool is_guest() const;
+  void set_system_account(gboolean b);
 
-    const char * username () const;
-    const char * realname () const;
-    void set_realname (const char *);
-    guint uid () const;
-    guint64 login_frequency () const;
-    //bool system_account() const;
-
-    bool is_guest() const;
-    void set_system_account (gboolean b);
-
-  private:
-
-    AccountsUser * my_skeleton;
+private:
+  AccountsUser *my_skeleton;
 };
 
 #endif

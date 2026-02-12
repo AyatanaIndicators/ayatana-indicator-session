@@ -19,11 +19,11 @@
 
 #include <glib.h>
 
-const char* get_distro_name(void);
-const char* get_distro_url(void);
-const char* get_distro_bts_url(void);
-const char* get_desktop_name(void);
-const char* get_desktop_session(void);
-GHashTable*  get_os_release(void);
+const char *get_distro_name(void);
+const char *get_distro_url(void);
+const char *get_distro_bts_url(void);
+const char *get_desktop_name(void);
+const char *get_desktop_session(void);
+GHashTable *get_os_release(void);
 
 #endif /* __INDICATOR_SESSION_UTILS_H__ */

@@ -20,34 +20,27 @@
 #ifndef MOCK_SCREENSAVER_H
 #define MOCK_SCREENSAVER_H
 
-#include "mock-object.h" // parent class
 #include "backend-dbus/gnome-screen-saver.h" // GnomeScreenSaver
+#include "mock-object.h"                     // parent class
 
-class MockScreenSaver: public MockObject
-{
-  public:
+class MockScreenSaver : public MockObject {
+public:
+  MockScreenSaver(GMainLoop *loop, GDBusConnection *bus_connection);
+  virtual ~MockScreenSaver();
 
-    MockScreenSaver (GMainLoop       * loop,
-                     GDBusConnection * bus_connection);
-    virtual ~MockScreenSaver ();
+public:
+  enum Action { None, Lock, UserActivity };
+  Action last_action() { return my_last_action; }
 
-  public:
+private:
+  GnomeScreenSaver *my_skeleton;
+  Action my_last_action;
 
-    enum Action { None, Lock, UserActivity };
-    Action last_action () { return my_last_action; }
-
-  private:
-
-    GnomeScreenSaver * my_skeleton;
-    Action my_last_action;
-
-    static gboolean handle_lock (GnomeScreenSaver *,
-                                 GDBusMethodInvocation *,
-                                 gpointer);
-    static gboolean handle_simulate_user_activity (GnomeScreenSaver *,
-                                                   GDBusMethodInvocation *,
-                                                   gpointer);
-
+  static gboolean handle_lock(GnomeScreenSaver *, GDBusMethodInvocation *,
+                              gpointer);
+  static gboolean handle_simulate_user_activity(GnomeScreenSaver *,
+                                                GDBusMethodInvocation *,
+                                                gpointer);
 };
 
 #endif

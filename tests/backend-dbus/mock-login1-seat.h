@@ -20,57 +20,55 @@
 #ifndef MOCK_LOGIN1_SEAT_H
 #define MOCK_LOGIN1_SEAT_H
 
+#include "backend-dbus/dbus-login1-seat.h"
+#include "mock-object.h"
 #include <cstring> /* strrchr */
 #include <map>
 #include <set>
 #include <string>
-#include "backend-dbus/dbus-login1-seat.h"
-#include "mock-object.h"
 
 class MockUser;
 class MockLogin1Session;
 
-class MockLogin1Seat: public MockObject
-{
-  public:
+class MockLogin1Seat : public MockObject {
+public:
+  MockLogin1Seat(GMainLoop *loop, GDBusConnection *bus_connection,
+                 bool can_activate_sessions);
 
-    MockLogin1Seat (GMainLoop       * loop,
-                    GDBusConnection * bus_connection,
-                    bool              can_activate_sessions);
+  virtual ~MockLogin1Seat();
 
-    virtual ~MockLogin1Seat ();
+  const char *seat_id() const { return strrchr(path(), '/') + 1; }
 
-    const char * seat_id() const { return strrchr(path(),'/')+1; }
+  int add_session(MockUser *user);
+  void remove_session(int session_tag);
+  std::set<int> sessions() const;
+  int active_session() const { return my_active_session; }
 
-    int add_session (MockUser * user);
-    void remove_session (int session_tag);
-    std::set<int> sessions () const;
-    int active_session () const { return my_active_session; }
+  std::string user_state(unsigned int uid) const;
 
-    std::string user_state (unsigned int uid) const;
+  bool can_activate_sessions() const { return my_can_multi_session; }
+  void activate_session(int session_tag);
+  void switch_to_guest();
+  void switch_to_user(const char *username);
 
-    bool can_activate_sessions () const { return my_can_multi_session; }
-    void activate_session (int session_tag);
-    void switch_to_guest ();
-    void switch_to_user (const char * username);
+  // const char * sid() { return path(); }
+  // MockLogin1Session * find (const char * ssid);
 
-    //const char * sid() { return path(); }
-    //MockLogin1Session * find (const char * ssid);
+  GVariant *list_sessions();
 
-    GVariant * list_sessions ();
+  static void get_session_id_and_path_for_tag(int tag, std::string &id,
+                                              std::string &path);
 
-    static void get_session_id_and_path_for_tag (int tag, std::string& id, std::string& path);
+private:
+  void update_sessions_property();
+  void update_active_session_property();
+  void update_can_multi_session_property();
 
-  private:
-    void update_sessions_property ();
-    void update_active_session_property ();
-    void update_can_multi_session_property ();
-
-  private:
-    Login1Seat * my_skeleton;
-    std::map<int,MockUser*> my_sessions;
-    int my_active_session;
-    bool my_can_multi_session;
+private:
+  Login1Seat *my_skeleton;
+  std::map<int, MockUser *> my_sessions;
+  int my_active_session;
+  bool my_can_multi_session;
 };
 
 #endif // #ifndef MOCK_LOGIN1_SEAT_H

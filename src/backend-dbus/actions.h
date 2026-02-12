@@ -20,50 +20,54 @@
 #ifndef __INDICATOR_SESSION_ACTIONS_DBUS_H__
 #define __INDICATOR_SESSION_ACTIONS_DBUS_H__
 
-#include <glib.h>
 #include <glib-object.h>
+#include <glib.h>
 
 #include "../actions.h" /* parent class */
+#include "dbus-display-manager.h"
 #include "dbus-login1-manager.h"
 #include "dbus-login1-seat.h"
-#include "dbus-display-manager.h"
-
 
 G_BEGIN_DECLS
 
-#define INDICATOR_TYPE_SESSION_ACTIONS_DBUS          (indicator_session_actions_dbus_get_type())
-#define INDICATOR_SESSION_ACTIONS_DBUS(o)            (G_TYPE_CHECK_INSTANCE_CAST ((o), INDICATOR_TYPE_SESSION_ACTIONS_DBUS, IndicatorSessionActionsDbus))
-#define INDICATOR_SESSION_ACTIONS_DBUS_GET_CLASS(o)  (G_TYPE_INSTANCE_GET_CLASS ((o), INDICATOR_TYPE_SESSION_ACTIONS_DBUS, IndicatorSessionActionsDbusClass))
-#define INDICATOR_IS_SESSION_ACTIONS_DBUS(o)         (G_TYPE_CHECK_INSTANCE_TYPE ((o), INDICATOR_TYPE_SESSION_ACTIONS_DBUS))
+#define INDICATOR_TYPE_SESSION_ACTIONS_DBUS                                    \
+  (indicator_session_actions_dbus_get_type())
+#define INDICATOR_SESSION_ACTIONS_DBUS(o)                                      \
+  (G_TYPE_CHECK_INSTANCE_CAST((o), INDICATOR_TYPE_SESSION_ACTIONS_DBUS,        \
+                              IndicatorSessionActionsDbus))
+#define INDICATOR_SESSION_ACTIONS_DBUS_GET_CLASS(o)                            \
+  (G_TYPE_INSTANCE_GET_CLASS((o), INDICATOR_TYPE_SESSION_ACTIONS_DBUS,         \
+                             IndicatorSessionActionsDbusClass))
+#define INDICATOR_IS_SESSION_ACTIONS_DBUS(o)                                   \
+  (G_TYPE_CHECK_INSTANCE_TYPE((o), INDICATOR_TYPE_SESSION_ACTIONS_DBUS))
 
-typedef struct _IndicatorSessionActionsDbus        IndicatorSessionActionsDbus;
-typedef struct _IndicatorSessionActionsDbusPrivate IndicatorSessionActionsDbusPrivate;
-typedef struct _IndicatorSessionActionsDbusClass   IndicatorSessionActionsDbusClass;
+typedef struct _IndicatorSessionActionsDbus IndicatorSessionActionsDbus;
+typedef struct _IndicatorSessionActionsDbusPrivate
+    IndicatorSessionActionsDbusPrivate;
+typedef struct _IndicatorSessionActionsDbusClass
+    IndicatorSessionActionsDbusClass;
 
 /**
  * An implementation of IndicatorSessionActions that gets its user information
  * from org.freedesktop.login1 org.freedesktop.DisplayManager over DBus.
  */
-struct _IndicatorSessionActionsDbus
-{
+struct _IndicatorSessionActionsDbus {
   /*< private >*/
   IndicatorSessionActions parent;
-  IndicatorSessionActionsDbusPrivate * priv;
+  IndicatorSessionActionsDbusPrivate *priv;
 };
 
-struct _IndicatorSessionActionsDbusClass
-{
+struct _IndicatorSessionActionsDbusClass {
   IndicatorSessionActionsClass parent_class;
 };
 
-GType indicator_session_actions_dbus_get_type (void);
+GType indicator_session_actions_dbus_get_type(void);
 
-IndicatorSessionActions * indicator_session_actions_dbus_new (void);
+IndicatorSessionActions *indicator_session_actions_dbus_new(void);
 
-void indicator_session_actions_dbus_set_proxies (IndicatorSessionActionsDbus * self,
-                                                 Login1Manager               * login1_manager,
-                                                 Login1Seat                  * login1_seat,
-                                                 DisplayManagerSeat          * dm_seat);
+void indicator_session_actions_dbus_set_proxies(
+    IndicatorSessionActionsDbus *self, Login1Manager *login1_manager,
+    Login1Seat *login1_seat, DisplayManagerSeat *dm_seat);
 
 G_END_DECLS
 

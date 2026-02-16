@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2026-02-16 11:45+0000\n"
+"PO-Revision-Date: 2026-02-17 12:09+0000\n"
 "Last-Translator: Arif Budiman <arifpedia@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/ayatana-"
 "indicators/session-applet/id/>\n"
@@ -17,149 +17,143 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.16-dev\n"
+"X-Generator: Weblate 5.16\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
-"Menampilkan dialog konfirmasi untuk keluar, menyalakan ulang, dan mematikan "
-"komputer"
+"Sembunyikan dialog untuk mengonfirmasi tindakan logout, restart dan shutdown"
 
 #: data/org.ayatana.indicator.session.gschema.xml:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"Apakah akan menampilkan dialog konfirmasi aksi untuk logout, restart, dan "
-"shutdown."
+"Apakah akan menampilkan dialog konfirmasi untuk tindakan logout, restart dan "
+"shutdown atau tidak."
 
 #: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "Menghilangkan opsi Keluar (Log Out) dari menu sesi"
+msgstr "Hapus item Log Out dari menu sesi"
 
 #: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr ""
+msgstr "Membuat tombol logout tidak ditampilkan di menu sesi."
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
-#, fuzzy
 msgid "Remove the Restart item from the session menu."
-msgstr "Menghilangkan opsi Hidupkan Ulang (Restart) dari menu sesi"
+msgstr "Hapus item Restart dari menu sesi."
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr ""
+msgstr "Membuat tombol restart tidak ditampilkan di menu sesi."
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
-#, fuzzy
 msgid "Remove the shutdown item from the session menu."
-msgstr "Menghilangkan opsi mematikan komputer (shutdown) dari menu sesi"
+msgstr "Hapus item shutdown dari menu sesi."
 
 #: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr ""
+msgstr "Membuat tombol shutdown tidak ditampilkan di menu sesi."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Menghilangkan opsi Hidupkan Ulang (Restart) dari menu sesi"
+msgstr "Paksa visibilitas item Restart di menu sesi"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr ""
-"Membuat tombol untuk menyalakan ulang komputer (restart) tidak ditampilkan "
-"pada menu sesi."
+"Membuat restart ditampilkan di menu sesi bahkan di lingkungan yang "
+"seharusnya tidak menampilkannya."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Menghilangkan opsi Hidupkan Ulang (Restart) dari menu sesi"
+msgstr "Tentukan visibilitas nama asli Pengguna di panel"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Izinkan Penghapusan nama pengguna dari panel"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Tampilkan daftar pengguna"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Izinkan daftar pengguna untuk disembunyikan oleh pengguna."
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr ""
+msgstr "Tampilkan item info perangkat"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr ""
+msgstr "Tampilkan item menu informasi perangkat."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr ""
+msgstr "Tampilkan item bantuan desktop"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr ""
+msgstr "Tampilkan item menu bantuan lingkungan desktop."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr ""
+msgstr "Tampilkan item bantuan distro"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "Tampilkan item menu bantuan distribusi."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr ""
+msgstr "Tampilkan item laporan bug"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr ""
+msgstr "Tampilkan item menu laporan bug."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr ""
+msgstr "Tampilkan item kustom"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
 msgid "Show the custom menu item."
-msgstr ""
+msgstr "Tampilkan item menu kustom."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "Label item kustom"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "Label dari item menu kustom."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "URI item kustom"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
-msgstr ""
+msgstr "Lokasi yang harus dibuka item menu kustom."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:197
 #, c-format
 msgid "System, %s"
-msgstr ""
+msgstr "Sistem, %s"
 
 #: src/service.c:201 src/service.c:211
 msgid "System"
-msgstr ""
+msgstr "Sistem"
 
 #: src/service.c:212
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Manajemen sesi, status dan peralihan pengguna"
 
 #: src/service.c:337
 msgid "Guest"
@@ -167,64 +161,64 @@ msgstr "Tamu"
 
 #: src/service.c:407
 msgid "About This Device…"
-msgstr ""
+msgstr "Tentang Perangkat Ini…"
 
 #: src/service.c:411
 msgid "About This Computer"
-msgstr ""
+msgstr "Tentang Komputer Ini"
 
 #: src/service.c:423
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "Tentang Ubuntu Touch…"
 
 #: src/service.c:427 src/service.c:446
 #, c-format
 msgid "%s Help…"
-msgstr ""
+msgstr "Bantuan %s…"
 
 #: src/service.c:442
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "Tentang UBports Foundation…"
 
 #: src/service.c:456
 msgid "Desktop mode"
-msgstr ""
+msgstr "Mode desktop"
 
 #: src/service.c:466
 msgid "Report a Bug…"
-msgstr ""
+msgstr "Laporkan Bug…"
 
 #: src/service.c:479
 msgid "System Settings…"
-msgstr "Pengaturan SIstem…"
+msgstr "Pengaturan Sistem…"
 
 #: src/service.c:481
 msgid "Online Accounts…"
-msgstr ""
+msgstr "Akun Online…"
 
 #: src/service.c:689
 msgid "Start Screen Saver"
-msgstr ""
+msgstr "Mulai Screen Saver"
 
 #: src/service.c:697 src/service.c:713
 msgid "Switch Account…"
-msgstr ""
+msgstr "Alihkan Akun…"
 
 #: src/service.c:698 src/service.c:714
 msgid "Switch Account"
-msgstr ""
+msgstr "Alihkan Akun"
 
 #: src/service.c:710
 msgid "Lock/Switch Account…"
-msgstr ""
+msgstr "Kunci/Alihkan Akun…"
 
 #: src/service.c:711
 msgid "Lock/Switch Account"
-msgstr ""
+msgstr "Kunci/Alihkan Akun"
 
 #: src/service.c:717
 msgid "Lock"
-msgstr ""
+msgstr "Kunci"
 
 #: src/service.c:762
 msgid "Guest Session"
@@ -232,43 +226,42 @@ msgstr "Sesi Tamu"
 
 #: src/service.c:843
 msgid "Log Out…"
-msgstr "Keluar…"
+msgstr "Log Out…"
 
 #: src/service.c:847 src/backend-dbus/actions.c:791
 #: src/backend-dbus/actions.c:793
 msgid "Log Out"
-msgstr "Keluar"
+msgstr "Log Out"
 
 #: src/service.c:869
 msgid "Suspend"
-msgstr "Suspensi"
+msgstr "Suspend"
 
 #: src/service.c:872
 msgid "Hibernate"
-msgstr "Hibernasi"
+msgstr "Hibernate"
 
 #: src/service.c:876
 msgid "Restart…"
-msgstr "Nyalakan Ulang…"
+msgstr "Restart…"
 
 #: src/service.c:876 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
-msgstr "Nyalakan Ulang"
+msgstr "Restart"
 
 #: src/service.c:882
 msgid "Shut Down…"
-msgstr "Matikan…"
+msgstr "Shut Down…"
 
 #: src/service.c:882 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
-msgstr "Matikan"
+msgstr "Shut Down"
 
 #: src/service.c:892
-#, fuzzy
 msgid "Suspend Remote Session"
-msgstr "Sesi Tamu"
+msgstr "Suspend Sesi Remote"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920
@@ -285,19 +278,21 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Pelacak bug sistem operasi perlu diakses dengan peramban web.\n"
+"\n"
+"Indikator Sesi Ayatana tidak dapat menemukan peramban web apa pun di "
+"komputer Anda."
 
 #: src/backend-dbus/actions.c:785
-#, fuzzy
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "Anda yakin akan menutup semua program dan keluar dari sesi?"
+msgstr "Apakah Anda yakin ingin menutup semua program dan log out?"
 
 #: src/backend-dbus/actions.c:786
-#, fuzzy
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"Beberapa pemutakhiran aplikasi tidak diterapkan sebelum komputer dinyalakan "
-"ulang."
+"Beberapa pembaruan perangkat lunak tidak akan diterapkan sampai komputer "
+"restart berikutnya."
 
 #: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
@@ -306,11 +301,11 @@ msgstr "Batal"
 
 #: src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
-msgstr "Anda yakin akan menutup semua program dan menyalakan ulang komputer?"
+msgstr "Apakah Anda yakin ingin menutup semua program dan restart komputer?"
 
 #: src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr "Anda yakin akan menutup semua program dan mematikan komputer?"
+msgstr "Apakah Anda yakin ingin menutup semua program dan mematikan komputer?"
 
 #: src/backend-dbus/actions.c:907
 msgid ""
@@ -320,6 +315,10 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Panduan pengguna desktop XFCE perlu diakses dengan peramban web.\n"
+"\n"
+"Indikator Sesi Ayatana tidak dapat menemukan peramban web apa pun di "
+"komputer Anda."
 
 #: src/backend-dbus/actions.c:912
 msgid ""
@@ -329,6 +328,12 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Indikator Sesi Ayatana belum mengetahui cara menampilkan panduan pengguna "
+"atau pusat bantuan desktop yang sedang berjalan.\n"
+"\n"
+"Silakan laporkan ini kepada pengembang di:\n"
+"[https://github.com/ArcticaProject/ayatana-indicator-session/issues](https://"
+"github.com/ArcticaProject/ayatana-indicator-session/issues)"
 
 #: src/backend-dbus/actions.c:921
 #, c-format
@@ -339,6 +344,10 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
+"Menampilkan informasi tentang %s memerlukan peramban web.\n"
+"\n"
+"Indikator Sesi Ayatana tidak dapat menemukan peramban web apa pun di "
+"komputer Anda."
 
 #: src/backend-dbus/actions.c:940
 msgid ""
@@ -348,6 +357,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Indikator Sesi Ayatana belum mendukung membuka aplikasi pengaturan sistem "
+"untuk lingkungan desktop Anda.\n"
+"\n"
+"Silakan laporkan ini kepada pengembang di:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:955
 msgid ""
@@ -357,6 +371,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Indikator Sesi Ayatana belum mendukung perubahan kata sandi untuk lingkungan "
+"desktop Anda.\n"
+"\n"
+"Silakan laporkan ini kepada pengembang di:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:976
 msgid ""
@@ -366,6 +385,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
+"Indikator Sesi Ayatana belum mengetahui cara menampilkan informasi dari "
+"lingkungan desktop yang sedang berjalan.\n"
+"\n"
+"Silakan laporkan ini kepada pengembang di:\n"
+"https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 
 #~ msgid "Classic Guest Session"
 #~ msgstr "Sesi Tamu Klasik"

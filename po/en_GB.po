@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:01+0200\n"
-"PO-Revision-Date: 2020-04-28 11:11+0000\n"
-"Last-Translator: Jeannette L <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2026-03-19 11:11+0000\n"
+"Last-Translator: Andi Chandler <andi@gowling.com>\n"
 "Language-Team: English (United Kingdom) <https://hosted.weblate.org/projects/"
 "ayatana-indicators/session-applet/en_GB/>\n"
 "Language: en_GB\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0.2\n"
+"X-Generator: Weblate 5.17-dev\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -57,89 +57,88 @@ msgid "Makes it so that the shutdown button doesn’t show in the session menu."
 msgstr "Makes it so that the shutdown button doesn’t show in the session menu."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
-#, fuzzy
 msgid "Force the visibility of Restart item in the session menu"
-msgstr "Remove the Restart item from the session menu."
+msgstr "Force the visibility of Restart item in the session menu"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
-#, fuzzy
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
-msgstr "Makes it so that the restart button doesn't show in the session menu."
+msgstr ""
+"Makes it so that the restart shows in the session menu even in the "
+"environments where it should not show."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
-#, fuzzy
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Remove the Restart item from the session menu."
+msgstr "Determine the visibility of the User's real name on the panel"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr ""
+msgstr "Allow for the Removal of the users name from the panel"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
-msgstr ""
+msgstr "Show the list of users"
 
 #: data/org.ayatana.indicator.session.gschema.xml:14
 msgid "Allow for the user list to be hidden by the user."
-msgstr ""
+msgstr "Allow for the user list to be hidden by the user."
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr ""
+msgstr "Show device info item"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr ""
+msgstr "Show the device information menu item."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr ""
+msgstr "Show desktop help item"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr ""
+msgstr "Show the desktop environment help menu item."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr ""
+msgstr "Show distro help item"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "Show the distribution help menu item."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr ""
+msgstr "Show bug report item"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr ""
+msgstr "Show the bug report menu item."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr ""
+msgstr "Show custom item"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
 msgid "Show the custom menu item."
-msgstr ""
+msgstr "Show the custom menu item."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "Custom item label"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "The label of the custom menu item."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "Custom item URI"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
-msgstr ""
+msgstr "The location the custom menu item should open."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:197
@@ -153,16 +152,15 @@ msgstr "System"
 
 #: src/service.c:212
 msgid "Session management, status and user switching"
-msgstr ""
+msgstr "Session management, status and user switching"
 
 #: src/service.c:337
 msgid "Guest"
 msgstr "Guest"
 
 #: src/service.c:407
-#, fuzzy
 msgid "About This Device…"
-msgstr "About This Computer"
+msgstr "About This Device…"
 
 #: src/service.c:411
 msgid "About This Computer"
@@ -170,21 +168,20 @@ msgstr "About This Computer"
 
 #: src/service.c:423
 msgid "About Ubuntu Touch…"
-msgstr ""
+msgstr "About Ubuntu Touch…"
 
 #: src/service.c:427 src/service.c:446
-#, fuzzy, c-format
+#, c-format
 msgid "%s Help…"
-msgstr "%s Help"
+msgstr "%s Help…"
 
 #: src/service.c:442
 msgid "About UBports Foundation…"
-msgstr ""
+msgstr "About UBports Foundation…"
 
 #: src/service.c:456
-#, fuzzy
 msgid "Desktop mode"
-msgstr "%s Desktop Help"
+msgstr "Desktop mode"
 
 #: src/service.c:466
 msgid "Report a Bug…"
@@ -262,9 +259,8 @@ msgid "Shut Down"
 msgstr "Switch Off"
 
 #: src/service.c:892
-#, fuzzy
 msgid "Suspend Remote Session"
-msgstr "Guest Session"
+msgstr "Suspend Remote Session"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920

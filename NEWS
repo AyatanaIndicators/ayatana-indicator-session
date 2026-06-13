@@ -1,3 +1,10 @@
+Overview of changes in ayatana-indicator-session 26.6.0
+
+  - rename about to system-information in lomiri-system-settings.
+  - Don't switch to greeter when locking Lomiri.
+  - Translation updates (thanks to all contributors on
+    hosted.weblate.org).
+
 Overview of changes in ayatana-indicator-session 24.5.1
 
   - Switch from com.canonical.indicators.webcredentials D-Bus service

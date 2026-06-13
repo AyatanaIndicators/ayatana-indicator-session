@@ -1,6 +1,78 @@
+2026-06-13 Mike Gabriel
+
+        * Release 26.6.0 (HEAD -> main, tag: 26.6.0)
+
+2026-06-13 Grzegorz Szymaszek
+
+        * Translated using Weblate (Polish) (4ecc8671)
+
+2026-06-13 Lorenzo Torracchi
+
+        * Translated using Weblate (Italian) (91f95438)
+
+2026-06-11 Priit Jõerüüt
+
+        * Translated using Weblate (Estonian) (d07e8f8c)
+
+2026-03-18 Andi Chandler
+
+        * Translated using Weblate (English (United Kingdom)) (813e6639)
+
+2026-02-16 Arif Budiman
+
+        * Translated using Weblate (Indonesian) (9bec45ec)
+        * Translated using Weblate (Indonesian) (b37565d9)
+
+2026-01-27 BoneNI
+
+        * Translated using Weblate (Lao) (1b1bf7cf)
+
+2025-11-14 BoneNI
+
+        * Translated using Weblate (Lao) (24708848)
+        * Translated using Weblate (Lao) (9d9f2134)
+
+2025-09-29 Temuri Doghonadze
+
+        * Translated using Weblate (Georgian) (11f6d080)
+
+2025-09-15 Milo Ivir
+
+        * Translated using Weblate (Croatian) (1495dcbf)
+
+2025-08-05 Mike Gabriel
+
+        * Merge branch 'uxes-rename_ubports_about_to_system-information'
+          (6ec83035)
+
+2025-07-09 Adam Havelka
+
+        * rename about to system-information in lomiri-system-settings
+          (ae23dee4)
+
+2025-06-21 Mike Gabriel
+
+        * Merge branch 'tari01-pr/no-greeter-on-lock' (ef267e71)
+
+2025-06-17 Robert Tari
+
+        * Don't switch to greeter when locking Lomiri (cd1044a3)
+
+2025-05-07 Priit Jõerüüt
+
+        * Translated using Weblate (Estonian) (61466f5c)
+
+2025-04-23 GiannosOB
+
+        * Translated using Weblate (Greek) (0c6a5eab)
+
+2025-04-06 Sivakumar
+
+        * Translated using Weblate (Tamil (Sri Lanka)) (2eab52ed)
+
 2025-04-01 Mike Gabriel
 
-        * release 24.5.1 (HEAD -> main, tag: 24.5.1)
+        * release 24.5.1 (c1317553) (tag: 24.5.1)
         * Merge branch 'tari01-pr/add-high-contrast-icons' (5110e006)
 
 2025-04-01 Robert Tari

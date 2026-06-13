@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2026-06-13 18:07+0000\n"
-"Last-Translator: Lorenzo Torracchi <lorenzotorracchi@mail.com>\n"
+"PO-Revision-Date: 2026-06-14 21:03+0000\n"
+"Last-Translator: Matteo <mattbel10@hotmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/ayatana-"
 "indicators/session-applet/it/>\n"
 "Language: it\n"
@@ -95,39 +95,39 @@ msgstr "Consente all'utente di nascondere l'elenco degli utenti."
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr ""
+msgstr "Mostra elemento info dispositivo"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr ""
+msgstr "Mostra elemento del menu informazione dispositivo."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr ""
+msgstr "Mostra elemento aiuto della scrivania"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr ""
+msgstr "Mostra elemento del menu aiuto dello spazio scrivania."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr ""
+msgstr "Mostra elemento aiuto della distribuzione"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "Mostra elemento del menu aiuto della distribuzione."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr ""
+msgstr "Mostra elemento del rapporto di errore"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr ""
+msgstr "Mostra elemento del menu del rapporto di errore."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr ""
+msgstr "Mostra elemento personalizzato"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
 msgid "Show the custom menu item."
@@ -135,19 +135,19 @@ msgstr "Mostra l'elenco degli utenti."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "Etichetta dell'elemento personalizzato"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "L'etichetta dell'elemento di menu personalizzato."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "URI di elemento personalizzato"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
-msgstr ""
+msgstr "L'indirizzo dell'elemento di menu personalizzato dovrebbe aprire."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:197

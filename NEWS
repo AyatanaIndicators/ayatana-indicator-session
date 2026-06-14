@@ -1,3 +1,8 @@
+Overview of changes in ayatana-indicator-session 26.6.1
+
+  - Revert "rename about to system-information in
+    lomiri-system-settings".
+
 Overview of changes in ayatana-indicator-session 26.6.0
 
   - rename about to system-information in lomiri-system-settings.

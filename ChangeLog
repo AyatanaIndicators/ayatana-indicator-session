@@ -1,6 +1,12 @@
+2026-06-14 Mike Gabriel
+
+        * Release 26.6.1 (HEAD -> main, tag: 26.6.1)
+        * Revert "rename about to system-information in
+          lomiri-system-settings" (899f844b)
+
 2026-06-13 Mike Gabriel
 
-        * Release 26.6.0 (HEAD -> main, tag: 26.6.0)
+        * Release 26.6.0 (2a161265) (tag: 26.6.0)
 
 2026-06-13 Grzegorz Szymaszek
 

@@ -387,7 +387,12 @@ my_can_lock (IndicatorSessionActions * self)
 {
   priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  return !g_settings_get_boolean (p->lockdown_settings, "disable-lock-screen");
+  if (p->lockdown_settings)
+    {
+      return !g_settings_get_boolean (p->lockdown_settings, "disable-lock-screen");
+    }
+
+  return TRUE;
 }
 
 static gboolean
@@ -398,7 +403,7 @@ my_can_logout (IndicatorSessionActions * self)
   if (g_settings_get_boolean (p->indicator_settings, "suppress-logout-menuitem"))
     return FALSE;
 
-  if (g_settings_get_boolean (p->lockdown_settings, "disable-log-out"))
+  if ((p->lockdown_settings) && (g_settings_get_boolean (p->lockdown_settings, "disable-log-out")))
     return FALSE;
 
   return TRUE;
@@ -430,8 +435,17 @@ my_can_switch (IndicatorSessionActions * self)
 {
   const priv_t * p = INDICATOR_SESSION_ACTIONS_DBUS(self)->priv;
 
-  return p->seat_allows_activation
-     && !g_settings_get_boolean (p->lockdown_settings, "disable-user-switching");
+  if ((p->lockdown_settings) && (g_settings_get_boolean (p->lockdown_settings, "disable-user-switching")))
+    {
+      return FALSE;
+    }
+
+  if (!p->seat_allows_activation)
+    {
+      return FALSE;
+    }
+
+  return TRUE;
 }
 
 static gboolean
@@ -1114,21 +1128,36 @@ static void
 indicator_session_actions_dbus_init (IndicatorSessionActionsDbus * self)
 {
   priv_t * p;
-  GSettings * s;
+  GSettings * s = NULL;
 
   p = indicator_session_actions_dbus_get_instance_private (self);
   p->cancellable = g_cancellable_new ();
   p->seat_allows_activation = TRUE;
   self->priv = p;
 
-  s = g_settings_new ("org.gnome.desktop.lockdown");
-  g_signal_connect_swapped (s, "changed::disable-lock-screen",
-                            G_CALLBACK(indicator_session_actions_notify_can_lock), self);
-  g_signal_connect_swapped (s, "changed::disable-log-out",
-                            G_CALLBACK(indicator_session_actions_notify_can_logout), self);
-  g_signal_connect_swapped (s, "changed::disable-user-switching",
-                            G_CALLBACK(indicator_session_actions_notify_can_switch), self);
-  p->lockdown_settings = s;
+  if (ayatana_common_utils_is_gnome() || ayatana_common_utils_is_budgie())
+    {
+      s = g_settings_new ("org.gnome.desktop.lockdown");
+    }
+  else if (ayatana_common_utils_is_mate())
+    {
+      s = g_settings_new ("org.mate.desktop.lockdown");
+    }
+
+  if (s)
+    {
+      g_signal_connect_swapped (s, "changed::disable-lock-screen",
+                                G_CALLBACK(indicator_session_actions_notify_can_lock), self);
+      g_signal_connect_swapped (s, "changed::disable-log-out",
+                                G_CALLBACK(indicator_session_actions_notify_can_logout), self);
+      g_signal_connect_swapped (s, "changed::disable-user-switching",
+                                G_CALLBACK(indicator_session_actions_notify_can_switch), self);
+      p->lockdown_settings = s;
+    }
+  else
+    {
+      p->lockdown_settings = NULL;
+    }
 
   s = g_settings_new ("org.ayatana.indicator.session");
   g_signal_connect_swapped (s, "changed::suppress-logout-restart-shutdown",

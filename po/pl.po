@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2026-07-03 11:01+0000\n"
+"PO-Revision-Date: 2026-07-06 12:01+0000\n"
 "Last-Translator: NooB9496 <noob9496@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/ayatana-"
 "indicators/session-applet/pl/>\n"
@@ -48,7 +48,7 @@ msgstr ""
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
 msgid "Remove the Restart item from the session menu."
-msgstr "Usuwa element  Uruchom ponownie z menu sesji."
+msgstr "Usuwa element Uruchom ponownie z menu sesji."
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
@@ -79,7 +79,8 @@ msgstr ""
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "Usuwa element Uruchom ponownie z menu sesji."
+msgstr ""
+"Ustal, czy prawdziwe imię i nazwisko użytkownika ma być widoczne na panelu"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"

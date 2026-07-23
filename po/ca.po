@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:01+0200\n"
-"PO-Revision-Date: 2026-07-23 15:08+0000\n"
+"PO-Revision-Date: 2026-07-24 16:01+0000\n"
 "Last-Translator: Walter Garcia-Fontes <walter.garcia@upf.edu>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/ayatana-"
 "indicators/session-applet/ca/>\n"
@@ -87,60 +87,59 @@ msgstr "Permet al o la usuària amagar la llista dels i les usuàries."
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr ""
+msgstr "Mostra l'element d'informació del dispositiu"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr ""
+msgstr "Mostra l'element de menú d'Informació del dispositiu."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr ""
+msgstr "Mostra l'element d'ajuda de l'escriptori"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr ""
+msgstr "Mostra l'element de menú d'ajjuda de l'entorn d'escriptori."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr ""
+msgstr "Mostra l'element d'ajuda de la distribució"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr ""
+msgstr "Mostra l'element de menú d'ajuda de la distribució."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr ""
+msgstr "Mostra l'element d'informe d'error"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr ""
+msgstr "Mostra l'element de menú d'informe d'errors."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr ""
+msgstr "Mostra l'element personalitzat"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
-#, fuzzy
 msgid "Show the custom menu item."
-msgstr "Mostra la llista dels i les usuàries"
+msgstr "Mostra l'element personalitzat del menú."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
-msgstr ""
+msgstr "Etiqueta de l'element personalitzat"
 
 #: data/org.ayatana.indicator.session.gschema.xml:26
 msgid "The label of the custom menu item."
-msgstr ""
+msgstr "L'etiqueta de l'element personalitzat del menú."
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr ""
+msgstr "URI d'element personalitzat"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
-msgstr ""
+msgstr "La ubicació que ha d'obrir l'element de menú personalitzat."
 
 #. Translators: the name of the menu ("System"), then the user's name
 #: src/service.c:197
@@ -261,9 +260,8 @@ msgid "Shut Down"
 msgstr "Atura"
 
 #: src/service.c:892
-#, fuzzy
 msgid "Suspend Remote Session"
-msgstr "Sessió de convidat"
+msgstr "Suspèn la sessió remota"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920

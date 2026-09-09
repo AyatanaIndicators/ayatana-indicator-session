@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2024-12-06 16:00+0000\n"
-"Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
+"PO-Revision-Date: 2026-09-10 04:51+0000\n"
+"Last-Translator: Alagirisamy Rengaraj <radhaalagirisamy@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/ta/>\n"
 "Language: ta\n"
@@ -17,64 +17,67 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 2026.9.1\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
 msgid "Suppress the dialog to confirm logout, restart and shutdown action"
 msgstr ""
-"வெளியேறுதல், மறுதொடக்கம் மற்றும் பணிநிறுத்தம் செயலை உறுதிப்படுத்த உரையாடலை அடக்கவும்"
+"வெளியேற்றம், மறுதொடக்கம் மற்றும் மூடுதல் உறுதிப்படுத்த உரையாடலை முடக்கவும்"
 
 #: data/org.ayatana.indicator.session.gschema.xml:2
 msgid ""
 "Whether or not to show confirmation dialogs for logout, restart and shutdown "
 "actions."
 msgstr ""
-"வெளியேறு, மறுதொடக்கம் மற்றும் பணிநிறுத்தம் செயல்களுக்கான உறுதிப்படுத்தல் உரையாடல்களைக் காண்பிக்கலாமா இல்லையா."
+"வெளியேற்றம், மறுதொடக்கம் மற்றும் மூடுதல் உறுதிப்படுத்தல் உரையாடல்களைக் காட்டவா? வேண்டாமா?."
 
 #: data/org.ayatana.indicator.session.gschema.xml:3
 msgid "Remove the Log Out item from the session menu"
-msgstr "அமர்வு மெனுவிலிருந்து வெளியேறும் உருப்படியை அகற்று"
+msgstr "அமர்வு பட்டியலில் இருந்து வெளியேறும் உருப்படியை அகற்று"
 
 #: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
-msgstr "அமர்வு பட்டியலில் வெளியிடும் பொத்தானைக் காண்பிக்காது."
+msgstr ""
+"அப்படிச் செய்கிறது அதனால் அமர்வு பட்டியலில் வெளியேறு பொத்தான் காட்டப்படாது."
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
 msgid "Remove the Restart item from the session menu."
-msgstr "அமர்வு மெனுவிலிருந்து மறுதொடக்கம் உருப்படியை அகற்று."
+msgstr "அமர்வு பட்டியலில் இருந்து மறுதொடக்கம் உருப்படியை அகற்று."
 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
-msgstr "அமர்வு பட்டியலில் மறுதொடக்கம் பொத்தானைக் காண்பிக்காது."
+msgstr ""
+"அப்படிச் செய்கிறது அதனால் அமர்வு பட்டியலில் மறுதொடக்கம் பொத்தான் காட்டப்படாது."
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
 msgid "Remove the shutdown item from the session menu."
-msgstr "அமர்வு மெனுவிலிருந்து பணிநிறுத்தம் உருப்படியை அகற்று."
+msgstr "அமர்வு பட்டியலில் இருந்து மூடுதல் உருப்படியை அகற்று."
 
 #: data/org.ayatana.indicator.session.gschema.xml:8
 msgid "Makes it so that the shutdown button doesn’t show in the session menu."
-msgstr "அமர்வு பட்டியலில் பணிநிறுத்தம் பொத்தானைக் காண்பிக்காது."
+msgstr ""
+"அப்படிச் செய்கிறது அதனால் அமர்வு பட்டியலில் மூடுதல் பொத்தான் காட்டவில்லை."
 
 #: data/org.ayatana.indicator.session.gschema.xml:9
 msgid "Force the visibility of Restart item in the session menu"
-msgstr ""
-"அமர்வு பட்டியலில் மறுதொடக்கம் உருப்படியின் தெரிவுநிலையை கட்டாயப்படுத்துங்கள்"
+msgstr "அமர்வு பட்டியலில் மறுதொடக்கம் உருப்படி காணத்தக்கவாறு வற்புறுத்தவும்"
 
 #: data/org.ayatana.indicator.session.gschema.xml:10
 msgid ""
 "Makes it so that the restart shows in the session menu even in the "
 "environments where it should not show."
 msgstr ""
-"அமர்வு பட்டியலில் மறுதொடக்கம் காண்பிக்கக் கூடாத சூழல்களில் கூட காண்பிக்கும் வகையில் அதை உருவாக்குகிறது."
+"அப்படிச் செய்கிறது அதனால், எங்கு காண்பிக்கக் கூடாத சூழல்களில் கூட அமர்வு பட்டியலில் "
+"மறுதொடக்கம் காண்பிக்கிறது."
 
 #: data/org.ayatana.indicator.session.gschema.xml:11
 msgid "Determine the visibility of the User's real name on the panel"
-msgstr "பேனலில் பயனரின் உண்மையான பெயரின் தெரிவுநிலையைத் தீர்மானிக்கவும்"
+msgstr "பயனரின் உண்மையான பெயர் பலகையில் காணக்கூடியநிலையைத் தீர்மானிக்கவும்"
 
 #: data/org.ayatana.indicator.session.gschema.xml:12
 msgid "Allow for the Removal of the users name from the panel"
-msgstr "பேனலில் இருந்து பயனர்களின் பெயரை அகற்ற அனுமதிக்கவும்"
+msgstr "பலகையில் இருந்து பயனர்களின் பெயரை அகற்ற அனுமதிக்கவும்"
 
 #: data/org.ayatana.indicator.session.gschema.xml:13
 msgid "Show the list of users"
@@ -86,43 +89,43 @@ msgstr "பயனர் பட்டியலை பயனரால் மறை
 
 #: data/org.ayatana.indicator.session.gschema.xml:15
 msgid "Show device info item"
-msgstr "சாதன செய்தி உருப்படியைக் காட்டு"
+msgstr "சாதன தகவல் உருப்படி காட்டு"
 
 #: data/org.ayatana.indicator.session.gschema.xml:16
 msgid "Show the device information menu item."
-msgstr "சாதன செய்தி பட்டியல் உருப்படியைக் காட்டு."
+msgstr "சாதன தகவல் பட்டியல் உருப்படி காட்டு."
 
 #: data/org.ayatana.indicator.session.gschema.xml:17
 msgid "Show desktop help item"
-msgstr "டெச்க்டாப் உதவி உருப்படியைக் காட்டு"
+msgstr "மேசைக்கணினி உதவி உருப்படி காட்டு"
 
 #: data/org.ayatana.indicator.session.gschema.xml:18
 msgid "Show the desktop environment help menu item."
-msgstr "டெச்க்டாப் சூழல் உதவி பட்டியல் உருப்படியைக் காட்டு."
+msgstr "மேசைக்கணினி சூழல் உதவி பட்டியல் உருப்படி காட்டு."
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr "டிச்ட்ரோ உதவி உருப்படியைக் காட்டு"
+msgstr "பகிர்மாணம் உதவி உருப்படி காட்டு"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr "விநியோக உதவி பட்டியல் உருப்படியைக் காட்டு."
+msgstr "பகிர்மாணம் உதவி பட்டியல் உருப்படி காட்டு."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
-msgstr "பிழை அறிக்கை உருப்படியைக் காட்டு"
+msgstr "பிழை அறிக்கை உருப்படி காட்டு"
 
 #: data/org.ayatana.indicator.session.gschema.xml:22
 msgid "Show the bug report menu item."
-msgstr "பிழை அறிக்கை பட்டியல் உருப்படியைக் காட்டு."
+msgstr "பிழை அறிக்கை பட்டியல் உருப்படி காட்டு."
 
 #: data/org.ayatana.indicator.session.gschema.xml:23
 msgid "Show custom item"
-msgstr "தனிப்பயன் உருப்படியைக் காட்டு"
+msgstr "தனிப்பயன் உருப்படி காட்டு"
 
 #: data/org.ayatana.indicator.session.gschema.xml:24
 msgid "Show the custom menu item."
-msgstr "தனிப்பயன் பட்டியல் உருப்படியைக் காட்டு."
+msgstr "தனிப்பயன் பட்டியல் உருப்படி காட்டு."
 
 #: data/org.ayatana.indicator.session.gschema.xml:25
 msgid "Custom item label"
@@ -134,7 +137,7 @@ msgstr "தனிப்பயன் பட்டியல் உருப்ப�
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr "தனிப்பயன் உருப்படி யூரி"
+msgstr "தனிப்பயன் உருப்படி யூரிஐ"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
@@ -144,15 +147,15 @@ msgstr "தனிப்பயன் பட்டியல் உருப்ப�
 #: src/service.c:197
 #, c-format
 msgid "System, %s"
-msgstr "கணினி, %s"
+msgstr "அமைப்பு, %s"
 
 #: src/service.c:201 src/service.c:211
 msgid "System"
-msgstr "மண்டலம்"
+msgstr "அமைப்பு"
 
 #: src/service.c:212
 msgid "Session management, status and user switching"
-msgstr "அமர்வு மேலாண்மை, நிலை மற்றும் பயனர் மாறுதல்"
+msgstr "அமர்வு மேலாண்மை, நிலை மற்றும் பயனர் மாற்றம்"
 
 #: src/service.c:337
 msgid "Guest"
@@ -181,7 +184,7 @@ msgstr "உபோர்ட்ச் அறக்கட்டளை பற்ற�
 
 #: src/service.c:456
 msgid "Desktop mode"
-msgstr "டெச்க்டாப் பயன்முறை"
+msgstr "மேசைக்கணினி முறை"
 
 #: src/service.c:466
 msgid "Report a Bug…"
@@ -197,7 +200,7 @@ msgstr "நிகழ்நிலை கணக்குகள்…"
 
 #: src/service.c:689
 msgid "Start Screen Saver"
-msgstr "திரை சேமிப்பைத் தொடங்குங்கள்"
+msgstr "திரை சேமிப்பு தொடங்கு"
 
 #: src/service.c:697 src/service.c:713
 msgid "Switch Account…"
@@ -209,11 +212,11 @@ msgstr "கணக்கை மாற்றவும்"
 
 #: src/service.c:710
 msgid "Lock/Switch Account…"
-msgstr "பூட்டு/சுவிட்ச் கணக்கு…"
+msgstr "கணக்கைப் பூட்டு/மாற்று …"
 
 #: src/service.c:711
 msgid "Lock/Switch Account"
-msgstr "லாக்/சுவிட்ச் கணக்கு"
+msgstr "கணக்கைப் பூட்டு/மாற்று"
 
 #: src/service.c:717
 msgid "Lock"
@@ -234,15 +237,15 @@ msgstr "வெளியேறு"
 
 #: src/service.c:869
 msgid "Suspend"
-msgstr "இடைநிறுத்தம்"
+msgstr "இடைநீக்கு"
 
 #: src/service.c:872
 msgid "Hibernate"
-msgstr "உறங்கு"
+msgstr "அறிதுயில்"
 
 #: src/service.c:876
 msgid "Restart…"
-msgstr "மறுதொடக்கம்…"
+msgstr "மறுதுவக்கு…"
 
 #: src/service.c:876 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
@@ -256,11 +259,11 @@ msgstr "மூடு…"
 #: src/service.c:882 src/backend-dbus/actions.c:873
 #: src/backend-dbus/actions.c:875
 msgid "Shut Down"
-msgstr "பணி நிறுத்தம்"
+msgstr "மூடுதல்"
 
 #: src/service.c:892
 msgid "Suspend Remote Session"
-msgstr "தொலைநிலை அமர்வை இடைநிறுத்துங்கள்"
+msgstr "தொலை அமர்வை இடைநிறுத்து"
 
 #: src/backend-dbus/actions.c:753 src/backend-dbus/actions.c:906
 #: src/backend-dbus/actions.c:911 src/backend-dbus/actions.c:920
@@ -277,21 +280,22 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
-"இயக்க முறைமையின் பிழை டிராக்கரை அணுக வேண்டும்\n"
-" ஒரு வலை உலாவி.\n"
+"இயக்க முறைமையின் பிழை கண்காணி ஒரு வலை உலாவியால்\n"
+"அணுக வேண்டும்\n"
 "\n"
-" அயாதானா அமர்வு காட்டி எந்த வலையையும் கண்டுபிடிக்க முடியவில்லை\n"
-" உங்கள் கணினியில் உலாவி."
+"உங்கள் கணினியில் அயடானா அமர்வு காட்டி எந்த வலை\n"
+"உலாவியையும் கண்டுபிடிக்க முடியவில்லை."
 
 #: src/backend-dbus/actions.c:785
 msgid "Are you sure you want to close all programs and log out?"
-msgstr "எல்லா நிரல்களையும் மூடிவிட்டு வெளியேற விரும்புகிறீர்களா?"
+msgstr ""
+"எல்லா நிரல்களையும் மூடிவிட்டு வெளியேற நீங்கள் உறுதியாக விரும்புகிறீர்களா?"
 
 #: src/backend-dbus/actions.c:786
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"கணினி அடுத்த மறுதொடக்கம் வரை சில மென்பொருள் புதுப்பிப்புகள் பயன்படுத்தப்படாது."
+"கணினி அடுத்து மறுதுவங்கும் வரை சில மென்பொருள் புதுப்பிப்புகள் செயலாக்கப்படாது."
 
 #: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
@@ -314,11 +318,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
-"XFCE டெச்க்டாப்பின் பயனர் வழிகாட்டியை அணுக வேண்டும்\n"
-" ஒரு வலை உலாவி.\n"
+"XFCE மேசைக்கணினியின் பயனர் வழிகாட்டி ஒரு\n"
+"வலை உலாவியால் அணுகத் தேவையுள்ளது.\n"
 "\n"
-" அயாதானா அமர்வு காட்டி எந்த வலையையும் கண்டுபிடிக்க முடியவில்லை\n"
-" உங்கள் கணினியில் உலாவி."
+"அயடானா அமர்வு க் குறியீடு உங்கள் கணினியில் எந்த\n"
+"வலைஉலாவியையும்கண்டுபிடிக்க இயலவில்லை."
 
 #: src/backend-dbus/actions.c:912
 msgid ""
@@ -328,11 +332,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"அயாதானா அமர்வு காட்டி இன்னும் தெரியாது, எவ்வாறு காண்பிப்பது\n"
-" தற்போது இயங்கும் டெச்க்டாப்பின் பயனர் வழிகாட்டி அல்லது உதவி மையம்.\n"
+"தற்போது இயங்கும் மேசைக்கணினியின் பயனர் வழிகாட்டி அல்லது உதவி மையத்தை\n"
+"எவ்வாறு காண்பிப்பது என்று அயடானா அமர்வு குறியீடு இதுவரை அறியாது.\n"
 "\n"
-" இதை டெவலப்பர்களிடம் புகாரளிக்கவும்:\n"
-" https://github.com/arcticaproject/ayatana-indicator-session/issues"
+"இதை மேம்பாட்டாளர்களிடம் இங்கு புகாரளிக்கவும்:\n"
+"https://github.com/arcticaproject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:921
 #, c-format
@@ -343,11 +347,11 @@ msgid ""
 "The Ayatana Session Indicator could not find any web\n"
 "browser on your computer."
 msgstr ""
-"%s பற்றிய தகவல்களைக் காண்பிப்பது தேவை\n"
-" ஒரு வலை உலாவி.\n"
+"%sமீதான தகவல்களைக் காட்சிப்படுத்த\n"
+"ஒரு வலை உலாவி தேவை.\n"
 "\n"
-" அயாதானா அமர்வு காட்டி எந்த வலையையும் கண்டுபிடிக்க முடியவில்லை\n"
-" உங்கள் கணினியில் உலாவி."
+"அயடானா அமர்வு குறியீடு உங்கள் கணினியில் எந்த வலை உலாவியையும்\n"
+"கண்டுபிடிக்க இயலவில்லை."
 
 #: src/backend-dbus/actions.c:940
 msgid ""
@@ -357,11 +361,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"அயாதானா அமர்வு காட்டி கணினியைத் தூண்டுவதை ஆதரிக்காது\n"
-" உங்கள் டெச்க்டாப் சூழலுக்கான அமைப்புகள் பயன்பாடு இன்னும்.\n"
+"அயடானா அமர்வு குறியீடுஉங்கள் மேசைக்கணினி சூழலுக்கான கணினி அமைப்புகள்\n"
+"செயலியைத் தூண்டுவதை இதுவரை ஆதரிக்கவில்லை.\n"
 "\n"
-" இதை டெவலப்பர்களிடம் புகாரளிக்கவும்:\n"
-" https://github.com/arcticaproject/ayatana-indicator-session/issues"
+"இதை மேம்பாட்டாளர்களிடம் இங்கு புகாரளிக்கவும்:\n"
+"https://github.com/arcticaproject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:955
 msgid ""
@@ -371,11 +375,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"கடவுச்சொல் மாற்றங்களை அயட்டானா அமர்வு காட்டி ஆதரிக்காது\n"
-" உங்கள் டெச்க்டாப் சூழலுக்கு, இன்னும்.\n"
+"கடவுச்சொல் மாற்றங்களை அயடானா அமர்வு குறியீடு\n"
+"உங்கள் மேசைக்கணினி சூழலுக்கு இதுவரை ஆதரிக்கவில்லை.\n"
 "\n"
-" இதை டெவலப்பர்களிடம் புகாரளிக்கவும்:\n"
-" https://github.com/arcticaproject/ayatana-indicator-session/issues"
+"இதை மேம்பாட்டாளர்களிடம் இங்கு புகாரளிக்கவும்:\n"
+"https://github.com/arcticaproject/ayatana-indicator-session/issues"
 
 #: src/backend-dbus/actions.c:976
 msgid ""
@@ -385,11 +389,11 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"அயாதானா அமர்வு காட்டி இன்னும் தெரியாது, எவ்வாறு காண்பிப்பது\n"
-" தற்போது இயங்கும் டெச்க்டாப் சூழலின் தகவல்.\n"
+"தற்போது இயங்கும் மேசைக்கணினியின் தகவல்களை\n"
+"எவ்வாறு காண்பிப்பது என்று அயடானா அமர்வு குறியீடு இதுவரை அறியாது.\n"
 "\n"
-" இதை டெவலப்பர்களிடம் புகாரளிக்கவும்:\n"
-" https://github.com/arcticaproject/ayatana-indicator-session/issues"
+"இதை மேம்பாட்டாளர்களிடம் இங்கு புகாரளிக்கவும்:\n"
+"https://github.com/arcticaproject/ayatana-indicator-session/issues"
 
 #~ msgid "Lock Screen"
 #~ msgstr "திரையைப் பூட்டுக."

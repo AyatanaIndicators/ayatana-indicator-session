@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: indicator-session\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 00:02+0200\n"
-"PO-Revision-Date: 2026-09-10 04:51+0000\n"
+"PO-Revision-Date: 2026-10-02 12:51+0000\n"
 "Last-Translator: Alagirisamy Rengaraj <radhaalagirisamy@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/ayatana-indicators/"
 "session-applet/ta/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.1\n"
+"X-Generator: Weblate 2026.10\n"
 "X-Launchpad-Export-Date: 2011-09-27 15:12+0000\n"
 
 #: data/org.ayatana.indicator.session.gschema.xml:1
@@ -39,7 +39,7 @@ msgstr "அமர்வு பட்டியலில் இருந்து 
 #: data/org.ayatana.indicator.session.gschema.xml:4
 msgid "Makes it so that the logout button doesn’t show in the session menu."
 msgstr ""
-"அப்படிச் செய்கிறது அதனால் அமர்வு பட்டியலில் வெளியேறு பொத்தான் காட்டப்படாது."
+"அப்படிச் செய்கிறது அதனால் அமர்வு பட்டியலில் வெளியேறு பொத்தான் காட்டவில்லை."
 
 #: data/org.ayatana.indicator.session.gschema.xml:5
 msgid "Remove the Restart item from the session menu."
@@ -48,7 +48,7 @@ msgstr "அமர்வு பட்டியலில் இருந்து 
 #: data/org.ayatana.indicator.session.gschema.xml:6
 msgid "Makes it so that the restart button doesn’t show in the session menu."
 msgstr ""
-"அப்படிச் செய்கிறது அதனால் அமர்வு பட்டியலில் மறுதொடக்கம் பொத்தான் காட்டப்படாது."
+"அப்படிச் செய்கிறது அதனால் அமர்வு பட்டியலில் மறுதொடக்கம் பொத்தான் காட்டவில்லை."
 
 #: data/org.ayatana.indicator.session.gschema.xml:7
 msgid "Remove the shutdown item from the session menu."
@@ -105,11 +105,11 @@ msgstr "மேசைக்கணினி சூழல் உதவி பட்
 
 #: data/org.ayatana.indicator.session.gschema.xml:19
 msgid "Show distro help item"
-msgstr "பகிர்மாணம் உதவி உருப்படி காட்டு"
+msgstr "பகிர்வு உதவி உருப்படி காட்டு"
 
 #: data/org.ayatana.indicator.session.gschema.xml:20
 msgid "Show the distribution help menu item."
-msgstr "பகிர்மாணம் உதவி பட்டியல் உருப்படி காட்டு."
+msgstr "பகிர்வு உதவி பட்டியல் உருப்படி காட்டு."
 
 #: data/org.ayatana.indicator.session.gschema.xml:21
 msgid "Show bug report item"
@@ -137,7 +137,7 @@ msgstr "தனிப்பயன் பட்டியல் உருப்ப�
 
 #: data/org.ayatana.indicator.session.gschema.xml:27
 msgid "Custom item URI"
-msgstr "தனிப்பயன் உருப்படி யூரிஐ"
+msgstr "தனிப்பயன் உருப்படி சீ.வ.அ(URI)"
 
 #: data/org.ayatana.indicator.session.gschema.xml:28
 msgid "The location the custom menu item should open."
@@ -171,7 +171,7 @@ msgstr "இந்த கணினி பற்றி"
 
 #: src/service.c:423
 msgid "About Ubuntu Touch…"
-msgstr "உபுண்டு தொடுதல் பற்றி…"
+msgstr "உபுண்டு தொடுகை பற்றி…"
 
 #: src/service.c:427 src/service.c:446
 #, c-format
@@ -180,7 +180,7 @@ msgstr "%s உதவி…"
 
 #: src/service.c:442
 msgid "About UBports Foundation…"
-msgstr "உபோர்ட்ச் அறக்கட்டளை பற்றி…"
+msgstr "உபுண்டுதுறைகள் அறக்கட்டளை பற்றி…"
 
 #: src/service.c:456
 msgid "Desktop mode"
@@ -245,12 +245,12 @@ msgstr "அறிதுயில்"
 
 #: src/service.c:876
 msgid "Restart…"
-msgstr "மறுதுவக்கு…"
+msgstr "மீள்துவக்கு…"
 
 #: src/service.c:876 src/backend-dbus/actions.c:834
 #: src/backend-dbus/actions.c:836
 msgid "Restart"
-msgstr "மறுதுவக்கம்"
+msgstr "மீள்துவக்கம்"
 
 #: src/service.c:882
 msgid "Shut Down…"
@@ -283,7 +283,7 @@ msgstr ""
 "இயக்க முறைமையின் பிழை கண்காணி ஒரு வலை உலாவியால்\n"
 "அணுக வேண்டும்\n"
 "\n"
-"உங்கள் கணினியில் அயடானா அமர்வு காட்டி எந்த வலை\n"
+"உங்கள் கணினியில் அயடானா அமர்வு குறிகாட்டி எந்த வலை\n"
 "உலாவியையும் கண்டுபிடிக்க முடியவில்லை."
 
 #: src/backend-dbus/actions.c:785
@@ -295,12 +295,12 @@ msgstr ""
 msgid ""
 "Some software updates won't be applied until the computer next restarts."
 msgstr ""
-"கணினி அடுத்து மறுதுவங்கும் வரை சில மென்பொருள் புதுப்பிப்புகள் செயலாக்கப்படாது."
+"கணினி அடுத்து மீள்துவங்கும் வரை சில மென்பொருள் புதுப்பிப்புகள் செயலாக்கப்படாது."
 
 #: src/backend-dbus/actions.c:794 src/backend-dbus/actions.c:837
 #: src/backend-dbus/actions.c:876
 msgid "Cancel"
-msgstr "ரத்துசெய்"
+msgstr "நீக்கு"
 
 #: src/backend-dbus/actions.c:835
 msgid "Are you sure you want to close all programs and restart the computer?"
@@ -308,7 +308,7 @@ msgstr "அனைத்து நிரல்களையும் மூடி 
 
 #: src/backend-dbus/actions.c:874
 msgid "Are you sure you want to close all programs and shut down the computer?"
-msgstr "எல்லா நிரல்களையும் மூடிவிட்டு கணினியை மூட விரும்புகிறீர்களா?"
+msgstr "எல்லா நிரல்களையும் மூடிவிட்டு கணினியை அணைக்க விரும்புகிறீர்களா?"
 
 #: src/backend-dbus/actions.c:907
 msgid ""
@@ -322,7 +322,7 @@ msgstr ""
 "வலை உலாவியால் அணுகத் தேவையுள்ளது.\n"
 "\n"
 "அயடானா அமர்வு க் குறியீடு உங்கள் கணினியில் எந்த\n"
-"வலைஉலாவியையும்கண்டுபிடிக்க இயலவில்லை."
+"வலைஉலாவியையும் கண்டுபிடிக்க இயலவில்லை."
 
 #: src/backend-dbus/actions.c:912
 msgid ""
@@ -333,7 +333,7 @@ msgid ""
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
 "தற்போது இயங்கும் மேசைக்கணினியின் பயனர் வழிகாட்டி அல்லது உதவி மையத்தை\n"
-"எவ்வாறு காண்பிப்பது என்று அயடானா அமர்வு குறியீடு இதுவரை அறியாது.\n"
+"எவ்வாறு காண்பிப்பது என்று அயடானா அமர்வு குறியீடு இதுவரை அறியவில்லை.\n"
 "\n"
 "இதை மேம்பாட்டாளர்களிடம் இங்கு புகாரளிக்கவும்:\n"
 "https://github.com/arcticaproject/ayatana-indicator-session/issues"
@@ -389,7 +389,7 @@ msgid ""
 "Please report this to the developers at:\n"
 "https://github.com/ArcticaProject/ayatana-indicator-session/issues"
 msgstr ""
-"தற்போது இயங்கும் மேசைக்கணினியின் தகவல்களை\n"
+"தற்போது இயங்கும் மேசைக்கணினி சூழல் தகவல்களை\n"
 "எவ்வாறு காண்பிப்பது என்று அயடானா அமர்வு குறியீடு இதுவரை அறியாது.\n"
 "\n"
 "இதை மேம்பாட்டாளர்களிடம் இங்கு புகாரளிக்கவும்:\n"
